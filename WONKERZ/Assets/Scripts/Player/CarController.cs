@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class CarController : MonoBehaviour
 {
     [System.Serializable]
@@ -16,6 +15,13 @@ public class CarController : MonoBehaviour
         public bool Steering; // does this wheel apply steer angle?
     }
 
+    [Header("Physics")]
+    public GameObject CenterOfMass;
+    public bool ApplyInstance = true;
+    public GameObject WheelColliderInstance;
+    public float SpringDamper;
+    public float Spring;
+
     [Header("Direction")]
     public float MaxSteering = 40;
     public float AxleWidth;
@@ -25,30 +31,88 @@ public class CarController : MonoBehaviour
 
     [Header("Motor")]
     public float MaxTorque = 10;
+    public float MaxBreak = 5;
 
 
     [Header("Wheels")]
     public float WheelRadius = 1;
+    [Header("Suspension")]
+    public float SuspensionSpring;
+    public float SuspensionDamper;
+    public float TargetPosition;
     public List<AxleInfo> AxleInfos;
 
     [Header("Internal")]
     [SerializeField]
     private bool mIsOnGround = false;
 
+
+    // TODO toffa : make this better this is a quick fix
+    private void OnDestroy()
+    {
+        if (ApplyInstance)
+        {
+            foreach (AxleInfo Obj in AxleInfos)
+            {
+                GameObject.Destroy(Obj.LeftWheel.gameObject);
+                Obj.LeftWheel = null;
+                GameObject.Destroy(Obj.RightWheel.gameObject);
+                Obj.RightWheel = null;
+            }
+        }
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
+        GetComponent<Rigidbody>().centerOfMass = CenterOfMass.transform.localPosition;
         var CarPosition = this.transform.position;
         foreach (var Axle in AxleInfos)
         {
             if (Axle.Width == 0) Axle.Width = AxleWidth;
             if (Axle.Height == 0) Axle.Height = AxleHeight;
             if (Axle.Length == 0) Axle.Length = AxleLength;
-            Axle.LeftWheel.gameObject.transform.localPosition = new Vector3(CarPosition.x + Axle.Width, CarPosition.y - Axle.Height, CarPosition.z + Axle.Length);
-            Axle.RightWheel.gameObject.transform.localPosition = new Vector3(CarPosition.x - Axle.Width, CarPosition.y - Axle.Height, CarPosition.z + Axle.Length);
+
+            if (ApplyInstance)
+            {
+                var tempLeft = GameObject.Instantiate(WheelColliderInstance, gameObject.transform);
+                tempLeft.SetActive(true);
+                Axle.LeftWheel = tempLeft.GetComponent<WheelCollider>();
+                var tempRight = GameObject.Instantiate(WheelColliderInstance, gameObject.transform);
+                tempRight.SetActive(true);
+                Axle.RightWheel = tempRight.GetComponent<WheelCollider>();
+            }
+            Axle.LeftWheel.gameObject.transform.localPosition = new Vector3(Axle.Width, -Axle.Height, Axle.Length);
+            Axle.RightWheel.gameObject.transform.localPosition = new Vector3(-Axle.Width, -Axle.Height, Axle.Length);
 
             Axle.LeftWheel.radius = WheelRadius;
             Axle.RightWheel.radius = WheelRadius;
+        }
+    }
+
+    void Update()
+    {
+        foreach (AxleInfo Axle in AxleInfos)
+        {
+            if (Axle.LeftWheel != null)
+            {
+                var Spring = new JointSpring();
+                Spring.spring = this.SuspensionSpring;
+                Spring.damper = this.SuspensionDamper;
+                Spring.targetPosition = 0.5f;
+
+                Axle.LeftWheel.suspensionSpring = Spring;
+            }
+            if (Axle.RightWheel != null)
+            {
+                var Spring = new JointSpring();
+                Spring.spring = this.SuspensionSpring;
+                Spring.damper = this.SuspensionDamper;
+                Spring.targetPosition = 0.5f;
+
+                Axle.RightWheel.suspensionSpring = Spring;
+            }
+
         }
     }
 
