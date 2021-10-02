@@ -19,6 +19,7 @@ public class CarController : MonoBehaviour
     public GameObject CenterOfMass;
     public bool ApplyInstance = true;
     public GameObject WheelColliderInstance;
+    public GameObject WheelRenderer;
     public float SpringDamper;
     public float Spring;
 
@@ -87,6 +88,14 @@ public class CarController : MonoBehaviour
 
             Axle.LeftWheel.radius = WheelRadius;
             Axle.RightWheel.radius = WheelRadius;
+
+            var LeftRenderer = GameObject.Instantiate(WheelRenderer, gameObject.transform);
+            LeftRenderer.SetActive(true);
+            LeftRenderer.GetComponent<WheelRenderer>().Wheel = Axle.LeftWheel.gameObject;
+            var RightRenderer = GameObject.Instantiate(WheelRenderer, gameObject.transform);
+            RightRenderer.SetActive(true);
+            RightRenderer.GetComponent<WheelRenderer>().Wheel = Axle.RightWheel.gameObject;
+
         }
     }
 
