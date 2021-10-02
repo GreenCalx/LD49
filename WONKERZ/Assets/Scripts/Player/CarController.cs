@@ -48,6 +48,7 @@ public class CarController : MonoBehaviour
     private bool mIsOnGround = false;
     public GameObject PhareArriereDroit;
     public GameObject PhareArriereGauche;
+    public GameObject FLAMES;
 
 
     // TODO toffa : make this better this is a quick fix
@@ -65,6 +66,14 @@ public class CarController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        foreach (var Collision in collision.contacts)
+        {
+            var Contact = GameObject.Instantiate(FLAMES, Collision.point, Quaternion.identity);
+            Contact.SetActive(true);
+        }
+    }
     // Start is called before the first frame update
     void Awake()
     {
