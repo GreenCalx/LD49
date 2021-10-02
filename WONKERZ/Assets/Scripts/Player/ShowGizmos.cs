@@ -7,9 +7,10 @@ public class ShowGizmos : MonoBehaviour
         if (GetComponent<BoxCollider>() != null)
         {
             var Box = GetComponent<BoxCollider>();
-            var Size = transform.TransformVector(Box.size);
-            var Center = transform.TransformPoint(Box.center);
+            var Size = (Box.size);
+            var Center = (Box.center);
 
+            Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.DrawCube(Center, Size);
         }
 

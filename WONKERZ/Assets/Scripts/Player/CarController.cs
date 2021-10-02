@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class CarController : MonoBehaviour
 {
     [System.Serializable]
@@ -35,7 +36,7 @@ public class CarController : MonoBehaviour
     private bool mIsOnGround = false;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         var CarPosition = this.transform.position;
         foreach (var Axle in AxleInfos)
