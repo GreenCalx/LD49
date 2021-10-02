@@ -1,0 +1,95 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CarController : MonoBehaviour
+{
+    [System.Serializable]
+    public class AxleInfo
+    {
+        public float Width;
+        public float Height;
+        public float Length;
+        public WheelCollider LeftWheel;
+        public WheelCollider RightWheel;
+        public bool Motor; // is this wheel attached to motor?
+        public bool Steering; // does this wheel apply steer angle?
+    }
+
+    [Header("Direction")]
+    public float MaxSteering = 40;
+    public float AxleWidth;
+    public float AxleHeight;
+    public float AxleLength;
+    public float TurnRadius;
+
+    [Header("Motor")]
+    public float MaxTorque = 10;
+
+
+    [Header("Wheels")]
+    public float WheelRadius = 1;
+    public List<AxleInfo> AxleInfos;
+
+    [Header("Internal")]
+    [SerializeField]
+    private bool mIsOnGround = false;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        var CarPosition = this.transform.position;
+        foreach (var Axle in AxleInfos)
+        {
+            if (Axle.Width == 0) Axle.Width = AxleWidth;
+            if (Axle.Height == 0) Axle.Height = AxleHeight;
+            if (Axle.Length == 0) Axle.Length = AxleLength;
+            Axle.LeftWheel.gameObject.transform.localPosition = new Vector3(CarPosition.x + Axle.Width, CarPosition.y - Axle.Height, CarPosition.z + Axle.Length);
+            Axle.RightWheel.gameObject.transform.localPosition = new Vector3(CarPosition.x - Axle.Width, CarPosition.y - Axle.Height, CarPosition.z + Axle.Length);
+
+            Axle.LeftWheel.radius = WheelRadius;
+            Axle.RightWheel.radius = WheelRadius;
+        }
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        mIsOnGround = false;
+        var X = Input.GetAxis("Horizontal");
+        var Y = Input.GetAxis("Vertical");
+
+        Rigidbody RB = GetComponent<Rigidbody>();
+        BoxCollider BC = GetComponent<BoxCollider>();
+
+        float motor = MaxTorque * Y;
+        float steering = MaxSteering * X;
+
+        foreach (AxleInfo axleInfo in AxleInfos)
+        {
+            if (axleInfo.Steering)
+            {
+                axleInfo.LeftWheel.steerAngle = steering;
+                axleInfo.RightWheel.steerAngle = steering;
+            }
+            if (axleInfo.Motor)
+            {
+                if (motor > 0)
+                {
+                    axleInfo.LeftWheel.motorTorque = motor;
+                    axleInfo.RightWheel.motorTorque = motor;
+
+                    axleInfo.LeftWheel.brakeTorque = 0;
+                    axleInfo.RightWheel.brakeTorque = 0;
+                }
+                else
+                {
+                    axleInfo.LeftWheel.brakeTorque = -motor;
+                    axleInfo.RightWheel.brakeTorque = -motor;
+
+                    axleInfo.LeftWheel.motorTorque = 0;
+                    axleInfo.RightWheel.motorTorque = 0;
+                }
+            }
+        }
+    }
+}
