@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &286242696964906740
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3045933769050353703}
+  m_Layer: 0
+  m_Name: respawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3045933769050353703
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286242696964906740}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.74, y: 4.598957, z: -0}
+  m_LocalScale: {x: 0.5, y: 0.6666667, z: 1}
+  m_Children: []
+  m_Father: {fileID: 56805473002447511}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &829226287706650669
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,6 +39,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 56805473002447511}
+  - component: {fileID: 3899885315124612533}
+  - component: {fileID: 1102332854711461287}
   m_Layer: 0
   m_Name: checkpoint
   m_TagString: Untagged
@@ -24,14 +56,41 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 829226287706650669}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.3, y: 1.1, z: -72.9}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -72.9}
+  m_LocalScale: {x: 2, y: 1.5, z: 1}
   m_Children:
   - {fileID: 3517097645323308255}
   - {fileID: 5058679496529776592}
+  - {fileID: 3045933769050353703}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3899885315124612533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829226287706650669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea6f7b32091bf540b8d55ac670a6185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawn_location: {fileID: 3045933769050353703}
+--- !u!65 &1102332854711461287
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829226287706650669}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 18.417095, y: 17.38021, z: 1}
+  m_Center: {x: -8.136221, y: 7.445792, z: 0}
 --- !u!1 &4107296314366026287
 GameObject:
   m_ObjectHideFlags: 0
@@ -43,6 +102,7 @@ GameObject:
   - component: {fileID: 3517097645323308255}
   - component: {fileID: 7295531929523913943}
   - component: {fileID: 7913601046016658293}
+  - component: {fileID: 1688833294355475304}
   m_Layer: 0
   m_Name: cp_left
   m_TagString: Untagged
@@ -113,6 +173,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1688833294355475304
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4107296314366026287}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.03824851, y: 0.040185884, z: 0.16789138}
+  m_Center: {x: 0.016855182, y: -3.6086484e-10, z: 0.07394569}
 --- !u!1 &6086814119463516660
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +197,7 @@ GameObject:
   - component: {fileID: 5058679496529776592}
   - component: {fileID: 8026681361382283657}
   - component: {fileID: 7409642757415662211}
+  - component: {fileID: 2791085334778633517}
   m_Layer: 0
   m_Name: cp_right
   m_TagString: Untagged
@@ -194,3 +268,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2791085334778633517
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6086814119463516660}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.036425512, y: 0.04018591, z: 0.16789141}
+  m_Center: {x: -0.12326834, y: 0.037065852, z: 0.062585}

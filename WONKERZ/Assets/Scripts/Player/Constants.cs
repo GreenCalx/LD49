@@ -6,7 +6,8 @@ public struct Constants
     public const string SN_TITLE="titlescene";
     public const string SN_MAINGAME="main";
 
-    // -- ... --
-
+    // -- Global GameObjects --
+    public const string GO_CPManager = "CheckpointManager";
+    public const string GO_CPRespawn = "respawn";
 
 }
