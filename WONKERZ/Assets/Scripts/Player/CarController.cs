@@ -46,6 +46,8 @@ public class CarController : MonoBehaviour
     [Header("Internal")]
     [SerializeField]
     private bool mIsOnGround = false;
+    public GameObject PhareArriereDroit;
+    public GameObject PhareArriereGauche;
 
 
     // TODO toffa : make this better this is a quick fix
@@ -147,8 +149,10 @@ public class CarController : MonoBehaviour
             }
             if (axleInfo.Motor)
             {
-                if (motor > 0)
+                if (motor >= 0)
                 {
+                    PhareArriereDroit.SetActive(false);
+                    PhareArriereGauche.SetActive(false);
                     axleInfo.LeftWheel.motorTorque = motor;
                     axleInfo.RightWheel.motorTorque = motor;
 
@@ -157,6 +161,8 @@ public class CarController : MonoBehaviour
                 }
                 else
                 {
+                    PhareArriereDroit.SetActive(true);
+                    PhareArriereGauche.SetActive(true);
                     axleInfo.LeftWheel.brakeTorque = -motor;
                     axleInfo.RightWheel.brakeTorque = -motor;
 
