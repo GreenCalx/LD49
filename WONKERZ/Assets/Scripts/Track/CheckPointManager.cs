@@ -5,6 +5,7 @@ using UnityEngine;
 public class CheckPointManager : MonoBehaviour
 {
     public List<GameObject> checkpoints;
+    public GameObject race_start;
     public GameObject last_checkpoint;
 
     public GameObject player;
@@ -13,9 +14,11 @@ public class CheckPointManager : MonoBehaviour
     {
         if (checkpoints.Count <= 0)
         {
-            Debug.LogError("NO checkpoints in CP manager.");
+            Debug.LogError("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
             return;
         }
+
+        race_start = checkpoints[0];
         last_checkpoint = checkpoints[0];
     }
 
