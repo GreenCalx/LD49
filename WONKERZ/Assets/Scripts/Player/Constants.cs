@@ -11,5 +11,9 @@ public struct Constants
     // -- Global GameObjects --
     public const string GO_CPManager = "CheckpointManager";
     public const string GO_CPRespawn = "respawn";
+    public const string GO_FINISH = "finishline";
+    
+    // -- UI Panels --
+    public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
 
 }

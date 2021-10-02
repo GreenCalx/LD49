@@ -5,17 +5,21 @@ using UnityEngine.SceneManagement;
 
 public class TitleScreen : MonoBehaviour
 {
+    public float CLICK_TIME = 0.8f;
+    private float start_time;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        start_time = Time.time;
     }
 
     // Update is called once per frame
     void Update()
     {
         bool key_pressed = Input.anyKeyDown;
-        if (key_pressed)
+        double time_offset = Time.time - start_time;
+        if (key_pressed && (time_offset>=CLICK_TIME) )
             SceneManager.LoadScene(Constants.SN_MAINGAME, LoadSceneMode.Single);     
     }
 }
