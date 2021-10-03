@@ -1,12 +1,17 @@
 using UnityEngine;
-using System;
 
 public class CheckPoint : MonoBehaviour
 {
+    public enum CameraMode
+    {
+        Follow,
+        Fixed,
+    };
     [System.Serializable]
     public class CameraDescriptor
     {
         public Vector3 position;
+        public CameraMode mode;
         public Quaternion rotation;
 
     };
@@ -14,6 +19,11 @@ public class CheckPoint : MonoBehaviour
     public CameraDescriptor CamDescEnd;
     public CameraDescriptor CamDescStart;
     public Camera Cam;
+
+    public float CameraAnimationLength;
+    private float CurrentAnimationLength;
+    private bool IsAnimating = false;
+
     private bool hasManager = false;
     public Transform respawn_location;
     [HideInInspector]
@@ -38,11 +48,13 @@ public class CheckPoint : MonoBehaviour
         if (!hasManager)
             hasManager = subscribeToManager();
 
-        if (Cam)
+        if (IsAnimating)
         {
-            Cam.transform.position = Vector3.Lerp(CamDescStart.position, CamDescEnd.position, Time.deltaTime);
+            CurrentAnimationLength += Time.deltaTime;
+            var Lerp = CurrentAnimationLength / CameraAnimationLength;
+            if (CurrentAnimationLength < CameraAnimationLength) Cam.transform.position = Vector3.Lerp(CamDescStart.position, CamDescEnd.position, Lerp);
+            else IsAnimating = false;
         }
-
 
     }
 
@@ -58,6 +70,18 @@ public class CheckPoint : MonoBehaviour
         return false;
     }
 
+    void StartCameraAnimation()
+    {
+        if (Cam)
+        {
+            CurrentAnimationLength = 0;
+            CamDescStart.position = Cam.transform.position;
+            IsAnimating = true;
+
+            Cam.GetComponent<FollowPlayer>().Active = CamDescEnd.mode == CameraMode.Fixed;
+        }
+    }
+
     void OnTriggerEnter(Collider iCol)
     {
         CarController player = iCol.GetComponent<CarController>();
@@ -67,6 +91,7 @@ public class CheckPoint : MonoBehaviour
             activation_pff.gameObject.active = true;
             base_pff.gameObject.active = false;
 
+            StartCameraAnimation();
         }
     }
 

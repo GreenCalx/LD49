@@ -111,7 +111,7 @@ public class CarController : MonoBehaviour
 
         }
 
-        AxleInfos[0].LeftWheel.ConfigureVehicleSubsteps(1, 3, 10);
+        AxleInfos[0].LeftWheel.ConfigureVehicleSubsteps(1, 10, 10);
     }
 
     void Update()

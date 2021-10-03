@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 81584510}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.86, z: 0}
+  m_LocalPosition: {x: 262.4, y: 17.8, z: 240.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5074348951589578251}
@@ -97,8 +97,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Following: {fileID: 5074348953211789201}
-  Distance: {x: 0, y: 7, z: -20}
-  LerpMult: 0.2
+  Distance: {x: 0, y: 20, z: -20}
+  LerpMult: 0.01
+  Active: 1
 --- !u!1 &177610593
 GameObject:
   m_ObjectHideFlags: 0
@@ -5537,7 +5538,7 @@ WheelCollider:
     damper: 5000
     targetPosition: 0.7
   m_SuspensionDistance: 2
-  m_ForceAppPointDistance: 2.51
+  m_ForceAppPointDistance: 1
   m_Mass: 80
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -5545,13 +5546,13 @@ WheelCollider:
     m_ExtremumValue: 1
     m_AsymptoteSlip: 1
     m_AsymptoteValue: 1
-    m_Stiffness: 11.81
+    m_Stiffness: 3.4
   m_SidewaysFriction:
-    m_ExtremumSlip: 1
+    m_ExtremumSlip: 0.001
     m_ExtremumValue: 1
     m_AsymptoteSlip: 1
     m_AsymptoteValue: 1
-    m_Stiffness: 8.44
+    m_Stiffness: 15.39
   m_Enabled: 1
 --- !u!114 &5074348951602843350
 MonoBehaviour:
@@ -5862,19 +5863,19 @@ MonoBehaviour:
   MaxBreak: 0
   WheelRadius: 1.8
   SuspensionSpring: 30000
-  SuspensionDamper: 2000
+  SuspensionDamper: 1000
   TargetPosition: 0
   AxleInfos:
-  - Width: 4
-    Height: 2.5
-    Length: 4
+  - Width: 5
+    Height: 3
+    Length: 5
     LeftWheel: {fileID: 0}
     RightWheel: {fileID: 0}
     Motor: 0
     Steering: 1
-  - Width: 4
-    Height: 2.5
-    Length: -3.7
+  - Width: 5
+    Height: 3
+    Length: -5
     LeftWheel: {fileID: 0}
     RightWheel: {fileID: 0}
     Motor: 1
@@ -5920,7 +5921,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6067022520121583333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.054, y: -0.21, z: 1}
+  m_LocalPosition: {x: -0.054, y: -0.81, z: 0.44}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5074348953211789202}
