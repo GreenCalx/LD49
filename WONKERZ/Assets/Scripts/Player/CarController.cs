@@ -72,6 +72,7 @@ public class CarController : MonoBehaviour
         {
             var Contact = GameObject.Instantiate(FLAMES, Collision.point, Quaternion.identity);
             Contact.SetActive(true);
+            GameObject.Destroy(Contact, 2);
         }
     }
     // Start is called before the first frame update
