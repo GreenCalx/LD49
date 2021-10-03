@@ -18,8 +18,7 @@ public class CheckPointManager : MonoBehaviour
             return;
         }
 
-        race_start = checkpoints[0];
-        last_checkpoint = checkpoints[0];
+        last_checkpoint = race_start;
     }
 
     // Update is called once per frame
@@ -48,7 +47,11 @@ public class CheckPointManager : MonoBehaviour
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp == null)
             Debug.Log("not a cp");
+
+        Debug.Log("LOAD CP : " + as_cp.gameObject.name);
         
-        player.transform.position = as_cp.getSpawn();
+        GameObject respawn = as_cp.getSpawn();
+        player.transform.position = respawn.transform.position;
+        player.transform.rotation = respawn.transform.rotation;
     }
 }

@@ -43,9 +43,9 @@ public class CheckPoint : MonoBehaviour
         }
     }
 
-    public Vector3 getSpawn()
+    public GameObject getSpawn()
     {
-        return respawn_location.position;
+        return respawn_location.gameObject;
     }
 
 }
