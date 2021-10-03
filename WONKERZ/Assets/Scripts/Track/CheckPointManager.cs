@@ -6,9 +6,14 @@ public class CheckPointManager : MonoBehaviour
 {
     public List<GameObject> checkpoints;
     public GameObject race_start;
-    public GameObject last_checkpoint;
+    public FinishLine finishLine;
+    public UICheckpoint ui_ref;
 
     public GameObject player;
+
+    [HideInInspector]
+    public GameObject last_checkpoint;
+
 
     void Start()
     {
