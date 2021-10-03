@@ -4958,7 +4958,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &629630190
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4992,11 +4992,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 81584510, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
   m_PrefabInstance: {fileID: 815995812}
   m_PrefabAsset: {fileID: 0}
---- !u!20 &749160976 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 81584514, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
-  m_PrefabInstance: {fileID: 815995812}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &815995812
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5004,6 +4999,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 81584512, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: LerpMult
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315898398558206376, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315898398558206376, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348951602843351, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_ForceAppPointDistance
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5074348952350667758, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: m_Name
       value: Player
@@ -5051,6 +5062,30 @@ PrefabInstance:
     - target: {fileID: 5074348952350667759, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SuspensionDamper
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SuspensionSpring
+      value: 50000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleInfos.Array.data[0].Motor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleInfos.Array.data[0].Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleInfos.Array.data[1].Height
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789206, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_Mass
+      value: 4000
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
@@ -5729,7 +5764,7 @@ PrefabInstance:
     - target: {fileID: 2298507873200677196, guid: e4916f33e94c4144c8c852886af9729b, type: 3}
       propertyPath: Cam
       value: 
-      objectReference: {fileID: 749160976}
+      objectReference: {fileID: 0}
     - target: {fileID: 2298507873200677196, guid: e4916f33e94c4144c8c852886af9729b, type: 3}
       propertyPath: CamDescEnd.position.y
       value: 15

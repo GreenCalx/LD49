@@ -110,6 +110,8 @@ public class CarController : MonoBehaviour
             RightRenderer.GetComponent<WheelRenderer>().Wheel = Axle.RightWheel.gameObject;
 
         }
+
+        AxleInfos[0].LeftWheel.ConfigureVehicleSubsteps(1, 3, 10);
     }
 
     void Update()
@@ -121,7 +123,7 @@ public class CarController : MonoBehaviour
                 var Spring = new JointSpring();
                 Spring.spring = this.SuspensionSpring;
                 Spring.damper = this.SuspensionDamper;
-                Spring.targetPosition = 0.5f;
+                Spring.targetPosition = 0.7f;
 
                 Axle.LeftWheel.suspensionSpring = Spring;
             }
@@ -130,7 +132,7 @@ public class CarController : MonoBehaviour
                 var Spring = new JointSpring();
                 Spring.spring = this.SuspensionSpring;
                 Spring.damper = this.SuspensionDamper;
-                Spring.targetPosition = 0.5f;
+                Spring.targetPosition = 0.7f;
 
                 Axle.RightWheel.suspensionSpring = Spring;
             }
