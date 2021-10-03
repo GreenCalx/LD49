@@ -33,6 +33,7 @@ public class CarController : MonoBehaviour
     [Header("Motor")]
     public float MaxTorque = 10;
     public float MaxBreak = 5;
+    public AudioRenderer MotorSound;
 
 
     [Header("Wheels")]
