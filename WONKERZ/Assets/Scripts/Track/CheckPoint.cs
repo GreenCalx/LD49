@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CheckPoint : MonoBehaviour
 {
     private bool hasManager = false;
     public Transform respawn_location;
     private CheckPointManager cpm;
+
+    public ParticleSystem particleSystem;
+    public ParticleSystemForceField activation_pff;
+    public ParticleSystemForceField base_pff;
     // Start is called before the first frame update
     void Start()
     {
         hasManager = subscribeToManager();
-
+        activation_pff.gameObject.active = false;
+        base_pff.gameObject.active = true;
     }
 
 
@@ -40,6 +46,8 @@ public class CheckPoint : MonoBehaviour
         if (!!player)
         {
             cpm.notifyCP(this.gameObject);
+            activation_pff.gameObject.active = true;
+            base_pff.gameObject.active = false;
         }
     }
 
