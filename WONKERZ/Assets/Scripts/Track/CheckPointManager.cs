@@ -53,5 +53,11 @@ public class CheckPointManager : MonoBehaviour
         GameObject respawn = as_cp.getSpawn();
         player.transform.position = respawn.transform.position;
         player.transform.rotation = respawn.transform.rotation;
+        Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
+        if (!!rb2d)
+        {
+            rb2d.velocity = Vector3.zero;
+        }
+
     }
 }
