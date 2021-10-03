@@ -42,7 +42,16 @@ public class CheckPointManager : MonoBehaviour
     public void notifyCP(GameObject iGO)
     {
         if ( iGO.GetComponent<CheckPoint>() )
+        {
+            if (last_checkpoint==iGO)
+                return;
+
             last_checkpoint = iGO;
+            if(!!ui_ref)
+            {
+                ui_ref.displayCP(iGO);
+            }
+        }
         else
             Debug.LogWarning("CheckPointManager: Input GO is not a checkpoint.");
     }

@@ -16,7 +16,9 @@ public class CheckPoint : MonoBehaviour
     public Camera Cam;
     private bool hasManager = false;
     public Transform respawn_location;
-    private CheckPointManager cpm;
+    [HideInInspector]
+    public CheckPointManager cpm;
+    public string name;
 
     public ParticleSystem particleSystem;
     public ParticleSystemForceField activation_pff;
@@ -64,6 +66,7 @@ public class CheckPoint : MonoBehaviour
             cpm.notifyCP(this.gameObject);
             activation_pff.gameObject.active = true;
             base_pff.gameObject.active = false;
+
         }
     }
 
