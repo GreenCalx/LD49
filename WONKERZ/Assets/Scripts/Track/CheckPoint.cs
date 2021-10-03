@@ -1,10 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
 public class CheckPoint : MonoBehaviour
 {
+    [System.Serializable]
+    public class CameraDescriptor
+    {
+        public Vector3 position;
+        public Quaternion rotation;
+
+    };
+
+    public CameraDescriptor CamDescEnd;
+    public CameraDescriptor CamDescStart;
+    public Camera Cam;
     private bool hasManager = false;
     public Transform respawn_location;
     private CheckPointManager cpm;
@@ -26,6 +35,13 @@ public class CheckPoint : MonoBehaviour
     {
         if (!hasManager)
             hasManager = subscribeToManager();
+
+        if (Cam)
+        {
+            Cam.transform.position = Vector3.Lerp(CamDescStart.position, CamDescEnd.position, Time.deltaTime);
+        }
+
+
     }
 
     public bool subscribeToManager()
