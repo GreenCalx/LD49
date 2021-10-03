@@ -9,8 +9,8 @@ public class GameIsWin : MonoBehaviour
     public float CLICK_TIME = 1f;
     private float start_time;
 
-    public Text racetime_txt;
-    public Text pb_txt;
+    public TMPro.TextMeshProUGUI racetime_txt;
+    public TMPro.TextMeshProUGUI pb_txt;
 
     // Start is called before the first frame update
     void Start()
@@ -40,7 +40,7 @@ public class GameIsWin : MonoBehaviour
             double racetime_val = double.Parse(racetime, System.Globalization.CultureInfo.InvariantCulture);
             int racetime_val_min = (int)(racetime_val / 60);
             int racetime_val_sec = (int)(racetime_val % 60);
-            racetime_txt.text = racetime_val_min.ToString() + ":" + racetime_val_sec.ToString();
+            racetime_txt.SetText(racetime_val_min.ToString() + ":" + racetime_val_sec.ToString() );
 
             if (pb_val > racetime_val)
                 PlayerPrefs.SetString("pb",racetime_val.ToString());
@@ -49,7 +49,7 @@ public class GameIsWin : MonoBehaviour
                 pb = PlayerPrefs.GetString("pb", "999999");
                 int pb_val_min = (int)(pb_val / 60);
                 int pb_val_sec = (int)(pb_val % 60);
-                pb_txt.text = pb_val_min.ToString() + ":" + pb_val_sec.ToString();
+                pb_txt.SetText(pb_val_min.ToString() + ":" + pb_val_sec.ToString() );
             }
     }
 }
