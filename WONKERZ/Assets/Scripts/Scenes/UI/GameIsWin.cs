@@ -34,14 +34,22 @@ public class GameIsWin : MonoBehaviour
     public void publishTime()
     {
             string racetime = PlayerPrefs.GetString("racetime");
-            racetime_txt.text = racetime;
 
             string pb = PlayerPrefs.GetString("pb", "999999");
             double pb_val = double.Parse(pb, System.Globalization.CultureInfo.InvariantCulture);
             double racetime_val = double.Parse(racetime, System.Globalization.CultureInfo.InvariantCulture);
+            int racetime_val_min = (int)(racetime_val / 60);
+            int racetime_val_sec = (int)(racetime_val % 60);
+            racetime_txt.text = racetime_val_min.ToString() + ":" + racetime_val_sec.ToString();
+
             if (pb_val > racetime_val)
                 PlayerPrefs.SetString("pb",racetime_val.ToString());
             if (!!pb_txt)
-                pb_txt.text = PlayerPrefs.GetString("pb", "999999");
+            {
+                pb = PlayerPrefs.GetString("pb", "999999");
+                int pb_val_min = (int)(pb_val / 60);
+                int pb_val_sec = (int)(pb_val % 60);
+                pb_txt.text = pb_val_min.ToString() + ":" + pb_val_sec.ToString();
+            }
     }
 }
