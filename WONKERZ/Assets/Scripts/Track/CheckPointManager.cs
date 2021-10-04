@@ -61,8 +61,6 @@ public class CheckPointManager : MonoBehaviour
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp == null)
             Debug.Log("not a cp");
-
-        Debug.Log("LOAD CP : " + as_cp.gameObject.name);
         
         GameObject respawn = as_cp.getSpawn();
 
