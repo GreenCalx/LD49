@@ -183,6 +183,14 @@ public class CarController : MonoBehaviour
                     axleInfo.RightWheel.motorTorque = 0;
                 }
             }
+            else
+            {
+                axleInfo.LeftWheel.brakeTorque = 0;
+                axleInfo.RightWheel.brakeTorque = 0;
+
+                axleInfo.LeftWheel.motorTorque = 0;
+                axleInfo.RightWheel.motorTorque = 0;
+            }
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,13 +40,13 @@ public class CheckPointManager : MonoBehaviour
 
     public void notifyCP(GameObject iGO)
     {
-        if ( iGO.GetComponent<CheckPoint>() )
+        if (iGO.GetComponent<CheckPoint>())
         {
-            if (last_checkpoint==iGO)
+            if (last_checkpoint == iGO)
                 return;
 
             last_checkpoint = iGO;
-            if(!!ui_ref)
+            if (!!ui_ref)
             {
                 ui_ref.displayCP(iGO);
             }
@@ -61,7 +60,7 @@ public class CheckPointManager : MonoBehaviour
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp == null)
             Debug.Log("not a cp");
-        
+
         GameObject respawn = as_cp.getSpawn();
 
         Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
@@ -69,6 +68,14 @@ public class CheckPointManager : MonoBehaviour
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
+
+            foreach (CarController.AxleInfo Infos in player.GetComponent<CarController>().AxleInfos)
+            {
+                Infos.LeftWheel.motorTorque = 0;
+                Infos.LeftWheel.brakeTorque = 1000000;
+                Infos.RightWheel.motorTorque = 0;
+                Infos.RightWheel.brakeTorque = 1000000;
+            }
         }
         player.transform.position = respawn.transform.position;
         player.transform.rotation = respawn.transform.rotation;
