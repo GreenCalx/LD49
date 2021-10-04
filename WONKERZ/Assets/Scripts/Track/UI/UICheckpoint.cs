@@ -62,7 +62,7 @@ public class UICheckpoint : MonoBehaviour
             int racetime_val_sec = (int)(cp.cpm.finishLine.racetime % 60);
 
             cp_name_textval.SetText( cp.name );
-            cp_time_textval.SetText( racetime_val_min.ToString() + ":" + racetime_val_sec.ToString() );
+            cp_time_textval.SetText( racetime_val_min.ToString() + " m " + racetime_val_sec.ToString() + " s" );
             enable();
             display_start_time = Time.time;
         }
