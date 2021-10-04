@@ -18,6 +18,11 @@ public class FinishLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if ( Input.GetKey(KeyCode.Escape) )
+        {
+            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
+        }
+
         if (!end_triggered)
             racetime += Time.deltaTime;
     }
@@ -29,7 +34,7 @@ public class FinishLine : MonoBehaviour
             PlayerPrefs.SetInt("racetime",(int)racetime);
             PlayerPrefs.Save();
             end_triggered = true;
-            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Additive); 
+            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Single); 
         }
     }
 }
