@@ -18,6 +18,11 @@ public class FinishLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if ( Input.GetKey(KeyCode.Escape) )
+        {
+            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
+        }
+
         if (!end_triggered)
             racetime += Time.deltaTime;
     }
