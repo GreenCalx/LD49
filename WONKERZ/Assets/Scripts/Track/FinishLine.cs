@@ -29,7 +29,7 @@ public class FinishLine : MonoBehaviour
             PlayerPrefs.SetInt("racetime",(int)racetime);
             PlayerPrefs.Save();
             end_triggered = true;
-            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Additive); 
+            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Single); 
         }
     }
 }
