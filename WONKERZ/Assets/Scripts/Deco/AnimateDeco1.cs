@@ -10,7 +10,11 @@ public class AnimateDeco1 : MonoBehaviour
     public float y_delta = 1.0f;
     public float y_step = 0.1f;
 
-    private float curr_angle = 0f;
+    private float curr_x_angle = 0f;
+    private float curr_y_angle = 0f;
+    private float curr_z_angle = 0f;
+   
+   
     private float curr_y = 0f;
 
     private float base_y = 0f;
@@ -21,7 +25,7 @@ public class AnimateDeco1 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        curr_angle = 0f;
+        curr_y_angle = 0f;
         curr_y = 0f;
 
         base_y = transform.position.y;
@@ -36,14 +40,15 @@ public class AnimateDeco1 : MonoBehaviour
     {
 
         // rota
-        curr_angle += tiltAngle;
-        if (curr_angle >= 360)
-            curr_angle = 0;
+        curr_y_angle += tiltAngle;
+        if (curr_y_angle >= 360)
+            curr_y_angle = 0;
 
-        float tiltAroundY = curr_angle;
+        float tiltAroundY = curr_y_angle;
 
-        Quaternion target = Quaternion.Euler( 0, tiltAroundY, 0);
+        Quaternion target = Quaternion.Euler( 0f, tiltAroundY, 0f);
         transform.rotation = Quaternion.Slerp(transform.rotation, target,  Time.deltaTime * smooth);    
+    
 
         // transfo
         if ( (transform.position.y >= upper_y_lim) || (transform.position.y <= lower_y_lim) )
