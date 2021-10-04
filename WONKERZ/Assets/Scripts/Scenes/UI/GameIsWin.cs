@@ -33,22 +33,24 @@ public class GameIsWin : MonoBehaviour
 
     public void publishTime()
     {
-            string racetime = PlayerPrefs.GetString("racetime");
+            int racetime = PlayerPrefs.GetInt("racetime");
+            int pb = PlayerPrefs.GetInt("pb", 99999);
+            int racetime_val_min = (int)(racetime / 60);
+            int racetime_val_sec = (int)(racetime % 60);
 
-            string pb = PlayerPrefs.GetString("pb", "0.00");
-            double pb_val = double.Parse(pb, System.Globalization.CultureInfo.InvariantCulture);
-            double racetime_val = double.Parse(racetime, System.Globalization.CultureInfo.InvariantCulture);
-            int racetime_val_min = (int)(racetime_val / 60);
-            int racetime_val_sec = (int)(racetime_val % 60);
             racetime_txt.SetText(racetime_val_min.ToString() + " m " + racetime_val_sec.ToString() + " s " );
 
-            if (pb_val > racetime_val)
-                PlayerPrefs.SetString("pb",racetime_val.ToString());
+            if (pb > racetime)
+            {
+                PlayerPrefs.SetInt("pb",racetime);
+                PlayerPrefs.Save();
+            }
             if (!!pb_txt)
             {
-                pb = PlayerPrefs.GetString("pb", "0.00");
-                int pb_val_min = (int)(pb_val / 60);
-                int pb_val_sec = (int)(pb_val % 60);
+                pb = PlayerPrefs.GetInt("pb", 0);
+
+                int pb_val_min = (int)(pb / 60);
+                int pb_val_sec = (int)(pb % 60);
                 pb_txt.SetText(pb_val_min.ToString() + " m " + pb_val_sec.ToString() + " s " );
             }
     }

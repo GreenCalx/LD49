@@ -12,6 +12,7 @@ public class FinishLine : MonoBehaviour
     {
         end_triggered = false;
         racetime = 0;
+        PlayerPrefs.SetInt("racetime", (int)racetime);
     }
 
     // Update is called once per frame
@@ -25,10 +26,10 @@ public class FinishLine : MonoBehaviour
     {
         if (!end_triggered)
         {
-            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Additive); 
-            PlayerPrefs.SetString("racetime",racetime.ToString());
+            PlayerPrefs.SetInt("racetime",(int)racetime);
             PlayerPrefs.Save();
             end_triggered = true;
+            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Additive); 
         }
     }
 }
