@@ -9,6 +9,7 @@ public class CheckPointManager : MonoBehaviour
     public UICheckpoint ui_ref;
 
     public GameObject player;
+    public GameObject Cam;
 
     [HideInInspector]
     public GameObject last_checkpoint;
@@ -79,5 +80,22 @@ public class CheckPointManager : MonoBehaviour
         }
         player.transform.position = respawn.transform.position;
         player.transform.rotation = respawn.transform.rotation;
+
+        // Update caemra too !
+        var Direction = Cam.transform.position - player.transform.position;
+        var F = player.transform.forward;
+        var DirectionForward = new Vector3(Direction.x * F.x, Direction.y * F.y, Direction.z * F.z);
+        if (Direction.y < 0)
+        {
+            // Camera is below player be sure it is on top
+            Cam.transform.position = player.transform.position + (player.transform.up * 1000);
+        }
+
+        if (DirectionForward.magnitude > 0)
+        {
+            // Camera is in front of player, bu sure it is behind
+            Cam.transform.position = player.transform.position + (player.transform.forward * -10000);
+        }
+
     }
 }

@@ -6,6 +6,7 @@ public class FollowPlayer : MonoBehaviour
     public Vector3 Distance;
     public float LerpMult;
     public bool Active = true;
+    public CheckPointManager Mng;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,9 +17,19 @@ public class FollowPlayer : MonoBehaviour
     void Update()
     {
         if (!Active) return;
-        var FinalPosition = Following.transform.position + Distance;
-        var MaxDistance = FinalPosition + (FinalPosition * LerpMult);
-        var Lerp = 1 / (MaxDistance.sqrMagnitude / (transform.position - FinalPosition).sqrMagnitude);
+
+        Distance = Mng.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
+
+        var FinalPosition = Following.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
+        var FinalPositionDirection = Following.transform.position - FinalPosition;
+        var MaxDistancePosition = (FinalPosition - (FinalPositionDirection * LerpMult));
+        var MaxDistance = MaxDistancePosition.magnitude;
+
+        var MaxDistanceMagn = (MaxDistancePosition - FinalPosition).magnitude;
+
+        var CurrentDistance = (transform.position - FinalPosition).magnitude;
+
+        var Lerp = (CurrentDistance / MaxDistanceMagn);
 
         transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
 
