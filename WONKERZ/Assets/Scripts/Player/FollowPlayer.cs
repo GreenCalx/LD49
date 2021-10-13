@@ -5,7 +5,7 @@ public class FollowPlayer : MonoBehaviour
     public GameObject Following;
     public Vector3 Distance;
     public float LerpMult;
-    public bool Active = true;
+    private bool Active = true;
     public CheckPointManager Mng;
     // Start is called before the first frame update
     void Start()

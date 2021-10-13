@@ -78,7 +78,7 @@ public class CheckPoint : MonoBehaviour
             CamDescStart.position = Cam.transform.position;
             IsAnimating = true;
 
-            Cam.GetComponent<FollowPlayer>().Active = CamDescEnd.mode == CameraMode.Fixed;
+            //Cam.GetComponent<FollowPlayer>().Active = CamDescEnd.mode == CameraMode.Fixed;
         }
     }
 
