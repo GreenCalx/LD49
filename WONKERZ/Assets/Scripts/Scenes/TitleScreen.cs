@@ -24,7 +24,7 @@ public class TitleScreen : MonoBehaviour
             Application.Quit();
         }
         else if (key_pressed && (time_offset>=CLICK_TIME) )
-            SceneManager.LoadScene(Constants.SN_MAINGAME, LoadSceneMode.Single);
+            SceneManager.LoadScene(Constants.SN_HUB, LoadSceneMode.Single);
 
     }
 }

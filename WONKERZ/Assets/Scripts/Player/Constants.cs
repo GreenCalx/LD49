@@ -6,6 +6,7 @@ public struct Constants
     public const string SN_TITLE="titlescene";
     public const string SN_MAINGAME="main";
     public const string SN_FINISH="finishscene";
+    public const string SN_HUB="HUB";
 
 
     // -- Global GameObjects --
