@@ -19,11 +19,10 @@ public class CheckPointManager : MonoBehaviour
     {
         if (checkpoints.Count <= 0)
         {
-            Debug.LogError("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
-            return;
+            Debug.LogWarning("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
         }
-
         last_checkpoint = race_start;
+
     }
 
     // Update is called once per frame

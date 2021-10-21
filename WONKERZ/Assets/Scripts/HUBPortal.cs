@@ -20,7 +20,7 @@ public class HUBPortal : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider iCol)
+    void OnTriggerStay(Collider iCol)
     {
         CarController player = iCol.GetComponent<CarController>();
         if (!!player)
