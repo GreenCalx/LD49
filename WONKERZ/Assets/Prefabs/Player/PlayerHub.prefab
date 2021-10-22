@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1665263334677998446}
   - component: {fileID: 1665263334677998483}
   - component: {fileID: 1665263334677998480}
-  - component: {fileID: 1665263334677998481}
+  - component: {fileID: 2046751436}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -84,7 +84,7 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665263334677998447}
   m_Enabled: 1
---- !u!114 &1665263334677998481
+--- !u!114 &2046751436
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,12 +93,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1665263334677998447}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b3b8c7a52182ad4f950c79eb1905071, type: 3}
+  m_Script: {fileID: 11500000, guid: 713b14ebb4bbe3a48a0da68e753deec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Following: {fileID: 5870302832560330112}
-  Distance: {x: 0, y: 40, z: -40}
-  LerpMult: 0.01
+  Distance: {x: 0, y: 10, z: -30}
+  LerpMult: 0.1
   Mng: {fileID: 0}
 --- !u!1 &1665263334909023600
 GameObject:
@@ -5520,6 +5520,7 @@ GameObject:
   - component: {fileID: 5870302830877048147}
   - component: {fileID: 5870302830877048149}
   - component: {fileID: 5870302830877048146}
+  - component: {fileID: 5701434819152101143}
   m_Layer: 0
   m_Name: WheelFL
   m_TagString: Untagged
@@ -5583,6 +5584,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5701434819152101143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870302830877048144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6a77c502c28a0498c641aa4ebd3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheel_location: 1
+  is_grounded: 1
+  tracker: {fileID: 0}
 --- !u!1 &5870302830931307334
 GameObject:
   m_ObjectHideFlags: 0
@@ -5594,6 +5610,7 @@ GameObject:
   - component: {fileID: 5870302830931307337}
   - component: {fileID: 5870302830931307339}
   - component: {fileID: 5870302830931307336}
+  - component: {fileID: 3060040700188922673}
   m_Layer: 0
   m_Name: WheelBR
   m_TagString: Untagged
@@ -5657,6 +5674,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3060040700188922673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870302830931307334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6a77c502c28a0498c641aa4ebd3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheel_location: 2
+  is_grounded: 1
+  tracker: {fileID: 0}
 --- !u!1 &5870302830936812571
 GameObject:
   m_ObjectHideFlags: 0
@@ -5714,6 +5746,7 @@ GameObject:
   - component: {fileID: 5870302830946141380}
   - component: {fileID: 5870302830946141382}
   - component: {fileID: 5870302830946141383}
+  - component: {fileID: 5597014021265287309}
   m_Layer: 0
   m_Name: WheelFR
   m_TagString: Untagged
@@ -5777,6 +5810,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5597014021265287309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870302830946141381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6a77c502c28a0498c641aa4ebd3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheel_location: 0
+  is_grounded: 1
+  tracker: {fileID: 0}
 --- !u!1 &5870302831291316735
 GameObject:
   m_ObjectHideFlags: 0
@@ -5819,6 +5867,7 @@ GameObject:
   - component: {fileID: 5870302832071357194}
   - component: {fileID: 5870302832071357196}
   - component: {fileID: 5870302832071357197}
+  - component: {fileID: 3225008037594247587}
   m_Layer: 0
   m_Name: WheelBL
   m_TagString: Untagged
@@ -5882,6 +5931,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3225008037594247587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870302832071357195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6a77c502c28a0498c641aa4ebd3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheel_location: 3
+  is_grounded: 1
+  tracker: {fileID: 0}
 --- !u!1 &5870302832560330112
 GameObject:
   m_ObjectHideFlags: 0
@@ -5896,6 +5960,7 @@ GameObject:
   - component: {fileID: 5870302832560330116}
   - component: {fileID: 5870302832560330117}
   - component: {fileID: 5870302832560330114}
+  - component: {fileID: 3774247900427892533}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -6010,6 +6075,7 @@ MonoBehaviour:
     RightWheel: {fileID: 0}
     Motor: 0
     Steering: 1
+    isFrontAxle: 1
   - Width: 5
     Height: 3
     Length: -5
@@ -6017,10 +6083,12 @@ MonoBehaviour:
     RightWheel: {fileID: 0}
     Motor: 1
     Steering: 0
+    isFrontAxle: 0
   mIsOnGround: 0
   PhareArriereDroit: {fileID: 5388137136268029611}
   PhareArriereGauche: {fileID: 8317000819044436528}
   FLAMES: {fileID: 1665263335033747713}
+  enableTricks: 1
 --- !u!114 &5870302832560330114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6033,6 +6101,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3774247900427892533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5870302832560330112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97a4dab3f02322f4dbdb55a52aeebd0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wheels: []
 --- !u!1 &8317000819044436528
 GameObject:
   m_ObjectHideFlags: 0

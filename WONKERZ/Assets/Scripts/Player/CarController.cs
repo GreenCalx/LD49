@@ -13,6 +13,7 @@ public class CarController : MonoBehaviour
         public WheelCollider RightWheel;
         public bool Motor; // is this wheel attached to motor?
         public bool Steering; // does this wheel apply steer angle?
+        public bool isFrontAxle;
     }
 
     [Header("Physics")]
@@ -50,6 +51,9 @@ public class CarController : MonoBehaviour
     public GameObject PhareArriereDroit;
     public GameObject PhareArriereGauche;
     public GameObject FLAMES;
+
+    [Header("Tricks")]
+    public bool enableTricks;
 
 
     // TODO toffa : make this better this is a quick fix
@@ -95,6 +99,19 @@ public class CarController : MonoBehaviour
                 var tempRight = GameObject.Instantiate(WheelColliderInstance, gameObject.transform);
                 tempRight.SetActive(true);
                 Axle.RightWheel = tempRight.GetComponent<WheelCollider>();
+
+                if ( enableTricks )
+                {
+                    WheelTrickTracker L_wtt = Axle.LeftWheel.gameObject.GetComponent<WheelTrickTracker>();
+                    WheelTrickTracker R_wtt = Axle.RightWheel.gameObject.GetComponent<WheelTrickTracker>();
+                    if (L_wtt && R_wtt)
+                    {
+                        L_wtt.wheel_location = Axle.isFrontAxle ? WHEEL_LOCATION.FRONT_LEFT : WHEEL_LOCATION.BACK_LEFT;
+                        R_wtt.wheel_location = Axle.isFrontAxle ? WHEEL_LOCATION.FRONT_RIGHT : WHEEL_LOCATION.BACK_RIGHT;
+                    } else {
+                        Debug.LogWarning("Trick Mode enabled but missing WheelTrickTracker on wheels.");
+                    }
+                }
             }
             Axle.LeftWheel.gameObject.transform.localPosition = new Vector3(Axle.Width, -Axle.Height, Axle.Length);
             Axle.RightWheel.gameObject.transform.localPosition = new Vector3(-Axle.Width, -Axle.Height, Axle.Length);
