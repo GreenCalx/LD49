@@ -8,7 +8,11 @@ public class FollowPlayerHUB : MonoBehaviour
     public Vector3 Distance;
     public float LerpMult;
     private bool Active = true;
+
+    public float turnSpeed = 5.0f;
     public CheckPointManager Mng;
+
+    private Vector3 offset;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,8 +23,6 @@ public class FollowPlayerHUB : MonoBehaviour
     void Update()
     {
         if (!Active) return;
-
-        //Distance = Mng.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
 
         var FinalPosition = Following.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
         var FinalPositionDirection = Following.transform.position - FinalPosition;
@@ -33,7 +35,15 @@ public class FollowPlayerHUB : MonoBehaviour
 
         var Lerp = (CurrentDistance / MaxDistanceMagn);
 
-        transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
+        Debug.Log("ANGLE + " + Vector3.Angle(transform.forward,Following.transform.forward) );
+        
+        if ( Vector3.Angle(transform.forward,Following.transform.forward) > 90 )
+        {
+            offset = Quaternion.AngleAxis (turnSpeed, Vector3.up) * offset;
+        }
+
+        //transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
+        transform.position = Vector3.Lerp(transform.position + offset, FinalPosition, Lerp);
 
         transform.LookAt(Following.transform.position);
 
