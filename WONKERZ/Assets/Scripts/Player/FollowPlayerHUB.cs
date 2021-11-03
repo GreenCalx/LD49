@@ -12,7 +12,6 @@ public class FollowPlayerHUB : MonoBehaviour
     public float turnSpeed = 5.0f;
     public CheckPointManager Mng;
 
-    private Vector3 offset;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +26,6 @@ public class FollowPlayerHUB : MonoBehaviour
         var FinalPosition = Following.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
         var FinalPositionDirection = Following.transform.position - FinalPosition;
         var MaxDistancePosition = (FinalPosition - (FinalPositionDirection * LerpMult));
-        var MaxDistance = MaxDistancePosition.magnitude;
 
         var MaxDistanceMagn = (MaxDistancePosition - FinalPosition).magnitude;
 
@@ -35,17 +33,19 @@ public class FollowPlayerHUB : MonoBehaviour
 
         var Lerp = (CurrentDistance / MaxDistanceMagn);
 
-        Debug.Log("ANGLE + " + Vector3.Angle(transform.forward,Following.transform.forward) );
-        
-        if ( Vector3.Angle(transform.forward,Following.transform.forward) > 90 )
-        {
-            offset = Quaternion.AngleAxis (turnSpeed, Vector3.up) * offset;
-        }
-
-        //transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
-        transform.position = Vector3.Lerp(transform.position + offset, FinalPosition, Lerp);
-
+        transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
         transform.LookAt(Following.transform.position);
 
+        var xz_cam = new Vector3( transform.forward.x, 0, transform.forward.z);
+        var xz_target = new Vector3( Following.transform.forward.x, 0, Following.transform.forward.z);
+        var xz_angle = Vector3.Angle( xz_cam, xz_target);
+
+        Debug.Log("ANGLE + " + xz_angle );
+        if ( xz_angle >= 0 )
+        {
+            transform.RotateAround(Following.transform.position, Vector3.up, xz_angle );
+        }
+
+        
     }
 }
