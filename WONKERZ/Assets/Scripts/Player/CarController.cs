@@ -51,6 +51,7 @@ public class CarController : MonoBehaviour
     public GameObject PhareArriereDroit;
     public GameObject PhareArriereGauche;
     public GameObject FLAMES;
+    public float mouseAccumulator = 0;
 
     public float ButtonForce = -10000;
     private bool WaitForFixedUpdate = false;
@@ -117,7 +118,7 @@ public class CarController : MonoBehaviour
                 tempRight.SetActive(true);
                 Axle.RightWheel = tempRight.GetComponent<WheelCollider>();
 
-                if ( enableTricks )
+                if (enableTricks)
                 {
                     WheelTrickTracker L_wtt = Axle.LeftWheel.gameObject.GetComponent<WheelTrickTracker>();
                     WheelTrickTracker R_wtt = Axle.RightWheel.gameObject.GetComponent<WheelTrickTracker>();
@@ -125,7 +126,9 @@ public class CarController : MonoBehaviour
                     {
                         L_wtt.wheel_location = Axle.isFrontAxle ? WHEEL_LOCATION.FRONT_LEFT : WHEEL_LOCATION.BACK_LEFT;
                         R_wtt.wheel_location = Axle.isFrontAxle ? WHEEL_LOCATION.FRONT_RIGHT : WHEEL_LOCATION.BACK_RIGHT;
-                    } else {
+                    }
+                    else
+                    {
                         Debug.LogWarning("Trick Mode enabled but missing WheelTrickTracker on wheels.");
                     }
                 }
@@ -220,7 +223,7 @@ public class CarController : MonoBehaviour
                 Spring.targetPosition = this.TargetPosition;
 
                 Axle.LeftWheel.suspensionSpring = Spring;
-                Axle.LeftWheel.suspensionDistance = SpringDistance;
+                Axle.LeftWheel.suspensionDistance = mouseAccumulator;
             }
             if (Axle.RightWheel != null)
             {
@@ -230,15 +233,41 @@ public class CarController : MonoBehaviour
                 Spring.targetPosition = this.TargetPosition;
 
                 Axle.RightWheel.suspensionSpring = Spring;
-                Axle.RightWheel.suspensionDistance = SpringDistance;
+                Axle.RightWheel.suspensionDistance = mouseAccumulator;
             }
 
         }
     }
 
+    private void SetSpringSize(float SizeDelta)
+    {
+    }
+
+    public Vector2 MouseLastPosition = Vector2.zero;
     // Update is called once per frame
     void FixedUpdate()
     {
+
+
+        // Test toffa :
+        // the goal is to be able to transform mouse position into
+        // spring control. This way we should be able to morph between
+        // an arcade type car and monster truck type.
+        // Also might be able to jump !
+        if (Input.GetMouseButton(0))
+        {
+            Vector2 MouseDirection = new Vector2(Input.mousePosition.x, Input.mousePosition.y) - MouseLastPosition;
+            //if (Mathf.Abs(MouseDirection.y) > 10)
+            // Full motion to get to 0 is in percent of screen
+            float mouseAccumulatorFactor = 0.5f;
+            mouseAccumulator += MouseDirection.y * mouseAccumulatorFactor;
+            mouseAccumulator = Mathf.Clamp(mouseAccumulator, 0, 10);
+            //else
+            //    mouseAccumulator = 0;
+
+            SetSpringSize(mouseAccumulator);
+        }
+        MouseLastPosition = Input.mousePosition;
         mIsOnGround = false;
         var X = Input.GetAxis("Horizontal");
         var Y = Input.GetAxis("Vertical");
