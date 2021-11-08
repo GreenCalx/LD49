@@ -40,7 +40,6 @@ public class FollowPlayerHUB : MonoBehaviour
         var xz_target = new Vector3( Following.transform.forward.x, 0, Following.transform.forward.z);
         var xz_angle = Vector3.Angle( xz_cam, xz_target);
 
-        Debug.Log("ANGLE + " + xz_angle );
         if ( xz_angle >= 0 )
         {
             transform.RotateAround(Following.transform.position, Vector3.up, xz_angle );

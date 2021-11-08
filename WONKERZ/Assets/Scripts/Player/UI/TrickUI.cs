@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class TrickUI : MonoBehaviour
 {
-    public TMPro.TextMeshProUGUI Text;
+    public TMPro.TextMeshProUGUI TRICKNAME;
+    public TMPro.TextMeshProUGUI SCORE;
+
+    public TMPro.TextMeshProUGUI TRICKLINE_SCORE;
 
     // Start is called before the first frame update
     void Start()
@@ -20,6 +23,22 @@ public class TrickUI : MonoBehaviour
 
     public void displayTrick( string iTrick )
     {
-        Text.SetText(iTrick);
+        TRICKNAME.SetText(iTrick);
+    }
+
+    public void displayScore( int iScore )
+    {
+        if ( iScore <= 0 )
+            SCORE.SetText("");
+        else
+            SCORE.SetText(iScore.ToString());
+    }
+
+    public void displayTricklineScore( int iScore )
+    {
+        if ( iScore <= 0 )
+            TRICKLINE_SCORE.SetText("");
+        else
+            TRICKLINE_SCORE.SetText(iScore.ToString());
     }
 }
