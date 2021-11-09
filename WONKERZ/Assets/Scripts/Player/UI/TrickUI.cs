@@ -8,6 +8,8 @@ public class TrickUI : MonoBehaviour
     public TMPro.TextMeshProUGUI SCORE;
 
     public TMPro.TextMeshProUGUI TRICKLINE_SCORE;
+    public TMPro.TextMeshProUGUI TRICKLINE_TRICKS;
+
 
     // Start is called before the first frame update
     void Start()
@@ -40,5 +42,16 @@ public class TrickUI : MonoBehaviour
             TRICKLINE_SCORE.SetText("");
         else
             TRICKLINE_SCORE.SetText(iScore.ToString());
+    }
+
+    public void displayTricklineTricks( List<Trick> iTricks )
+    {
+        string tricks = "";
+        foreach( Trick   t in iTricks )
+        {
+            tricks += t.name;
+            tricks += '\n';
+        }
+        TRICKLINE_TRICKS.SetText(tricks);
     }
 }

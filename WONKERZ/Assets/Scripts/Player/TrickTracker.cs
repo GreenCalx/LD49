@@ -132,14 +132,17 @@ public class TrickTracker : MonoBehaviour
         if ( trick_line.Count <= 0 )
         { return; }
 
+        List<Trick> tricks = new List<Trick>();
         for ( int i=0; i < trick_line.Count; i++ )
         {
             TrickTimePair trickpair = trick_line[i];
 
             line_score += (int) (trickpair.computeScore() * (i+combo_multiplier));
+            tricks.Add(trickpair.trick);
         }
 
         trickUI.displayTricklineScore(line_score);
+        trickUI.displayTricklineTricks(tricks);
         trick_line.Clear();
         line_started = false;
     }
