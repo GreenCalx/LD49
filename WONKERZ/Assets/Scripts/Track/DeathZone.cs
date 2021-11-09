@@ -24,4 +24,13 @@ public class DeathZone : MonoBehaviour
             checkPointManager.loadLastCP();
         }
     }
+
+    void OnCollisionEnter(Collision iCol)
+    {
+        Debug.Log(iCol.gameObject.name);
+        if (iCol.gameObject.GetComponent<CarController>())
+        {
+            checkPointManager.loadLastCP();
+        }
+    }
 }
