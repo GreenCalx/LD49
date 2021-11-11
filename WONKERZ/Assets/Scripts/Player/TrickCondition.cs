@@ -50,7 +50,7 @@ public class TrickCondition
         return false;
     }
 
-    public static bool compare_wheels( bool[] iL1, bool[] iL2)
+    public bool compare_wheels( bool[] iL1, bool[] iL2)
     {
         if ( iL1.Length != iL2.Length)
             return false;
@@ -62,9 +62,21 @@ public class TrickCondition
         return true;
     }
 
-    public static bool compare_air(TrickTracker iTT)
+    public bool compare_air(TrickTracker iTT)
     {
-        return true;
+        if ( (x_rot == 0) && (y_rot == 0) && (z_rot == 0) )
+            return true;
+
+        bool validate_x = (x_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_x - x_rot ) <= iTT.rot_epsilon;
+        bool validate_y = (y_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_y - y_rot ) <= iTT.rot_epsilon;
+        bool validate_z = (z_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_z - z_rot ) <= iTT.rot_epsilon;
+
+        if (validate_x && validate_y && validate_z)
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }
