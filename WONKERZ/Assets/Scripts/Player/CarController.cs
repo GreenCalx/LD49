@@ -52,6 +52,9 @@ public class CarController : MonoBehaviour
     public GameObject PhareArriereGauche;
     public GameObject FLAMES;
 
+    public float ButtonForce = -10000;
+    private bool WaitForFixedUpdate = false;
+
     [Header("Tricks")]
     public bool enableTricks;
 
@@ -133,6 +136,20 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        var SpringDistance = 2f;
+        var ExpulseForce = 100000;
+        Rigidbody RB = GetComponent<Rigidbody>();
+
+        if (Input.GetKey(KeyCode.J)) {
+                SpringDistance = 0.1f;
+        } else {
+            if (Input.GetKeyUp(KeyCode.J)) {
+                RB.AddForce( RB.transform.up * ExpulseForce, ForceMode.Impulse);
+            } else {
+                SuspensionSpring = 30000;
+            }
+        }
+       
         foreach (AxleInfo Axle in AxleInfos)
         {
             if (Axle.LeftWheel != null)
@@ -140,18 +157,20 @@ public class CarController : MonoBehaviour
                 var Spring = new JointSpring();
                 Spring.spring = this.SuspensionSpring;
                 Spring.damper = this.SuspensionDamper;
-                Spring.targetPosition = 0.7f;
+                Spring.targetPosition = this.TargetPosition;
 
                 Axle.LeftWheel.suspensionSpring = Spring;
+                Axle.LeftWheel.suspensionDistance = SpringDistance;
             }
             if (Axle.RightWheel != null)
             {
                 var Spring = new JointSpring();
                 Spring.spring = this.SuspensionSpring;
                 Spring.damper = this.SuspensionDamper;
-                Spring.targetPosition = 0.7f;
+                Spring.targetPosition = this.TargetPosition;
 
                 Axle.RightWheel.suspensionSpring = Spring;
+                Axle.RightWheel.suspensionDistance = SpringDistance;
             }
 
         }
@@ -166,6 +185,10 @@ public class CarController : MonoBehaviour
 
         Rigidbody RB = GetComponent<Rigidbody>();
         BoxCollider BC = GetComponent<BoxCollider>();
+
+        if (Input.GetKeyDown(KeyCode.J)) {
+            GetComponent<ConstantForce>().relativeForce = (Vector3.up * -ButtonForce);
+        }
 
         float motor = MaxTorque * Y;
         float steering = MaxSteering * X;
@@ -208,5 +231,7 @@ public class CarController : MonoBehaviour
                 axleInfo.RightWheel.motorTorque = 0;
             }
         }
+
+        WaitForFixedUpdate = false;
     }
 }
