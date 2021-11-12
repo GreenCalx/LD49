@@ -54,10 +54,24 @@ public class CarController : MonoBehaviour
 
     public float ButtonForce = -10000;
     private bool WaitForFixedUpdate = false;
+    private float CurrentTimeElapsed = 0f;
+    public Color MainColor;
+    public Color OverchargeColor;
+    public GameObject Body;
+         public float SpringDistanceMax = 2f;
+       public float SpringDistanceMin = 0.1f;
+             public float ExpulseForce = 100000;
+        public float TimeUntilMax = 0.3f;
+        public float TimeAtMaxAvailable = 2f;
+        private float TimeAtMaxAvailableElapsed = 0f;
+        private bool FilterInputs = false;
 
     [Header("Tricks")]
     public bool enableTricks;
 
+    private void SetBodyColor(Color C) {
+        Body.GetComponent<MeshRenderer>().material.color = C;
+    }
 
     // TODO toffa : make this better this is a quick fix
     private void OnDestroy()
@@ -136,20 +150,66 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
-        var SpringDistance = 2f;
-        var ExpulseForce = 100000;
+
+        var SpringDistance = SpringDistanceMax;
+
+        
         Rigidbody RB = GetComponent<Rigidbody>();
 
-        if (Input.GetKey(KeyCode.J)) {
-                SpringDistance = 0.1f;
-        } else {
-            if (Input.GetKeyUp(KeyCode.J)) {
-                RB.AddForce( RB.transform.up * ExpulseForce, ForceMode.Impulse);
-            } else {
-                SuspensionSpring = 30000;
+       // new version applies from each wheel apply point the impulse if grounded
+       if (Input.GetKey(KeyCode.J)) {
+
+            if (Input.GetKeyDown(KeyCode.J)) {
+               FilterInputs = false;
+               TimeAtMaxAvailableElapsed = 0;
+               CurrentTimeElapsed = 0;
             }
+                CurrentTimeElapsed += Time.deltaTime;
+                SpringDistance = Mathf.Lerp(SpringDistanceMax, SpringDistanceMin, Mathf.Min(1, CurrentTimeElapsed / TimeUntilMax)) ;
+                if (Mathf.Min(1, CurrentTimeElapsed / TimeUntilMax) == 1) {
+                    SetBodyColor(OverchargeColor);
+                    TimeAtMaxAvailableElapsed += Time.deltaTime;
+                    if(TimeAtMaxAvailableElapsed >= TimeAtMaxAvailable && !FilterInputs) {
+                        FilterInputs = true;
+
+                            foreach(AxleInfo Axle in AxleInfos) {
+                                if (Axle.LeftWheel) {
+                                    if (Axle.LeftWheel.isGrounded) {
+                                        RB.AddForceAtPosition(RB.transform.up * ExpulseForce/4, Axle.LeftWheel.transform.position, ForceMode.Impulse);
+                                    }
+                                }
+                                if (Axle.RightWheel) {
+                                    if (Axle.RightWheel.isGrounded) {
+                                        RB.AddForceAtPosition(RB.transform.up * ExpulseForce/4, Axle.RightWheel.transform.position, ForceMode.Impulse);
+                                    }
+                                }                 
+                            }
+                            SetBodyColor(MainColor);
+                    }
+                }
+        } else {
+            if (!FilterInputs) {
+            if (Input.GetKeyUp(KeyCode.J)) {
+                foreach(AxleInfo Axle in AxleInfos) {
+                    if (Axle.LeftWheel) {
+                        if (Axle.LeftWheel.isGrounded) {
+                            RB.AddForceAtPosition(RB.transform.up * ExpulseForce/4 * Mathf.Min(1, CurrentTimeElapsed / TimeUntilMax), Axle.LeftWheel.transform.position, ForceMode.Impulse);
+                        }
+                    }
+                    if (Axle.RightWheel) {
+                        if (Axle.RightWheel.isGrounded) {
+                            RB.AddForceAtPosition(RB.transform.up * ExpulseForce/4 * Mathf.Min(1, CurrentTimeElapsed / TimeUntilMax), Axle.RightWheel.transform.position, ForceMode.Impulse);
+                        }
+                    }                 
+                }
+                SetBodyColor(MainColor);
+            }
+            }
+
         }
-       
+
+
+
         foreach (AxleInfo Axle in AxleInfos)
         {
             if (Axle.LeftWheel != null)

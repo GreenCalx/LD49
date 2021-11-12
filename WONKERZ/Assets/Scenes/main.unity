@@ -128,11 +128,28 @@ Rigidbody:
   m_CorrespondingSourceObject: {fileID: 5074348953211789206, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
   m_PrefabInstance: {fileID: 815995812}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &135710510 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2030463143359072344, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+  m_PrefabInstance: {fileID: 815995812}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &465460813 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5074348953211789201, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
   m_PrefabInstance: {fileID: 815995812}
   m_PrefabAsset: {fileID: 0}
+--- !u!75 &465460814
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465460813}
+  m_Enabled: 0
+  m_Force: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!1001 &815995812
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -152,9 +169,21 @@ PrefabInstance:
       propertyPath: Distance.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4315898398558206376, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.1399999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315898398558206376, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5074348952350667758, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348952350667758, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5074348952350667759, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: m_RootOrder
@@ -198,6 +227,62 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5074348952350667759, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: Body
+      value: 
+      objectReference: {fileID: 135710510}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleHeight
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: MainColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: MainColor.b
+      value: 0.8867924
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: MainColor.g
+      value: 0.8223341
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: MainColor.r
+      value: 0.13803846
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: WheelRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: TargetPosition
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: OverchargeColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: OverchargeColor.b
+      value: 0.25817224
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: OverchargeColor.g
+      value: 0.13725488
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: OverchargeColor.r
+      value: 0.8862745
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleInfos.Array.data[0].Height
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: AxleInfos.Array.data[1].Height
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -391,7 +476,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3106
+  m_Name: pb_Mesh-8234
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -637,7 +722,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3092
+  m_Name: pb_Mesh-8220
   serializedVersion: 10
   m_SubMeshes: []
   m_Shapes:
