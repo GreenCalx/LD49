@@ -67,9 +67,15 @@ public class TrickCondition
         if ( (x_rot == 0) && (y_rot == 0) && (z_rot == 0) )
             return true;
 
-        bool validate_x = (x_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_x - x_rot ) <= iTT.rot_epsilon;
-        bool validate_y = (y_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_y - y_rot ) <= iTT.rot_epsilon;
-        bool validate_z = (z_rot == 0) ? true : Mathf.Abs( iTT.rec_rot_z - z_rot ) <= iTT.rot_epsilon;
+        // check expected rot sign
+        bool validate_x = (x_rot == 0) ? true : (Mathf.Sign(x_rot) == Mathf.Sign(iTT.rec_rot_x));
+        bool validate_y = (y_rot == 0) ? true : (Mathf.Sign(y_rot) == Mathf.Sign(iTT.rec_rot_y));
+        bool validate_z = (z_rot == 0) ? true : (Mathf.Sign(z_rot) == Mathf.Sign(iTT.rec_rot_z));
+
+        // check rot value
+        validate_x &= (x_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_x) - Mathf.Abs(x_rot)) ) <= iTT.rot_epsilon;
+        validate_y &= (y_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_y) - Mathf.Abs(y_rot)) ) <= iTT.rot_epsilon;
+        validate_z &= (z_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_z) - Mathf.Abs(z_rot)) ) <= iTT.rot_epsilon;
 
         if (validate_x && validate_y && validate_z)
         {

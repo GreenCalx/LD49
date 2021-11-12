@@ -6088,6 +6088,15 @@ MonoBehaviour:
   PhareArriereDroit: {fileID: 5388137136268029611}
   PhareArriereGauche: {fileID: 8317000819044436528}
   FLAMES: {fileID: 1665263335033747713}
+  ButtonForce: -10000
+  MainColor: {r: 0, g: 0, b: 0, a: 0}
+  OverchargeColor: {r: 1, g: 0, b: 0, a: 0}
+  Body: {fileID: 806587808022708809}
+  SpringDistanceMax: 2
+  SpringDistanceMin: 0.1
+  ExpulseForce: 100000
+  TimeUntilMax: 0.3
+  TimeAtMaxAvailable: 2
   enableTricks: 1
 --- !u!114 &5870302832560330114
 MonoBehaviour:
@@ -6116,7 +6125,7 @@ MonoBehaviour:
   trickUI: {fileID: 0}
   player_transform: {fileID: 5870302832560330115}
   combo_multiplier: 1
-  rot_epsilon: 120
+  rot_epsilon: 10
   line_cooldown: 0.5
   hold_time_start_flat_trick: 0.8
   wheels: []
@@ -6320,6 +6329,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f4e3ce9ab5db18d4a96eb570e1ddebc4, type: 3}
+--- !u!1 &806587808022708809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: f4e3ce9ab5db18d4a96eb570e1ddebc4, type: 3}
+  m_PrefabInstance: {fileID: 53463591920660525}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &519965267793909702 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4e3ce9ab5db18d4a96eb570e1ddebc4, type: 3}
