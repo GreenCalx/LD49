@@ -98,8 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Following: {fileID: 5074348953211789201}
   Distance: {x: 0, y: 20, z: -20}
-  LerpMult: 0.01
-  Active: 1
+  LerpMult: 100
+  Mng: {fileID: 0}
 --- !u!1 &177610593
 GameObject:
   m_ObjectHideFlags: 0
@@ -5759,6 +5759,7 @@ GameObject:
   - component: {fileID: 5074348953211789205}
   - component: {fileID: 5074348953211789204}
   - component: {fileID: 5074348953211789203}
+  - component: {fileID: 465460814}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -5856,34 +5857,46 @@ MonoBehaviour:
   Spring: 0
   MaxSteering: 30
   AxleWidth: 2
-  AxleHeight: 2
+  AxleHeight: 1.5
   AxleLength: 2
   TurnRadius: 0
   MaxTorque: 60000
   MaxBreak: 0
-  WheelRadius: 1.8
+  WheelRadius: 2
   SuspensionSpring: 30000
   SuspensionDamper: 1000
-  TargetPosition: 0
+  TargetPosition: 0.1
   AxleInfos:
   - Width: 5
-    Height: 3
+    Height: 0
     Length: 5
     LeftWheel: {fileID: 0}
     RightWheel: {fileID: 0}
     Motor: 0
     Steering: 1
+    isFrontAxle: 0
   - Width: 5
-    Height: 3
+    Height: 0
     Length: -5
     LeftWheel: {fileID: 0}
     RightWheel: {fileID: 0}
     Motor: 1
     Steering: 0
+    isFrontAxle: 0
   mIsOnGround: 0
   PhareArriereDroit: {fileID: 6762917917076137146}
   PhareArriereGauche: {fileID: 7239492437241806881}
   FLAMES: {fileID: 838939408}
+  ButtonForce: -10000
+  MainColor: {r: 0.13803846, g: 0.8223341, b: 0.8867924, a: 1}
+  OverchargeColor: {r: 0.8862745, g: 0.13725488, b: 0.25817224, a: 1}
+  Body: {fileID: 2030463143359072344}
+  SpringDistanceMax: 2
+  SpringDistanceMin: 0.1
+  ExpulseForce: 100000
+  TimeUntilMax: 0.3
+  TimeAtMaxAvailable: 2
+  enableTricks: 0
 --- !u!114 &5074348953211789203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5896,6 +5909,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e43cbf4ab83423f49930e213147b1ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!75 &465460814
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5074348953211789201}
+  m_Enabled: 0
+  m_Force: {x: 0, y: 0, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!1 &6067022520121583333
 GameObject:
   m_ObjectHideFlags: 0
@@ -5921,7 +5946,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6067022520121583333}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.054, y: -0.81, z: 0.44}
+  m_LocalPosition: {x: -0.054, y: -1.1399999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5074348953211789202}
@@ -6226,6 +6251,11 @@ PrefabInstance:
 --- !u!4 &1165162959967591895 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4e3ce9ab5db18d4a96eb570e1ddebc4, type: 3}
+  m_PrefabInstance: {fileID: 1702858688805665340}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2030463143359072344 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -8391222552659086748, guid: f4e3ce9ab5db18d4a96eb570e1ddebc4, type: 3}
   m_PrefabInstance: {fileID: 1702858688805665340}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5074348952424859454
