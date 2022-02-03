@@ -162,7 +162,6 @@ public class TrickTracker : MonoBehaviour
 
     private void start_line( Trick t)
     {
-        Debug.Log("START LINE");
 
         trick_line.Clear();
         trick_line.Add( new TrickTimePair(t,0) );
@@ -192,7 +191,6 @@ public class TrickTracker : MonoBehaviour
 
     private void end_line()
     {
-        Debug.Log("END LINE : " + trick_line.Count);
 
         line_score = 0;
         if ( trick_line.Count <= 0 )
