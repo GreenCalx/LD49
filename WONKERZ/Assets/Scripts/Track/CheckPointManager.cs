@@ -69,13 +69,6 @@ public class CheckPointManager : MonoBehaviour
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
 
-            foreach (CarController.AxleInfo Infos in player.GetComponent<CarController>().AxleInfos)
-            {
-                Infos.LeftWheel.motorTorque = 0;
-                Infos.LeftWheel.brakeTorque = 1000000;
-                Infos.RightWheel.motorTorque = 0;
-                Infos.RightWheel.brakeTorque = 1000000;
-            }
         }
         player.transform.position = respawn.transform.position;
         player.transform.rotation = respawn.transform.rotation;
