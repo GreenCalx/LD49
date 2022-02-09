@@ -16,10 +16,10 @@ public class PNJDialog : MonoBehaviour
     public AudioClip[] voices;
     private AudioSource __audio_source; 
 
-    private bool __is_talkable;
-    private bool __dialog_ongoing;
-    private string[] __dialog;
-    private int __curr_dialog_index;
+    private bool is_talkable;
+    private bool dialog_ongoing;
+    private string[] dialog;
+    private int curr_dialog_index;
     private UIDialog __loaded_dialog_ui;
 
     private Animator __animator;
@@ -28,9 +28,9 @@ public class PNJDialog : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        __is_talkable       = false;
-        __dialog_ongoing    = false;
-        __dialog = DialogBank.load(dialog_id);
+        is_talkable       = false;
+        dialog_ongoing    = false;
+        dialog = DialogBank.load(dialog_id);
 
         __audio_source = GetComponent<AudioSource>();
 
@@ -40,11 +40,11 @@ public class PNJDialog : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( __is_talkable && Input.GetKeyDown(KeyCode.T) )
+        if ( is_talkable && Input.GetKeyDown(KeyCode.T) )
         {
             talk(); 
         }
-        else if ( __dialog_ongoing && Input.GetKeyDown(KeyCode.Escape) )
+        else if ( dialog_ongoing && Input.GetKeyDown(KeyCode.Escape) )
         {
             end_dialog();
         } 
@@ -53,12 +53,12 @@ public class PNJDialog : MonoBehaviour
 
     private void talk()
     {
-        if (!__dialog_ongoing)
+        if (!dialog_ongoing)
         {
-            __dialog_ongoing    = true;
+            dialog_ongoing    = true;
             GameObject ui_go = Instantiate(dialogUI);
             __loaded_dialog_ui  = ui_go.GetComponent<UIDialog>();
-            __curr_dialog_index = 0;
+            curr_dialog_index = 0;
             if (!!__animator)
                 __animator.SetBool( __animator_talk_parm, true);
         }
@@ -77,15 +77,15 @@ public class PNJDialog : MonoBehaviour
             }
             else 
             {
-                if (__curr_dialog_index >= __dialog.Length )
+                if (curr_dialog_index >= dialog.Length )
                 {
                     end_dialog();
                     return;
                 }
             
-                __loaded_dialog_ui.display( npc_name, __dialog[__curr_dialog_index] );
+                __loaded_dialog_ui.display( npc_name, dialog[curr_dialog_index] );
                 playVoice(); 
-                __curr_dialog_index++;
+                curr_dialog_index++;
             }
 
         }
@@ -105,9 +105,9 @@ public class PNJDialog : MonoBehaviour
 
     private void end_dialog()
     {
-        __dialog_ongoing = false;
+        dialog_ongoing = false;
         Destroy(__loaded_dialog_ui.gameObject);
-        __curr_dialog_index  = 0;
+        curr_dialog_index  = 0;
 
         if (!!__animator)
             __animator.SetBool( __animator_talk_parm, false);

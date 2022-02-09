@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class ExitToTitle : MonoBehaviour
 {
+    public bool enabler;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,9 +15,12 @@ public class ExitToTitle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( Input.GetKey(KeyCode.Escape) )
+        if (enabler)
         {
-            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
+            if ( Input.GetKey(KeyCode.Escape) )
+            {
+                SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
+            }
         }
     }
 }
