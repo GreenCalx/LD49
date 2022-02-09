@@ -47,14 +47,14 @@ public class GarageUIColors : GarageUISelectable
                 select(i_color);
                 elapsed_time = 0f;
             }
-
-            if (Input.GetButtonDown("Submit"))
-                pick();
-            else if (Input.GetButtonDown("Cancel"))
-            { parent.quitSubMenu(); return;}
         }
         elapsed_time += Time.unscaledDeltaTime;
 
+
+        if (Input.GetButtonDown("Submit"))
+            pick();
+        else if (Input.GetButtonDown("Cancel"))
+        { parent.quitSubMenu(); return;}
     }
 
     private void deselect(int index)
@@ -77,6 +77,11 @@ public class GarageUIColors : GarageUISelectable
     public void pick()
     {
         // do change color here
+        GameObject target = colors[i_color].gameObject;
+        Image target_img = target.GetComponent<Image>();
+
+        Debug.Log(target_img.color);
+        PlayerColorManager.Instance.colorize(target_img.color);
     }
 
     public override void enter()

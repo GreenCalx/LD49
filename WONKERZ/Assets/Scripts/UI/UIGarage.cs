@@ -15,6 +15,7 @@ public class UIGarage : MonoBehaviour
     // > COLORS
     public Color enabled_category;
     public Color disabled_category;
+    public Color entered_category;
     // > MENU PARMS
     public float selector_latch;
 
@@ -89,6 +90,14 @@ public class UIGarage : MonoBehaviour
     {
         submenu_is_active = true;
         selectables[i_selected].enter();
+
+        // indicate we are navigating in this submenu now
+        GameObject target = selectables[i_selected].gameObject;
+        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        if (tmp != null)
+        {
+            tmp.color = entered_category;
+        }
     }
 
     public void quitSubMenu()
@@ -96,6 +105,9 @@ public class UIGarage : MonoBehaviour
         selectables[i_selected].quit();
         submenu_is_active = false;
         elapsed_time = 0f;
+
+        // turn color back to std selected
+        select(i_selected);
     }
 
     public void setGarageEntry(GarageEntry iGE)
