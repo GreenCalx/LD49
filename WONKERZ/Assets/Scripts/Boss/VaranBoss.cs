@@ -14,7 +14,7 @@ public class VaranBoss : MonoBehaviour
         public float roll_rot_speed = 5f;
         private const string _roll_anim_parm = "ROLL";
         private Animator __animator;
-        private bool is_rollin;
+        public bool is_rollin;
         private float init_x_rot;
 
        NavMeshAgent agent;
@@ -43,6 +43,7 @@ public class VaranBoss : MonoBehaviour
           {
               t_boss.Rotate( roll_rot_speed, 0f,0f,Space.Self);
           }
+
        }
 
         // if player is out of range
@@ -77,8 +78,8 @@ public class VaranBoss : MonoBehaviour
             // reset boss rotation when he stops rolling
             if (!is_rollin)
             {
-                float x_rot = t_boss.rotation.x;
-                t_boss.Rotate( 360 - x_rot, 0f, 0f, Space.Self );
+                //float x_rot = t_boss.rotation.x;
+                //t_boss.Rotate( 360 - x_rot, 0f, 0f, Space.Self );
             }
 
        }
