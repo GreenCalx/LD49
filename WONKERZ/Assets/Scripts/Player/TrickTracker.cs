@@ -31,6 +31,7 @@ public class TrickTracker : MonoBehaviour
     }
 
     [Header("MANDATORY")]
+    public bool activate_tricks;
     public TrickUI trickUI;
     public Transform player_transform;
     [Header("TWEAK PARAMS")]
@@ -38,8 +39,6 @@ public class TrickTracker : MonoBehaviour
     public float rot_epsilon = 2f;
     public float line_cooldown = 0.4f;
     public float hold_time_start_flat_trick = 0.4f;
-    [HideInInspector]
-    public List<WheelTrickTracker> wheels;
 
     [Header("DEBUG")]
     public bool[] wheels_statuses;
@@ -63,21 +62,18 @@ public class TrickTracker : MonoBehaviour
     [HideInInspector]
     public float recorded_time_flat_trick;
 
+    private CarController CC;
+
     void Start()
     {
-        WheelTrickTracker[] arr_wheels = GetComponentsInChildren<WheelTrickTracker>();
-        wheels = new List<WheelTrickTracker>();
-        wheels.AddRange(arr_wheels);
-        if (wheels.Count!=4)
+        CC = GetComponent<CarController>();
+        if (!CC)
         {
-            Debug.LogWarning( wheels.Count + " Wheels in trick tracker. Should have 4.");
-        }
-        foreach( WheelTrickTracker w in wheels)
-        {
-            w.tracker = this;
+            activate_tricks = false;
+            return;
         }
 
-        wheels_statuses = new bool[wheels.Count];
+        wheels_statuses = new bool[4];
         for (int i = 0 ; i < wheels_statuses.Length ; i ++)
             wheels_statuses[i] = true;
 
@@ -100,6 +96,11 @@ public class TrickTracker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!activate_tricks)
+            return;
+
+        updateWheelStatuses();
+            
         if (line_started || register_waiting_trick)
         {
             if (checkTricks())
@@ -227,11 +228,21 @@ public class TrickTracker : MonoBehaviour
         trickUI.displayScore( last_trick.computeScore() );
     }
 
-    public void notify(WheelTrickTracker wtt)
+    public void updateWheelStatuses()
     {
         // update wheels
-        int wheel_location = (int) wtt.wheel_location;
-        wheels_statuses[wheel_location] = wtt.is_grounded;
+        CarController.Axle front  = CC.FrontAxle;
+        CarController.Axle rear   = CC.RearAxle;
+
+        CarController.Wheel front_left  = front.Left.Wheel;
+        CarController.Wheel front_right = front.Right.Wheel;
+        CarController.Wheel rear_left   = rear.Left.Wheel;
+        CarController.Wheel rear_right  = rear.Right.Wheel;
+
+        wheels_statuses[(int)WHEEL_LOCATION.FRONT_LEFT]  = front_left.IsGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.FRONT_RIGHT] = front_right.IsGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT]   = rear_left.IsGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT]  = rear_right.IsGrounded;
 
         // Look for trickline cooldown
         if ( (Time.time - time_waited_after_line) <= line_cooldown )
