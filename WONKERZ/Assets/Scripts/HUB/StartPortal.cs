@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// STARTING POINT FOR HUB
+// > ACTIVATES TRICKS AUTO
 public class StartPortal : MonoBehaviour
 {
     public GameObject playerRef;
@@ -13,6 +15,11 @@ public class StartPortal : MonoBehaviour
         if (!!player)
         {
             playerRef.transform.position = transform.position;
+            TrickTracker tt = playerRef.GetComponent<TrickTracker>();
+            if (!!tt)
+            {
+                tt.activate_tricks = true; // activate default in hub
+            }
         }
     }
 
