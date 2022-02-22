@@ -21,6 +21,7 @@ public class CarController : MonoBehaviour
         public GameObject Renderer;
 
         public Vector3 Direction;
+        public bool IsGrounded;
     }
 
     [System.Serializable]
@@ -255,7 +256,8 @@ public class CarController : MonoBehaviour
         RaycastHit Hit;
         var SpringAnchor = S.Spring.Anchor.transform.position;
         var SpringDirection = -transform.up;
-        if (Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon))
+        S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon);
+        if (S.Wheel.IsGrounded)
         {
             Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
 
