@@ -15,21 +15,6 @@ public enum WHEEL_LOCATION
 public class TrickTracker : MonoBehaviour
 {
 
-    public class TrickTimePair {
-        public Trick trick;
-        public double time;
-        public TrickTimePair( Trick iTrick, double iTime)
-        {
-            trick   = iTrick;
-            time    = iTime;
-        }
-
-        public int computeScore()
-        {
-            return (int)(trick.value * (1+time));
-        }
-    }
-
     [Header("MANDATORY")]
     public bool activate_tricks;
     public TrickUI trickUI;
@@ -42,25 +27,21 @@ public class TrickTracker : MonoBehaviour
 
     [Header("DEBUG")]
     public bool[] wheels_statuses;
-    private bool line_started;
-    private bool register_waiting_trick;
     private double time_trick_started;
 
-    [HideInInspector]
-    public List<TrickTimePair> trick_line;
 
     [HideInInspector]
-    public int line_score;
+    public TrickLine trick_line;
     
 
-    [HideInInspector]
+    //[HideInInspector]
     public float init_rot_x, init_rot_y, init_rot_z;
-    [HideInInspector]
+    //[HideInInspector]
     public float rec_rot_x, rec_rot_y, rec_rot_z;
     [HideInInspector]
     public float  time_waited_after_line;
     [HideInInspector]
-    public float recorded_time_flat_trick;
+    public float recorded_time_trick;
 
     private CarController CC;
 
@@ -82,15 +63,12 @@ public class TrickTracker : MonoBehaviour
             Debug.LogWarning("TrickUI is missing.");
         }
 
-        trick_line = new List<TrickTimePair>(0);
-        line_started = false;
+        trick_line = new TrickLine();
         time_trick_started = 0;
 
         init_rot_x = 0f;
         init_rot_y = 0f;
         init_rot_z = 0f;
-
-        register_waiting_trick = false;
     }
 
     // Update is called once per frame
@@ -100,14 +78,30 @@ public class TrickTracker : MonoBehaviour
             return;
 
         updateWheelStatuses();
-            
-        if (line_started || register_waiting_trick)
+
+        // Look for trickline cooldown
+        if ( (Time.time - time_waited_after_line) <= line_cooldown )
         {
-            if (checkTricks())
-                recordRotations();
+            return;
+        }
+
+        if (!trick_line.is_opened)
+        {
+            if (tryOpenLine())
+            {
+                initRotationsRecord();
+                time_trick_started = Time.time;
+            }
+        } else {
+            recordRotations();
+            if (tryContinueLine())
+            { time_trick_started = Time.time; }
+            else
+                end_line();
         }
         updateUI();
     }
+
     public void recordRotations()
     {
         rec_rot_x = init_rot_x - player_transform.rotation.x * 360;
@@ -126,104 +120,63 @@ public class TrickTracker : MonoBehaviour
         rec_rot_z = 0f;
     }
 
-    public bool checkTricks()
+    public bool tryOpenLine()
     {
-        register_waiting_trick = false;
+        Trick opener1 = TrickDictionary.checkTricksIndexed( this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick opener2 = TrickDictionary.checkTricksIndexed( this, Trick.TRICK_NATURE.FLAT);
 
-        Trick t = TrickDictionary.checkTricks(this);
-        if (t!=null)
+        if (opener1!=null)
         {
-            if (t.condition.trick_nature == TrickCondition.TRICK_NATURE.FLAT)
-            {
-                if ( line_started == false )
-                {
-                    recorded_time_flat_trick = Time.time;
-                    line_started = true;
-                    return false;
-                }
-                if ( (Time.time - recorded_time_flat_trick) <= hold_time_start_flat_trick )
-                    return false;
-            }
-
-            if (trick_line.Count == 0 )
-                start_line(t);
-            else
-                try_add_to_line(t);
+            trick_line.open(opener1);
             return true;
-        } else {
-            if ( trick_line.Count > 0 )
-            {
-                end_line();
-            }
+        } else if (opener2!=null) {
+            trick_line.open(opener2);
+            return true;
         }
-
-        //updateUI();
         return false;
     }
 
-    private void start_line( Trick t)
+    public bool tryContinueLine()
     {
-
-        trick_line.Clear();
-        trick_line.Add( new TrickTimePair(t,0) );
-
-        initRotationsRecord();
-
-        line_started = true;
-        time_trick_started = Time.time;
-
-
-    }
-    private void try_add_to_line( Trick t )
-    {
-        TrickTimePair trickpair = trick_line[trick_line.Count-1];
-        Trick last_trick = trickpair.trick;
-
-        if ( last_trick.name.Equals(t.name) )
+        // NEW TRICK / continuing trick
+        Trick tbasic = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
+        Trick tflat = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
+        Trick tneutral = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        double trick_duration = Time.time - time_trick_started;
+        if (tbasic!=null)
         {
-            trick_line[trick_line.Count-1].time = Time.time - time_trick_started;
-            return; // same trick
-
-        } else { // different trick
-            trick_line.Add( new TrickTimePair(t,0) );
-            time_trick_started = Time.time;
+            trick_line.add(tbasic, trick_duration);
+            return true;
+        } else if (tflat!=null){
+            trick_line.add(tflat, trick_duration);
+            return true;
+        } else if (tneutral!=null){
+            trick_line.add(tneutral, trick_duration);
+            return true;
         }
+
+        return false;
     }
 
     private void end_line()
     {
-
-        line_score = 0;
-        if ( trick_line.Count <= 0 )
-        { return; }
-
-        List<Trick> tricks = new List<Trick>();
-        for ( int i=0; i < trick_line.Count; i++ )
-        {
-            TrickTimePair trickpair = trick_line[i];
-
-            line_score += (int) (trickpair.computeScore() * (i+combo_multiplier));
-            tricks.Add(trickpair.trick);
-        }
-
-        trickUI.displayTricklineScore(line_score);
-        trickUI.displayTricklineTricks(tricks);
-        trick_line.Clear();
-        line_started = false;
+        trickUI.displayTricklineScore(trick_line.getLineScore(combo_multiplier));
+        trickUI.displayTricklineTricks(trick_line.getTrickList());
+        trick_line.close();
 
         time_waited_after_line = Time.time;
     }
 
     public void updateUI()
     {
-        if (trick_line.Count <= 0)
+        if (!trick_line.is_opened)
         {
             trickUI.displayTrick("");
             trickUI.displayScore(0);
             return;
         }
 
-        TrickTimePair last_trick = trick_line[trick_line.Count-1];
+        TrickLine.TrickTimePair last_trick = trick_line.getLastTrick();
         trickUI.displayTrick(last_trick.trick.name);
         trickUI.displayScore( last_trick.computeScore() );
     }
@@ -244,14 +197,19 @@ public class TrickTracker : MonoBehaviour
         wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT]   = rear_left.IsGrounded;
         wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT]  = rear_right.IsGrounded;
 
-        // Look for trickline cooldown
-        if ( (Time.time - time_waited_after_line) <= line_cooldown )
-        {
-            register_waiting_trick = true;
-            return;
-        }
+
 
         // Look for tricks if CD is OK
-        checkTricks();
+        //checkTricks();
+    }
+
+    public bool carIsOnGround()
+    {
+        foreach (bool w in wheels_statuses)
+        {
+            if (w)
+            { return true;}
+        }
+        return false;
     }
 }
