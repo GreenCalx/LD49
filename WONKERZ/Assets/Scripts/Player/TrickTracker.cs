@@ -38,6 +38,7 @@ public class TrickTracker : MonoBehaviour
     public float init_rot_x, init_rot_y, init_rot_z;
     //[HideInInspector]
     public float rec_rot_x, rec_rot_y, rec_rot_z;
+    public float cons_rot_x, cons_rot_y, cons_rot_z;
     [HideInInspector]
     public float  time_waited_after_line;
     [HideInInspector]
@@ -104,9 +105,9 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        rec_rot_x = init_rot_x - player_transform.rotation.x * 360;
-        rec_rot_y = init_rot_y - player_transform.rotation.y * 360;
-        rec_rot_z = init_rot_z - player_transform.rotation.z * 360;
+        rec_rot_x = (player_transform.rotation.x * 360) - init_rot_x - cons_rot_x;
+        rec_rot_y = (player_transform.rotation.x * 360) - init_rot_y - cons_rot_y;
+        rec_rot_z = (player_transform.rotation.x * 360) - init_rot_z - cons_rot_z;
     }
 
     public void initRotationsRecord()
@@ -118,6 +119,18 @@ public class TrickTracker : MonoBehaviour
         rec_rot_x = 0f;
         rec_rot_y = 0f;
         rec_rot_z = 0f;
+
+        cons_rot_x = 0f;
+        cons_rot_y = 0f;
+        cons_rot_z = 0f;
+    }
+
+    // consume rotation
+    public void updateConsumedRotations( TrickCondition tc )
+    {
+        cons_rot_x += tc.x_rot;
+        cons_rot_y += tc.y_rot;
+        cons_rot_z += tc.z_rot;
     }
 
     public bool tryOpenLine()
@@ -146,6 +159,7 @@ public class TrickTracker : MonoBehaviour
         if (tbasic!=null)
         {
             trick_line.add(tbasic, trick_duration);
+            updateConsumedRotations( tbasic.condition );
             return true;
         } else if (tflat!=null){
             trick_line.add(tflat, trick_duration);
