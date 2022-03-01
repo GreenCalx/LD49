@@ -105,16 +105,16 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        rec_rot_x = (player_transform.rotation.x * 360) - init_rot_x - cons_rot_x;
-        rec_rot_y = (player_transform.rotation.x * 360) - init_rot_y - cons_rot_y;
-        rec_rot_z = (player_transform.rotation.x * 360) - init_rot_z - cons_rot_z;
+        rec_rot_x = (player_transform.eulerAngles.x) - init_rot_x - cons_rot_x;
+        rec_rot_y = (player_transform.eulerAngles.y) - init_rot_y - cons_rot_y;
+        rec_rot_z = (player_transform.eulerAngles.z) - init_rot_z - cons_rot_z;
     }
 
     public void initRotationsRecord()
     {
-        init_rot_x = player_transform.rotation.x * 360;
-        init_rot_y = player_transform.rotation.y * 360;
-        init_rot_z = player_transform.rotation.z * 360;
+        init_rot_x = player_transform.eulerAngles.x;
+        init_rot_y = player_transform.eulerAngles.y;
+        init_rot_z = player_transform.eulerAngles.z;
 
         rec_rot_x = 0f;
         rec_rot_y = 0f;
