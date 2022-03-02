@@ -37,6 +37,15 @@ public static class TrickDictionary
         new Trick( "360 FRONT"    , 40    , new TrickChainCondition( "180 FRONT", "180 BACK" ) ),
         new Trick( "360 BACK"     , 40    , new TrickChainCondition( "180 BACK", "180 FRONT" ) ),
         
+        new Trick( "540 BACK"     , 90    , new TrickChainCondition( "360 BACK", "180 BACK" ) ),
+        new Trick( "540 FRONT"     , 90    , new TrickChainCondition( "360 FRONT", "180 FRONT" ) ),
+        
+        new Trick( "720 BACK"     , 185    , new TrickChainCondition( "360 BACK", "360 BACK" ) ),
+        new Trick( "720 FRONT"     , 185    , new TrickChainCondition( "360 FRONT", "360 FRONT" ) ),
+        new Trick( "DOUBLE FRONT BARREL" , 200    , new TrickChainCondition( "FRONT BARREL", "FRONT BARREL")),
+        new Trick( "DOUBLE BACK BARREL"  , 200    , new TrickChainCondition( "BACK BARREL", "BACK BARREL")),
+        new Trick( "DOUBLE FRONT FLIP"   , 300   , new TrickChainCondition( "FRONT FLIP", "FRONT FLIP") ),
+        new Trick( "DOUBLE BACK FLIP"    , 300   , new TrickChainCondition( "BACK FLIP", "BACK FLIP" ) )
     };
 
     public static readonly Dictionary<TN,int> indexes = initIndexes();

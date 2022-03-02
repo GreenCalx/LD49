@@ -91,12 +91,13 @@ public class TrickTracker : MonoBehaviour
             if (tryOpenLine())
             {
                 initRotationsRecord();
+                recordRotations();
                 time_trick_started = Time.time;
             }
         } else {
             recordRotations();
             if (tryContinueLine())
-            { time_trick_started = Time.time; }
+            { /*continue line..*/ }
             else
                 end_line();
         }
@@ -123,6 +124,7 @@ public class TrickTracker : MonoBehaviour
         cons_rot_x = 0f;
         cons_rot_y = 0f;
         cons_rot_z = 0f;
+        
     }
 
     // consume rotation
@@ -210,11 +212,6 @@ public class TrickTracker : MonoBehaviour
         wheels_statuses[(int)WHEEL_LOCATION.FRONT_RIGHT] = front_right.IsGrounded;
         wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT]   = rear_left.IsGrounded;
         wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT]  = rear_right.IsGrounded;
-
-
-
-        // Look for tricks if CD is OK
-        //checkTricks();
     }
 
     public bool carIsOnGround()
