@@ -55,13 +55,24 @@ public class TrickLine
         Trick last_trick = trickpair.trick;
         TN last_trick_nat = last_trick.nature;
 
-        Trick chained = tryChain(iTrick, last_trick);
-        if (chained != null)
+        Trick neutralChain  = tryNeutralChain( iTrick, last_trick);
+        Trick chained       = tryChain(iTrick, last_trick);
+
+        if ( neutralChain != null)
+        {
+            if (full_line.Count > 0)
+                full_line.RemoveAt(full_line.Count-1);
+            TrickTimePair ttp = new TrickTimePair( neutralChain, iDurationTime);
+            full_line.Add(ttp);
+        }
+        else if (chained != null)
         {
             // replace in trickline
-            full_line.RemoveAt(full_line.Count-1);
+            if (full_line.Count > 0)
+                full_line.RemoveAt(full_line.Count-1);
             TrickTimePair ttp = new TrickTimePair( chained, iDurationTime);
             full_line.Add(ttp);
+
         } else {
             if ( iTrick == last_trick )
             {
@@ -75,7 +86,7 @@ public class TrickLine
         }
     }
 
-    public Trick tryChain(Trick iT1, Trick iT2)
+    public Trick tryNeutralChain( Trick iT1, Trick iT2)
     {
         // NEUTRAL + NEUTRAL = NEUTRAL
         if ( iT1.isNeutral() && iT2.isNeutral() )
@@ -86,7 +97,12 @@ public class TrickLine
             return iT2;
         else if ( !iT1.isNeutral() && iT2.isNeutral() )
             return iT1;
+        
+        return null;
+    }
 
+    public Trick tryChain(Trick iT1, Trick iT2)
+    {
         // BASIC + BASIC = CHAINED
         if ( iT1.isBasic() && iT2.isBasic() )
         {
@@ -98,9 +114,23 @@ public class TrickLine
         // CHAINED + BASIC
         if ( iT1.isChained() && iT2.isBasic() )
         {
-            Trick chained = TrickDictionary.checkChainedTricks( iT1, iT2);
+            Trick chained = TrickDictionary.checkChainedTricks( iT2, iT1);
             if (chained != null)
             { return chained; }
+        } 
+        
+        if ( iT1.isBasic() && iT2.isChained() )
+        {
+            Trick chained = TrickDictionary.checkChainedTricks( iT1, iT2);
+            if (chained != null)
+            { return chained; }     
+        }
+
+        if ( iT1.isChained() && iT2.isChained() )
+        {
+            Trick chained = TrickDictionary.checkChainedTricks( iT1, iT2);
+            if (chained != null)
+            { return chained; }     
         }
 
         return null;

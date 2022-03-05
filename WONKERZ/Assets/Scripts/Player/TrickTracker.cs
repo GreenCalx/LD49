@@ -185,6 +185,9 @@ public class TrickTracker : MonoBehaviour
 
     public void updateUI()
     {
+        if (trickUI == null)
+        { return; }
+
         if (!trick_line.is_opened)
         {
             trickUI.displayTrick("");
@@ -193,8 +196,11 @@ public class TrickTracker : MonoBehaviour
         }
 
         TrickLine.TrickTimePair last_trick = trick_line.getLastTrick();
-        trickUI.displayTrick(last_trick.trick.name);
-        trickUI.displayScore( last_trick.computeScore() );
+        if (last_trick!=null)
+        {
+            trickUI.displayTrick(last_trick.trick.name);
+            trickUI.displayScore( last_trick.computeScore() );
+        }
     }
 
     public void updateWheelStatuses()
