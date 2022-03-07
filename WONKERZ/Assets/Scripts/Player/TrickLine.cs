@@ -56,34 +56,55 @@ public class TrickLine
         TN last_trick_nat = last_trick.nature;
 
         Trick neutralChain  = tryNeutralChain( iTrick, last_trick);
-        Trick chained       = tryChain(iTrick, last_trick);
-
         if ( neutralChain != null)
         {
             if (full_line.Count > 0)
                 full_line.RemoveAt(full_line.Count-1);
             TrickTimePair ttp = new TrickTimePair( neutralChain, iDurationTime);
             full_line.Add(ttp);
+            return;
         }
-        else if (chained != null)
-        {
-            // replace in trickline
-            if (full_line.Count > 0)
-                full_line.RemoveAt(full_line.Count-1);
-            TrickTimePair ttp = new TrickTimePair( chained, iDurationTime);
-            full_line.Add(ttp);
 
+        if ( iTrick == last_trick )
+        {
+            // continuing same trick, update time
+            full_line[full_line.Count-1].time = iDurationTime;
+            return;
         } else {
-            if ( iTrick == last_trick )
-            {
-                // continuing same trick, update time
-                full_line[full_line.Count-1].time = iDurationTime;
-            } else {
-                TrickTimePair ttp = new TrickTimePair( iTrick, iDurationTime);
-                full_line.Add(ttp);
-            }
             
+            // otherwise add trick to pool
+            TrickTimePair ttp = new TrickTimePair( iTrick, iDurationTime);
+            full_line.Add(ttp);
         }
+
+        tryChains(iDurationTime);
+
+    }
+
+    public void tryChains(double iDurationTime)
+    {
+        if (full_line.Count <= 1)
+            return;
+
+        bool hasChained = false;
+        do {
+            TrickTimePair ttp1 = full_line[full_line.Count-1];
+            TrickTimePair ttp2 = full_line[full_line.Count-2];
+
+            Trick chained = tryChain( ttp1.trick, ttp2.trick);
+            
+            hasChained = (chained != null);
+
+            if (hasChained)
+            {
+                full_line.RemoveAt(full_line.Count-1);
+                full_line.RemoveAt(full_line.Count-1);
+
+                TrickTimePair chained_ttp = new TrickTimePair( chained, iDurationTime);
+                full_line.Add(chained_ttp);
+            }
+
+        } while ((hasChained)&&(full_line.Count>1));
     }
 
     public Trick tryNeutralChain( Trick iT1, Trick iT2)

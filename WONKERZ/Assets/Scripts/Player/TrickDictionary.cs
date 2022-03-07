@@ -40,8 +40,8 @@ public static class TrickDictionary
         new Trick( "540 BACK"     , 90    , new TrickChainCondition( "360 BACK", "180 BACK" ) ),
         new Trick( "540 FRONT"     , 90    , new TrickChainCondition( "360 FRONT", "180 FRONT" ) ),
         
-        new Trick( "720 BACK"     , 185    , new TrickChainCondition( "360 BACK", "360 BACK" ) ),
-        new Trick( "720 FRONT"     , 185    , new TrickChainCondition( "360 FRONT", "360 FRONT" ) ),
+        new Trick( "720 BACK"            , 185    , new TrickChainCondition( "540 BACK", "180 FRONT" ) ),
+        new Trick( "720 FRONT"           , 185    , new TrickChainCondition( "540 FRONT", "180 BACK" ) ),
         new Trick( "DOUBLE FRONT BARREL" , 200    , new TrickChainCondition( "FRONT BARREL", "FRONT BARREL")),
         new Trick( "DOUBLE BACK BARREL"  , 200    , new TrickChainCondition( "BACK BARREL", "BACK BARREL")),
         new Trick( "DOUBLE FRONT FLIP"   , 300   , new TrickChainCondition( "FRONT FLIP", "FRONT FLIP") ),
