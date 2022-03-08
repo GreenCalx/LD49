@@ -11,15 +11,9 @@ public static class TrickDictionary
     
     new List<Trick>
     {
+
         // NEUTRAL (fillers)
         new Trick( TN.NEUTRAL, "AIR"    , 5     , new TrickCondition(0,0,0)),
-        new Trick( TN.NEUTRAL, "ONE WHEEL 1",   10,  new TrickCondition(new bool[4]{ true, false, false, false})),
-        new Trick( TN.NEUTRAL, "ONE WHEEL 2",  10, new TrickCondition(new bool[4]{ false, true, false, false})),
-        new Trick( TN.NEUTRAL, "ONE WHEEL 3",   10, new TrickCondition(new bool[4]{ false, false, true, false})),
-        new Trick( TN.NEUTRAL, "ONE WHEEL 4",  10, new TrickCondition(new bool[4]{ false, false, false, true})),
-        
-        // CLOSERS
-        new Trick( TN.CLOSER, "ROLL"   , 15    , new TrickCondition(new bool[4]{ true, true, true, true})),
 
         // BASIC FLAT
         new Trick( TN.FLAT, "FRONT WHEELIE",  10, new TrickCondition(new bool[4]{ false, false, true, true})),
@@ -51,7 +45,13 @@ public static class TrickDictionary
         new Trick( "DOUBLE FRONT BARREL" , 200    , new TrickChainCondition( "FRONT BARREL", "FRONT BARREL")),
         new Trick( "DOUBLE BACK BARREL"  , 200    , new TrickChainCondition( "BACK BARREL", "BACK BARREL")),
         new Trick( "DOUBLE FRONT FLIP"   , 300   , new TrickChainCondition( "FRONT FLIP", "FRONT FLIP") ),
-        new Trick( "DOUBLE BACK FLIP"    , 300   , new TrickChainCondition( "BACK FLIP", "BACK FLIP" ) )
+        new Trick( "DOUBLE BACK FLIP"    , 300   , new TrickChainCondition( "BACK FLIP", "BACK FLIP" ) ),
+   
+        // IGNORE
+        new Trick( TN.IGNORE, "ONE WHEEL",   10,  new TrickCondition(new bool[4]{ true, false, false, false})),
+        new Trick( TN.IGNORE, "ONE WHEEL",  10, new TrickCondition(new bool[4]{ false, true, false, false})),
+        new Trick( TN.IGNORE, "ONE WHEEL",   10, new TrickCondition(new bool[4]{ false, false, true, false})),
+        new Trick( TN.IGNORE, "ONE WHEEL",  10, new TrickCondition(new bool[4]{ false, false, false, true}))
     };
 
     public static readonly Dictionary<TN,int> indexes = initIndexes();

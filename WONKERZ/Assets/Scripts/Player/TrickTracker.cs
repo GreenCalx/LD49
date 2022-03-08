@@ -165,6 +165,8 @@ public class TrickTracker : MonoBehaviour
         Trick tbasic = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
         Trick tflat = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
         Trick tneutral = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick tignore = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
+
         double trick_duration = Time.time - time_trick_started;
         if (tbasic!=null)
         {
@@ -185,6 +187,9 @@ public class TrickTracker : MonoBehaviour
             }
         } else if (tneutral!=null){
             trick_line.add(tneutral, trick_duration);
+            return true;
+        } else if (tignore!=null)
+        {
             return true;
         }
 

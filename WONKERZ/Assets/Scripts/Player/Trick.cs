@@ -10,7 +10,7 @@ public class Trick
                                 FLAT=2, 
                                 BASIC =3,
                                 CHAINED = 4,
-                                CLOSER = 5
+                                IGNORE = 5
                             };
     public string name;
     public int value;
