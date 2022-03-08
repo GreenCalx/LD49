@@ -13,6 +13,12 @@ public static class TrickDictionary
     {
         // NEUTRAL (fillers)
         new Trick( TN.NEUTRAL, "AIR"    , 5     , new TrickCondition(0,0,0)),
+        new Trick( TN.NEUTRAL, "ONE WHEEL 1",   10,  new TrickCondition(new bool[4]{ true, false, false, false})),
+        new Trick( TN.NEUTRAL, "ONE WHEEL 2",  10, new TrickCondition(new bool[4]{ false, true, false, false})),
+        new Trick( TN.NEUTRAL, "ONE WHEEL 3",   10, new TrickCondition(new bool[4]{ false, false, true, false})),
+        new Trick( TN.NEUTRAL, "ONE WHEEL 4",  10, new TrickCondition(new bool[4]{ false, false, false, true})),
+        
+        // CLOSERS
         new Trick( TN.CLOSER, "ROLL"   , 15    , new TrickCondition(new bool[4]{ true, true, true, true})),
 
         // BASIC FLAT

@@ -14,7 +14,6 @@ public class TrickUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -23,9 +22,28 @@ public class TrickUI : MonoBehaviour
         
     }
 
+    public void recordingTrick()
+    {
+        if (!!TRICKNAME)
+            TRICKNAME.color = Color.white;
+    }
+
+    public void validateTrick()
+    {
+        if (!!TRICKNAME)
+            TRICKNAME.color = Color.green;
+    }
+
+    public void failTrick()
+    {
+        if (!!TRICKNAME)
+            TRICKNAME.color = Color.red;
+    }
+
     public void displayTrick( string iTrick )
     {
-        TRICKNAME.SetText(iTrick);
+        if (!!TRICKNAME)
+            TRICKNAME.SetText(iTrick);
     }
 
     public void displayScore( int iScore )

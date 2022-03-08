@@ -45,7 +45,7 @@ public class TrickTracker : MonoBehaviour
     public float recorded_time_trick;
 
     private CarController CC;
-    private bool ready_to_rec_line;
+    public bool ready_to_rec_line;
 
     void Start()
     {
@@ -76,20 +76,21 @@ public class TrickTracker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!activate_tricks)
+        if (!activate_tricks || (trick_line==null))
             return;
 
         updateWheelStatuses();
 
         // Look for trickline cooldown
-        ready_to_rec_line = (Time.time - time_waited_after_line) > line_cooldown ;
+        ready_to_rec_line = ((Time.time - time_waited_after_line) > line_cooldown) && carIsOnGround();
 
-        if (ready_to_rec_line)
+        if (ready_to_rec_line || trick_line.is_opened)
         {
             if (!trick_line.is_opened)
             {
                 if (tryOpenLine())
                 {
+                    trickUI.recordingTrick();
                     initRotationsRecord();
                     recordRotations();
                     time_trick_started = Time.time;
@@ -152,6 +153,12 @@ public class TrickTracker : MonoBehaviour
         return false;
     }
 
+    public void OnCollisionEnter(Collision iCol)
+    {
+        if (!carIsOnGround())
+            end_line();
+    }
+
     public bool tryContinueLine()
     {
         // NEW TRICK / continuing trick
@@ -165,8 +172,17 @@ public class TrickTracker : MonoBehaviour
             updateConsumedRotations( tbasic.condition );
             return true;
         } else if (tflat!=null){
-            trick_line.add(tflat, trick_duration);
-            return true;
+            if (!trick_line.is_opened)
+            {
+                if (trick_duration > hold_time_start_flat_trick)
+                {
+                    trick_line.add(tflat, trick_duration);
+                    return true;
+                }
+            } else {
+                trick_line.add(tflat, trick_duration);
+                return true;
+            }
         } else if (tneutral!=null){
             trick_line.add(tneutral, trick_duration);
             return true;
@@ -177,11 +193,20 @@ public class TrickTracker : MonoBehaviour
 
     private void end_line()
     {
-        trickUI.displayTricklineScore(trick_line.getLineScore(combo_multiplier));
-        trickUI.displayTricklineTricks(trick_line.getTrickList());
+        if (carIsOnGround())
+        {
+            trickUI.displayTricklineScore(trick_line.getLineScore(combo_multiplier));
+            trickUI.displayTricklineTricks(trick_line.getTrickList());
+            trickUI.validateTrick();
+        }
+        else
+        {
+            trickUI.failTrick();
+            trickUI.displayTricklineScore(0);
+            trickUI.displayTricklineTricks(new List<Trick>(0));
+        }
 
         trick_line.close();
-
         time_waited_after_line = Time.time;
     }
 

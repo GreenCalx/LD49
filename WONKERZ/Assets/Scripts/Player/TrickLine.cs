@@ -71,7 +71,6 @@ public class TrickLine
             full_line[full_line.Count-1].time = iDurationTime;
             return;
         } else {
-            
             // otherwise add trick to pool
             TrickTimePair ttp = new TrickTimePair( iTrick, iDurationTime);
             full_line.Add(ttp);
@@ -112,6 +111,12 @@ public class TrickLine
         // NEUTRAL + NEUTRAL = NEUTRAL
         if ( iT1.isNeutral() && iT2.isNeutral() )
             return iT1;
+
+        // FLAT + NEUTRAL = FLAT + NEUTRAL
+        if ( iT1.isFlat() && iT2.isNeutral())
+            return null;
+        if ( iT2.isFlat() && iT1.isNeutral())
+            return null;
 
         // NEUTRAL + X = X
         if ( iT1.isNeutral() && !iT2.isNeutral() )
