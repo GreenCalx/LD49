@@ -45,6 +45,7 @@ public class TrickTracker : MonoBehaviour
     public float recorded_time_trick;
 
     private CarController CC;
+    private bool ready_to_rec_line;
 
     void Start()
     {
@@ -81,25 +82,25 @@ public class TrickTracker : MonoBehaviour
         updateWheelStatuses();
 
         // Look for trickline cooldown
-        if ( (Time.time - time_waited_after_line) <= line_cooldown )
-        {
-            return;
-        }
+        ready_to_rec_line = (Time.time - time_waited_after_line) > line_cooldown ;
 
-        if (!trick_line.is_opened)
+        if (ready_to_rec_line)
         {
-            if (tryOpenLine())
+            if (!trick_line.is_opened)
             {
-                initRotationsRecord();
+                if (tryOpenLine())
+                {
+                    initRotationsRecord();
+                    recordRotations();
+                    time_trick_started = Time.time;
+                }
+            } else {
                 recordRotations();
-                time_trick_started = Time.time;
+                if (tryContinueLine())
+                { /*continue line..*/ }
+                else
+                    end_line();
             }
-        } else {
-            recordRotations();
-            if (tryContinueLine())
-            { /*continue line..*/ }
-            else
-                end_line();
         }
         updateUI();
     }
@@ -178,29 +179,42 @@ public class TrickTracker : MonoBehaviour
     {
         trickUI.displayTricklineScore(trick_line.getLineScore(combo_multiplier));
         trickUI.displayTricklineTricks(trick_line.getTrickList());
+
         trick_line.close();
 
         time_waited_after_line = Time.time;
     }
 
-    public void updateUI()
+    public async void updateUI()
     {
         if (trickUI == null)
         { return; }
 
-        if (!trick_line.is_opened)
+        if (!trick_line.is_opened && ready_to_rec_line )
         {
             trickUI.displayTrick("");
             trickUI.displayScore(0);
             return;
         }
 
-        TrickLine.TrickTimePair last_trick = trick_line.getLastTrick();
-        if (last_trick!=null)
+        string tricks = "";
+        using var enumerator = trick_line.full_line.GetEnumerator();
+        var last = !enumerator.MoveNext();
+        TrickLine.TrickTimePair ttp;
+
+        while( !last )
         {
-            trickUI.displayTrick(last_trick.trick.name);
-            trickUI.displayScore( last_trick.computeScore() );
+            ttp = enumerator.Current;        
+            tricks += ttp.trick.name;
+            last = !enumerator.MoveNext();
+
+            if (!last)
+                tricks += " + ";
         }
+
+        trickUI.displayTrick(tricks);
+        trickUI.displayScore( trick_line.getLineScore(combo_multiplier) );
+
     }
 
     public void updateWheelStatuses()
