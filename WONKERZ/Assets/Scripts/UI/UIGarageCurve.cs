@@ -6,9 +6,14 @@ public class UIGarageCurve : GarageUISelectable
 {
     public enum curve_mods {
         LINEAR = 0,
-        LOG = 1
+        LOG = 1,
+        FLAT = 2
     };
-    public curve_mods func;
+    
+    public curve_mods slope;
+    public curve_mods release_func;
+
+
     public float step;
     public int n_points;
     private List<Vector2> vertices;
@@ -18,7 +23,9 @@ public class UIGarageCurve : GarageUISelectable
     // Start is called before the first frame update
     void Start()
     {
-        computeVertices();
+        vertices = new List<Vector2>();
+        computeVertices( 0, n_points, slope);
+        computeVertices( n_points, n_points*2, release_func);
         draw();
     }
 
@@ -33,19 +40,19 @@ public class UIGarageCurve : GarageUISelectable
         lineRenderer.setPoints(vertices);
     }
 
-    public void computeVertices()
+    public void computeVertices( int iStart, int iEnd, curve_mods iFunc)
     {
-        vertices = new List<Vector2>(n_points);
-        for (int i=0; i < n_points; i++)
+        
+        for (int i=iStart; i < iEnd; i++)
         {
-            vertices.Add(computeFunc(i*step));
+            vertices.Add(computeFunc(i*step, iFunc));
         }
     }
 
-    public Vector3 computeFunc( float iVertX )
+    public Vector3 computeFunc( float iVertX, curve_mods iFunc )
     {
         Vector3 vert;
-        switch (func)
+        switch (iFunc)
         {
             case curve_mods.LINEAR:
                 vert = new Vector2( iVertX, iVertX);
@@ -55,6 +62,9 @@ public class UIGarageCurve : GarageUISelectable
                     vert = new Vector2( iVertX, 0); //truncate [0;1[
                 else
                     vert = new Vector2( iVertX, Mathf.Log(iVertX));
+                break;
+            case curve_mods.FLAT:
+                vert = new Vector2( iVertX, vertices[vertices.Count - 1].y );
                 break;
             default:
                 vert = new Vector2(0,0);
