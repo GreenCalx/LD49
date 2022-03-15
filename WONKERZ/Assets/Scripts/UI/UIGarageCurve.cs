@@ -4,18 +4,22 @@ using UnityEngine;
 
 public class UIGarageCurve : GarageUISelectable
 {
+    [System.Serializable]
+    public struct FuncDescriptor
+    {
+        public curve_mods curve;
+        public int n_points;
+    }
+
     public enum curve_mods {
         LINEAR = 0,
         LOG = 1,
         FLAT = 2
     };
     
-    public curve_mods slope;
-    public curve_mods release_func;
-
-
+    public List<FuncDescriptor> funcs;
     public float step;
-    public int n_points;
+   
     private List<Vector2> vertices;
 
     public UILineRenderer lineRenderer;
@@ -24,8 +28,14 @@ public class UIGarageCurve : GarageUISelectable
     void Start()
     {
         vertices = new List<Vector2>();
-        computeVertices( 0, n_points, slope);
-        computeVertices( n_points, n_points*2, release_func);
+
+        int count = 0;
+        foreach ( FuncDescriptor f in funcs)
+        {
+            computeVertices( count, count + f.n_points, f.curve);
+            count += f.n_points;
+        }
+
         draw();
     }
 
