@@ -292,6 +292,16 @@ public class CarController : MonoBehaviour
             var T = -WheelVelocityY + MotorVelocity;
             RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
 
+            // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
+            var Collider = Hit.collider.GetComponent<Rigidbody>();
+            if (Collider != null)
+            {
+                var VelocityGravity = Vector3.Project(GetWheelVelocity(SpringAnchor), Vector3.up);
+                VelocityGravity.y += Physics.gravity.y;
+                if (VelocityGravity.y < 0)
+                    Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
+            }
+
 #if false
             S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
             // touching ground apply torque
