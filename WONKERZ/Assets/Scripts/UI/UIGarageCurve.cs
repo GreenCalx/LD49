@@ -4,39 +4,40 @@ using UnityEngine;
 
 public class UIGarageCurve : GarageUISelectable
 {
-    [System.Serializable]
-    public struct FuncDescriptor
-    {
-        public curve_mods curve;
-        public int n_points;
-    }
 
-    public enum curve_mods {
-        LINEAR = 0,
-        LOG = 1,
-        FLAT = 2
+    public enum CAR_PARAM
+    {
+        UNDEFINED=0,
+        TORQUE=1
     };
-    
-    public List<FuncDescriptor> funcs;
-    public float step;
+
+
+    public AnimationCurve torque_curve;
    
     private List<Vector2> vertices;
 
     public UILineRenderer lineRenderer;
 
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
-        vertices = new List<Vector2>();
 
-        int count = 0;
-        foreach ( FuncDescriptor f in funcs)
+        vertices = new List<Vector2>(); 
+
+        // Draw animation curve
+        float max_time_in_ac = torque_curve[torque_curve.length-1].time;
+        for (float i=0f; i<max_time_in_ac; i+=0.1f)
         {
-            computeVertices( count, count + f.n_points, f.curve);
-            count += f.n_points;
+            vertices.Add(new Vector2(i, torque_curve.Evaluate(i)));
         }
 
         draw();
+
+    }
+
+    public float getValueAtTime(float iTime /*, CAR_PARAM iParm */)
+    {
+        return torque_curve.Evaluate(iTime);
     }
 
     // Update is called once per frame
@@ -48,38 +49,5 @@ public class UIGarageCurve : GarageUISelectable
     public void draw()
     {
         lineRenderer.setPoints(vertices);
-    }
-
-    public void computeVertices( int iStart, int iEnd, curve_mods iFunc)
-    {
-        
-        for (int i=iStart; i < iEnd; i++)
-        {
-            vertices.Add(computeFunc(i*step, iFunc));
-        }
-    }
-
-    public Vector3 computeFunc( float iVertX, curve_mods iFunc )
-    {
-        Vector3 vert;
-        switch (iFunc)
-        {
-            case curve_mods.LINEAR:
-                vert = new Vector2( iVertX, iVertX);
-                break;
-            case curve_mods.LOG:
-                if (iVertX < 1)
-                    vert = new Vector2( iVertX, 0); //truncate [0;1[
-                else
-                    vert = new Vector2( iVertX, Mathf.Log(iVertX));
-                break;
-            case curve_mods.FLAT:
-                vert = new Vector2( iVertX, vertices[vertices.Count - 1].y );
-                break;
-            default:
-                vert = new Vector2(0,0);
-                break;
-        }
-        return vert;
     }
 }
