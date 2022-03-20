@@ -8,7 +8,7 @@ public class GarageEntry : MonoBehaviour
     private GameObject garageUI;
     private bool playerInGarage;
     private bool garageOpened;
-    private GameObject playerRef;
+    public GameObject playerRef;
 
     // Start is called before the first frame update
     void Start()

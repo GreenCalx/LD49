@@ -29,6 +29,8 @@ public class UIGarage : MonoBehaviour
         elapsed_time = 0f;
         submenu_is_active = false;
         select(i_selected);
+
+        tryReadCurvesFromPlayer();
     }
 
     // Update is called once per frame
@@ -39,7 +41,8 @@ public class UIGarage : MonoBehaviour
 
         if ( elapsed_time > selector_latch )
         {
-            if ( Input.GetAxis("Vertical") < 0 )
+            float Y = Input.GetAxis("Vertical");
+            if ( Y < -0.2f )
             {
                 deselect(i_selected);
 
@@ -49,7 +52,7 @@ public class UIGarage : MonoBehaviour
                 select(i_selected);
                 elapsed_time = 0f;
             }
-            else if ( Input.GetAxis("Vertical") > 0 )
+            else if ( Y > 0.2f )
             {
                 deselect(i_selected);
 
@@ -65,6 +68,26 @@ public class UIGarage : MonoBehaviour
                 quit();
         }
         elapsed_time += Time.unscaledDeltaTime;
+    }
+
+    private void tryReadCurvesFromPlayer()
+    {
+        if (garageEntry.playerRef!=null)
+        {
+            CarController cc = garageEntry.playerRef.GetComponent<CarController>();
+            // set animation curves from player...
+            // torque_curve = cc.torque_curve;
+        }
+    }
+
+    public void tryWriteCurvesInPlayer()
+    {
+        if (garageEntry.playerRef!=null)
+        {
+            CarController cc = garageEntry.playerRef.GetComponent<CarController>();
+            // set player curve from given curve ?
+            // cc.torque_curve = torque_curve;
+        } 
     }
 
     private void deselect(int index)
