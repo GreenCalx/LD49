@@ -13,6 +13,9 @@ public class UIGridRenderer : Graphic
     float cellHeight;
     float width;
     float height;
+
+    public float getWidth()
+    { return width; }
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         vh.Clear(); // clean cache

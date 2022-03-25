@@ -9,6 +9,7 @@ public class GarageEntry : MonoBehaviour
     private bool playerInGarage;
     private bool garageOpened;
     public GameObject playerRef;
+    public CarController playerCC;
 
     // Start is called before the first frame update
     void Start()
@@ -28,7 +29,8 @@ public class GarageEntry : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (iCol.GetComponent<CarController>())
+        playerCC = iCol.GetComponent<CarController>();
+        if (playerCC)
         {
             playerRef = iCol.gameObject;
             playerInGarage = true;
@@ -40,6 +42,7 @@ public class GarageEntry : MonoBehaviour
         if (iCol.GetComponent<CarController>())
         {
             playerRef = null;
+            playerCC = null;
             playerInGarage = false;
             closeGarage();
         }

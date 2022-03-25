@@ -10,8 +10,8 @@ public class UILineRenderer : Graphic
 
     float width;
     float height;
-    float unitWidth;
-    float unitHeight;
+    public float unitWidth;
+    public float unitHeight;
 
     public float thickness = 10f;
 

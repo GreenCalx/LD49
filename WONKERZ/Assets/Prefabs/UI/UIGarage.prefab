@@ -808,7 +808,7 @@ MonoBehaviour:
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   color: {r: 1, g: 1, b: 1, a: 0.20784314}
   gridSize: {x: 12, y: 5}
-  thickness: 3.5
+  thickness: 2
 --- !u!1 &2990796845841500380
 GameObject:
   m_ObjectHideFlags: 0
@@ -1253,15 +1253,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.08346504, g: 0.9433962, b: 0.07475963, a: 1}
+  m_Color: {r: 0.59527415, g: 0.8584906, b: 0.6563003, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   gridSize: {x: 12, y: 5}
   points:
   - {x: 0, y: 0}
-  - {x: 5, y: 5}
-  - {x: 8, y: 7}
-  - {x: 12, y: 7}
+  - {x: 3, y: 2}
+  - {x: 8, y: 4}
+  unitWidth: 28.219078
+  unitHeight: 46.43084
   thickness: 10
   gridRenderer: {fileID: 9181911340861869630}
 --- !u!1 &4024214606792987224
@@ -1511,6 +1512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selector_latch: 0.3
+  UIGarageCurvePicker_Ref: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
 --- !u!1 &5339288306730999949
 GameObject:
   m_ObjectHideFlags: 0
@@ -2446,7 +2448,7 @@ GameObject:
   - component: {fileID: 4759824591705953044}
   - component: {fileID: 5335798096937987136}
   m_Layer: 5
-  m_Name: DisplayedCurve
+  m_Name: CURVES
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2587,6 +2589,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  selected_parm: 0
   lineRenderer: {fileID: 6199533341075192284}
   XLabelRef: {fileID: 2486683860899602924}
   YLabelRef: {fileID: 7631450244352683097}

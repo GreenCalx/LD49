@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic; // KeyValuePair
 
 public class CarController : MonoBehaviour
 {
@@ -109,6 +110,51 @@ public class CarController : MonoBehaviour
     public bool UseRefs;
     // We redefine the CenterOfMass to be able to change car mecanics
     public GameObject CenterOfMass;
+
+    /// ----------------------------------------------------
+    /// BlueCalx for Toffo : put those shit where u want ---
+    [Header("Curves")]
+    public AnimationCurve TORQUE; // curve itself
+    public int torque_movable_keyframe; // the keyframe we want to move in garage w slider
+    public AnimationCurve WEIGHT;
+    public int weight_movable_keyframe;
+
+    public KeyValuePair<AnimationCurve,int> getCurveKVP( UIGarageCurve.CAR_PARAM iParm)
+    {
+        switch( iParm )
+        {
+            case UIGarageCurve.CAR_PARAM.UNDEFINED:
+                break;
+            case UIGarageCurve.CAR_PARAM.TORQUE:
+                return new KeyValuePair<AnimationCurve, int>(TORQUE, torque_movable_keyframe);
+                break;
+            case UIGarageCurve.CAR_PARAM.WEIGHT:
+                return new KeyValuePair<AnimationCurve, int>(WEIGHT, weight_movable_keyframe);
+                break;
+            default:
+                break;
+        }
+        return new KeyValuePair<AnimationCurve, int>();
+    }
+
+    public void setCurve( AnimationCurve iAC, UIGarageCurve.CAR_PARAM iParm)
+    {
+        switch( iParm )
+        {
+            case UIGarageCurve.CAR_PARAM.UNDEFINED:
+                break;
+            case UIGarageCurve.CAR_PARAM.TORQUE:
+                TORQUE = iAC;
+                break;
+            case UIGarageCurve.CAR_PARAM.WEIGHT:
+                WEIGHT = iAC;
+                break;
+            default:
+                break;
+        }
+    }
+    /// ----------------------------------------------------
+
 
     void DrawDebugAxle(Axle A, Color C, Color C2)
     {

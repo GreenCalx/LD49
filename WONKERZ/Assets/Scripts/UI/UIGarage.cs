@@ -138,6 +138,11 @@ public class UIGarage : MonoBehaviour
         garageEntry = iGE;
     }
 
+    public GarageEntry getGarageEntry()
+    {
+        return garageEntry;
+    }
+
     public void quit()
     {
         if (!!garageEntry)
