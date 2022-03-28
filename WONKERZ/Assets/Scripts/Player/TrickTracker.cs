@@ -43,6 +43,7 @@ public class TrickTracker : MonoBehaviour
     public float  time_waited_after_line;
     [HideInInspector]
     public float recorded_time_trick;
+    private KeyValuePair<Trick,float> flat_trick_starter;
 
     private CarController CC;
     public bool ready_to_rec_line;
@@ -67,6 +68,7 @@ public class TrickTracker : MonoBehaviour
 
         trick_line = new TrickLine();
         time_trick_started = 0;
+        flat_trick_starter = new KeyValuePair<Trick, float>();
 
         init_rot_x = 0f;
         init_rot_y = 0f;
@@ -82,7 +84,7 @@ public class TrickTracker : MonoBehaviour
         updateWheelStatuses();
 
         // Look for trickline cooldown
-        ready_to_rec_line = ((Time.time - time_waited_after_line) > line_cooldown) && carIsOnGround();
+        ready_to_rec_line = ((Time.time - time_waited_after_line) > line_cooldown) /*&& carIsOnGround()*/;
 
         if (ready_to_rec_line || trick_line.is_opened)
         {
@@ -147,8 +149,23 @@ public class TrickTracker : MonoBehaviour
             trick_line.open(opener1);
             return true;
         } else if (opener2!=null) {
-            trick_line.open(opener2);
-            return true;
+            
+            if ( flat_trick_starter.Equals(default(KeyValuePair<Trick,float>)) )
+            { flat_trick_starter = new KeyValuePair<Trick, float>(opener2, 0f); }
+
+            Trick t = flat_trick_starter.Key;
+            if ( t.name == opener2.name )
+            {
+                flat_trick_starter = new KeyValuePair<Trick, float>( opener2, flat_trick_starter.Value + Time.deltaTime );
+            } else {
+                flat_trick_starter = new KeyValuePair<Trick, float>();
+            }
+            
+            if (flat_trick_starter.Value > hold_time_start_flat_trick)
+            { 
+                trick_line.open(opener2);
+                return true;
+            }
         }
         return false;
     }
