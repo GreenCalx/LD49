@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GarageEntry : MonoBehaviour
@@ -20,7 +18,7 @@ public class GarageEntry : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( playerInGarage )
+        if (playerInGarage)
         {
             if (Input.GetButtonDown("Submit"))
                 openGarage();
@@ -30,21 +28,30 @@ public class GarageEntry : MonoBehaviour
     void OnTriggerEnter(Collider iCol)
     {
         playerCC = iCol.GetComponent<CarController>();
-        if (playerCC)
+        // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
+        if (playerCC && !playerInGarage)
         {
             playerRef = iCol.gameObject;
             playerInGarage = true;
+
+            var SndMgr = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+            SndMgr.SwitchClip("garage");
         }
     }
 
     void OnTriggerExit(Collider iCol)
     {
-        if (iCol.GetComponent<CarController>())
+        // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
+        if (iCol.GetComponent<CarController>() && playerInGarage)
         {
             playerRef = null;
             playerCC = null;
             playerInGarage = false;
             closeGarage();
+
+
+            var SndMgr = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+            SndMgr.SwitchClip("theme");
         }
     }
 

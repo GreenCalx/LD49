@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic; // KeyValuePair
+using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
@@ -119,9 +119,9 @@ public class CarController : MonoBehaviour
     public AnimationCurve WEIGHT;
     public int weight_movable_keyframe;
 
-    public KeyValuePair<AnimationCurve,int> getCurveKVP( UIGarageCurve.CAR_PARAM iParm)
+    public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
-        switch( iParm )
+        switch (iParm)
         {
             case UIGarageCurve.CAR_PARAM.UNDEFINED:
                 break;
@@ -137,9 +137,9 @@ public class CarController : MonoBehaviour
         return new KeyValuePair<AnimationCurve, int>();
     }
 
-    public void setCurve( AnimationCurve iAC, UIGarageCurve.CAR_PARAM iParm)
+    public void setCurve(AnimationCurve iAC, UIGarageCurve.CAR_PARAM iParm)
     {
-        switch( iParm )
+        switch (iParm)
         {
             case UIGarageCurve.CAR_PARAM.UNDEFINED:
                 break;
@@ -424,6 +424,18 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        // TODO toiffa : remove this, it is only for testing the hub
+        if (transform.localPosition.z < -300)
+        {
+            GameObject.Find("SoundManager").GetComponent<SoundManager>().SwitchClip("desert");
+        }
+        else
+        {
+            if (GameObject.Find("SoundManager").GetComponent<SoundManager>().CurrentClip.Name == "desert")
+                GameObject.Find("SoundManager").GetComponent<SoundManager>().SwitchClip("theme");
+        }
+        // end TODO
+
         DrawDebugAxles(Color.blue, Color.red);
         UpdateWheelsRenderer();
 

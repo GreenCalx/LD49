@@ -12,6 +12,6 @@ public class MotorSoundRenderer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GetComponent<AudioSource>().pitch = 0.8f + 1 / ((40) / (PLayer.velocity.magnitude));
+        GetComponent<AudioSource>().pitch = 0.8f + 1 / ((100) / (PLayer.velocity.magnitude));
     }
 }
