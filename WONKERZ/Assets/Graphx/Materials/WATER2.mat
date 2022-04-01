@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WATER
-  m_Shader: {fileID: 4800000, guid: 1d06cbd174fb0fb49b833e24aecc6cfe, type: 3}
+  m_Name: WATER2
+  m_Shader: {fileID: 4800000, guid: ca2a879a1dbc65f458bc093fbebdac63, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -44,8 +44,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamTexture:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 578983d3c34a071458d1d45cb9f160c7, type: 3}
+        m_Scale: {x: 0.0001, y: 0.0001}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
@@ -56,12 +56,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalA:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 8d0b0fae0dc142742a4430cffdbae0e7, type: 3}
+        m_Scale: {x: 0.001, y: 0.001}
         m_Offset: {x: 0, y: 0}
     - _NormalB:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 124c78822866f50499be3d1f03439aa4, type: 3}
+        m_Scale: {x: 0.001, y: 0.001}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 0}
@@ -76,7 +76,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _RenderTexture:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 8400000, guid: 2c834b5631712b546a0acb9c5956d2a6, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
@@ -90,22 +90,22 @@ Material:
     - _FadeLimit: 0.754
     - _FoamDist: 1
     - _FoamIntens: 0.2
-    - _FoamIntensity: 1
-    - _FoamLinesSpeed: 0
+    - _FoamIntensity: 0
+    - _FoamLinesSpeed: 0.5
     - _FoamStrength: 1
-    - _FoamTextureSpeedX: 0
-    - _FoamTextureSpeedY: 0
-    - _FoamThreshold: 0
-    - _FogThreshold: 0
+    - _FoamTextureSpeedX: 0.1
+    - _FoamTextureSpeedY: 0.1
+    - _FoamThreshold: -1.86
+    - _FogThreshold: 5
     - _FresnelPower: 1
     - _GlossMapScale: 1
-    - _Glossiness: 0.406
+    - _Glossiness: 0.28
     - _GlossyReflections: 1
-    - _IntersectionThreshold: 0
+    - _IntersectionThreshold: 6.65
     - _InvFade: 0.01
     - _Metallic: 0.29
     - _Mode: 0
-    - _NormalStrength: 1
+    - _NormalStrength: 0.2
     - _OcclusionStrength: 1
     - _Opacity: 0.6
     - _Parallax: 0.02
@@ -132,8 +132,8 @@ Material:
     - _DepthCol: {r: 0.16981131, g: 0.06327874, b: 0.06327874, a: 1}
     - _Direction: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FogColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FogColor: {r: 0.027394045, g: 0.19101304, b: 0.5377358, a: 0.8627451}
     - _IntersectionColor: {r: 1, g: 1, b: 1, a: 1}
-    - _NormalPanningSpeeds: {r: 0, g: 0, b: 0, a: 0}
+    - _NormalPanningSpeeds: {r: 0.01, g: 0.01, b: 0.02, a: 0.02}
     - _WindDir: {r: 0, g: 1, b: 1, a: 5}
   m_BuildTextureStacks: []
