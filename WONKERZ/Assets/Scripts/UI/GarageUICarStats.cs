@@ -1,8 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using UnityEngine.UI;
+using UnityEngine;
 
 public class GarageUICarStats : GarageUISelectable
 {
@@ -17,13 +15,13 @@ public class GarageUICarStats : GarageUISelectable
     private Color enabled_stat;
     private Color disabled_stat;
     private UIGarageCurve curve;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         findParent();
-        enabled_stat    = parent.enabled_category;
-        disabled_stat   = parent.disabled_category;
+        enabled_stat = parent.enabled_category;
+        disabled_stat = parent.disabled_category;
     }
 
     // Update is called once per frame
@@ -31,26 +29,26 @@ public class GarageUICarStats : GarageUISelectable
     {
         if (!is_active)
             return;
-        
-        if ( elapsed_time > selector_latch )
+
+        if (elapsed_time > selector_latch)
         {
             float Y = Input.GetAxis("Vertical");
-            if ( Y > 0.2f )
+            if (Y > 0.2f)
             {
                 deselect(i_stat);
 
                 i_stat++;
-                if ( i_stat > stats.Count - 1 )
+                if (i_stat > stats.Count - 1)
                 { i_stat = 0; }
                 select(i_stat);
                 elapsed_time = 0f;
             }
-            else if ( Y < -0.2f )
+            else if (Y < -0.2f)
             {
                 deselect(i_stat);
 
                 i_stat--;
-                if ( i_stat < 0 )
+                if (i_stat < 0)
                 { i_stat = stats.Count - 1; }
                 select(i_stat);
                 elapsed_time = 0f;
@@ -62,7 +60,7 @@ public class GarageUICarStats : GarageUISelectable
         if (Input.GetButtonDown("Submit"))
             pick();
         else if (Input.GetButtonDown("Cancel"))
-        { parent.quitSubMenu(); return;}
+        { parent.quitSubMenu(); return; }
     }
 
     private void deselect(int index)
@@ -83,15 +81,15 @@ public class GarageUICarStats : GarageUISelectable
         target_txt.color = enabled_stat;
 
         // update X/Y Labels of graph
-        curve.setLabels( curr_stat.XLabel, curr_stat.YLabel);
+        curve.setLabels(curr_stat.XLabel, curr_stat.YLabel);
 
         // update displayed curve
-        curve.changeCurve( curr_stat.car_param );
+        curve.changeCurve(curr_stat.car_param);
 
         // Set Slider to the right keyframe/curve
         GameObject player = parent.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
-        KeyValuePair<AnimationCurve,int> kvp = cc.getCurveKVP(curr_stat.car_param);
+        KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
         setCurveSlider(curr_stat.car_param, kvp.Value);
     }
 
@@ -104,15 +102,15 @@ public class GarageUICarStats : GarageUISelectable
         CarController cc = player.GetComponent<CarController>();
 
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
-        cc.setCurve( curve.getSelectedCurve(), curve.selected_parm);
+        cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
     }
 
-    public void setCurveSlider( UIGarageCurve.CAR_PARAM parm, int keyFrameID )
+    public void setCurveSlider(UIGarageCurve.CAR_PARAM parm, int keyFrameID)
     {
         // instantiate slider
-        if ( UIGarageCurvePicker_Inst == null )
-            UIGarageCurvePicker_Inst = Instantiate( UIGarageCurvePicker_Ref, this.transform);
-        
+        if (UIGarageCurvePicker_Inst == null)
+            UIGarageCurvePicker_Inst = Instantiate(UIGarageCurvePicker_Ref, this.transform);
+
         // set slider X/Y position
         // > Get Grid
         UIGridRenderer uigr = curve.lineRenderer.gridRenderer;
@@ -132,7 +130,7 @@ public class GarageUICarStats : GarageUISelectable
         // TODO : get the right curve and retrieve key from ID to offset cursor posiution
         float x_offset = curve.getSelectedCurve().keys[keyFrameID].time;
         x_offset *= curve.lineRenderer.unitWidth;
-        uics.transform.position += new Vector3( x_offset, 0, 0);
+        uics.transform.position += new Vector3(x_offset, 0, 0);
 
         // deactivate this UI while controlling the slider
 
@@ -141,8 +139,11 @@ public class GarageUICarStats : GarageUISelectable
     public void notifySliderMove(int iMovableKey)
     {
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
-        float new_time = uics.transform.position.x / curve.lineRenderer.unitWidth;
-        curve.moveCurveKey( uics.movable_key, new_time);
+
+        // you need to take into account the initial position you fool!!!!!
+        float new_time = Mathf.Clamp(uics.transform.position.x - uics.XLeftBound, 0, uics.XRightBound - uics.XLeftBound) / curve.lineRenderer.unitWidth;
+        //float new_time = uics.transform.position.x / curve.lineRenderer.unitWidth;
+        curve.moveCurveKey(uics.movable_key, new_time);
     }
 
     public override void enter()
@@ -158,7 +159,7 @@ public class GarageUICarStats : GarageUISelectable
 
         stats = new List<UIGaragePickableStat>(GetComponentsInChildren<UIGaragePickableStat>());
         if (stats.Count == 0)
-        { base.quit(); return;}
+        { base.quit(); return; }
         i_stat = 0;
         elapsed_time = 0f;
         select(i_stat);
