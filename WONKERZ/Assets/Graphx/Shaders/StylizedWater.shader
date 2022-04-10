@@ -98,9 +98,16 @@ Shader "Custom/StylizedWater"
             float depth = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(IN.screenPos));
             depth = LinearEyeDepth(depth);
  
-            float fogDiff = saturate((depth - IN.screenPos.w) / _FogThreshold);
-            float intersectionDiff = saturate((depth - IN.screenPos.w) / _IntersectionThreshold);
-            float foamDiff = saturate((depth - IN.screenPos.w) / _FoamThreshold);
+            float diff = (depth - IN.screenPos.w);
+            float intersectionDiff = 0;
+            float fogDiff = 1;
+            // TODO toffa : Remlove this if by mul and divide if perf bottleneck
+            // This is done to avoid misinterpretation of object above the water level
+            if(diff >= 0) { 
+                intersectionDiff = saturate(diff / _IntersectionThreshold);
+                fogDiff = saturate(diff / _FogThreshold);
+            }
+            float foamDiff = saturate(diff / _FoamThreshold);;
             foamDiff *= (1.0 - rt.b);
              
             fixed4 c = lerp(lerp(_IntersectionColor, _Color, intersectionDiff), _FogColor, fogDiff);
@@ -114,9 +121,9 @@ Shader "Custom/StylizedWater"
             float3 normalA = UnpackNormalWithScale(tex2D(_NormalA, IN.worldPos.xz * _NormalA_ST.xy + _Time.y * _NormalPanningSpeeds.xy + rt.rg), _NormalStrength);
             float3 normalB = UnpackNormalWithScale(tex2D(_NormalB, IN.worldPos.xz * _NormalB_ST.xy + _Time.y * _NormalPanningSpeeds.zw + rt.rg), _NormalStrength);
             o.Normal = normalA + normalB;
-            o.Smoothness = _Glossiness;
+            o.Smoothness = _Glossiness * saturate(1/pow(IN.screenPos.w,0.2));
             o.Alpha = lerp(lerp(c.a * fresnel, 1.0, foam), _FogColor.a, fogDiff);
-            o.Emission = foam * _FoamIntensity;
+            o.Emission = foam * _FoamIntensity * saturate(1/ pow(IN.screenPos.w, 1));
         }
         ENDCG
     }
