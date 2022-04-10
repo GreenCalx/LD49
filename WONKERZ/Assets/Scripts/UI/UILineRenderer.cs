@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UILineRenderer : Graphic
 {
+    [HideInInspector]
     public Vector2Int gridSize;
     public List<Vector2> points;
 
@@ -29,10 +30,61 @@ public class UILineRenderer : Graphic
         {
             if(gridSize != gridRenderer.gridSize)
             {
-                gridSize = gridRenderer.gridSize;
-                SetVerticesDirty(); // invalidate
+                gridRenderer.setGridSize(gridSize);
+                //SetVerticesDirty(); // invalidate
             }
         }
+    }
+
+    public void refreshFromAnimationCurve( AnimationCurve iAC )
+    {
+        Keyframe[] keys  = iAC.keys;
+        int n_keys = keys.Length;
+
+        float min_time=0f;
+        float max_time=0f;
+        float min_val=0f;
+        float max_val=0f;
+        for (int i=0;i<n_keys;i++)
+        {
+            Keyframe selected = keys[i];
+            if (i==0)
+            {
+                min_time = selected.time;
+                max_time = selected.time;
+                min_val = selected.value;
+                max_val = selected.value;
+                continue;
+            }
+            // X bounds
+            if ( min_time > selected.time )
+                min_time = selected.time;
+            if ( max_time < selected.time )
+                max_time = selected.time;
+
+            // Y bounds
+            if ( min_val > selected.value )
+                min_val = selected.value;
+            if ( max_val < selected.value )
+                max_val = selected.value;
+        }
+
+        // refresh sizes
+        int sizex = (int)Mathf.Ceil(max_time - min_time);
+        int sizey = (int)Mathf.Ceil(max_val - min_val);
+        if (sizex < 1)
+        {
+            sizex = 1;
+            Debug.LogWarning("size x < 1 !! Resized to 1.");
+        }
+        if (sizey < 1)
+        {
+            sizey = 1;
+            Debug.LogWarning("size y < 1 !! Resized to 1.");
+        }
+        gridSize = new Vector2Int(sizex,sizey+1);
+        
+        SetVerticesDirty();
     }
 
     public void setPoints(List<Vector2> iPoints)

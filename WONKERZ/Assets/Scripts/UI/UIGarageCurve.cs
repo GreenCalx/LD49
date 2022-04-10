@@ -24,6 +24,11 @@ public class UIGarageCurve : MonoBehaviour
     public TextMeshProUGUI XLabelRef;
     public TextMeshProUGUI YLabelRef;
 
+    [HideInInspector]
+    public float maxbound_nomerge=0f;
+    [HideInInspector]
+    public float minbound_nomerge=0f;
+
     // Start is called before the first frame update
     async void Start()
     {
@@ -40,6 +45,23 @@ public class UIGarageCurve : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void refreshMovableKeyBounds(int iSelectedKeyIndex)
+    {
+        AnimationCurve ac = getSelectedCurve();
+        if (iSelectedKeyIndex <= 0)
+        {
+            Debug.LogWarning("Moving keyframe at 0 produce weird behaviour. Unable to compute anti merging keybounds.");
+            return;
+        }
+        // Compute min bound
+        Keyframe prev_key= ac.keys[iSelectedKeyIndex-1];
+        minbound_nomerge = prev_key.time;
+
+        // Compute upper bound
+        Keyframe next_key = ac.keys[iSelectedKeyIndex+1];
+        maxbound_nomerge = next_key.time;
     }
 
     public AnimationCurve getSelectedCurve()
@@ -88,6 +110,7 @@ public class UIGarageCurve : MonoBehaviour
             vertices.Add(new Vector2(i, ac.Evaluate(i)));
         }
 
+        lineRenderer.refreshFromAnimationCurve(ac);
         lineRenderer.setPoints(vertices);
     }
 

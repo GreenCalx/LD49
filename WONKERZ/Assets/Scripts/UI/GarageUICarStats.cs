@@ -91,6 +91,8 @@ public class GarageUICarStats : GarageUISelectable
         CarController cc = player.GetComponent<CarController>();
         KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
         setCurveSlider(curr_stat.car_param, kvp.Value);
+
+
     }
 
     public void pick()
@@ -127,10 +129,14 @@ public class GarageUICarStats : GarageUISelectable
         uics.observer = this;
 
         // > X to current CarController Value
-        // TODO : get the right curve and retrieve key from ID to offset cursor posiution
         float x_offset = curve.getSelectedCurve().keys[keyFrameID].time;
         x_offset *= curve.lineRenderer.unitWidth;
         uics.transform.position += new Vector3(x_offset, 0, 0);
+
+        // Compute XBound+/XBound-
+        curve.refreshMovableKeyBounds(keyFrameID);
+        uics.XKeyLeftBound     = uics.XLeftBound  + (curve.minbound_nomerge * curve.lineRenderer.unitWidth);
+        uics.XKeyRightBound    = uics.XRightBound - (curve.maxbound_nomerge * curve.lineRenderer.unitWidth);
 
         // deactivate this UI while controlling the slider
 

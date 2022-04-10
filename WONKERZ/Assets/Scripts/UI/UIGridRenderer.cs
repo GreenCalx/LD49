@@ -16,6 +16,13 @@ public class UIGridRenderer : Graphic
 
     public float getWidth()
     { return width; }
+
+    public void setGridSize(Vector2Int iGridSize)
+    {
+        gridSize = iGridSize;
+        SetVerticesDirty();
+    }
+
     protected override void OnPopulateMesh(VertexHelper vh)
     {
         vh.Clear(); // clean cache
