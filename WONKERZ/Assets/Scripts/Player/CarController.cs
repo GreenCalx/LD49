@@ -110,6 +110,8 @@ public class CarController : MonoBehaviour
     public bool UseRefs;
     // We redefine the CenterOfMass to be able to change car mecanics
     public GameObject CenterOfMass;
+    private Rigidbody RB;
+    public float VelocityCorrectionMultiplier;
 
     /// ----------------------------------------------------
     /// BlueCalx for Toffo : put those shit where u want ---
@@ -127,10 +129,8 @@ public class CarController : MonoBehaviour
                 break;
             case UIGarageCurve.CAR_PARAM.TORQUE:
                 return new KeyValuePair<AnimationCurve, int>(TORQUE, torque_movable_keyframe);
-                break;
             case UIGarageCurve.CAR_PARAM.WEIGHT:
                 return new KeyValuePair<AnimationCurve, int>(WEIGHT, weight_movable_keyframe);
-                break;
             default:
                 break;
         }
@@ -245,7 +245,7 @@ public class CarController : MonoBehaviour
 
     void UpdateWheelRenderer(Suspension S)
     {
-        // S.Wheel.Renderer.transform.position = GetEnd(S);
+        S.Wheel.Renderer.transform.position = GetEnd(S);
     }
     void UpdateWheelsRenderer()
     {
@@ -269,7 +269,6 @@ public class CarController : MonoBehaviour
 
     Vector3 GetWheelVelocity(Vector3 Position)
     {
-        var RB = GetComponent<Rigidbody>();
         return RB.GetPointVelocity(Position) / 4f;
     }
 
@@ -303,29 +302,39 @@ public class CarController : MonoBehaviour
         var SpringAnchor = S.Spring.Anchor.transform.position;
         var SpringDirection = -transform.up;
         S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon);
+
+        // If we hit something 
         if (S.Wheel.IsGrounded)
         {
             Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
-
+            // something has been hitten, we compute the distance
             S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
 
-            var RB = GetComponent<Rigidbody>();
-            // Correct collision inside bounds
+            Vector3 CurrentMinimalForcePossible = Vector3.zero;
             if (Hit.distance < S.Spring.MinLength + S.Wheel.Radius)
             {
+                // We are trying to say that the next position of the wheel should be inside the ground,
+                // so for now we compute the new values
                 Debug.Log("Boundaries penetration");
+                // say that we need the position to be corrected to NOT be inside the ground, and apply full body velocity.
+                // we do this by computing the force needed to do so, it would be the minimum possible force to apply!
                 var DistanceToCorrect = Hit.distance - (S.Spring.MinLength + S.Wheel.Radius);
-                var WheelVelocityy = AddGravityStep(GetWheelVelocity(WheelPosition));
-                var VelocityCorrection = DistanceToCorrect * SpringDirection;
-                RB.AddForceAtPosition(VelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
+                //var WheelVelocityy = AddGravityStep(GetWheelVelocity(WheelPosition));
+                var VelocityCorrection = -(DistanceToCorrect * SpringDirection);
+                CurrentMinimalForcePossible = VelocityCorrection *4 *VelocityCorrectionMultiplier;
+                //RB.AddForceAtPosition(VelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
             }
+
             var SpringVelocity = AddGravityStep(GetWheelVelocity(SpringAnchor));
             var SpringVelocityProjected = ProjectOnSuspension(SpringVelocity);
             var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
             var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
 
             // If suspension is fully compressed then we are hard hitting the ground
-            RB.AddForceAtPosition((S.Spring.CurrentLength == S.Spring.MinLength ? -1 : 0) * SpringVelocityProjected + SpringForce * SpringDirection, SpringAnchor, ForceMode.VelocityChange);
+            var IsSpringFullyCompressed = (S.Spring.CurrentLength == S.Spring.MinLength ? -1 : 0);
+            var ForceToApply = IsSpringFullyCompressed * SpringVelocityProjected *VelocityCorrectionMultiplier + SpringForce * SpringDirection;
+            ForceToApply = -CurrentMinimalForcePossible + ForceToApply;
+            RB.AddForceAtPosition(ForceToApply, SpringAnchor, ForceMode.VelocityChange);
 
             // Direction
             var WheelVelocity = GetWheelVelocity(WheelPosition);
@@ -336,6 +345,7 @@ public class CarController : MonoBehaviour
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
             var WheelVelocityY = Vector3.Project(WheelVelocity, f);
             var T = -WheelVelocityY + MotorVelocity;
+            T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
 
             // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
@@ -347,39 +357,6 @@ public class CarController : MonoBehaviour
                 if (VelocityGravity.y < 0)
                     Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
             }
-
-#if false
-            S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
-            // touching ground apply torque
-            // Get the velocity of the wheel and compute the difference with the current motor torquje
-            // this way we apply only acceleration if needed. Also we always apply the current wheel velocity in the direction of the wheel
-            // (for now)
-            // TODO toffa : compute wheel grip according to difference between current wheel velodity direciton and
-            // the n ew one. For now we are using perfect grip.
-            // NOTE toffa : for now we consider the wheel is travelling like the suspension anchor.
-            var WheelVelocity = GetWheelVelocity(WheelPosition);
-            // remove the current velocity as we will recompute a new one here.
-            //RB.AddForceAtPosition(-WheelVelocity, WheelPosition, ForceMode.VelocityChange);
-            // NOTE toffa : Wheel is touching the ground. It will make the suspension compress.
-            // The compression is until the suspension reaches min length. Then it will apply ground forces and expand,
-            // Apply ground forces on this wheel. The Counter velocity from the collision will be scaled by the current suspension length.
-            // It means it will be less applied if the suspension is extanded than if it is compressed.
-            // NOTE toffa : project the force onto the suspension
-            // TODO toffa : do we need to add forward vector for the rest of the "unprojected" part?
-            var SpringLengthDiff = S.Spring.MaxLength - S.Spring.MinLength;
-            //var WheelVelocityProjected = ProjectOnSuspension(AddGravityStep(GetWheelVelocity(WheelPosition)));
-            var WheelVelocityProjected = ((SpringLengthDiff - S.Spring.CurrentLength) / SpringLengthDiff) * ProjectOnSuspension(AddGravityStep(WheelVelocity));
-            RB.AddForceAtPosition(-WheelVelocityProjected, SpringAnchor, ForceMode.VelocityChange);
-            // Suspension always tries to apply its force to the RB
-            RB.AddForceAtPosition(SpringMaxForce + SpringForce * SpringDirection, SpringAnchor, ForceMode.VelocityChange);
-            if (SpringForce > 0) Debug.Log("good");
-            // Direction
-            var WheelVelocityX = Vector3.Project(WheelVelocity, S.Wheel.Direction);
-            var f = Vector3.Cross(transform.up, S.Wheel.Direction);
-            var WheelVelocityY = Vector3.Project(WheelVelocity, f);
-            var T = WheelVelocity;
-            //RB.AddForceAtPosition(T, WheelPosition, ForceMode.VelocityChange);
-#endif
         }
 
     }
@@ -417,6 +394,7 @@ public class CarController : MonoBehaviour
         }
 
         GetComponent<Rigidbody>().centerOfMass = CenterOfMass.transform.localPosition;
+        RB = GetComponent<Rigidbody>();
 
         SpawnAxles();
         DrawDebugWheels(Color.yellow);
