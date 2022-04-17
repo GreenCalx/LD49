@@ -12,7 +12,6 @@ public class CarController : MonoBehaviour
     //       | /  Width
     //       /
     //     Wheel
-
     [System.Serializable]
     public struct Wheel
     {
@@ -64,6 +63,7 @@ public class CarController : MonoBehaviour
         public Spring Spring;
         public Wheel Wheel;
     }
+
     Vector3 GetEnd(Suspension S)
     {
         return S.Spring.Anchor.transform.position - transform.up * S.Spring.CurrentLength;
@@ -113,6 +113,14 @@ public class CarController : MonoBehaviour
     private Rigidbody RB;
     public float VelocityCorrectionMultiplier;
 
+    // NOTE toffa : as we are using velocity to quickly correct boundary penetration
+    // we need a way to remove this velocity on the next frame or the object will continue to have momentum
+    // even after the correction is done.
+    // IMPORTANT toffa : it means we are not expecting the physics update to make the correction impossible
+    // or we would potentially slam the car into the ground again by substracting the velocity.
+    private Vector3 LastVelocityCorrection;
+    public int PhysicsSubSteps;
+
     /// ----------------------------------------------------
     /// BlueCalx for Toffo : put those shit where u want ---
     [Header("Curves")]
@@ -120,6 +128,14 @@ public class CarController : MonoBehaviour
     public int torque_movable_keyframe; // the keyframe we want to move in garage w slider
     public AnimationCurve WEIGHT;
     public int weight_movable_keyframe;
+
+    [Header("Debug")]
+    public float SpringStiffness;
+    public float SpringDamper;
+    public float SpringMax;
+    public float SpringMultiplier;
+    public float SpringMin;
+    public float SpringRestPercent;
 
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
@@ -154,7 +170,21 @@ public class CarController : MonoBehaviour
         }
     }
     /// ----------------------------------------------------
+    void UpdateSpring(ref Spring S) {
+        S.MaxLength = SpringMax;
+        S.MinLength = SpringMin;
+        S.DampValue = SpringDamper;
+        S.Stiffness = SpringStiffness;
+        S.RestLength = S.MinLength + SpringRestPercent * (S.MaxLength-S.MinLength);
+    }
 
+    void UpdateSprings() {
+
+        UpdateSpring(ref FrontAxle.Right.Spring);
+        UpdateSpring(ref FrontAxle.Left.Spring);
+        UpdateSpring(ref RearAxle.Right.Spring);
+        UpdateSpring(ref RearAxle.Left.Spring);
+    }
 
     void DrawDebugAxle(Axle A, Color C, Color C2)
     {
@@ -230,11 +260,15 @@ public class CarController : MonoBehaviour
 
     void SpawnWheels()
     {
-#if false
+#if true
         FrontAxle.Right.Wheel.Renderer = GameObject.Instantiate(FrontAxle.Right.Wheel.Renderer, GetEnd(FrontAxle.Right), FrontAxle.Right.Wheel.Renderer.transform.rotation, transform);
-        FrontAxle.Left.Wheel.Renderer = GameObject.Instantiate(FrontAxle.Left.Wheel.Renderer,GetEnd(FrontAxle.Left), FrontAxle.Left.Wheel.Renderer.transform.rotation, transform);
-        RearAxle.Right.Wheel.Renderer = GameObject.Instantiate(RearAxle.Right.Wheel.Renderer,GetEnd(RearAxle.Right), RearAxle.Right.Wheel.Renderer.transform.rotation, transform);
+        FrontAxle.Right.Wheel.Renderer.SetActive(true);
+        FrontAxle.Left.Wheel.Renderer = GameObject.Instantiate(FrontAxle.Left.Wheel.Renderer, GetEnd(FrontAxle.Left), FrontAxle.Left.Wheel.Renderer.transform.rotation, transform);
+        FrontAxle.Left.Wheel.Renderer.SetActive(true);
+        RearAxle.Right.Wheel.Renderer = GameObject.Instantiate(RearAxle.Right.Wheel.Renderer, GetEnd(RearAxle.Right), RearAxle.Right.Wheel.Renderer.transform.rotation, transform);
+        RearAxle.Right.Wheel.Renderer.SetActive(true);
         RearAxle.Left.Wheel.Renderer = GameObject.Instantiate(RearAxle.Left.Wheel.Renderer, GetEnd(RearAxle.Left), RearAxle.Left.Wheel.Renderer.transform.rotation, transform);
+        RearAxle.Left.Wheel.Renderer.SetActive(true);
 #endif
     }
 
@@ -246,7 +280,9 @@ public class CarController : MonoBehaviour
     void UpdateWheelRenderer(Suspension S)
     {
         S.Wheel.Renderer.transform.position = GetEnd(S);
+        S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(0, Quaternion.FromToRotation(transform.forward, S.Wheel.Direction).eulerAngles.y, 90);
     }
+
     void UpdateWheelsRenderer()
     {
         UpdateWheelRenderer(FrontAxle.Right);
@@ -264,7 +300,7 @@ public class CarController : MonoBehaviour
 
     Vector3 AddGravityStep(Vector3 A)
     {
-        return A + Physics.gravity * Time.fixedDeltaTime;
+        return A + (Physics.gravity * Time.fixedDeltaTime) / 4;
     }
 
     Vector3 GetWheelVelocity(Vector3 Position)
@@ -289,6 +325,12 @@ public class CarController : MonoBehaviour
 
     void ResolveSuspension(ref Suspension S)
     {
+        // IMPORTANT toffa :
+        // we need to make the last velocity correction to zero after removing it from currentVelocity!
+        var SpringAnchor = S.Spring.Anchor.transform.position;
+        //RB.AddForceAtPosition(-LastVelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
+        LastVelocityCorrection = Vector3.zero;
+
         // IMPORTANT toffa : the physic step might be too high and miss a collision!
         // Therefore we detect the collision by taking into account the next velocity application in the ray
         // as we are doing the detection by hand.
@@ -296,44 +338,66 @@ public class CarController : MonoBehaviour
         // and we project it along the suspension.
         var WheelPosition = GetEnd(S);
         var NextWheelPosition = GetNextPointPosition(WheelPosition);
-        var Epsilon = S.Spring.CurrentLength + S.Wheel.Radius + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
+        var Epsilon = S.Spring.MaxLength + S.Wheel.Radius + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
 
         RaycastHit Hit;
-        var SpringAnchor = S.Spring.Anchor.transform.position;
         var SpringDirection = -transform.up;
         S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon);
+        S.Spring.CurrentLength = S.Spring.MaxLength;
 
-        // If we hit something 
+        // NOTE toffa :
+        // We are using su stepping, meaning we are dividing the real deltatime by chunks
+        // in order to avoid problem with euler integration over time.
+        // This way we should be able to avoid slamming into the ground and jittering.
         if (S.Wheel.IsGrounded)
         {
-            Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
-            // something has been hitten, we compute the distance
-            S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
+            var SubStepDeltaTime = Time.fixedDeltaTime / PhysicsSubSteps;
+            var TotalProcessedTime = 0f;
+            var TraveledDistance = 0f;
+            var ForceToApply = Vector3.zero;
+            var InitialSpringVelocity = GetWheelVelocity(SpringAnchor);
+            var SpringVelocity = InitialSpringVelocity;
 
-            Vector3 CurrentMinimalForcePossible = Vector3.zero;
-            if (Hit.distance < S.Spring.MinLength + S.Wheel.Radius)
+            while (TotalProcessedTime < Time.fixedDeltaTime)
             {
-                // We are trying to say that the next position of the wheel should be inside the ground,
-                // so for now we compute the new values
-                Debug.Log("Boundaries penetration");
-                // say that we need the position to be corrected to NOT be inside the ground, and apply full body velocity.
-                // we do this by computing the force needed to do so, it would be the minimum possible force to apply!
-                var DistanceToCorrect = Hit.distance - (S.Spring.MinLength + S.Wheel.Radius);
-                //var WheelVelocityy = AddGravityStep(GetWheelVelocity(WheelPosition));
-                var VelocityCorrection = -(DistanceToCorrect * SpringDirection);
-                CurrentMinimalForcePossible = VelocityCorrection *4 *VelocityCorrectionMultiplier;
-                //RB.AddForceAtPosition(VelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
+                // Add gravity acceleration to velocity
+                SpringVelocity += Physics.gravity * SubStepDeltaTime;
+                var SpringVelocityProjected = ProjectOnSuspension(SpringVelocity);
+
+                var StepForce = Vector3.zero;
+
+                // Compute what is the current distance to hit point now
+                var StepDistance = Hit.distance - TraveledDistance;
+                S.Spring.CurrentLength = Mathf.Clamp(StepDistance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
+
+                S.Wheel.IsGrounded = StepDistance - (S.Spring.CurrentLength + S.Wheel.Radius) <= 0;
+                if (S.Wheel.IsGrounded)
+                {
+                    var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
+                    var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
+                    StepForce += SpringForce * SpringDirection;
+
+                    // If suspension is fully compressed then we are hard hitting the ground
+                    var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
+                    if (IsSpringFullyCompressed)
+                    {
+                        // NOTE toffa : in this instance we reflect the force as a hard hit on collider
+                        var FCollider = Vector3.Reflect(SpringVelocity, Hit.normal);
+                        // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
+                        // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
+                        // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
+                        StepForce += (FCollider - SpringVelocity);
+                    }
+                }
+
+                TotalProcessedTime += SubStepDeltaTime;
+                var SuspensionForce = ProjectOnSuspension(StepForce + SpringVelocityProjected * SubStepDeltaTime);
+                TraveledDistance += SuspensionForce.magnitude * Vector3.Dot(SuspensionForce.normalized, SpringDirection);
+
+                ForceToApply += StepForce;
+                SpringVelocity += StepForce;
+
             }
-
-            var SpringVelocity = AddGravityStep(GetWheelVelocity(SpringAnchor));
-            var SpringVelocityProjected = ProjectOnSuspension(SpringVelocity);
-            var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
-            var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
-
-            // If suspension is fully compressed then we are hard hitting the ground
-            var IsSpringFullyCompressed = (S.Spring.CurrentLength == S.Spring.MinLength ? -1 : 0);
-            var ForceToApply = IsSpringFullyCompressed * SpringVelocityProjected *VelocityCorrectionMultiplier + SpringForce * SpringDirection;
-            ForceToApply = -CurrentMinimalForcePossible + ForceToApply;
             RB.AddForceAtPosition(ForceToApply, SpringAnchor, ForceMode.VelocityChange);
 
             // Direction
@@ -357,7 +421,65 @@ public class CarController : MonoBehaviour
                 if (VelocityGravity.y < 0)
                     Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
             }
+
         }
+#if false
+        // If we hit something
+        if (S.Wheel.IsGrounded)
+        {
+            Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
+            // something has been hitten, we compute the distance
+            S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
+
+            bool IsPenetratingGround = Hit.distance < S.Spring.MinLength + S.Wheel.Radius;
+            Vector3 CurrentMinimalForcePossible = Vector3.zero;
+            if (IsPenetratingGround)
+            {
+                // We are trying to say that the next position of the wheel should be inside the ground,
+                // so for now we compute the new values
+                //Debug.Log("Boundaries penetration");
+                // say that we need the position to be corrected to NOT be inside the ground, and apply full body velocity.
+                // we do this by computing the force needed to do so, it would be the minimum possible force to apply!
+                var DistanceToCorrect = (S.Spring.MinLength + S.Wheel.Radius) - Hit.distance;
+                //var WheelVelocityy = AddGravityStep(GetWheelVelocity(WheelPosition));
+                var VelocityCorrection = (DistanceToCorrect * -SpringDirection);
+                LastVelocityCorrection = (VelocityCorrection * VelocityCorrectionMultiplier) / Time.fixedDeltaTime;
+                RB.AddForceAtPosition(LastVelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
+            }
+
+            var SpringVelocity = AddGravityStep(GetWheelVelocity(SpringAnchor));
+            var SpringVelocityProjected = ProjectOnSuspension(SpringVelocity);
+            //var SpringVelocityProjected = SpringVelocity;
+            var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
+            var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
+
+            // If suspension is fully compressed then we are hard hitting the ground
+            var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
+            var ForceToApply = SpringForce * SpringDirection;
+            //RB.AddForceAtPosition(ForceToApply, SpringAnchor, ForceMode.VelocityChange);
+
+            if (IsSpringFullyCompressed)
+            {
+                Debug.Log("Apply full force");
+                var V = RB.GetPointVelocity(SpringAnchor);
+                RB.AddForceAtPosition(-SpringVelocity * VelocityCorrectionMultiplier, SpringAnchor, ForceMode.VelocityChange);
+            }
+
+            // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
+            var Collider = Hit.collider.GetComponent<Rigidbody>();
+            if (Collider != null)
+            {
+                var VelocityGravity = Vector3.Project(GetWheelVelocity(SpringAnchor), Vector3.up);
+                VelocityGravity.y += Physics.gravity.y;
+                if (VelocityGravity.y < 0)
+                    Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
+            }
+        }
+        else
+        {
+            S.Spring.CurrentLength = S.Spring.MaxLength;
+        }
+#endif
 
     }
 
@@ -397,7 +519,7 @@ public class CarController : MonoBehaviour
         RB = GetComponent<Rigidbody>();
 
         SpawnAxles();
-        DrawDebugWheels(Color.yellow);
+        //DrawDebugWheels(Color.yellow);
     }
 
     void Update()
@@ -446,7 +568,10 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        UpdateSprings();
+
         ResolveAxle(ref FrontAxle);
         ResolveAxle(ref RearAxle);
+
     }
 }
