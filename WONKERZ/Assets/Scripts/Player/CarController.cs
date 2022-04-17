@@ -142,6 +142,7 @@ public class CarController : MonoBehaviour
     public bool FixedUpdateDone = false;
     public bool ApplyForceMultiplier = false;
 
+    public bool IsAircraft = false;
     public bool IsWater = false;
     public float SteeringAngle;
 
@@ -335,7 +336,7 @@ public class CarController : MonoBehaviour
 
     void ResolveSuspension(ref Suspension S)
     {
-        var SpringAnchor = S.Spring.Anchor.transform.position;
+         var SpringAnchor = S.Spring.Anchor.transform.position;
         // IMPORTANT toffa : the physic step might be too high and miss a collision!
         // Therefore we detect the collision by taking into account the next velocity application in the ray
         // as we are doing the detection by hand.
@@ -355,7 +356,7 @@ public class CarController : MonoBehaviour
         // We are using su stepping, meaning we are dividing the real deltatime by chunks
         // in order to avoid problem with euler integration over time.
         // This way we should be able to avoid slamming into the ground and jittering.
-        if (S.Wheel.IsGrounded)
+        if (S.Wheel.IsGrounded || IsAircraft)
         {
             var SubStepDeltaTime = Time.fixedDeltaTime / PhysicsSubSteps;
             var TotalProcessedTime = 0f;
@@ -416,11 +417,11 @@ public class CarController : MonoBehaviour
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
             var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
             var T =  -WheelVelocityY + MotorVelocity;
-            T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
+            //T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
 
             // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
-            var Collider = Hit.collider.GetComponent<Rigidbody>();
+            var Collider = Hit.collider?.GetComponent<Rigidbody>();
             if (Collider != null)
             {
                 var VelocityGravity = Vector3.Project(GetWheelVelocity(SpringAnchor), Vector3.up);
@@ -430,6 +431,7 @@ public class CarController : MonoBehaviour
             }
 
         }
+
     }
 
     void ResolveAxle(ref Axle A)
@@ -504,7 +506,18 @@ public class CarController : MonoBehaviour
         float Y = Input.GetAxis("Vertical");
         float X = Input.GetAxis("Horizontal");
 
-        CarMotor.CurrentRPM = Y * CarMotor.MaxTorque;
+        if (IsAircraft) {
+            // auto acceleration for now
+            // TODO / IMPORTANT toffa : WE REALLY NEED TO FIX THE INPOUTS GOD DAMN IT
+            // We need :
+            // - button accelerate
+            // - button break
+            // - up/down for aircraft, might control suspension on car
+            // - right/left
+            CarMotor.CurrentRPM = CarMotor.MaxTorque;
+        } else {
+            CarMotor.CurrentRPM = Y * CarMotor.MaxTorque;
+        }
 
         RearAxle.Right.Wheel.Direction = transform.forward;
         RearAxle.Left.Wheel.Direction = transform.forward;
@@ -513,11 +526,17 @@ public class CarController : MonoBehaviour
             RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
         }
 
+        if (!IsAircraft) {
         FrontAxle.Right.Wheel.Direction = transform.forward;
         FrontAxle.Left.Wheel.Direction = transform.forward;
+        }
         if (FrontAxle.IsDirection){
             FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
             FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
+            if (IsAircraft) {
+                FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Y : -Y), transform.right) * transform.forward;
+                FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Y : -Y), transform.right) * transform.forward;
+            }
         }
     }
 
