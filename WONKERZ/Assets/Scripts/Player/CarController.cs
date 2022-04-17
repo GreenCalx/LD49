@@ -137,6 +137,10 @@ public class CarController : MonoBehaviour
     public float SpringMin;
     public float SpringRestPercent;
 
+    public bool SuspensionLock = false;
+    public bool FixedUpdateDone = false;
+    public bool ApplyForceMultiplier = false;
+
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
         switch (iParm)
@@ -325,12 +329,7 @@ public class CarController : MonoBehaviour
 
     void ResolveSuspension(ref Suspension S)
     {
-        // IMPORTANT toffa :
-        // we need to make the last velocity correction to zero after removing it from currentVelocity!
         var SpringAnchor = S.Spring.Anchor.transform.position;
-        //RB.AddForceAtPosition(-LastVelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
-        LastVelocityCorrection = Vector3.zero;
-
         // IMPORTANT toffa : the physic step might be too high and miss a collision!
         // Therefore we detect the collision by taking into account the next velocity application in the ray
         // as we are doing the detection by hand.
@@ -343,7 +342,8 @@ public class CarController : MonoBehaviour
         RaycastHit Hit;
         var SpringDirection = -transform.up;
         S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon);
-        S.Spring.CurrentLength = S.Spring.MaxLength;
+        if (!SuspensionLock)
+            S.Spring.CurrentLength = S.Spring.MaxLength;
 
         // NOTE toffa :
         // We are using su stepping, meaning we are dividing the real deltatime by chunks
@@ -374,15 +374,16 @@ public class CarController : MonoBehaviour
                 if (S.Wheel.IsGrounded)
                 {
                     var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
-                    var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
-                    StepForce += SpringForce * SpringDirection;
+                    var SpringForce = -(S.Spring.Stiffness * (ApplyForceMultiplier ? SpringMultiplier : 1) * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
+                    if (!SuspensionLock)
+                        StepForce += SpringForce * SpringDirection;
 
                     // If suspension is fully compressed then we are hard hitting the ground
                     var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
                     if (IsSpringFullyCompressed)
                     {
                         // NOTE toffa : in this instance we reflect the force as a hard hit on collider
-                        var FCollider = Vector3.Reflect(SpringVelocity, Hit.normal);
+                        var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
                         // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
                         // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
                         // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
@@ -423,64 +424,6 @@ public class CarController : MonoBehaviour
             }
 
         }
-#if false
-        // If we hit something
-        if (S.Wheel.IsGrounded)
-        {
-            Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
-            // something has been hitten, we compute the distance
-            S.Spring.CurrentLength = Mathf.Clamp(Hit.distance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
-
-            bool IsPenetratingGround = Hit.distance < S.Spring.MinLength + S.Wheel.Radius;
-            Vector3 CurrentMinimalForcePossible = Vector3.zero;
-            if (IsPenetratingGround)
-            {
-                // We are trying to say that the next position of the wheel should be inside the ground,
-                // so for now we compute the new values
-                //Debug.Log("Boundaries penetration");
-                // say that we need the position to be corrected to NOT be inside the ground, and apply full body velocity.
-                // we do this by computing the force needed to do so, it would be the minimum possible force to apply!
-                var DistanceToCorrect = (S.Spring.MinLength + S.Wheel.Radius) - Hit.distance;
-                //var WheelVelocityy = AddGravityStep(GetWheelVelocity(WheelPosition));
-                var VelocityCorrection = (DistanceToCorrect * -SpringDirection);
-                LastVelocityCorrection = (VelocityCorrection * VelocityCorrectionMultiplier) / Time.fixedDeltaTime;
-                RB.AddForceAtPosition(LastVelocityCorrection, SpringAnchor, ForceMode.VelocityChange);
-            }
-
-            var SpringVelocity = AddGravityStep(GetWheelVelocity(SpringAnchor));
-            var SpringVelocityProjected = ProjectOnSuspension(SpringVelocity);
-            //var SpringVelocityProjected = SpringVelocity;
-            var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
-            var SpringForce = -(S.Spring.Stiffness * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
-
-            // If suspension is fully compressed then we are hard hitting the ground
-            var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
-            var ForceToApply = SpringForce * SpringDirection;
-            //RB.AddForceAtPosition(ForceToApply, SpringAnchor, ForceMode.VelocityChange);
-
-            if (IsSpringFullyCompressed)
-            {
-                Debug.Log("Apply full force");
-                var V = RB.GetPointVelocity(SpringAnchor);
-                RB.AddForceAtPosition(-SpringVelocity * VelocityCorrectionMultiplier, SpringAnchor, ForceMode.VelocityChange);
-            }
-
-            // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
-            var Collider = Hit.collider.GetComponent<Rigidbody>();
-            if (Collider != null)
-            {
-                var VelocityGravity = Vector3.Project(GetWheelVelocity(SpringAnchor), Vector3.up);
-                VelocityGravity.y += Physics.gravity.y;
-                if (VelocityGravity.y < 0)
-                    Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
-            }
-        }
-        else
-        {
-            S.Spring.CurrentLength = S.Spring.MaxLength;
-        }
-#endif
-
     }
 
     void ResolveAxle(ref Axle A)
@@ -488,7 +431,6 @@ public class CarController : MonoBehaviour
         ResolveSuspension(ref A.Right);
         ResolveSuspension(ref A.Left);
     }
-
 
     private void SetBodyColor(Color C)
     {
@@ -524,6 +466,9 @@ public class CarController : MonoBehaviour
 
     void Update()
     {
+        if (FixedUpdateDone)
+            ApplyForceMultiplier = false;
+        FixedUpdateDone = false;
         // TODO toiffa : remove this, it is only for testing the hub
         if (transform.localPosition.z < -300)
         {
@@ -542,7 +487,12 @@ public class CarController : MonoBehaviour
         if (Input.GetKey(KeyCode.J))
         {
             // test jump
-            SetSpringSizeMin();
+            SetSpringSizeMinAndLock();
+        } else {
+            if (Input.GetKeyUp(KeyCode.J)) {
+                ApplyForceMultiplier = true;
+            }
+            ResetSpringSizeMinAndUnlock();
         }
 
         float Y = Input.GetAxis("Vertical");
@@ -556,12 +506,18 @@ public class CarController : MonoBehaviour
         FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(45 * X, transform.up) * transform.forward;
     }
 
-    private void SetSpringSizeMin()
+    private void ResetSpringSizeMinAndUnlock() {
+       SuspensionLock = false;
+    }
+
+
+    private void SetSpringSizeMinAndLock()
     {
         FrontAxle.Right.Spring.CurrentLength = FrontAxle.Right.Spring.MinLength;
         FrontAxle.Left.Spring.CurrentLength = FrontAxle.Left.Spring.MinLength;
         RearAxle.Right.Spring.CurrentLength = RearAxle.Right.Spring.MinLength;
         RearAxle.Left.Spring.CurrentLength = RearAxle.Left.Spring.MinLength;
+        SuspensionLock = true;
     }
 
     public Vector2 MouseLastPosition = Vector2.zero;
@@ -572,6 +528,8 @@ public class CarController : MonoBehaviour
 
         ResolveAxle(ref FrontAxle);
         ResolveAxle(ref RearAxle);
+
+        FixedUpdateDone = true;
 
     }
 }

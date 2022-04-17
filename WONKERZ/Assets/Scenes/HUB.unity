@@ -204,6 +204,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 784024489, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 784024491, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 784024493, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2073436273, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: trickUI
       value: 
@@ -264,9 +276,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789202, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789202, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -31.179993
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789202, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 94
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringMax
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringMin
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringDamper
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: RefAxle.Width
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: PhysicsSubSteps
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringStiffness
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringMultiplier
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: SpringRestPercent
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: CarMotor.MaxTorque
@@ -285,8 +337,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: RefSuspension.Wheel.Renderer
+      value: 
+      objectReference: {fileID: 1127359153}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: VelocityCorrectionMultiplier
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: RefSuspension.Spring.DampRatio
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: RefSuspension.Spring.DampValue
+      value: 0.005
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: RefSuspension.Spring.Stiffness
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: TORQUE.m_Curve.Array.data[1].time
@@ -375,6 +443,14 @@ PrefabInstance:
     - target: {fileID: 5074348953211789204, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
       propertyPath: WEIGHT.m_Curve.Array.data[1].tangentMode
       value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789206, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_Drag
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5074348953211789206, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+      propertyPath: m_Mass
+      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
@@ -471,6 +547,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1127359153 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 784024489, guid: 2160a872204075f49bfdf34afc7dbf66, type: 3}
+  m_PrefabInstance: {fileID: 389472163}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1185167715 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 384985052665167888, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
