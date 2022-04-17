@@ -82,6 +82,7 @@ public class CarController : MonoBehaviour
         public Suspension Left;
         public bool IsTraction;
         public bool IsDirection;
+        public bool IsReversedDirection;
     }
 
     [System.Serializable]
@@ -140,6 +141,9 @@ public class CarController : MonoBehaviour
     public bool SuspensionLock = false;
     public bool FixedUpdateDone = false;
     public bool ApplyForceMultiplier = false;
+
+    public bool IsWater = false;
+    public float SteeringAngle;
 
     public float GroundPerturbation;
 
@@ -410,8 +414,8 @@ public class CarController : MonoBehaviour
             var WheelVelocityX = Vector3.Project(WheelVelocity, S.Wheel.Direction);
             var MotorVelocity = CarMotor.CurrentRPM * S.Wheel.Direction;
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
-            var WheelVelocityY = Vector3.Project(WheelVelocity, f);
-            var T = -WheelVelocityY + MotorVelocity;
+            var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
+            var T =  -WheelVelocityY + MotorVelocity;
             T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
 
@@ -504,8 +508,17 @@ public class CarController : MonoBehaviour
 
         RearAxle.Right.Wheel.Direction = transform.forward;
         RearAxle.Left.Wheel.Direction = transform.forward;
-        FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(45 * X, transform.up) * transform.forward;
-        FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(45 * X, transform.up) * transform.forward;
+        if (RearAxle.IsDirection){
+            RearAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
+            RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
+        }
+
+        FrontAxle.Right.Wheel.Direction = transform.forward;
+        FrontAxle.Left.Wheel.Direction = transform.forward;
+        if (FrontAxle.IsDirection){
+            FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
+            FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
+        }
     }
 
     private void ResetSpringSizeMinAndUnlock() {
