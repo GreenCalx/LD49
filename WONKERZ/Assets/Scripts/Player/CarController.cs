@@ -141,6 +141,8 @@ public class CarController : MonoBehaviour
     public bool FixedUpdateDone = false;
     public bool ApplyForceMultiplier = false;
 
+    public float GroundPerturbation;
+
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
         switch (iParm)
@@ -367,7 +369,7 @@ public class CarController : MonoBehaviour
                 var StepForce = Vector3.zero;
 
                 // Compute what is the current distance to hit point now
-                var StepDistance = Hit.distance - TraveledDistance;
+                var StepDistance = Hit.distance + (GroundPerturbation * (Mathf.Sin(SpringAnchor.x * 0.1f)-1)) - TraveledDistance;
                 S.Spring.CurrentLength = Mathf.Clamp(StepDistance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
 
                 S.Wheel.IsGrounded = StepDistance - (S.Spring.CurrentLength + S.Wheel.Radius) <= 0;
