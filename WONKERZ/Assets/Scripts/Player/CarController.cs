@@ -114,6 +114,7 @@ public class CarController : MonoBehaviour
     private Rigidbody RB;
     public float VelocityCorrectionMultiplier;
 
+    public float CurrentAccelerationTime = 0;
     // NOTE toffa : as we are using velocity to quickly correct boundary penetration
     // we need a way to remove this velocity on the next frame or the object will continue to have momentum
     // even after the correction is done.
@@ -516,7 +517,12 @@ public class CarController : MonoBehaviour
             // - right/left
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
         } else {
-            CarMotor.CurrentRPM = Y * CarMotor.MaxTorque;
+            if (Y != 0) {
+                CurrentAccelerationTime += Time.deltaTime;
+                CarMotor.CurrentRPM = Y * TORQUE.Evaluate(CurrentAccelerationTime);
+            } else {
+                CurrentAccelerationTime = 0;
+            }
         }
 
         RearAxle.Right.Wheel.Direction = transform.forward;
@@ -527,8 +533,8 @@ public class CarController : MonoBehaviour
         }
 
         if (!IsAircraft) {
-        FrontAxle.Right.Wheel.Direction = transform.forward;
-        FrontAxle.Left.Wheel.Direction = transform.forward;
+            FrontAxle.Right.Wheel.Direction = transform.forward;
+            FrontAxle.Left.Wheel.Direction = transform.forward;
         }
         if (FrontAxle.IsDirection){
             FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
