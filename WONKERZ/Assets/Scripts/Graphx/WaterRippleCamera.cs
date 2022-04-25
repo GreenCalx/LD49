@@ -10,9 +10,15 @@ public class WaterRippleCamera : MonoBehaviour {
  
     private void Awake() {
         cam = GetComponent<Camera>();
+        if (!waterPlane)
+        {
+            Debug.LogWarning("No water plane detected for WaterRippleCamera.");
+        }
     }
  
     private void Update() {
+        if (!waterPlane)
+            return;
         waterPlane.sharedMaterial.SetVector("_CamPosition", transform.position);
         waterPlane.sharedMaterial.SetFloat("_OrthographicCamSize", cam.orthographicSize);
     }

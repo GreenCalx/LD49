@@ -479,15 +479,21 @@ public class CarController : MonoBehaviour
             ApplyForceMultiplier = false;
         FixedUpdateDone = false;
         // TODO toiffa : remove this, it is only for testing the hub
-        if (transform.localPosition.z < -300)
+        // note blue : avoid npe if soundmanager is not found atm ( ex : in tracks )
+        GameObject sm  = GameObject.Find(Constants.GO_SOUNDMANAGER);
+        if (!!sm)
         {
-            GameObject.Find("SoundManager").GetComponent<SoundManager>().SwitchClip("desert");
+            if (transform.localPosition.z < -300)
+            {
+                sm.GetComponent<SoundManager>().SwitchClip("desert");
+            }
+            else
+            {
+                if (sm.GetComponent<SoundManager>().CurrentClip.Name == "desert")
+                    sm.GetComponent<SoundManager>().SwitchClip("theme");
+            }
         }
-        else
-        {
-            if (GameObject.Find("SoundManager").GetComponent<SoundManager>().CurrentClip.Name == "desert")
-                GameObject.Find("SoundManager").GetComponent<SoundManager>().SwitchClip("theme");
-        }
+
         // end TODO
 
         DrawDebugAxles(Color.blue, Color.red);

@@ -5,7 +5,7 @@ public class FollowPlayer : MonoBehaviour
     public GameObject Following;
     public Vector3 Distance;
     public float LerpMult;
-    private bool Active = true;
+    public bool Active = true;
     public CheckPointManager Mng;
     // Start is called before the first frame update
     void Start()
@@ -16,7 +16,8 @@ public class FollowPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Active) return;
+        if (!Active || !Mng) 
+            return;
 
         Distance = Mng.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
 

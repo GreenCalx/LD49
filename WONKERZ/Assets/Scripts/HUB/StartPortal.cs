@@ -6,20 +6,24 @@ using UnityEngine;
 // > ACTIVATES TRICKS AUTO
 public class StartPortal : MonoBehaviour
 {
+    [Header("Behaviour")]
+    public bool enable_tricks = false;
+    public CameraManager.CAM_TYPE camera_type;
+
+    [Header("Optionals")]
     public GameObject playerRef;
 
     // Start is called before the first frame update
     void Start()
     {
+        playerRef = Utils.getPlayerRef();
         CarController player = playerRef.GetComponent<CarController>();
         if (!!player)
         {
-            playerRef.transform.position = transform.position;
-            TrickTracker tt = playerRef.GetComponent<TrickTracker>();
-            if (!!tt)
-            {
-                tt.activate_tricks = true; // activate default in hub
-            }
+            relocatePlayer();
+            CameraManager.Instance.changeCamera(camera_type);
+            if (enable_tricks)
+                activateTricks();
         }
     }
 
@@ -28,4 +32,19 @@ public class StartPortal : MonoBehaviour
     {
         
     }
+
+    private void relocatePlayer()
+    {
+        playerRef.transform.position = transform.position;     
+    }
+
+    private void activateTricks()
+    {
+        TrickTracker tt = playerRef.GetComponent<TrickTracker>();
+        if (!!tt)
+        {
+            tt.activate_tricks = true; // activate default in hub
+        }
+    }
+
 }
