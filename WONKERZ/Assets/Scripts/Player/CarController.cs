@@ -561,7 +561,7 @@ public class CarController : MonoBehaviour
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
             var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
             var T = -WheelVelocityY + MotorVelocity;
-            //T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
+            T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             if(IsAircraft) {
                 // apply at centerofmass height
                 RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
