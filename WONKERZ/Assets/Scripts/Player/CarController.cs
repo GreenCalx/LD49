@@ -331,7 +331,7 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
-                    Drag = 0.008f;
+                    Drag = 0.008f/4;
 
                 }
                 break;
@@ -348,7 +348,7 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
-                    Drag = 0.01f;
+                    Drag = 0.01f/4;
                 }
                 break;
             case CarMode.WATER:
@@ -362,7 +362,7 @@ public class CarController : MonoBehaviour
                     IsWater = true;
                     IsAircraft = false;
 
-                    Drag = 0.003f;
+                    Drag = 0.003f/4;
                 }
                 break;
             case CarMode.DELTA:
@@ -584,6 +584,9 @@ public class CarController : MonoBehaviour
                     Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
             }
 
+            // Drag, make it not affect gravity
+            RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
+
         }
 
     }
@@ -751,8 +754,6 @@ public class CarController : MonoBehaviour
             RB.AddTorque(-Vector3.Dot(transform.right, Vector3.up) * transform.forward * TorqueForce, ForceMode.VelocityChange);
         }
 
-        // Drag, make it not affect gravity
-        RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
 
 
         FixedUpdateDone = true;
