@@ -9,6 +9,10 @@ Shader "Custom/SandNew"
         _NormalStrength ( "Normal Strength", float ) = 1
         _NoisePattern ("Noise Pattern", 2D) = "white" {}
         _NoiseMul ("Noise Mul", float) = 1
+
+        _TracesPosition ("Traces Position", 2D) = "white" {}
+        _TracesCenter ("Traces Center", Vector) = (1,1,1,1)
+        _TracesSize ("Traces Size", float) = 1
     }
     SubShader
     {
@@ -31,6 +35,10 @@ Shader "Custom/SandNew"
 
         float _NoiseMul;
 
+        sampler2D _TracesPosition;
+        float4 _TracesCenter;
+        float _TracesSize;
+
         struct Input
         {
             float2 uv_MainTex : TEXCOORD0;
@@ -45,7 +53,9 @@ Shader "Custom/SandNew"
             // Albedo comes from a texture tinted by color
             //float2 noise = float2(_NoiseMul, tex2D(_NoisePattern, IN.worldPos.xz * (_NoiseMul - _NoiseMul/10* abs(_SinTime.y))).x);
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
-            o.Albedo = c.rgb;
+            float2 TrailUV = ((IN.worldPos.xz - _TracesCenter.xz) / (_TracesSize*2)) + 0.5;
+            float IsTrail = 1-tex2D(_TracesPosition, TrailUV).x;
+            o.Albedo = c.rgb*IsTrail;
             o.Normal =  UnpackNormalWithScale(tex2D(_NormalLow, IN.worldPos.xz * (1/(_NormalScale))), _NormalStrength) ;
             // Metallic and smoothness come from slider variables
             o.Metallic = 0;
