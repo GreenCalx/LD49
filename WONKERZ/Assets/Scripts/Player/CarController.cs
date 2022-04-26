@@ -149,6 +149,8 @@ public class CarController : MonoBehaviour
 
     public float GroundPerturbation;
 
+    public float Drag;
+
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
         switch (iParm)
@@ -329,6 +331,8 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
+                    Drag = 0.008f;
+
                 }
                 break;
             case CarMode.DESERT:
@@ -344,6 +348,7 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
+                    Drag = 0.01f;
                 }
                 break;
             case CarMode.WATER:
@@ -356,6 +361,8 @@ public class CarController : MonoBehaviour
 
                     IsWater = true;
                     IsAircraft = false;
+
+                    Drag = 0.003f;
                 }
                 break;
             case CarMode.DELTA:
@@ -368,6 +375,8 @@ public class CarController : MonoBehaviour
 
                    IsAircraft = true;
                    IsWater = false;
+
+                   Drag = 0;
                 }break;
         }
     }
@@ -736,6 +745,10 @@ public class CarController : MonoBehaviour
             // try to keep the plane leveled
             RB.AddTorque( -Vector3.Dot(transform.right, Vector3.up) * transform.forward * TorqueForce, ForceMode.VelocityChange);
         }
+
+        // Drag, make it not affect gravity
+        RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1,0,1)) * Drag, ForceMode.VelocityChange);
+
 
         FixedUpdateDone = true;
 
