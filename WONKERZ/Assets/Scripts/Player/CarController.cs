@@ -373,11 +373,12 @@ public class CarController : MonoBehaviour
                     RearAxle.IsTraction = true;
                     RearAxle.IsDirection = true;
 
-                   IsAircraft = true;
-                   IsWater = false;
+                    IsAircraft = true;
+                    IsWater = false;
 
-                   Drag = 0;
-                }break;
+                    Drag = 0;
+                }
+                break;
         }
     }
 
@@ -450,7 +451,7 @@ public class CarController : MonoBehaviour
                     Mesh mesh = meshCollider.sharedMesh;
                     Renderer renderer = Hit.collider.GetComponent<MeshRenderer>();
                     Material M = null;
-                    if (renderer.materials.Length == 1)
+                    if (renderer.materials.Length == 1 || Hit.triangleIndex < 0)
                     {
                         M = renderer.materials[0];
                     }
@@ -518,7 +519,7 @@ public class CarController : MonoBehaviour
 
                 // Compute what is the current distance to hit point now
                 var StepDistance = Hit.distance + (GroundPerturbation * (Mathf.Sin(SpringAnchor.x * 0.1f) - 1)) - TraveledDistance;
-                if(!SuspensionLock)
+                if (!SuspensionLock)
                     S.Spring.CurrentLength = Mathf.Clamp(StepDistance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
 
                 S.Wheel.IsGrounded = StepDistance - (S.Spring.CurrentLength + S.Wheel.Radius) <= 0;
@@ -562,11 +563,14 @@ public class CarController : MonoBehaviour
             var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
             var T = -WheelVelocityY + MotorVelocity;
             T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
-            if(IsAircraft) {
+            if (IsAircraft)
+            {
                 // apply at centerofmass height
                 RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
                 //RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
-            } else {
+            }
+            else
+            {
                 RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
             }
 
@@ -631,7 +635,7 @@ public class CarController : MonoBehaviour
         FixedUpdateDone = false;
         // TODO toiffa : remove this, it is only for testing the hub
         // note blue : avoid npe if soundmanager is not found atm ( ex : in tracks )
-        GameObject sm  = GameObject.Find(Constants.GO_SOUNDMANAGER);
+        GameObject sm = GameObject.Find(Constants.GO_SOUNDMANAGER);
         if (!!sm)
         {
             if (transform.localPosition.z < -300)
@@ -741,13 +745,14 @@ public class CarController : MonoBehaviour
         ResolveAxle(ref FrontAxle);
         ResolveAxle(ref RearAxle);
 
-        if(IsAircraft) {
+        if (IsAircraft)
+        {
             // try to keep the plane leveled
-            RB.AddTorque( -Vector3.Dot(transform.right, Vector3.up) * transform.forward * TorqueForce, ForceMode.VelocityChange);
+            RB.AddTorque(-Vector3.Dot(transform.right, Vector3.up) * transform.forward * TorqueForce, ForceMode.VelocityChange);
         }
 
         // Drag, make it not affect gravity
-        RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1,0,1)) * Drag, ForceMode.VelocityChange);
+        RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
 
 
         FixedUpdateDone = true;
