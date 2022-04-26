@@ -16,7 +16,7 @@ Shader "Custom/SandTornado"
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows alpha:auto
+        #pragma surface surf Standard fullforwardshadows alpha:auto vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -39,6 +39,12 @@ Shader "Custom/SandTornado"
         };
 
         fixed4 _Color;
+
+        void vert (inout appdata_full v) {
+            float height = (1-v.vertex.y/80);
+            v.vertex.x += 15 * pow(height,2) * sin(_Time.y + pow(height,3)*5);
+            v.vertex.z += 15 * pow(height,2) * sin(_Time.z + pow(height,3)*5);
+        }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
