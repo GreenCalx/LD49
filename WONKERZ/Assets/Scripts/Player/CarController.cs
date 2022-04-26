@@ -54,6 +54,7 @@ public class CarController : MonoBehaviour
         /// Spring is achored to a body at this position
         public GameObject Anchor;
         public float CurrentLength;
+        public GameObject Renderer;
     }
 
     [System.Serializable]
@@ -268,10 +269,39 @@ public class CarController : MonoBehaviour
         ComputeSuspensionAnchor(ref RearAxle);
     }
 
+    void UpdateSuspensionRenderer(ref Spring S ) {
+       S.Renderer.transform.position = S.Anchor.transform.position - transform.up* S.CurrentLength/2;
+       S.Renderer.transform.localScale = new Vector3(1,S.CurrentLength/2,1);
+    }
+
+    void UpdateSuspensionRenderers() {
+        UpdateSuspensionRenderer(ref FrontAxle.Right.Spring);
+        UpdateSuspensionRenderer(ref FrontAxle.Left.Spring);
+        UpdateSuspensionRenderer(ref RearAxle.Right.Spring);
+        UpdateSuspensionRenderer(ref RearAxle.Left.Spring);
+    }
+
+    void SpawnSuspensionRenderers() {
+        SpawnSuspensionRenderer(ref FrontAxle.Right.Spring);
+        SpawnSuspensionRenderer(ref FrontAxle.Left.Spring);
+        SpawnSuspensionRenderer(ref RearAxle.Right.Spring);
+        SpawnSuspensionRenderer(ref RearAxle.Left.Spring);
+    }
+
+    void SpawnSuspensionRenderer(ref Spring S) {
+        S.Renderer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        S.Renderer.transform.parent = gameObject.transform;
+        S.Renderer.GetComponent<CapsuleCollider>().enabled = false;
+    }
+
     void SpawnSuspensions()
     {
         ComputeSuspensionsAnchor();
         SpawnWheels();
+
+        SpawnSuspensionRenderers();
+
+        UpdateSuspensionRenderers();
     }
 
     void SpawnWheels()
@@ -656,6 +686,7 @@ public class CarController : MonoBehaviour
 
         DrawDebugAxles(Color.blue, Color.red);
         UpdateWheelsRenderer();
+        UpdateSuspensionRenderers();
 
         if (Input.GetKey(KeyCode.J))
         {
