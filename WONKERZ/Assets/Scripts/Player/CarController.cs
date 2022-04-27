@@ -309,7 +309,8 @@ public class CarController : MonoBehaviour
         UpdateSuspensionRenderers();
     }
 
-    void SpawnWheel(ref Wheel W, Vector3 pos) {
+    void SpawnWheel(ref Wheel W, Vector3 pos)
+    {
         W.Renderer = GameObject.Instantiate(W.Renderer, pos, W.Renderer.transform.rotation, transform);
         W.Renderer.SetActive(true);
         W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
@@ -480,60 +481,63 @@ public class CarController : MonoBehaviour
             // disgusting...
             if (NeedCheckMaterial)
             {
-                Renderer renderer = Hit.collider.GetComponent<MeshRenderer>();
-                Material M = null;
-                if (renderer.materials.Length == 1 || Hit.triangleIndex < 0)
+                if (Hit.collider)
                 {
-                    M = renderer.materials[0];
-                }
-                else
-                {
-
-                    MeshCollider meshCollider = Hit.collider as MeshCollider;
-                    Mesh mesh = meshCollider.sharedMesh;
-
-                    int[] hitTriangle = new int[]
+                    Renderer renderer = Hit.collider.GetComponent<MeshRenderer>();
+                    Material M = null;
+                    if (renderer.materials.Length == 1 || Hit.triangleIndex < 0)
                     {
+                        M = renderer.materials[0];
+                    }
+                    else
+                    {
+
+                        MeshCollider meshCollider = Hit.collider as MeshCollider;
+                        Mesh mesh = meshCollider.sharedMesh;
+
+                        int[] hitTriangle = new int[]
+                        {
                         mesh.triangles[Hit.triangleIndex * 3 + 0],
                         mesh.triangles[Hit.triangleIndex * 3 + 1],
                         mesh.triangles[Hit.triangleIndex * 3 + 2]
-                    };
-                    for (int i = 0; i < mesh.subMeshCount && M == null; i++)
-                    {
-                        int[] subMeshTris = mesh.GetTriangles(i);
-                        for (int j = 0; j < subMeshTris.Length && M == null; j += 3)
+                        };
+                        for (int i = 0; i < mesh.subMeshCount && M == null; i++)
                         {
-                            if (subMeshTris[j] == hitTriangle[0] &&
-                                subMeshTris[j + 1] == hitTriangle[1] &&
-                                subMeshTris[j + 2] == hitTriangle[2])
+                            int[] subMeshTris = mesh.GetTriangles(i);
+                            for (int j = 0; j < subMeshTris.Length && M == null; j += 3)
                             {
-                                M = renderer.materials[i];
+                                if (subMeshTris[j] == hitTriangle[0] &&
+                                    subMeshTris[j + 1] == hitTriangle[1] &&
+                                    subMeshTris[j + 2] == hitTriangle[2])
+                                {
+                                    M = renderer.materials[i];
+                                }
                             }
                         }
                     }
-                }
 
-                string Suffix = " (Instance)";
-                if (M.name == "SandNew" + Suffix)
-                {
-                    SetMode(CarMode.DESERT);
-                }
-                else if (M.name == "WATER2" + Suffix)
-                {
-                    SetMode(CarMode.WATER);
-                }
-                else
-                {
-                    // else if (M.name == "stone" + Suffix || M.name == "snow" + Suffix || M.name == "grass" + Suffix || M.name == "cliff" + Suffix)
-                    // {
-                    //     SetMode(CarMode.ROAD);
-                    // }
+                    string Suffix = " (Instance)";
+                    if (M.name == "SandNew" + Suffix)
+                    {
+                        SetMode(CarMode.DESERT);
+                    }
+                    else if (M.name == "WATER2" + Suffix)
+                    {
+                        SetMode(CarMode.WATER);
+                    }
+                    else
+                    {
+                        // else if (M.name == "stone" + Suffix || M.name == "snow" + Suffix || M.name == "grass" + Suffix || M.name == "cliff" + Suffix)
+                        // {
+                        //     SetMode(CarMode.ROAD);
+                        // }
 
-                    SetMode(CarMode.ROAD);
+                        SetMode(CarMode.ROAD);
+                    }
                 }
-                //end disguting...
                 NeedCheckMaterial = false;
             }
+            //end disguting...
 
 
             var SubStepDeltaTime = Time.fixedDeltaTime / PhysicsSubSteps;
@@ -623,7 +627,8 @@ public class CarController : MonoBehaviour
             RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
 
         }
-        else {
+        else
+        {
             S.Wheel.Trails.GetComponent<ParticleSystem>().Stop();
         }
 
