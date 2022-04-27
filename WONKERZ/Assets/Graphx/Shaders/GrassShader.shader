@@ -7,9 +7,8 @@ Shader "Custom/GrassFSTest"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType"="Opaque" "LightMode" = "ForwardBase"}
 
-        Cull off
         Pass {
 
             CGPROGRAM
@@ -17,6 +16,7 @@ Shader "Custom/GrassFSTest"
             #pragma vertex vert
             #pragma fragment frag
             #include "UnityCG.cginc"
+            #include "AutoLight.cginc"
 
             struct DrawVertex {
                 float3 positionWS;
@@ -37,11 +37,28 @@ Shader "Custom/GrassFSTest"
                 float3 normalWS : TEXCOORD2;
 
                 float4 positionCS : SV_POSITION;
+
+                LIGHTING_COORDS(3,4)
             };
 
             float4 _BaseColor;
             float4 _TipColor;
 
+            float4 _LightColor0;
+
+            struct LightingData {
+                float3 normal;
+                float3 lightDir;
+                float3 albedo;
+                float atten;
+                };
+            half4 LightingSimpleLambert (LightingData s) {
+                half NdotL = dot (s.normal, s.lightDir);
+                half4 c;
+                c.rgb = s.albedo * _LightColor0.rgb * 3 * (NdotL*s.atten) + s.albedo*0.5;
+                c.a = 1;
+                return c;
+            }
 
             VertexOutput vert (uint vertexID : SV_VertexID) {
                 VertexOutput output = (VertexOutput)0;
@@ -58,7 +75,12 @@ Shader "Custom/GrassFSTest"
             }
 
             fixed4 frag (VertexOutput v) : SV_Target {
-                return fixed4(lerp(_BaseColor.rgb, _TipColor.rgb, v.uv), 1);
+                LightingData LD;
+                LD.atten = LIGHT_ATTENUATION(IN);
+                LD.normal = normalize(v.normalWS);
+                LD.lightDir = normalize(_WorldSpaceLightPos0.xyz);
+                LD.albedo = lerp(_BaseColor.rgb, _TipColor.rgb, v.uv);
+                return LightingSimpleLambert(LD);
             }
             ENDCG
         }
