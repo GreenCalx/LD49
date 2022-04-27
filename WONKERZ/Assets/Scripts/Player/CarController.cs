@@ -269,26 +269,30 @@ public class CarController : MonoBehaviour
         ComputeSuspensionAnchor(ref RearAxle);
     }
 
-    void UpdateSuspensionRenderer(ref Spring S ) {
-       S.Renderer.transform.position = S.Anchor.transform.position - transform.up* S.CurrentLength/2;
-       S.Renderer.transform.localScale = new Vector3(1,S.CurrentLength/2,1);
+    void UpdateSuspensionRenderer(ref Spring S)
+    {
+        S.Renderer.transform.position = S.Anchor.transform.position - transform.up * S.CurrentLength / 2;
+        S.Renderer.transform.localScale = new Vector3(1, S.CurrentLength / 2, 1);
     }
 
-    void UpdateSuspensionRenderers() {
+    void UpdateSuspensionRenderers()
+    {
         UpdateSuspensionRenderer(ref FrontAxle.Right.Spring);
         UpdateSuspensionRenderer(ref FrontAxle.Left.Spring);
         UpdateSuspensionRenderer(ref RearAxle.Right.Spring);
         UpdateSuspensionRenderer(ref RearAxle.Left.Spring);
     }
 
-    void SpawnSuspensionRenderers() {
+    void SpawnSuspensionRenderers()
+    {
         SpawnSuspensionRenderer(ref FrontAxle.Right.Spring);
         SpawnSuspensionRenderer(ref FrontAxle.Left.Spring);
         SpawnSuspensionRenderer(ref RearAxle.Right.Spring);
         SpawnSuspensionRenderer(ref RearAxle.Left.Spring);
     }
 
-    void SpawnSuspensionRenderer(ref Spring S) {
+    void SpawnSuspensionRenderer(ref Spring S)
+    {
         S.Renderer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         S.Renderer.transform.parent = gameObject.transform;
         S.Renderer.GetComponent<CapsuleCollider>().enabled = false;
@@ -361,7 +365,7 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
-                    Drag = 0.008f/4;
+                    Drag = 0.008f / 4;
 
                 }
                 break;
@@ -378,7 +382,7 @@ public class CarController : MonoBehaviour
                     IsWater = false;
                     IsAircraft = false;
 
-                    Drag = 0.01f/4;
+                    Drag = 0.01f / 4;
                 }
                 break;
             case CarMode.WATER:
@@ -392,7 +396,7 @@ public class CarController : MonoBehaviour
                     IsWater = true;
                     IsAircraft = false;
 
-                    Drag = 0.003f/4;
+                    Drag = 0.003f / 4;
                 }
                 break;
             case CarMode.DELTA:
@@ -459,7 +463,7 @@ public class CarController : MonoBehaviour
 
         RaycastHit Hit;
         var SpringDirection = -transform.up;
-        S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon, -1, QueryTriggerInteraction.Ignore);
+        S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
 
 
         if (!SuspensionLock)
@@ -475,60 +479,59 @@ public class CarController : MonoBehaviour
             // disgusting...
             if (NeedCheckMaterial)
             {
-                MeshCollider meshCollider = Hit.collider as MeshCollider;
-                if (meshCollider)
+                Renderer renderer = Hit.collider.GetComponent<MeshRenderer>();
+                Material M = null;
+                if (renderer.materials.Length == 1 || Hit.triangleIndex < 0)
                 {
+                    M = renderer.materials[0];
+                }
+                else
+                {
+
+                    MeshCollider meshCollider = Hit.collider as MeshCollider;
                     Mesh mesh = meshCollider.sharedMesh;
-                    Renderer renderer = Hit.collider.GetComponent<MeshRenderer>();
-                    Material M = null;
-                    if (renderer.materials.Length == 1 || Hit.triangleIndex < 0)
+
+                    int[] hitTriangle = new int[]
                     {
-                        M = renderer.materials[0];
-                    }
-                    else
-                    {
-                        int[] hitTriangle = new int[]
-                        {
                         mesh.triangles[Hit.triangleIndex * 3 + 0],
                         mesh.triangles[Hit.triangleIndex * 3 + 1],
                         mesh.triangles[Hit.triangleIndex * 3 + 2]
-                        };
-                        for (int i = 0; i < mesh.subMeshCount && M == null; i++)
+                    };
+                    for (int i = 0; i < mesh.subMeshCount && M == null; i++)
+                    {
+                        int[] subMeshTris = mesh.GetTriangles(i);
+                        for (int j = 0; j < subMeshTris.Length && M == null; j += 3)
                         {
-                            int[] subMeshTris = mesh.GetTriangles(i);
-                            for (int j = 0; j < subMeshTris.Length && M == null; j += 3)
+                            if (subMeshTris[j] == hitTriangle[0] &&
+                                subMeshTris[j + 1] == hitTriangle[1] &&
+                                subMeshTris[j + 2] == hitTriangle[2])
                             {
-                                if (subMeshTris[j] == hitTriangle[0] &&
-                                    subMeshTris[j + 1] == hitTriangle[1] &&
-                                    subMeshTris[j + 2] == hitTriangle[2])
-                                {
-                                    M = renderer.materials[i];
-                                }
+                                M = renderer.materials[i];
                             }
                         }
                     }
-
-                    string Suffix = " (Instance)";
-                    if (M.name == "SandNew" + Suffix)
-                    {
-                        SetMode(CarMode.DESERT);
-                    }
-                    else if (M.name == "WATER2" + Suffix)
-                    {
-                        SetMode(CarMode.WATER);
-                    }
-                    else
-                    {
-                        // else if (M.name == "stone" + Suffix || M.name == "snow" + Suffix || M.name == "grass" + Suffix || M.name == "cliff" + Suffix)
-                        // {
-                        //     SetMode(CarMode.ROAD);
-                        // }
-
-                        SetMode(CarMode.ROAD);
-                    }
-                    //end disguting...
-                    NeedCheckMaterial = false;
                 }
+
+                string Suffix = " (Instance)";
+                if (M.name == "SandNew" + Suffix)
+                {
+                    SetMode(CarMode.DESERT);
+                }
+                else if (M.name == "WATER2" + Suffix)
+                {
+                    SetMode(CarMode.WATER);
+                }
+                else
+                {
+                    // else if (M.name == "stone" + Suffix || M.name == "snow" + Suffix || M.name == "grass" + Suffix || M.name == "cliff" + Suffix)
+                    // {
+                    //     SetMode(CarMode.ROAD);
+                    // }
+
+                    SetMode(CarMode.ROAD);
+                }
+                //end disguting...
+                NeedCheckMaterial = false;
             }
 
 
