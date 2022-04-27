@@ -19,6 +19,7 @@ public class CarController : MonoBehaviour
         public float Radius;
         public float Grip;
         public GameObject Renderer;
+        public GameObject Trails;
 
         public Vector3 Direction;
         public bool IsGrounded;
@@ -308,18 +309,18 @@ public class CarController : MonoBehaviour
         UpdateSuspensionRenderers();
     }
 
+    void SpawnWheel(ref Wheel W, Vector3 pos) {
+        W.Renderer = GameObject.Instantiate(W.Renderer, pos, W.Renderer.transform.rotation, transform);
+        W.Renderer.SetActive(true);
+        W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
+    }
+
     void SpawnWheels()
     {
-#if true
-        FrontAxle.Right.Wheel.Renderer = GameObject.Instantiate(FrontAxle.Right.Wheel.Renderer, GetEnd(FrontAxle.Right), FrontAxle.Right.Wheel.Renderer.transform.rotation, transform);
-        FrontAxle.Right.Wheel.Renderer.SetActive(true);
-        FrontAxle.Left.Wheel.Renderer = GameObject.Instantiate(FrontAxle.Left.Wheel.Renderer, GetEnd(FrontAxle.Left), FrontAxle.Left.Wheel.Renderer.transform.rotation, transform);
-        FrontAxle.Left.Wheel.Renderer.SetActive(true);
-        RearAxle.Right.Wheel.Renderer = GameObject.Instantiate(RearAxle.Right.Wheel.Renderer, GetEnd(RearAxle.Right), RearAxle.Right.Wheel.Renderer.transform.rotation, transform);
-        RearAxle.Right.Wheel.Renderer.SetActive(true);
-        RearAxle.Left.Wheel.Renderer = GameObject.Instantiate(RearAxle.Left.Wheel.Renderer, GetEnd(RearAxle.Left), RearAxle.Left.Wheel.Renderer.transform.rotation, transform);
-        RearAxle.Left.Wheel.Renderer.SetActive(true);
-#endif
+        SpawnWheel(ref FrontAxle.Right.Wheel, GetEnd(FrontAxle.Right));
+        SpawnWheel(ref FrontAxle.Left.Wheel, GetEnd(FrontAxle.Left));
+        SpawnWheel(ref RearAxle.Right.Wheel, GetEnd(RearAxle.Right));
+        SpawnWheel(ref RearAxle.Left.Wheel, GetEnd(RearAxle.Left));
     }
 
     void SpawnAxles()
@@ -604,6 +605,7 @@ public class CarController : MonoBehaviour
             }
             else
             {
+                S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
                 RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
             }
 
@@ -620,6 +622,9 @@ public class CarController : MonoBehaviour
             // Drag, make it not affect gravity
             RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
 
+        }
+        else {
+            S.Wheel.Trails.GetComponent<ParticleSystem>().Stop();
         }
 
     }
