@@ -1,28 +1,34 @@
 using UnityEngine;
 
-public class FollowPlayer : MonoBehaviour
+public class FollowPlayer : PlayerCamera
 {
-    public GameObject Following;
     public Vector3 Distance;
     public float LerpMult;
     public bool Active = true;
-    public CheckPointManager Mng;
+    public CheckPointManager CPM;
     // Start is called before the first frame update
+    
+    void Awake()
+    {
+        camType = CAM_TYPE.TRACK;
+    }
+
     void Start()
     {
-
+        playerRef = Utils.getPlayerRef();
+        CPM = FindObjectOfType<CheckPointManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!Active || !Mng) 
+        if (!Active || !CPM) 
             return;
 
-        Distance = Mng.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
+        Distance = CPM.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
 
-        var FinalPosition = Following.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
-        var FinalPositionDirection = Following.transform.position - FinalPosition;
+        var FinalPosition = playerRef.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
+        var FinalPositionDirection = playerRef.transform.position - FinalPosition;
         var MaxDistancePosition = (FinalPosition - (FinalPositionDirection * LerpMult));
         var MaxDistance = MaxDistancePosition.magnitude;
 
@@ -34,7 +40,7 @@ public class FollowPlayer : MonoBehaviour
 
         transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
 
-        transform.LookAt(Following.transform.position);
+        transform.LookAt(playerRef.transform.position);
 
     }
 }

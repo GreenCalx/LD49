@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class ManualCamera : MonoBehaviour
+public class ManualCamera : PlayerCamera
 {
     [SerializeField] private Camera cam;
     
@@ -25,12 +25,14 @@ public class ManualCamera : MonoBehaviour
     
     void Awake()
     {
-        focusPoint = focus.position;
-        transform.localRotation = Quaternion.Euler(orbitAngles);
+        camType = CAM_TYPE.HUB;
     }
     private void Start()
     {
-
+        playerRef = Utils.getPlayerRef();
+        focus = playerRef.transform;
+        focusPoint = focus.position;
+        transform.localRotation = Quaternion.Euler(orbitAngles);
     }
 
     void Update()

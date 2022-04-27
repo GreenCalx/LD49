@@ -26,6 +26,6 @@ public struct Utils
     public static void exitOnError(string e)
     {
         Debug.LogError(e);
-        // CRASH.EXIT ?
+        Application.Quit();
     }
 }

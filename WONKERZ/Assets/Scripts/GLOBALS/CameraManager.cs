@@ -4,27 +4,16 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    public enum CAM_TYPE {
-        UNDEFINED=0,
-        HUB=1,
-        TRACK=2,
-        BOSS=3
-    }
-    public class CAM2CAM
-    { 
-        public CAM_TYPE type;
-        public Camera   cam;
-    }
 
-    public CAM_TYPE curr_camera_type;
-    [SerializeField]
-    public readonly CAM2CAM[] cameras;
+    public GameCamera active_camera;
+    public Dictionary<GameCamera.CAM_TYPE, GameCamera> cameras = 
+        new Dictionary<GameCamera.CAM_TYPE, GameCamera>();
     public GameObject playerRef;
     private static CameraManager inst;
 
     public static CameraManager Instance
     { 
-        get { return inst ?? (inst = new GameObject("CameraManager").AddComponent<CameraManager>()); }
+        get { return inst ?? (inst = GameObject.Find(Constants.GO_MANAGERS).GetComponent<CameraManager>()); }
         private set { inst = value; }
     }
 
@@ -43,54 +32,58 @@ public class CameraManager : MonoBehaviour
         
     }
 
-    public void changeCamera( CAM_TYPE iNewCamType )
+    // Find Camera from its type within current scene
+    // Only one per CAM_TYPE is retrieved for now as we don't need more
+    // Thus if we want to have multiple cameras for the hub, we'll need to update
+    // this logic.
+    private GameCamera findCameraInScene( GameCamera.CAM_TYPE iType)
     {
-        curr_camera_type = iNewCamType;
-        switch(curr_camera_type)
-        {
-            case CAM_TYPE.HUB:
-                setHUBCamera(true);
-                setTrackCamera(false);
-                break;
-            case CAM_TYPE.TRACK:
-                setHUBCamera(false);
-                setTrackCamera(true);
-                break;
-            case CAM_TYPE.BOSS:
-                break;
-            default:
-                break;
-        }
-    }
+        GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
+        GameCamera retval = null;
 
-    private void setHUBCamera(bool iIsActive)
-    {
-        GameObject cam = GameObject.Find(Constants.GO_HUBCAMERA);
-        if (!!cam)
+        for (int i=0; i<game_cams.Length;i++)
         {
-            cam.SetActive(iIsActive);
-            ManualCamera mc = cam.GetComponent<ManualCamera>();
-            if (!!mc)
+            GameCamera currcam = game_cams[i];
+            if (currcam.camType==iType)
             {
-                mc.enabled = iIsActive;
-                mc.focus = playerRef.transform;
+                retval = currcam;
+                break;
             }
         }
+        return retval;
     }
 
-    private void setTrackCamera(bool iIsActive)
+    public void changeCamera( GameCamera.CAM_TYPE iNewCamType )
     {
-        FollowPlayer cam = playerRef.transform.parent.gameObject.GetComponentInChildren<FollowPlayer>();
-        if (!!cam)
+        // 1 : Do I have a CAM_TYPE available ?
+        if ( !cameras.ContainsKey(iNewCamType) )
         {
-            cam.Active = iIsActive;
-            cam.enabled = iIsActive;
-            cam.Following = playerRef;
-            GameObject cp_mgr_go = GameObject.Find( Constants.GO_CPManager );
-            if (!!cp_mgr_go	)
+            // > N : Try to find CAM_TYPE in scene
+            GameCamera new_cam = findCameraInScene(iNewCamType);
+            if (new_cam==null)
             {
-                CheckPointManager cpm = cp_mgr_go.GetComponent<CheckPointManager>();
-                cam.Mng = cpm;
+                Debug.LogError("Unable to find a camera for type : " + iNewCamType.ToString());
+                return;
+            }
+            //  > Add it to mgr cams
+            cameras.Add( iNewCamType, new_cam);
+        }
+
+        // 2 : Deactivate active_camera
+        if (active_camera!=null)
+            active_camera.gameObject.SetActive(false);
+
+        // 3 : Replace active_camera with the new camera, set it as main camera
+        if ( !cameras.TryGetValue(iNewCamType, out active_camera) )
+        {
+            Debug.LogError("Failed to switch Camera. Selecting first of the list as fallback.");
+            if ( cameras.Count > 0)
+            {
+                active_camera = cameras[0];
+                active_camera.gameObject.SetActive(true);
+            } else {
+                Debug.LogError("No Camera available in CameraManager. Exiting changeCamera().");
+                return;
             }
         }
     }

@@ -385,11 +385,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b3b8c7a52182ad4f950c79eb1905071, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Following: {fileID: 5074348953397788722}
+  camType: 2
+  playerRef: {fileID: 0}
   Distance: {x: 0, y: 20, z: -20}
   LerpMult: 100
   Active: 1
-  Mng: {fileID: 0}
+  CPM: {fileID: 0}
 --- !u!4 &334118620
 Transform:
   m_ObjectHideFlags: 0
@@ -15668,6 +15669,10 @@ PrefabInstance:
       propertyPath: focus
       value: 
       objectReference: {fileID: 5074348953397788721}
+    - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
+      propertyPath: camType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
 --- !u!1 &2012283353
@@ -20802,7 +20807,7 @@ PrefabInstance:
       objectReference: {fileID: 5074348953397788722}
     - target: {fileID: 3812381100351190615, guid: ee63046c778f6084ea060e8fdfc168b3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4104595774437131136, guid: ee63046c778f6084ea060e8fdfc168b3, type: 3}
       propertyPath: m_RootOrder

@@ -27,7 +27,7 @@ public class PlayerColorManager : MonoBehaviour
 
     public static PlayerColorManager Instance
     { 
-        get { return inst ?? (inst = new GameObject("PlayerColorManager").AddComponent<PlayerColorManager>()); }
+        get { return inst ?? (inst = GameObject.Find(Constants.GO_MANAGERS).GetComponent<PlayerColorManager>()); }
         private set { inst = value; }
     }
 

@@ -8,7 +8,7 @@ public class StartPortal : MonoBehaviour
 {
     [Header("Behaviour")]
     public bool enable_tricks = false;
-    public CameraManager.CAM_TYPE camera_type;
+    public GameCamera.CAM_TYPE camera_type;
 
     [Header("Optionals")]
     public GameObject playerRef;
