@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CameraManager : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class CameraManager : MonoBehaviour
     public GameCamera active_camera;
     public Dictionary<GameCamera.CAM_TYPE, GameCamera> cameras = 
         new Dictionary<GameCamera.CAM_TYPE, GameCamera>();
-    public GameObject playerRef;
+    //public GameObject playerRef;
     private static CameraManager inst;
 
     public static CameraManager Instance
@@ -21,9 +22,7 @@ public class CameraManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        playerRef = Utils.getPlayerRef();
-
-        DontDestroyOnLoad(gameObject);
+        //playerRef = Utils.getPlayerRef();
     }
 
     // Update is called once per frame
@@ -55,6 +54,15 @@ public class CameraManager : MonoBehaviour
 
     public void changeCamera( GameCamera.CAM_TYPE iNewCamType )
     {
+        // 0 : Clean up nulls CameraType to free space for new ones
+        var null_keys = cameras.Where( e => e.Value == null)
+                                .Select( e => e.Key)
+                                .ToList();
+        foreach(var rm_me in null_keys )
+        {
+            cameras.Remove(rm_me);
+        }
+
         // 1 : Do I have a CAM_TYPE available ?
         if ( !cameras.ContainsKey(iNewCamType) )
         {
@@ -71,7 +79,10 @@ public class CameraManager : MonoBehaviour
 
         // 2 : Deactivate active_camera
         if (active_camera!=null)
+        {
             active_camera.gameObject.SetActive(false);
+            active_camera.enabled = false;
+        }
 
         // 3 : Replace active_camera with the new camera, set it as main camera
         if ( !cameras.TryGetValue(iNewCamType, out active_camera) )
@@ -86,5 +97,15 @@ public class CameraManager : MonoBehaviour
                 return;
             }
         }
+        // 4 : Refresh camera reference if we lost it (null)
+        if ( active_camera == null )
+        {
+            GameCamera new_cam = findCameraInScene(iNewCamType);
+            
+        }
+
+        active_camera.gameObject.SetActive(true);
+        active_camera.enabled = true;
+        active_camera.init();
     }
 }

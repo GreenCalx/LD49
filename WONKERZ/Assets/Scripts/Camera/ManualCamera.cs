@@ -29,6 +29,11 @@ public class ManualCamera : PlayerCamera
     }
     private void Start()
     {
+
+    }
+
+    public override void init()
+    {
         playerRef = Utils.getPlayerRef();
         focus = playerRef.transform;
         focusPoint = focus.position;

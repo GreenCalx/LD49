@@ -20,16 +20,36 @@ public class CheckPointManager : MonoBehaviour
         if (checkpoints.Count <= 0)
         {
             Debug.LogWarning("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
+            findCheckpoints();
+        }
+        if (player == null)
+        {
+            player = Utils.getPlayerRef();
+        }
+        if (Cam == null)
+        {
+            Cam = CameraManager.Instance.active_camera.gameObject;
         }
         last_checkpoint = race_start;
 
     }
+
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown("r"))
             loadLastCP();
+    }
+
+    private void findCheckpoints()
+    {
+        CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
+        checkpoints = new List<GameObject>(CPs.Length);
+        for (int i=0;i<CPs.Length;i++)
+        {
+            checkpoints.Add( CPs[i].gameObject );
+        }
     }
 
     public void subscribe(GameObject iCP)

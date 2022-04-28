@@ -13,7 +13,7 @@ public class StartPortal : MonoBehaviour
     [Header("Optionals")]
     public GameObject playerRef;
 
-    // Start is called before the first frame update
+    // Start is called before the first frame updatezd
     void Start()
     {
         playerRef = Utils.getPlayerRef();
@@ -21,6 +21,7 @@ public class StartPortal : MonoBehaviour
         if (!!player)
         {
             relocatePlayer();
+
             CameraManager.Instance.changeCamera(camera_type);
             if (enable_tricks)
                 activateTricks();
@@ -35,7 +36,15 @@ public class StartPortal : MonoBehaviour
 
     private void relocatePlayer()
     {
-        playerRef.transform.position = transform.position;     
+        playerRef.transform.position = transform.position;   
+        playerRef.transform.rotation = Quaternion.identity;  
+
+        Rigidbody rb2d = playerRef.GetComponentInChildren<Rigidbody>();
+        if (!!rb2d)
+        {
+            rb2d.velocity           = Vector3.zero;
+            rb2d.angularVelocity    = Vector3.zero;
+        }
     }
 
     private void activateTricks()

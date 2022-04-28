@@ -17,4 +17,9 @@ public class PlayerCamera : GameCamera
     {
         
     }
+
+    public override void init() 
+    {
+        playerRef = Utils.getPlayerRef();
+    }
 }

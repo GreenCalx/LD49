@@ -40,9 +40,6 @@ public class PlayerColorManager : MonoBehaviour
             if (!!p)
                 playerRefs.Add( p );
         }
-
-        // to keep it inbetween scenes if we store values etc..
-        DontDestroyOnLoad(gameObject);
     }
 
     public void colorize(Color iColor)

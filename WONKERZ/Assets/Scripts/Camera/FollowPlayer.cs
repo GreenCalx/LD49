@@ -15,15 +15,24 @@ public class FollowPlayer : PlayerCamera
 
     void Start()
     {
+
+    }
+
+    public override void init() 
+    {
         playerRef = Utils.getPlayerRef();
-        CPM = FindObjectOfType<CheckPointManager>();
+        //CPM = FindObjectOfType<CheckPointManager>();
+        CPM = GameObject.Find(Constants.GO_CPManager).GetComponent<CheckPointManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!Active || !CPM) 
+        if (!Active) 
             return;
+        if (!CPM)
+            init();
+
 
         Distance = CPM.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
 

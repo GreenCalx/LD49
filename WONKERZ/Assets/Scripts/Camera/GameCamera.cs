@@ -25,4 +25,6 @@ public class GameCamera : MonoBehaviour
     {
         
     }
+
+    public virtual void init() {}
 }

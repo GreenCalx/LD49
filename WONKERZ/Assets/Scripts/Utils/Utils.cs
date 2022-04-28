@@ -5,6 +5,7 @@ using UnityEngine;
 public struct Utils
 {
 
+    // TODO : Cache player reference to avoid high cost lookup
     public static GameObject getPlayerRef()
     {
         GameObject playerRef = null;
@@ -21,7 +22,6 @@ public struct Utils
         }
         return playerRef;
     }
-
         
     public static void exitOnError(string e)
     {
