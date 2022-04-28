@@ -23,6 +23,7 @@ public class CarController : MonoBehaviour
 
         public Vector3 Direction;
         public bool IsGrounded;
+        public Vector3 GroundVelocity;
     }
 
     [System.Serializable]
@@ -152,6 +153,9 @@ public class CarController : MonoBehaviour
     public float GroundPerturbation;
 
     public float Drag;
+
+    public bool IsHooked;
+    public GameObject grapin;
 
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
@@ -465,8 +469,19 @@ public class CarController : MonoBehaviour
 
         RaycastHit Hit;
         var SpringDirection = -transform.up;
-        S.Wheel.IsGrounded = Physics.Raycast(SpringAnchor, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
 
+        bool IsCurrentlyGrounded = Physics.SphereCast(SpringAnchor, 1f, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
+
+        if (S.Wheel.IsGrounded && !IsCurrentlyGrounded)
+        {
+            // remove collider velocity
+        }
+        if (!S.Wheel.IsGrounded && IsCurrentlyGrounded)
+        {
+            // add collider velocity
+        }
+
+        S.Wheel.IsGrounded = IsCurrentlyGrounded;
 
         if (!SuspensionLock)
             S.Spring.CurrentLength = S.Spring.MaxLength;
@@ -599,7 +614,7 @@ public class CarController : MonoBehaviour
             var MotorVelocity = CarMotor.CurrentRPM * S.Wheel.Direction;
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
             var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
-            var T = -WheelVelocityY + MotorVelocity;
+            var T = Vector3.Scale(-WheelVelocityY, new Vector3(0.1f, 0.1f, 0.1f)) + MotorVelocity;
             T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             if (IsAircraft)
             {
@@ -610,7 +625,9 @@ public class CarController : MonoBehaviour
             else
             {
                 S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
-                RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
+
+                RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
+                //RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
             }
 
             // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
@@ -626,6 +643,19 @@ public class CarController : MonoBehaviour
             // Drag, make it not affect gravity
             RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
 
+            if (Hit.collider?.GetComponentInParent<BridgePhysX>())
+            {
+                var v = Hit.collider.GetComponentInParent<BridgePhysX>().Velocity;
+                RB.AddForceAtPosition(Vector3.Scale(v - Vector3.Project(RB.velocity, v), new Vector3(1, 0, 1)) / 4, SpringAnchor, ForceMode.VelocityChange);
+            }
+
+            if (Hit.collider?.GetComponent<testphysx>())
+            {
+                var v = Hit.collider.GetComponent<testphysx>().Velocity;
+                var RBVelProjected = Vector3.Project(RB.velocity, v);
+                var VelDiff = Vector3.Scale((v - RBVelProjected), new Vector3(1, 0, 1));
+                RB.AddForce(VelDiff / 4, ForceMode.VelocityChange);
+            }
         }
         else
         {
@@ -798,6 +828,20 @@ public class CarController : MonoBehaviour
             RB.AddTorque(-Vector3.Dot(transform.right, Vector3.up) * transform.forward * TorqueForce, ForceMode.VelocityChange);
         }
 
+        if (IsHooked)
+        {
+            var HookDirY = grapin.GetComponent<grapintest>().D.normalized;
+            var Rot = grapin.GetComponent<grapintest>().grapin.transform.localRotation;
+            var HookDirZ = Rot * Vector3.forward;
+            var HookDirX = Rot * Vector3.right;
+            //RB.velocity = Vector3.Scale(RB.velocity, HookDirX) + Vector3.Scale(RB.velocity, HookDirY) - Vector3.Scale(RB.velocity, HookDirY);
+            var VProj = AddGravityStep(RB.velocity);
+            var VProjX = Vector3.Project(VProj, -HookDirX);
+            var VProjZ = Vector3.Project(VProj, HookDirZ);
+            RB.velocity = VProjX + VProjZ;
+            //RB.velocity = RB.velocity - Physics.gravity * Time.fixedDeltaTime - Vector3.Project(RB.velocity, HookDirY) + Vector3.Project(Vector3.Project(RB.velocity, HookDirY), HookDirX) + Vector3.Project(Vector3.Project(RB.velocity, HookDirY), HookDirZ);
+
+        }
 
 
         FixedUpdateDone = true;

@@ -8,16 +8,26 @@ public class BridgePhysX : MonoBehaviour
     private Vector3 StartRot;
     private Vector3 StartTransf;
     private float CurrentTime = 0;
+    public Vector3 Velocity;
+    private Vector3 LastPosition;
     // Start is called before the first frame update
     void Start()
     {
         StartRot = transform.rotation.eulerAngles;
         StartTransf = transform.position;
+        LastPosition = StartTransf;
+    }
+
+    void FixedUpdate() {
+        var NewPosition = transform.position;
+        Velocity = (NewPosition - LastPosition)/Time.deltaTime;
+        LastPosition = NewPosition;
     }
 
     // Update is called once per frame
     void Update()
     {
+
         CurrentTime += Time.deltaTime;
 
         var Lerp = Mathf.Sin(CurrentTime / OscFrequency);
@@ -29,6 +39,8 @@ public class BridgePhysX : MonoBehaviour
 
         var Tran = new Vector3(StartTransf.x, StartTransf.y + HalfLerp * TransStrength.x, StartTransf.z - Lerp * TransStrength.y);
         transform.position = Tran;
+
+
 
     }
 }
