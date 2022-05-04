@@ -2,16 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/**
-*   A static cinematic camera
-*/
-public class CinematicCamera : GameCamera
+public class TransitionCamera : CinematicCamera
 {
-    public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.HUB;
-    protected bool launched = false;
     void Awake()
     {
-        camType = CAM_TYPE.CINEMATIC;
+        camType = CAM_TYPE.TRANSITION;
     }
     // Start is called before the first frame update
     void Start()
@@ -30,12 +25,12 @@ public class CinematicCamera : GameCamera
 
     }
 
-    public virtual void launch()
+    public override void launch()
     {
         launched = true;
     }
 
-    public virtual void end()
+    public override void end()
     {
         launched = false;
         CameraManager.Instance.changeCamera(camTypeOnFinish);
