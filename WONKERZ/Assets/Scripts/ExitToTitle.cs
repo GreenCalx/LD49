@@ -17,7 +17,7 @@ public class ExitToTitle : MonoBehaviour
     {
         if (enabler)
         {
-            if ( Input.GetKey(KeyCode.Escape) )
+            //if ( Input.GetKey(KeyCode.Escape) )
             {
                 SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
             }

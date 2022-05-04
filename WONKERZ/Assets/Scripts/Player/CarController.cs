@@ -1,8 +1,67 @@
 using System.Collections.Generic; // KeyValuePair
 using UnityEngine;
 
-public class CarController : MonoBehaviour
+public class CarController : MonoBehaviour, IControllable
 {
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+        var Turn = Entry.Inputs["Turn"].AxisValue;
+        var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
+        CarMotor.CurrentRPM = 0;
+
+        // Accelration
+        if(!IsAircraft)
+        {
+            if (Acceleration != 0)
+            {
+                CurrentAccelerationTime += Time.deltaTime;
+                CarMotor.CurrentRPM = Acceleration * TORQUE.Evaluate(CurrentAccelerationTime);
+            }
+            else
+            {
+                CurrentAccelerationTime = 0;
+            }
+
+            FrontAxle.Right.Wheel.Direction = transform.forward;
+            FrontAxle.Left.Wheel.Direction = transform.forward;
+        }
+
+        // direction
+        RearAxle.Right.Wheel.Direction = transform.forward;
+        RearAxle.Left.Wheel.Direction = transform.forward;
+
+        if (RearAxle.IsDirection)
+        {
+            RearAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+            RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+        }
+
+        if (FrontAxle.IsDirection)
+        {
+            FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Turn : -Turn), transform.up) * transform.forward;
+            FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Turn : -Turn), transform.up) * transform.forward;
+            if (IsAircraft)
+            {
+                FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
+                FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
+            }
+        }
+
+        // jump
+        if (Entry.Inputs["Jump"].Down)
+        {
+            SetSpringSizeMinAndLock();
+        }
+        else
+        {
+            if (Entry.Inputs["Jump"].IsUp)
+            {
+                ApplyForceMultiplier = true;
+            }
+            ResetSpringSizeMinAndUnlock();
+        }
+    }
+    
     // A car is defined as having 4 springs attached to the body,
     // and 4 wheels attached to the spring.
     // This is defined as an AxleInfo structure, that create everything at runtime.
@@ -702,6 +761,8 @@ public class CarController : MonoBehaviour
         SpawnAxles();
         //DrawDebugWheels(Color.yellow);
         SetMode(CurrentMode);
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
     void Update()
@@ -731,22 +792,6 @@ public class CarController : MonoBehaviour
         UpdateWheelsRenderer();
         UpdateSuspensionRenderers();
 
-        if (Input.GetKey(KeyCode.J))
-        {
-            // test jump
-            SetSpringSizeMinAndLock();
-        }
-        else
-        {
-            if (Input.GetKeyUp(KeyCode.J))
-            {
-                ApplyForceMultiplier = true;
-            }
-            ResetSpringSizeMinAndUnlock();
-        }
-
-        float Y = Input.GetAxis("Vertical");
-        float X = Input.GetAxis("Horizontal");
 
         if (IsAircraft)
         {
@@ -758,42 +803,6 @@ public class CarController : MonoBehaviour
             // - up/down for aircraft, might control suspension on car
             // - right/left
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
-        }
-        else
-        {
-            if (Y != 0)
-            {
-                CurrentAccelerationTime += Time.deltaTime;
-                CarMotor.CurrentRPM = Y * TORQUE.Evaluate(CurrentAccelerationTime);
-            }
-            else
-            {
-                CurrentAccelerationTime = 0;
-            }
-        }
-
-        RearAxle.Right.Wheel.Direction = transform.forward;
-        RearAxle.Left.Wheel.Direction = transform.forward;
-        if (RearAxle.IsDirection)
-        {
-            RearAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
-            RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
-        }
-
-        if (!IsAircraft)
-        {
-            FrontAxle.Right.Wheel.Direction = transform.forward;
-            FrontAxle.Left.Wheel.Direction = transform.forward;
-        }
-        if (FrontAxle.IsDirection)
-        {
-            FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
-            FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? X : -X), transform.up) * transform.forward;
-            if (IsAircraft)
-            {
-                FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Y : -Y), transform.right) * transform.forward;
-                FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Y : -Y), transform.right) * transform.forward;
-            }
         }
     }
 
@@ -839,12 +848,8 @@ public class CarController : MonoBehaviour
             var VProjX = Vector3.Project(VProj, -HookDirX);
             var VProjZ = Vector3.Project(VProj, HookDirZ);
             RB.velocity = VProjX + VProjZ;
-            //RB.velocity = RB.velocity - Physics.gravity * Time.fixedDeltaTime - Vector3.Project(RB.velocity, HookDirY) + Vector3.Project(Vector3.Project(RB.velocity, HookDirY), HookDirX) + Vector3.Project(Vector3.Project(RB.velocity, HookDirY), HookDirZ);
-
         }
 
-
         FixedUpdateDone = true;
-
     }
 }

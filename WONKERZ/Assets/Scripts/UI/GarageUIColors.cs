@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GarageUIColors : GarageUISelectable
+public class GarageUIColors : GarageUISelectable, IControllable
 {
     public GameObject UIGarageColorPicker_Ref;
     public float selector_latch;
@@ -17,17 +17,17 @@ public class GarageUIColors : GarageUISelectable
     // Start is called before the first frame update
     void Start()
     {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!is_active)
-            return;
+    void OnDestroy() {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
 
+    void IControllable.ProcessInputs(InputManager.InputData Entry){
         if ( elapsed_time > selector_latch )
         {
-            if ( Input.GetAxis("Horizontal") > 0 )
+            if ( Entry.Inputs["Turn"].AxisValue > 0 )
             {
                 deselect(i_color);
 
@@ -37,7 +37,7 @@ public class GarageUIColors : GarageUISelectable
                 select(i_color);
                 elapsed_time = 0f;
             }
-            else if ( Input.GetAxis("Horizontal") < 0 )
+            else if (  Entry.Inputs["Turn"].AxisValue < 0 )
             {
                 deselect(i_color);
 
@@ -51,10 +51,15 @@ public class GarageUIColors : GarageUISelectable
         elapsed_time += Time.unscaledDeltaTime;
 
 
-        if (Input.GetButtonDown("Submit"))
+        if (Entry.Inputs["Jump"].IsDown)
             pick();
-        else if (Input.GetButtonDown("Cancel"))
+        else if (Entry.Inputs["Cancel"].IsDown)
         { parent.quitSubMenu(); return;}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 
     private void deselect(int index)
@@ -87,6 +92,10 @@ public class GarageUIColors : GarageUISelectable
     public override void enter()
     {
         base.enter();
+
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
+
         colors = new List<UIGaragePickableColor>(parent.GetComponentsInChildren<UIGaragePickableColor>());
         UIGarageColorPicker_Inst = Instantiate(UIGarageColorPicker_Ref, this.transform);
 
@@ -97,6 +106,7 @@ public class GarageUIColors : GarageUISelectable
 
     public override void quit()
     {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
         Destroy(UIGarageColorPicker_Inst);
 
         base.quit();

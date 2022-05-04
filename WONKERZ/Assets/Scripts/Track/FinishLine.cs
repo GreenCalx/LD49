@@ -18,7 +18,7 @@ public class FinishLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( Input.GetKey(KeyCode.Escape) )
+        //if ( Input.GetKey(KeyCode.Escape) )
         {
             SceneManager.LoadScene(Constants.SN_HUB, LoadSceneMode.Single); 
         }
