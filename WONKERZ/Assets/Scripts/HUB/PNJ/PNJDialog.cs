@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PNJDialog : MonoBehaviour
+public class PNJDialog : MonoBehaviour, IControllable
 {
     // ID of the dialog to load ( cf. DialogBank )
     public int dialog_id;
@@ -37,17 +37,20 @@ public class PNJDialog : MonoBehaviour
         __animator = GetComponentInChildren<Animator>();
     }
 
+    void IControllable.ProcessInputs(InputManager.InputData Entry){
+        if ( is_talkable && Entry.Inputs["Jump"].IsDown)
+        {
+            talk();
+        }
+        else if ( dialog_ongoing && Entry.Inputs["Cancel"].IsDown )
+        {
+            end_dialog();
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if ( is_talkable && Input.GetKeyDown(KeyCode.T) )
-        {
-            talk(); 
-        }
-        else if ( dialog_ongoing && Input.GetKeyDown(KeyCode.Escape) )
-        {
-            end_dialog();
-        } 
 
     }
 

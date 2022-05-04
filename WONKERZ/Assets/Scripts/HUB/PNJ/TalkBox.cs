@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TalkBox : MonoBehaviour
+public class TalkBox : MonoBehaviour, IControllable
 {
     public string npc_name;
     public int dialog_id;
@@ -26,19 +26,22 @@ public class TalkBox : MonoBehaviour
         loaded_dialog = DialogBank.load(dialog_id);
 
         audio_source = GetComponent<AudioSource>();
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
-    void Update()
-    {
-        if ( is_talkable && Input.GetButtonDown("Submit") )
+    void IControllable.ProcessInputs(InputManager.InputData Entry){
+
+        if ( is_talkable && Entry.Inputs["Jump"].IsDown )
         {
-            talk(); 
+            talk();
         }
-        else if ( is_in_dialog && Input.GetKeyDown(KeyCode.Escape) )
+        else if ( is_in_dialog && Entry.Inputs["Cancel"].IsDown)
         {
             end_dialog();
-        } 
-
+        }
+    }
+    void Update()
+    {
     }
 
     void OnTriggerEnter(Collider iCol)

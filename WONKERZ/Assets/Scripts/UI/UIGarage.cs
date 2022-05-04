@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIGarage : MonoBehaviour
+public class UIGarage : MonoBehaviour, IControllable
 {
     private GarageEntry garageEntry;
     private List<GarageUISelectable> selectables;
@@ -31,17 +31,18 @@ public class UIGarage : MonoBehaviour
         select(i_selected);
 
         tryReadCurvesFromPlayer();
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (submenu_is_active)
-            return;
+    void OnDestroy() {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
 
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
         if ( elapsed_time > selector_latch )
         {
-            float Y = Input.GetAxis("Vertical");
+            float Y = Entry.Inputs["Accelerator"].AxisValue;
             if ( Y < -0.2f )
             {
                 deselect(i_selected);
@@ -62,12 +63,17 @@ public class UIGarage : MonoBehaviour
                 select(i_selected);
                 elapsed_time = 0f;
             }
-            if (Input.GetButtonDown("Submit"))
+            if (Entry.Inputs["Jump"].IsDown)
                 enterSubMenu();
-            else if (Input.GetButtonDown("Cancel"))
+            else if(Entry.Inputs["Cancel"].IsDown)
                 quit();
         }
         elapsed_time += Time.unscaledDeltaTime;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 
     private void tryReadCurvesFromPlayer()

@@ -19,11 +19,11 @@ public class TitleScreen : MonoBehaviour
     {
         bool key_pressed = Input.anyKeyDown;
         double time_offset = Time.time - start_time;
-        if ( Input.GetKey(KeyCode.Escape) )
+        //if ( Input.GetKey(KeyCode.Escape) )
         {
             Application.Quit();
         }
-        else if (key_pressed && (time_offset>=CLICK_TIME) )
+        //else if (key_pressed && (time_offset>=CLICK_TIME) )
             SceneManager.LoadScene(Constants.SN_HUB, LoadSceneMode.Single);
 
     }

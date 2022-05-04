@@ -67,6 +67,7 @@ public class HUBPortal : MonoBehaviour
             SceneManager.SetActiveScene(sceneToLoad);
             
             SceneManager.UnloadSceneAsync(currentScene);
+            
         }
     }
 

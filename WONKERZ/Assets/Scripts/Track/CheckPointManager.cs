@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckPointManager : MonoBehaviour
+public class CheckPointManager : MonoBehaviour, IControllable
 {
     public List<GameObject> checkpoints;
     public GameObject race_start;
@@ -32,14 +32,17 @@ public class CheckPointManager : MonoBehaviour
         }
         last_checkpoint = race_start;
 
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+        if (Entry.Inputs["Respawn"].IsDown)
+            loadLastCP();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown("r"))
-            loadLastCP();
     }
 
     private void findCheckpoints()

@@ -54,7 +54,7 @@ public class BullyablePNJ : MonoBehaviour
 
     void stabilize()
     {
-        Debug.Log("STABILIZE");
+        //Debug.Log("STABILIZE");
         //transform.rotation = Quaternion.Lerp( transform.rotation, qBaseRot, Time.time * stabilization_speed);
     }
 }

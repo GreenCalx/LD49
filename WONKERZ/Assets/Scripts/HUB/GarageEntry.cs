@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GarageEntry : MonoBehaviour
+public class GarageEntry : MonoBehaviour,IControllable
 {
     public GameObject garageUIRef;
     private GameObject garageUI;
@@ -13,16 +13,24 @@ public class GarageEntry : MonoBehaviour
     void Start()
     {
         playerInGarage = false;
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+    }
+
+    void OnDestroy() {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry){
+        if (playerInGarage)
+        {
+            if (Entry.Inputs["Jump"].IsDown)
+                openGarage();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (playerInGarage)
-        {
-            if (Input.GetButtonDown("Submit"))
-                openGarage();
-        }
     }
 
     void OnTriggerEnter(Collider iCol)
@@ -65,12 +73,18 @@ public class GarageEntry : MonoBehaviour
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         garageOpened = true;
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(uig as IControllable);
     }
 
     public void closeGarage()
     {
         if (!garageOpened)
             return;
+
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(garageUI.GetComponent<UIGarage>() as IControllable);
+
         Time.timeScale = 1; // unpause
         Destroy(garageUI);
 

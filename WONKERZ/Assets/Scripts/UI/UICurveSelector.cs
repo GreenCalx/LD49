@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UICurveSelector : MonoBehaviour
+public class UICurveSelector : MonoBehaviour, IControllable
 {
     [Header("Tweaks")]
     public float moveStep = 1f;
@@ -19,13 +19,15 @@ public class UICurveSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        float X = Input.GetAxis("Horizontal");
+    void OnDestroy() {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+        float X = Entry.Inputs["Turn"].AxisValue;
         if( X > 0.2f)
         {
             if ((transform.position.x < XRightBound) && (transform.position.x < XKeyRightBound) )
@@ -33,7 +35,7 @@ public class UICurveSelector : MonoBehaviour
                 transform.position += new Vector3( moveStep, 0f, 0f);
                 observer.notifySliderMove(movable_key);
             }
-        } else if ( X < -0.2f) 
+        } else if ( X < -0.2f)
         {
             if ((transform.position.x > XLeftBound) && (transform.position.x > XKeyLeftBound))
             {
@@ -42,5 +44,13 @@ public class UICurveSelector : MonoBehaviour
             }
         }
 
+        if (Entry.Inputs["Cancel"].IsDown) {
+            GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GarageUICarStats : GarageUISelectable
+public class GarageUICarStats : GarageUISelectable, IControllable
 {
     public float selector_latch;
     public GameObject UIGarageCurvePicker_Ref;
@@ -22,17 +22,18 @@ public class GarageUICarStats : GarageUISelectable
         findParent();
         enabled_stat = parent.enabled_category;
         disabled_stat = parent.disabled_category;
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!is_active)
-            return;
+    void OnDestroy() {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
 
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
         if (elapsed_time > selector_latch)
         {
-            float Y = Input.GetAxis("Vertical");
+            float Y = Entry.Inputs["Accelerator"].AxisValue;
             if (Y > 0.2f)
             {
                 deselect(i_stat);
@@ -57,10 +58,17 @@ public class GarageUICarStats : GarageUISelectable
         elapsed_time += Time.unscaledDeltaTime;
 
 
-        if (Input.GetButtonDown("Submit"))
+        if (Entry.Inputs["Jump"].IsDown)
             pick();
-        else if (Input.GetButtonDown("Cancel"))
-        { parent.quitSubMenu(); return; }
+        else if (Entry.Inputs["Cancel"].IsDown)
+        {
+            parent.quitSubMenu(); return;
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
     }
 
     private void deselect(int index)
@@ -104,6 +112,9 @@ public class GarageUICarStats : GarageUISelectable
         CarController cc = player.GetComponent<CarController>();
 
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(uics as IControllable);
+
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
     }
 
@@ -155,6 +166,8 @@ public class GarageUICarStats : GarageUISelectable
     public override void enter()
     {
         base.enter();
+
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
         curve = parent.GetComponentInChildren<UIGarageCurve>();
 
         // Read curves from CarController
@@ -174,6 +187,7 @@ public class GarageUICarStats : GarageUISelectable
     public override void quit()
     {
         base.quit();
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
         deselect(i_stat);
         Destroy(UIGarageCurvePicker_Inst);
     }

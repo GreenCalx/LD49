@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class ManualCamera : PlayerCamera
+public class ManualCamera : PlayerCamera, IControllable
 {
     [SerializeField] private Camera cam;
     
@@ -26,10 +26,15 @@ public class ManualCamera : PlayerCamera
     void Awake()
     {
         camType = CAM_TYPE.HUB;
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
     private void Start()
     {
 
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+        input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
     }
 
     public override void init()
@@ -106,11 +111,8 @@ public class ManualCamera : PlayerCamera
     }
 
 
+    private Vector2 input;
     bool ManualRotation () {
-		Vector2 input = new Vector2(
-			Input.GetAxis("Mouse Y") * (-1),
-			Input.GetAxis("Mouse X")
-		);
 		const float e = 0.001f;
 		if (input.x < -e || input.x > e || input.y < -e || input.y > e) {
 			orbitAngles += rotationSpeed * Time.unscaledDeltaTime * input;
