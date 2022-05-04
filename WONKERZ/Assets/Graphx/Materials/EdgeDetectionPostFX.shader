@@ -42,6 +42,7 @@ Shader "Hidden/EdgeDetectionPostFX"
             };
 
             sampler2D _CameraDepthNormalsTexture;
+            sampler2D _CameraDepthTexture;
             sampler2D _MainTex;
             static float SobelKernelX[9]= {
                 1,0,-1,
@@ -63,7 +64,7 @@ Shader "Hidden/EdgeDetectionPostFX"
                     float depth;
                     float3 normal;
                     DecodeDepthNormal(v, depth,normal);
-                    Result += depth * float2(SobelKernelX[i], SobelKernelY[i]);
+                    Result += Linear01Depth(depth) * float2(SobelKernelX[i], SobelKernelY[i]);
                 }
                 Result = length(Result);
             }
@@ -73,14 +74,20 @@ Shader "Hidden/EdgeDetectionPostFX"
                 float SobelR=0;
                 float SobelG=0;
                 float SobelB=0;
+                float3 centerValue = tex2D(_MainTex, uv);
                 [unroll]
                 for (int i=0;i<9;++i) {
                     float3 col = tex2D(_MainTex, uv + SobleNeighborsSamples[i]*Thickness);
-                    SobelR += col.r * float2(SobelKernelX[i], SobelKernelY[i]);
-                    SobelG += col.g * float2(SobelKernelX[i], SobelKernelY[i]);
-                    SobelB += col.b * float2(SobelKernelX[i], SobelKernelY[i]);
+                    float Y = 0.2627*col.r + 0.6780*col.g + 0.0593 *col.b;
+                    SobelR += Y * float2(SobelKernelX[i], SobelKernelY[i]);
+                 //   SobelR += dot(col, centerValue) * float2(SobelKernelX[i], SobelKernelY[i]);
+                 //   SobelR += col.r * float2(SobelKernelX[i], SobelKernelY[i]);
+                 //   SobelG += col.g * float2(SobelKernelX[i], SobelKernelY[i]);
+                 //   SobelB += col.b * float2(SobelKernelX[i], SobelKernelY[i]);
                 }
-                Result = max(length(SobelR), max(length(SobelG), length(SobelB)));
+                //Result = max(length(SobelR), max(length(SobelG), length(SobelB)));
+                //Result = SobelR;
+                Result = length(SobelR);
             }
 
             void ComputeSobelNormalAtPoint(float2 uv, float Thickness, out float Result) {
@@ -95,10 +102,15 @@ Shader "Hidden/EdgeDetectionPostFX"
                     float depth;
                     float3 col;
                     DecodeDepthNormal(v, depth, col);
-                    SobelR += sin(dot(normalize(centerValue), normalize(col))) * float2(SobelKernelX[i], SobelKernelY[i]);
 
+                    SobelR += col.r * float2(SobelKernelX[i], SobelKernelY[i]);
+                    SobelG += col.g * float2(SobelKernelX[i], SobelKernelY[i]);
+                    SobelB += col.b * float2(SobelKernelX[i], SobelKernelY[i]);
+
+                    //SobelR += dot(normalize(centerValue), normalize(col)) * float2(SobelKernelX[i], SobelKernelY[i]);
                 }
-                Result = SobelR;
+                Result = max(length(SobelR), max(length(SobelG), length(SobelB)));
+                //Result = SobelR;
             }
 
             v2f vert (appdata v)

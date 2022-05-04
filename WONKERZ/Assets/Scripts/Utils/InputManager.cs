@@ -253,7 +253,6 @@ public class InputManager : MonoBehaviour
         UnLock();
 
         _LastMousePosition = Input.mousePosition;
-        Debug.Log(_LastMousePosition);
     }
 
 }
