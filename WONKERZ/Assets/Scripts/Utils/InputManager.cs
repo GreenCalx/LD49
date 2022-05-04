@@ -31,6 +31,8 @@ public enum Joystick
 
 static public class InputSettings
 {
+    public static bool InverseRSMapping = false;
+    public static float MouseMultiplier = 20;
     public struct InputMappingData
     {
         public InputMappingData(bool A, bool B, List<int> C, List<int> D)
@@ -47,12 +49,12 @@ static public class InputSettings
     }
     // IMPORTANT toffa : joystick value first, then keyboard for now!!!!
     static public Dictionary<String, InputMappingData> Mapping = new Dictionary<String, InputMappingData>{
-        {"Accelerator", new InputMappingData( true, false, new List<int>{(int)Joystick.LeftV, (int)KeyCode.W}, new List<int>{-1, (int)KeyCode.S} )},
+        {"Accelerator", new InputMappingData( true, false, new List<int>{(int)Joystick.RT, (int)KeyCode.W}, new List<int>{ (int)Joystick.LT, (int)KeyCode.S} )},
         {"Turn" , new InputMappingData(true, false, new List<int>{(int)Joystick.LeftH, (int)KeyCode.D}, new List<int>{-1, (int)KeyCode.A})},
         {"Jump", new InputMappingData(false, false, new List<int>{ (int) Joystick.A, (int)KeyCode.Space }, new List<int>{-1,-1} )},
         {"Respawn", new InputMappingData(false, false, new List<int>{ (int) Joystick.Start, (int)KeyCode.R }, new List<int>{-1,-1} )},
-        {"MouseX" , new InputMappingData(true, true, null, null)},
-        {"MouseY" , new InputMappingData(true, true, null, null)},
+        {"CameraX" , new InputMappingData(true, true, new List<int>{ (int) (InverseRSMapping ? Joystick.RightH : Joystick.RightV) }, new List<int>{-1})},
+        {"CameraY" , new InputMappingData(true, true, new List<int>{ (int) (InverseRSMapping ? Joystick.RightV : Joystick.RightH) }, new List<int>{-1})},
         {"Grapin", new InputMappingData(false, false, new List<int>{ (int) Joystick.X, (int)KeyCode.F }, new List<int>{-1,-1} )},
         {"Cancel", new InputMappingData(false, false, new List<int>{ (int) Joystick.B, (int)KeyCode.Escape }, new List<int>{-1,-1} )},
     };
@@ -102,16 +104,18 @@ public class InputManager : MonoBehaviour
                 {
                     if (s.Contains("X"))
                     {
-                        I.AxisValue = (_LastMousePosition.x - Input.mousePosition.x);
+                        I.AxisValue = ((_LastMousePosition.x - Input.mousePosition.x) / Screen.width) *InputSettings.MouseMultiplier;
                     }
                     else
                     {
-                        I.AxisValue = (_LastMousePosition.y - Input.mousePosition.y);
+                        I.AxisValue = ((_LastMousePosition.y - Input.mousePosition.y) / Screen.height) *InputSettings.MouseMultiplier;
                     }
+                    I.AxisValue += Input.GetAxisRaw( "Joy" + ((Joystick)Mapping.Positive[0]).ToString() );
                 }
                 else
                 {
                     I.AxisValue = Input.GetAxisRaw("Joy" + ((Joystick)(Mapping.Positive[0])).ToString());
+                    I.AxisValue -= Mapping.Negative[0] != -1 ? Input.GetAxisRaw("Joy" + ((Joystick)(Mapping.Negative[0])).ToString()) : 0;
                     I.AxisValue += Input.GetKey((KeyCode)(Mapping.Positive[1])) ? 1 : 0;
                     I.AxisValue -= Input.GetKey((KeyCode)(Mapping.Negative[1])) ? 1 : 0;
                 }
@@ -249,6 +253,7 @@ public class InputManager : MonoBehaviour
         UnLock();
 
         _LastMousePosition = Input.mousePosition;
+        Debug.Log(_LastMousePosition);
     }
 
 }

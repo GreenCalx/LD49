@@ -4,13 +4,14 @@ using UnityEngine;
 public class CarController : MonoBehaviour, IControllable
 {
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
         var Turn = Entry.Inputs["Turn"].AxisValue;
         var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
         CarMotor.CurrentRPM = 0;
 
         // Accelration
-        if(!IsAircraft)
+        if (!IsAircraft)
         {
             if (Acceleration != 0)
             {
@@ -61,7 +62,7 @@ public class CarController : MonoBehaviour, IControllable
             ResetSpringSizeMinAndUnlock();
         }
     }
-    
+
     // A car is defined as having 4 springs attached to the body,
     // and 4 wheels attached to the spring.
     // This is defined as an AxleInfo structure, that create everything at runtime.
@@ -767,8 +768,6 @@ public class CarController : MonoBehaviour, IControllable
 
     void Update()
     {
-        if (FixedUpdateDone)
-            ApplyForceMultiplier = false;
         FixedUpdateDone = false;
         // TODO toiffa : remove this, it is only for testing the hub
         // note blue : avoid npe if soundmanager is not found atm ( ex : in tracks )
@@ -791,7 +790,6 @@ public class CarController : MonoBehaviour, IControllable
         DrawDebugAxles(Color.blue, Color.red);
         UpdateWheelsRenderer();
         UpdateSuspensionRenderers();
-
 
         if (IsAircraft)
         {
@@ -851,5 +849,6 @@ public class CarController : MonoBehaviour, IControllable
         }
 
         FixedUpdateDone = true;
+        ApplyForceMultiplier = false;
     }
 }

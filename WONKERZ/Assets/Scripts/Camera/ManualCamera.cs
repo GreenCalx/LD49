@@ -34,7 +34,7 @@ public class ManualCamera : PlayerCamera, IControllable
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
-        input = new Vector2(Entry.Inputs["MouseY"].AxisValue *Time.deltaTime, Entry.Inputs["MouseX"].AxisValue *Time.deltaTime);
+        input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
     }
 
     public override void init()
