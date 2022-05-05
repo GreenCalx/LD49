@@ -32,6 +32,7 @@ public class CinematicCamera : GameCamera
 
     public virtual void launch()
     {
+        CameraManager.Instance.changeCamera(this);
         launched = true;
     }
 

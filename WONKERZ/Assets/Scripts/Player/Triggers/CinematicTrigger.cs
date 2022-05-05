@@ -6,6 +6,9 @@ using UnityEngine;
 // > TODO : save seen cinematics to init triggerrs accordingly
 public class CinematicTrigger : MonoBehaviour
 {
+
+    public bool triggerOnlyOnce = true;
+
     private bool triggered= false;
 
     public bool freezePlayer = true;
@@ -24,6 +27,9 @@ public class CinematicTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider iCollider)
     {
+        if (triggerOnlyOnce && triggered)
+            return;
+
         if (!!iCollider.GetComponent<CarController>())
         {
             triggered = true;

@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class TalkBox : MonoBehaviour, IControllable
 {
+    [Header("MANDATORY")]
     public string npc_name;
     public int dialog_id;
     public GameObject dialogUI_ref;
+    [Header("OPTIONALS")]
     public AudioClip[] voices;
+    public Animator animator;
+    public CinematicCamera dialogCamera;
     //////////////////////////////////
     private AudioSource audio_source; 
     private UIDialog dialogUI_inst;
@@ -16,7 +20,7 @@ public class TalkBox : MonoBehaviour, IControllable
     private string[] loaded_dialog;
     private int curr_dialog_index;
     private const string c_animator_talk_parm = "talk";
-    public Animator animator;
+   
     //////////////////////////////////
 
     void Start()
@@ -63,14 +67,18 @@ public class TalkBox : MonoBehaviour, IControllable
     
     private void talk()
     {
-        if (!is_in_dialog)
+        if (!is_in_dialog) // Start Dialog
         {
             is_in_dialog    = true;
             GameObject ui_go = Instantiate(dialogUI_ref);
             dialogUI_inst  = ui_go.GetComponent<UIDialog>();
             curr_dialog_index = 0;
+            
             if (!!animator)
                 animator.SetBool( c_animator_talk_parm, true);
+            
+            if (!!dialogCamera)
+                dialogCamera.launch();
         }
 
         if (dialogUI_inst == null)
@@ -122,5 +130,8 @@ public class TalkBox : MonoBehaviour, IControllable
 
         if (!!animator)
             animator.SetBool( c_animator_talk_parm, false);
+        
+        if (!!dialogCamera)
+            dialogCamera.end();
     }
 }
