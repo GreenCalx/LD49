@@ -11,6 +11,11 @@ public class grapintest : MonoBehaviour, IControllable
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
     }
 
+        private void OnDestroy()
+    {
+        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+    }
+
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
         Player.IsHooked = Entry.Inputs["Grapin"].Down;
         grapin.active = Entry.Inputs["Grapin"].Down;

@@ -47,6 +47,7 @@ public class HUBPortal : MonoBehaviour
             if (scene.progress >= 0.9f)
             {
                 scene.allowSceneActivation = true;
+                
             }
             yield return null;
         }
@@ -64,10 +65,10 @@ public class HUBPortal : MonoBehaviour
         {
             Debug.Log("Scene is Valid");
             SceneManager.MoveGameObjectToScene(currPlayer, sceneToLoad);
-            SceneManager.SetActiveScene(sceneToLoad);
-            
+            bool activeSceneChanged = SceneManager.SetActiveScene(sceneToLoad);
+            if (!activeSceneChanged)
+                Debug.LogError("Failed to changed active scene for : " + sceneToLoad.name);
             SceneManager.UnloadSceneAsync(currentScene);
-            
         }
     }
 
