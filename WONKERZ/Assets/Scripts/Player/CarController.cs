@@ -738,6 +738,7 @@ public class CarController : MonoBehaviour, IControllable
     // TODO toffa : make this better this is a quick fix
     private void OnDestroy()
     {
+        Utils.detachControllable<CarController>(this);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -763,7 +764,7 @@ public class CarController : MonoBehaviour, IControllable
         //DrawDebugWheels(Color.yellow);
         SetMode(CurrentMode);
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<CarController>(this);
     }
 
     void Update()

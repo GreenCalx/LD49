@@ -188,6 +188,19 @@ public class InputManager : MonoBehaviour
 
     }
 
+    public void DetachAll()
+    {
+        if (!_Lock)
+            _Controllees.Clear();
+        else
+        {
+            foreach(IControllable controllable in _Controllees)
+            {
+                _DeferRemove.Add(controllable);
+            }
+        }
+    }
+
     public void SetUnique(IControllable iControllable)
     {
         _PriorityList.Push(iControllable);
