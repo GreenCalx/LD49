@@ -32,7 +32,12 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
         last_checkpoint = race_start;
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<CheckPointManager>(this);
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable<CheckPointManager>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {

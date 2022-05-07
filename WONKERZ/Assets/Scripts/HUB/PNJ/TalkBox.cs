@@ -30,7 +30,12 @@ public class TalkBox : MonoBehaviour, IControllable
         loaded_dialog = DialogBank.load(dialog_id);
 
         audio_source = GetComponent<AudioSource>();
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<TalkBox>(this);
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable<TalkBox>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry){

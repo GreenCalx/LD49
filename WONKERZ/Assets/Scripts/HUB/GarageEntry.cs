@@ -13,11 +13,11 @@ public class GarageEntry : MonoBehaviour,IControllable
     void Start()
     {
         playerInGarage = false;
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<GarageEntry>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<GarageEntry>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry){

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public struct Utils
 {
-
+    
     // TODO : Cache player reference to avoid high cost lookup
     // TODO : Cache InputManager
     public static GameObject getPlayerRef()
@@ -26,7 +26,8 @@ public struct Utils
 
     public static InputManager GetInputManager()
     {
-        return GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>();
+        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
+        return !!mgr ? mgr.GetComponent<InputManager>() : null;
     }
 
     public static void detachControllable<T>(T toDetach)
