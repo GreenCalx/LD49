@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
 Shader "Custom/SandNew"
 {
     Properties
@@ -11,8 +13,11 @@ Shader "Custom/SandNew"
         _NoiseMul ("Noise Mul", float) = 1
 
         _TracesPosition ("Traces Position", 2D) = "white" {}
-        _TracesCenter ("Traces Center", Vector) = (1,1,1,1)
-        _TracesSize ("Traces Size", float) = 1
+
+        _MovingSandsPosition ("Moving Sands Position", 2D) = "white" {}
+        _MovingSandsCenter ("Moving Sands center", Vector) = (1,1,1,1)
+        _MovingSandsSize ("Moving Sands Size", float) = 1
+        _MovingSandsHeightMultiplier ("Moving Sands Height Multiplier", float) = 1
     }
     SubShader
     {
@@ -21,7 +26,7 @@ Shader "Custom/SandNew"
 
         CGPROGRAM
         // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows
+        #pragma surface surf Standard fullforwardshadows vertex:vert
 
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
@@ -39,6 +44,11 @@ Shader "Custom/SandNew"
         float4 _TracesCenter;
         float _TracesSize;
 
+        sampler2D _MovingSandsPosition;
+        float4 _MovingSandsCenter;
+        float _MovingSandsSize;
+        float _MovingSandsHeightMultiplier;
+
         struct Input
         {
             float2 uv_MainTex : TEXCOORD0;
@@ -47,6 +57,14 @@ Shader "Custom/SandNew"
             float3 worldNormal;
             INTERNAL_DATA
         };
+
+        void vert (inout appdata_full v) {
+            float4 ObjectWorldPos = mul(unity_ObjectToWorld, v.vertex);
+            float2 MovingSandsUV = ((ObjectWorldPos.xz - _MovingSandsCenter.xz) / (_MovingSandsSize*2)) + 0.5;
+            float heightToMove = tex2Dlod(_MovingSandsPosition, float4(MovingSandsUV,0,1)).x * _MovingSandsHeightMultiplier;
+            //float heightToMove = _MovingSandsHeightMultiplier;
+            v.vertex.xyz += float3(0,0,1) * heightToMove;
+        }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {

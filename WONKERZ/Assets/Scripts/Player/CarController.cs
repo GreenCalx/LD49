@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour, IControllable
 {
-
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         var Turn = Entry.Inputs["Turn"].AxisValue;
@@ -407,9 +406,8 @@ public class CarController : MonoBehaviour, IControllable
         UpdateWheelRenderer(RearAxle.Left);
     }
 
-    public enum CarMode { ROAD, DESERT, WATER, DELTA, NONE };
-    private CarMode CurrentMode = CarMode.NONE;
-    public void SetMode(CarMode M)
+    private Ground.EType CurrentMode = Ground.EType.NONE;
+    public void SetMode(Ground.EType M)
     {
         if (M == CurrentMode) return;
 
@@ -418,9 +416,8 @@ public class CarController : MonoBehaviour, IControllable
         switch (M)
         {
             default:
-            case CarMode.ROAD:
+            case Ground.EType.ROAD:
                 {
-                    GroundPerturbation = 0;
                     FrontAxle.IsTraction = true;
                     FrontAxle.IsDirection = true;
                     FrontAxle.IsReversedDirection = true;
@@ -430,14 +427,10 @@ public class CarController : MonoBehaviour, IControllable
 
                     IsWater = false;
                     IsAircraft = false;
-
-                    Drag = 0.008f / 4;
-
                 }
                 break;
-            case CarMode.DESERT:
+            case Ground.EType.DESERT:
                 {
-                    GroundPerturbation = -1;
                     FrontAxle.IsTraction = true;
                     FrontAxle.IsDirection = true;
                     FrontAxle.IsReversedDirection = true;
@@ -447,13 +440,10 @@ public class CarController : MonoBehaviour, IControllable
 
                     IsWater = false;
                     IsAircraft = false;
-
-                    Drag = 0.01f / 4;
                 }
                 break;
-            case CarMode.WATER:
+            case Ground.EType.WATER:
                 {
-                    GroundPerturbation = -2;
                     FrontAxle.IsTraction = false;
                     FrontAxle.IsDirection = false;
                     RearAxle.IsTraction = true;
@@ -461,24 +451,20 @@ public class CarController : MonoBehaviour, IControllable
 
                     IsWater = true;
                     IsAircraft = false;
-
-                    Drag = 0.003f / 4;
                 }
                 break;
-            case CarMode.DELTA:
-                {
-                    GroundPerturbation = -0;
-                    FrontAxle.IsTraction = false;
-                    FrontAxle.IsDirection = true;
-                    RearAxle.IsTraction = true;
-                    RearAxle.IsDirection = true;
 
-                    IsAircraft = true;
-                    IsWater = false;
+           // case Ground.EType.DELTA:
+           //     {
+           //         FrontAxle.IsTraction = false;
+           //         FrontAxle.IsDirection = true;
+           //         RearAxle.IsTraction = true;
+           //         RearAxle.IsDirection = true;
 
-                    Drag = 0;
-                }
-                break;
+           //         IsAircraft = true;
+           //         IsWater = false;
+           //     }
+           //     break;
         }
     }
 
@@ -531,16 +517,6 @@ public class CarController : MonoBehaviour, IControllable
         var SpringDirection = -transform.up;
 
         bool IsCurrentlyGrounded = Physics.SphereCast(SpringAnchor, 1f, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
-
-        if (S.Wheel.IsGrounded && !IsCurrentlyGrounded)
-        {
-            // remove collider velocity
-        }
-        if (!S.Wheel.IsGrounded && IsCurrentlyGrounded)
-        {
-            // add collider velocity
-        }
-
         S.Wheel.IsGrounded = IsCurrentlyGrounded;
 
         if (!SuspensionLock)
@@ -552,7 +528,11 @@ public class CarController : MonoBehaviour, IControllable
         // This way we should be able to avoid slamming into the ground and jittering.
         if (S.Wheel.IsGrounded || IsAircraft)
         {
-
+            // NOTE toffa :
+            // This piece of code needs to be removed once we are using the groundinfos struct
+            // to get back all infos we need.
+            // For now it is only disable, we might need to still do this as a safetynet?
+            #if false
             // disgusting...
             if (NeedCheckMaterial)
             {
@@ -602,18 +582,17 @@ public class CarController : MonoBehaviour, IControllable
                     }
                     else
                     {
-                        // else if (M.name == "stone" + Suffix || M.name == "snow" + Suffix || M.name == "grass" + Suffix || M.name == "cliff" + Suffix)
-                        // {
-                        //     SetMode(CarMode.ROAD);
-                        // }
-
                         SetMode(CarMode.ROAD);
                     }
                 }
                 NeedCheckMaterial = false;
             }
             //end disguting...
+            #endif
 
+            var G = Hit.collider.gameObject.GetComponent<Ground>();
+            var GroundInfos = G ? G.GetGroundInfos(Hit.point) : new Ground.GroundInfos();
+            SetMode(GroundInfos.Type);
 
             var SubStepDeltaTime = Time.fixedDeltaTime / PhysicsSubSteps;
             var TotalProcessedTime = 0f;
@@ -631,7 +610,7 @@ public class CarController : MonoBehaviour, IControllable
                 var StepForce = Vector3.zero;
 
                 // Compute what is the current distance to hit point now
-                var StepDistance = Hit.distance + (GroundPerturbation * (Mathf.Sin(SpringAnchor.x * 0.1f) - 1)) - TraveledDistance;
+                var StepDistance = Hit.distance + GroundInfos.DepthPerturbation.y - TraveledDistance;
                 if (!SuspensionLock)
                     S.Spring.CurrentLength = Mathf.Clamp(StepDistance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
 
@@ -673,21 +652,22 @@ public class CarController : MonoBehaviour, IControllable
             var WheelVelocityX = Vector3.Project(WheelVelocity, S.Wheel.Direction);
             var MotorVelocity = CarMotor.CurrentRPM * S.Wheel.Direction;
             var f = Vector3.Cross(transform.up, S.Wheel.Direction);
-            var WheelVelocityY = IsWater ? Vector3.zero : Vector3.Project(WheelVelocity, f);
-            var T = Vector3.Scale(-WheelVelocityY, new Vector3(0.1f, 0.1f, 0.1f)) + MotorVelocity;
+            var WheelVelocityY = Vector3.Project(WheelVelocity, f);
+            var T = -WheelVelocityX * GroundInfos.Friction.x;
+            T -= WheelVelocityY * GroundInfos.Friction.y;
+            T += MotorVelocity;
             T *= Mathf.Pow(Vector3.Dot(transform.up, Vector3.up), 3);
             if (IsAircraft)
             {
                 // apply at centerofmass height
                 RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
-                //RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
             }
             else
             {
-                S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
+                if(GroundInfos.Type == Ground.EType.DESERT)
+                    S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
 
                 RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
-                //RB.AddForceAtPosition(T, SpringAnchor, ForceMode.VelocityChange);
             }
 
             // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
@@ -700,22 +680,11 @@ public class CarController : MonoBehaviour, IControllable
                     Collider.AddForceAtPosition(VelocityGravity * RB.mass, Hit.point, ForceMode.Force);
             }
 
-            // Drag, make it not affect gravity
-            RB.AddForce(-Vector3.Scale(RB.velocity, new Vector3(1, 0, 1)) * Drag, ForceMode.VelocityChange);
-
-            if (Hit.collider?.GetComponentInParent<BridgePhysX>())
-            {
-                var v = Hit.collider.GetComponentInParent<BridgePhysX>().Velocity;
-                RB.AddForceAtPosition(Vector3.Scale(v - Vector3.Project(RB.velocity, v), new Vector3(1, 0, 1)) / 4, SpringAnchor, ForceMode.VelocityChange);
-            }
-
-            if (Hit.collider?.GetComponent<testphysx>())
-            {
-                var v = Hit.collider.GetComponent<testphysx>().Velocity;
-                var RBVelProjected = Vector3.Project(RB.velocity, v);
-                var VelDiff = Vector3.Scale((v - RBVelProjected), new Vector3(1, 0, 1));
-                RB.AddForce(VelDiff / 4, ForceMode.VelocityChange);
-            }
+            // NOTE toffa :
+            // Add current ground velocity to the RB to be able to sit still on moving plateform for instance.
+            var RBVelProjected = Vector3.Project(RB.velocity, GroundInfos.Velocity);
+            var VelDiff = Vector3.Scale((GroundInfos.Velocity - RBVelProjected), new Vector3(1, 0, 1));
+            RB.AddForce(VelDiff / 4, ForceMode.VelocityChange);
         }
         else
         {
@@ -770,23 +739,6 @@ public class CarController : MonoBehaviour, IControllable
     void Update()
     {
         FixedUpdateDone = false;
-        // TODO toiffa : remove this, it is only for testing the hub
-        // note blue : avoid npe if soundmanager is not found atm ( ex : in tracks )
-        GameObject sm = GameObject.Find(Constants.GO_SOUNDMANAGER);
-        if (!!sm)
-        {
-            if (transform.localPosition.z < -300)
-            {
-                sm.GetComponent<SoundManager>().SwitchClip("desert");
-            }
-            else
-            {
-                if (sm.GetComponent<SoundManager>().CurrentClip.Name == "desert")
-                    sm.GetComponent<SoundManager>().SwitchClip("theme");
-            }
-        }
-
-        // end TODO
 
         DrawDebugAxles(Color.blue, Color.red);
         UpdateWheelsRenderer();

@@ -25,7 +25,7 @@ public class Tornado : MonoBehaviour
         CarController CC = C.gameObject.GetComponent<CarController>();
         if (CC)
         {
-            CC.SetMode(CarController.CarMode.DELTA);
+//            CC.SetMode(CarController.CarMode.DELTA);
         }
     }
 
