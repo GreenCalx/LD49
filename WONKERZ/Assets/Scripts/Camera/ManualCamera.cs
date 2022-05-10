@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ManualCamera : PlayerCamera, IControllable
 {
-    [SerializeField] private Camera cam;
     
-    private Vector3 previousPosition;
+    
+    
 
-    private bool manual_cam = false;
-
-    // AUTO CAM
+    /// TWEAKS
     [SerializeField] public Transform focus = default;
     [SerializeField, Range(1f,50f)] public float distance = 5f;
     [SerializeField, Min(0f)] public float focusRadius = 1f;
@@ -18,19 +16,39 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f;
     [SerializeField, Min(0f)] float alignDelay = 5f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
+    [SerializeField] LayerMask obstructionMask = -1;
+   
+   /// Internals
     private Vector3 focusPoint, previousFocusPoint;
     private Vector2 orbitAngles = new Vector2(45f, 0f);
     private float lastManualRotationTime;
+    private Camera cam;
+    private Vector3 CameraHalfExtends {
+		get {
+			Vector3 halfExtends;
+			halfExtends.y =
+				cam.nearClipPlane * Mathf.Tan(0.5f * Mathf.Deg2Rad * cam.fieldOfView);
+			halfExtends.x = halfExtends.y * cam.aspect;
+			halfExtends.z = 0f;
+			return halfExtends;
+		}
+	}
 
-    
+    /// Methods
     void Awake()
     {
         camType = CAM_TYPE.HUB;
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        cam = GetComponent<Camera>();
+        Utils.attachControllable<ManualCamera>(this);
     }
     private void Start()
     {
 
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable<ManualCamera>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
@@ -47,11 +65,6 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void Update()
     {
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     previousPosition = cam.ScreenToViewportPoint(Input.mousePosition);
-        //     manual_cam =! manual_cam;
-        // }
     }
 
     void LateUpdate()
@@ -68,6 +81,22 @@ public class ManualCamera : PlayerCamera, IControllable
         }
         Vector3 lookDirection = lookRotation * Vector3.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;
+        
+        Vector3 rectOffset = lookDirection * cam.nearClipPlane;
+		Vector3 rectPosition = lookPosition + rectOffset;
+		Vector3 castFrom = focus.position;
+		Vector3 castLine = rectPosition - castFrom;
+		float castDistance = castLine.magnitude;
+		Vector3 castDirection = castLine / castDistance;
+
+        // check if we hit something between camera and focuspoint
+		if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask)) 
+		{
+            rectPosition = castFrom + castDirection * hit.distance;
+            lookPosition = rectPosition - rectOffset;
+
+        }
+
         transform.SetPositionAndRotation(lookPosition, lookRotation);
     }
 
@@ -151,33 +180,4 @@ public class ManualCamera : PlayerCamera, IControllable
         // (x < 0) => counterclockwise
 		return direction.x < 0f ? 360f - angle : angle;
 	}
-    // OLD
-
-    // private void auto()
-    // {
-
-    // }
-    // private void manual()
-    // {
-    //         Vector3 newPosition = cam.ScreenToViewportPoint(Input.mousePosition);
-    //         Vector3 direction = previousPosition - newPosition;
-             
-    //         float rotationAroundYAxis = -direction.x * 180;
-    //         float rotationAroundXAxis = direction.y * 180;
-            
-    //         cam.transform.position = target.position;
-            
-    //         cam.transform.Rotate(new Vector3(1, 0, 0), rotationAroundXAxis);
-    //         cam.transform.Rotate(new Vector3(0, 1, 0), rotationAroundYAxis, Space.World);
-            
-    //         cam.transform.Translate(new Vector3(0, 0, -distance));
-            
-    //         previousPosition = newPosition;
-    // }
-    // private float AngleOnXZPlane(Transform itemA, Transform itemB)
-    //  {
-    //     Vector3 direction = itemA.rotation * itemB.forward;
-    //     return Mathf.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
-    //  }
-
 }
