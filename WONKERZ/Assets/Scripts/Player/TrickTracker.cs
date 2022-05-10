@@ -110,9 +110,18 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        rec_rot_x = (player_transform.eulerAngles.x) - init_rot_x - cons_rot_x;
-        rec_rot_y = (player_transform.eulerAngles.y) - init_rot_y - cons_rot_y;
-        rec_rot_z = (player_transform.eulerAngles.z) - init_rot_z - cons_rot_z;
+        //rec_rot_x = (player_transform.eulerAngles.x) - init_rot_x - cons_rot_x;
+        //rec_rot_y = (player_transform.eulerAngles.y) - init_rot_y - cons_rot_y;
+        //rec_rot_z = (player_transform.eulerAngles.z) - init_rot_z - cons_rot_z;
+        rec_rot_x = rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x;
+        rec_rot_y = rotDiff(player_transform.eulerAngles.y, init_rot_y) - cons_rot_y;
+        rec_rot_z = rotDiff(player_transform.eulerAngles.z, init_rot_z) - cons_rot_z;
+    }
+
+    private float rotDiff(float iInit, float iCurrent)
+    {
+        float ret = iCurrent - iInit;
+        return (ret+180) % 360 - 180;
     }
 
     public void initRotationsRecord()
@@ -128,7 +137,6 @@ public class TrickTracker : MonoBehaviour
         cons_rot_x = 0f;
         cons_rot_y = 0f;
         cons_rot_z = 0f;
-        
     }
 
     // consume rotation
