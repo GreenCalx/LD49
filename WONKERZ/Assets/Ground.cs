@@ -7,6 +7,7 @@ public class Ground : MonoBehaviour
         ROAD,
         DESERT,
         WATER,
+        AIR,
         NONE,
     };
     [System.Serializable]
@@ -23,7 +24,7 @@ public class Ground : MonoBehaviour
 
         public GroundInfos()
         {
-            Type = EType.ROAD;
+            Type = EType.NONE;
             Friction = new Vector2(0.01f, 0.1f);
             Velocity = Vector3.zero;
             DepthPerturbation = Vector3.zero;
@@ -104,6 +105,7 @@ public class Ground : MonoBehaviour
             case EType.ROAD:
                 break;
             case EType.WATER:
+                GI.DepthPerturbation.y = -1 * (Mathf.Sin(HitPosition.x * 0.1f) - 1);
                 break;
             case EType.NONE:
                 break;

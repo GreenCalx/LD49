@@ -3,65 +3,9 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour, IControllable
 {
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
-    {
-        var Turn = Entry.Inputs["Turn"].AxisValue;
-        var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
-        CarMotor.CurrentRPM = 0;
 
-        // Accelration
-        if (!IsAircraft)
-        {
-            if (Acceleration != 0)
-            {
-                CurrentAccelerationTime += Time.deltaTime;
-                CarMotor.CurrentRPM = Acceleration * TORQUE.Evaluate(CurrentAccelerationTime);
-            }
-            else
-            {
-                CurrentAccelerationTime = 0;
-            }
-
-            FrontAxle.Right.Wheel.Direction = transform.forward;
-            FrontAxle.Left.Wheel.Direction = transform.forward;
-        }
-
-        // direction
-        RearAxle.Right.Wheel.Direction = transform.forward;
-        RearAxle.Left.Wheel.Direction = transform.forward;
-
-        if (RearAxle.IsDirection)
-        {
-            RearAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
-            RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
-        }
-
-        if (FrontAxle.IsDirection)
-        {
-            FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Turn : -Turn), transform.up) * transform.forward;
-            FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Turn : -Turn), transform.up) * transform.forward;
-            if (IsAircraft)
-            {
-                FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
-                FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
-            }
-        }
-
-        // jump
-        if (Entry.Inputs["Jump"].Down)
-        {
-            SetSpringSizeMinAndLock();
-        }
-        else
-        {
-            if (Entry.Inputs["Jump"].IsUp)
-            {
-                ApplyForceMultiplier = true;
-            }
-            ResetSpringSizeMinAndUnlock();
-        }
-    }
-
+    /// ============ Structs =================
+    //
     // A car is defined as having 4 springs attached to the body,
     // and 4 wheels attached to the spring.
     // This is defined as an AxleInfo structure, that create everything at runtime.
@@ -159,34 +103,27 @@ public class CarController : MonoBehaviour, IControllable
         public float CurrentRPM;
     }
 
-    /// Everything car related
-    [Header("Car")]
+    /// ================== Variables ===================
+
+    [Header("Car PhysX")]
     /// A car is for now 2 axles (4 wheels)
     public Motor CarMotor;
     public Axle FrontAxle;
     public Axle RearAxle;
+    // We redefine the CenterOfMass to be able to change car mecanics
+    public GameObject CenterOfMass;
+
+    [Header("Car Refs For Creation")]
     /// Do we want to set and use a refAxle that will be copied at runtime inside each axle
     /// (same for suspension, all suspensions would be the same)
     public Suspension RefSuspension;
     public GameObject SuspensionRef;
     public Axle RefAxle;
     public bool UseRefs;
-    // We redefine the CenterOfMass to be able to change car mecanics
-    public GameObject CenterOfMass;
-    private Rigidbody RB;
     public float VelocityCorrectionMultiplier;
 
     public float CurrentAccelerationTime = 0;
-    // NOTE toffa : as we are using velocity to quickly correct boundary penetration
-    // we need a way to remove this velocity on the next frame or the object will continue to have momentum
-    // even after the correction is done.
-    // IMPORTANT toffa : it means we are not expecting the physics update to make the correction impossible
-    // or we would potentially slam the car into the ground again by substracting the velocity.
-    private Vector3 LastVelocityCorrection;
-    public int PhysicsSubSteps;
 
-    /// ----------------------------------------------------
-    /// BlueCalx for Toffo : put those shit where u want ---
     [Header("Curves")]
     public AnimationCurve TORQUE; // curve itself
     public int torque_movable_keyframe; // the keyframe we want to move in garage w slider
@@ -206,15 +143,23 @@ public class CarController : MonoBehaviour, IControllable
     public bool ApplyForceMultiplier = false;
 
     public bool IsAircraft = false;
-    public bool IsWater = false;
     public float SteeringAngle;
+    // NOTE toffa : as we are using velocity to quickly correct boundary penetration
+    // we need a way to remove this velocity on the next frame or the object will continue to have momentum
+    // even after the correction is done.
+    // IMPORTANT toffa : it means we are not expecting the physics update to make the correction impossible
+    // or we would potentially slam the car into the ground again by substracting the velocity.
+    public int PhysicsSubSteps;
 
-    public float GroundPerturbation;
-
-    public float Drag;
-
+    [Header("Mecanics")]
     public bool IsHooked;
+    // TODO toffa : remove this hardcoded object
     public GameObject grapin;
+
+    /// =============== Cache ===============
+    private Rigidbody RB;
+
+    /// ================ Curves ================
 
     public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
     {
@@ -248,7 +193,9 @@ public class CarController : MonoBehaviour, IControllable
                 break;
         }
     }
-    /// ----------------------------------------------------
+
+    /// =================== Updates =================
+
     void UpdateSpring(ref Spring S)
     {
         S.MaxLength = SpringMax;
@@ -266,6 +213,36 @@ public class CarController : MonoBehaviour, IControllable
         UpdateSpring(ref RearAxle.Right.Spring);
         UpdateSpring(ref RearAxle.Left.Spring);
     }
+
+    void UpdateSuspensionRenderer(ref Spring S)
+    {
+        S.Renderer.transform.position = S.Anchor.transform.position - transform.up * S.CurrentLength / 2;
+        S.Renderer.transform.localScale = new Vector3(1, S.CurrentLength / 2, 1);
+    }
+
+    void UpdateSuspensionRenderers()
+    {
+        UpdateSuspensionRenderer(ref FrontAxle.Right.Spring);
+        UpdateSuspensionRenderer(ref FrontAxle.Left.Spring);
+        UpdateSuspensionRenderer(ref RearAxle.Right.Spring);
+        UpdateSuspensionRenderer(ref RearAxle.Left.Spring);
+    }
+
+    void UpdateWheelRenderer(Suspension S)
+    {
+        S.Wheel.Renderer.transform.position = GetEnd(S);
+        S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(0, Quaternion.FromToRotation(transform.forward, S.Wheel.Direction).eulerAngles.y, 90);
+    }
+
+    void UpdateWheelsRenderer()
+    {
+        UpdateWheelRenderer(FrontAxle.Right);
+        UpdateWheelRenderer(FrontAxle.Left);
+        UpdateWheelRenderer(RearAxle.Right);
+        UpdateWheelRenderer(RearAxle.Left);
+    }
+
+    /// ================== Draw =================
 
     void DrawDebugAxle(Axle A, Color C, Color C2)
     {
@@ -300,6 +277,8 @@ public class CarController : MonoBehaviour, IControllable
         DrawDebugWheel(ref RearAxle.Left, C);
     }
 
+    /// =================== Spawn ==================
+
     void ComputeSuspensionAnchor(ref Axle A)
     {
         RaycastHit Hit;
@@ -331,20 +310,6 @@ public class CarController : MonoBehaviour, IControllable
     {
         ComputeSuspensionAnchor(ref FrontAxle);
         ComputeSuspensionAnchor(ref RearAxle);
-    }
-
-    void UpdateSuspensionRenderer(ref Spring S)
-    {
-        S.Renderer.transform.position = S.Anchor.transform.position - transform.up * S.CurrentLength / 2;
-        S.Renderer.transform.localScale = new Vector3(1, S.CurrentLength / 2, 1);
-    }
-
-    void UpdateSuspensionRenderers()
-    {
-        UpdateSuspensionRenderer(ref FrontAxle.Right.Spring);
-        UpdateSuspensionRenderer(ref FrontAxle.Left.Spring);
-        UpdateSuspensionRenderer(ref RearAxle.Right.Spring);
-        UpdateSuspensionRenderer(ref RearAxle.Left.Spring);
     }
 
     void SpawnSuspensionRenderers()
@@ -392,87 +357,7 @@ public class CarController : MonoBehaviour, IControllable
         SpawnSuspensions();
     }
 
-    void UpdateWheelRenderer(Suspension S)
-    {
-        S.Wheel.Renderer.transform.position = GetEnd(S);
-        S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(0, Quaternion.FromToRotation(transform.forward, S.Wheel.Direction).eulerAngles.y, 90);
-    }
-
-    void UpdateWheelsRenderer()
-    {
-        UpdateWheelRenderer(FrontAxle.Right);
-        UpdateWheelRenderer(FrontAxle.Left);
-        UpdateWheelRenderer(RearAxle.Right);
-        UpdateWheelRenderer(RearAxle.Left);
-    }
-
-    private Ground.EType CurrentMode = Ground.EType.NONE;
-    public void SetMode(Ground.EType M)
-    {
-        if (M == CurrentMode) return;
-
-        CurrentMode = M;
-
-        switch (M)
-        {
-            default:
-            case Ground.EType.ROAD:
-                {
-                    FrontAxle.IsTraction = true;
-                    FrontAxle.IsDirection = true;
-                    FrontAxle.IsReversedDirection = true;
-                    RearAxle.IsDirection = false;
-                    RearAxle.IsTraction = true;
-                    RearAxle.IsReversedDirection = false;
-
-                    IsWater = false;
-                    IsAircraft = false;
-                }
-                break;
-            case Ground.EType.DESERT:
-                {
-                    FrontAxle.IsTraction = true;
-                    FrontAxle.IsDirection = true;
-                    FrontAxle.IsReversedDirection = true;
-                    RearAxle.IsDirection = false;
-                    RearAxle.IsTraction = true;
-                    RearAxle.IsReversedDirection = false;
-
-                    IsWater = false;
-                    IsAircraft = false;
-                }
-                break;
-            case Ground.EType.WATER:
-                {
-                    FrontAxle.IsTraction = false;
-                    FrontAxle.IsDirection = false;
-                    RearAxle.IsTraction = true;
-                    RearAxle.IsDirection = true;
-
-                    IsWater = true;
-                    IsAircraft = false;
-                }
-                break;
-
-           // case Ground.EType.DELTA:
-           //     {
-           //         FrontAxle.IsTraction = false;
-           //         FrontAxle.IsDirection = true;
-           //         RearAxle.IsTraction = true;
-           //         RearAxle.IsDirection = true;
-
-           //         IsAircraft = true;
-           //         IsWater = false;
-           //     }
-           //     break;
-        }
-    }
-
-    // Collision detection and force application
-    void ResolveWheel(ref Wheel W)
-    {
-
-    }
+    /// =============== Resolve =============
 
     Vector3 AddGravityStep(Vector3 A)
     {
@@ -590,9 +475,9 @@ public class CarController : MonoBehaviour, IControllable
             //end disguting...
             #endif
 
-            var G = Hit.collider.gameObject.GetComponent<Ground>();
+            var G = Hit.collider?.gameObject?.GetComponent<Ground>();
             var GroundInfos = G ? G.GetGroundInfos(Hit.point) : new Ground.GroundInfos();
-            SetMode(GroundInfos.Type);
+            SetModeFromGround(GroundInfos.Type);
 
             var SubStepDeltaTime = Time.fixedDeltaTime / PhysicsSubSteps;
             var TotalProcessedTime = 0f;
@@ -700,11 +585,92 @@ public class CarController : MonoBehaviour, IControllable
         ResolveSuspension(ref A.Left);
     }
 
+    void ResolveWheel(ref Wheel W)
+    {
+
+    }
+
+    /// =================== Mecanics ===================
+
+    private Ground.EType CurrentGround = Ground.EType.NONE;
+
+    public enum CarMode {
+        GROUND,
+        WATER,
+        DELTA,
+        NONE
+    };
+
+    public void SetModeFromGround(Ground.EType Mode) {
+        if (Mode == Ground.EType.NONE) return;
+        SetMode(CarMode.GROUND);
+        if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
+    }
+
+    public CarMode CurrentMode = CarMode.NONE;
+    public void SetMode(CarMode Mode) {
+        if (Mode == CurrentMode) return;
+        CurrentMode = Mode;
+
+        IsAircraft = false;
+        RearAxle.IsTraction = true;
+        switch(Mode) {
+            case CarMode.GROUND :
+                {
+                    FrontAxle.IsTraction = false;
+                    FrontAxle.IsDirection = true;
+                    FrontAxle.IsReversedDirection = false;
+
+                    RearAxle.IsDirection = false;
+                    RearAxle.IsReversedDirection = false;
+                } break;
+            case CarMode.WATER :
+                {
+                    FrontAxle.IsTraction = false;
+                    FrontAxle.IsDirection = false;
+                    FrontAxle.IsReversedDirection = false;
+
+                    RearAxle.IsDirection = true;
+                    RearAxle.IsReversedDirection = true;
+                }break;
+            case CarMode.DELTA:
+                {
+                    FrontAxle.IsTraction = true;
+                    FrontAxle.IsDirection = true;
+                    FrontAxle.IsReversedDirection = false;
+
+                    RearAxle.IsDirection = true;
+                    RearAxle.IsReversedDirection = false;
+
+                    IsAircraft = true;
+                }break;
+        }
+    }
+
     private void SetBodyColor(Color C)
     {
     }
 
-    // TODO toffa : make this better this is a quick fix
+    private void ResetSpringSizeMinAndUnlock()
+    {
+        SuspensionLock = false;
+    }
+
+    private void SetSpringSizeMinAndLock()
+    {
+        FrontAxle.Right.Spring.CurrentLength = FrontAxle.Right.Spring.MinLength;
+        FrontAxle.Left.Spring.CurrentLength = FrontAxle.Left.Spring.MinLength;
+        RearAxle.Right.Spring.CurrentLength = RearAxle.Right.Spring.MinLength;
+        RearAxle.Left.Spring.CurrentLength = RearAxle.Left.Spring.MinLength;
+        SuspensionLock = true;
+    }
+
+    public Vector2 MouseLastPosition = Vector2.zero;
+    // Update is called once per frame
+    public float TorqueForce;
+
+    /// =============== Unity ==================
+
     private void OnDestroy()
     {
         Utils.detachControllable<CarController>(this);
@@ -757,24 +723,6 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
-    private void ResetSpringSizeMinAndUnlock()
-    {
-        SuspensionLock = false;
-    }
-
-
-    private void SetSpringSizeMinAndLock()
-    {
-        FrontAxle.Right.Spring.CurrentLength = FrontAxle.Right.Spring.MinLength;
-        FrontAxle.Left.Spring.CurrentLength = FrontAxle.Left.Spring.MinLength;
-        RearAxle.Right.Spring.CurrentLength = RearAxle.Right.Spring.MinLength;
-        RearAxle.Left.Spring.CurrentLength = RearAxle.Left.Spring.MinLength;
-        SuspensionLock = true;
-    }
-
-    public Vector2 MouseLastPosition = Vector2.zero;
-    // Update is called once per frame
-    public float TorqueForce;
     void FixedUpdate()
     {
         UpdateSprings();
@@ -803,5 +751,66 @@ public class CarController : MonoBehaviour, IControllable
 
         FixedUpdateDone = true;
         ApplyForceMultiplier = false;
+    }
+
+    /// ================ Controls ===================
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+        var Turn = Entry.Inputs["Turn"].AxisValue;
+        var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
+        CarMotor.CurrentRPM = 0;
+
+        // Accelration
+        if (!IsAircraft)
+        {
+            if (Acceleration != 0)
+            {
+                CurrentAccelerationTime += Time.deltaTime;
+                CarMotor.CurrentRPM = Acceleration * TORQUE.Evaluate(CurrentAccelerationTime);
+            }
+            else
+            {
+                CurrentAccelerationTime = 0;
+            }
+
+            FrontAxle.Right.Wheel.Direction = transform.forward;
+            FrontAxle.Left.Wheel.Direction = transform.forward;
+        }
+
+        // direction
+        RearAxle.Right.Wheel.Direction = transform.forward;
+        RearAxle.Left.Wheel.Direction = transform.forward;
+
+        if (RearAxle.IsDirection)
+        {
+            RearAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+            RearAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (RearAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+        }
+
+        if (FrontAxle.IsDirection)
+        {
+            FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+            FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? -Turn : Turn), transform.up) * transform.forward;
+            if (IsAircraft)
+            {
+                FrontAxle.Right.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
+                FrontAxle.Left.Wheel.Direction = Quaternion.AngleAxis(SteeringAngle * (FrontAxle.IsReversedDirection ? Acceleration : -Acceleration), transform.right) * transform.forward;
+            }
+        }
+
+        // jump
+        if (Entry.Inputs["Jump"].Down)
+        {
+            SetSpringSizeMinAndLock();
+        }
+        else
+        {
+            if (Entry.Inputs["Jump"].IsUp)
+            {
+                ApplyForceMultiplier = true;
+            }
+            ResetSpringSizeMinAndUnlock();
+        }
     }
 }
