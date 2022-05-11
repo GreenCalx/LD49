@@ -20,6 +20,7 @@ public class TrickTracker : MonoBehaviour
     public TrickUI trickUI;
     public Transform player_transform;
     [Header("TWEAK PARAMS")]
+    public float epsilon = 1f; // rotation +-epsilon
     public float combo_multiplier = 1f;
     public float rot_epsilon = 2f;
     public float line_cooldown = 0.4f;
@@ -37,8 +38,10 @@ public class TrickTracker : MonoBehaviour
     //[HideInInspector]
     public float init_rot_x, init_rot_y, init_rot_z;
     //[HideInInspector]
-    public float rec_rot_x, rec_rot_y, rec_rot_z;
-    public float cons_rot_x, cons_rot_y, cons_rot_z;
+    private List<float> rec_rot_x, rec_rot_y, rec_rot_z;
+
+    public Vector3 rotations;
+    
     [HideInInspector]
     public float  time_waited_after_line;
     [HideInInspector]
@@ -76,7 +79,7 @@ public class TrickTracker : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!activate_tricks || (trick_line==null))
             return;
@@ -110,18 +113,62 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        //rec_rot_x = (player_transform.eulerAngles.x) - init_rot_x - cons_rot_x;
-        //rec_rot_y = (player_transform.eulerAngles.y) - init_rot_y - cons_rot_y;
-        //rec_rot_z = (player_transform.eulerAngles.z) - init_rot_z - cons_rot_z;
-        rec_rot_x = rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x;
-        rec_rot_y = rotDiff(player_transform.eulerAngles.y, init_rot_y) - cons_rot_y;
-        rec_rot_z = rotDiff(player_transform.eulerAngles.z, init_rot_z) - cons_rot_z;
+        Vector3 currentAngles = player_transform.eulerAngles;
+
+        //rec_rot_x = rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x;
+        //rec_rot_y = rotDiff(player_transform.eulerAngles.y, init_rot_y) - cons_rot_y;
+        //rec_rot_z = rotDiff(player_transform.eulerAngles.z, init_rot_z) - cons_rot_z;
+                                              
+        //rec_rot_x.Add( rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x );
+        rec_rot_x.Add(currentAngles.x);
+        rec_rot_y.Add(currentAngles.y);
+        rec_rot_z.Add(currentAngles.z);
+
+        updateRotations();
     }
 
     private float rotDiff(float iInit, float iCurrent)
     {
-        float ret = iCurrent - iInit;
-        return (ret+180) % 360 - 180;
+        //float ret = iCurrent - iInit;
+        //return (ret+180) % 360 - 180;
+        return Mathf.DeltaAngle( iInit, iCurrent);
+    }
+
+    public void updateRotations()
+    {
+        // Available rotation computation
+        // i=0..n => sum(recrot(i-1), recrot(i))  
+        rotations = new Vector3(0f,0f,0f);
+        
+        for( int i=0; i < rec_rot_x.Count; i++ )
+        {
+            if (i==0)
+            {
+                //rots.x += rec_rot_x[i];
+                continue;
+            }
+            rotations.x += rotDiff(rec_rot_x[i-1], rec_rot_x[i]);
+        }
+
+        for( int i=0; i < rec_rot_y.Count; i++ )
+        {
+            if (i==0)
+            {
+                //rots.y += rec_rot_y[i];
+                continue;
+            }
+            rotations.y += rotDiff(rec_rot_y[i-1], rec_rot_y[i]);
+        }
+
+        for( int i=0; i < rec_rot_z.Count; i++ )
+        {
+            if (i==0)
+            {
+                //rots.z += rec_rot_z[i];
+                continue;
+            }
+            rotations.z += rotDiff(rec_rot_z[i-1], rec_rot_z[i]);
+        }
     }
 
     public void initRotationsRecord()
@@ -130,21 +177,20 @@ public class TrickTracker : MonoBehaviour
         init_rot_y = player_transform.eulerAngles.y;
         init_rot_z = player_transform.eulerAngles.z;
 
-        rec_rot_x = 0f;
-        rec_rot_y = 0f;
-        rec_rot_z = 0f;
-
-        cons_rot_x = 0f;
-        cons_rot_y = 0f;
-        cons_rot_z = 0f;
+        rec_rot_x = new List<float>();
+        rec_rot_y = new List<float>();
+        rec_rot_z = new List<float>();
     }
 
     // consume rotation
     public void updateConsumedRotations( TrickCondition tc )
     {
-        cons_rot_x += tc.x_rot;
-        cons_rot_y += tc.y_rot;
-        cons_rot_z += tc.z_rot;
+        if (tc.x_rot!=0)
+        { rec_rot_x.Clear(); rec_rot_x.Add(player_transform.eulerAngles.x); }
+        if (tc.y_rot!=0)
+        { rec_rot_y.Clear(); rec_rot_x.Add(player_transform.eulerAngles.y); }
+        if (tc.z_rot!=0)
+        { rec_rot_z.Clear(); rec_rot_x.Add(player_transform.eulerAngles.z); }
     }
 
     public bool tryOpenLine()
@@ -237,6 +283,11 @@ public class TrickTracker : MonoBehaviour
         }
 
         trick_line.close();
+
+        rec_rot_x.Clear();
+        rec_rot_y.Clear();
+        rec_rot_z.Clear();
+
         time_waited_after_line = Time.time;
     }
 

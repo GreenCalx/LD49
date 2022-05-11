@@ -65,7 +65,8 @@ public class TrickLine
             return;
         }
 
-        if ( iTrick == last_trick )
+        
+        if (( iTrick == last_trick ) && ( iTrick.isFlat()) )
         {
             // continuing same trick, update time
             full_line[full_line.Count-1].time = iDurationTime;

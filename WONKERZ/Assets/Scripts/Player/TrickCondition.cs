@@ -54,22 +54,29 @@ public class TrickCondition
         if ( (x_rot == 0) && (y_rot == 0) && (z_rot == 0) )
             return true;
 
+        Vector3 rots = iTT.rotations;
+
         // check expected rot sign
-        bool validate_x = (x_rot == 0) ? true : (Mathf.Sign(x_rot) == Mathf.Sign(iTT.rec_rot_x));
-        bool validate_y = (y_rot == 0) ? true : (Mathf.Sign(y_rot) == Mathf.Sign(iTT.rec_rot_y));
-        bool validate_z = (z_rot == 0) ? true : (Mathf.Sign(z_rot) == Mathf.Sign(iTT.rec_rot_z));
+        bool validate_x = (x_rot == 0) ? true : (Mathf.Sign(x_rot) == Mathf.Sign(rots.x));
+        bool validate_y = (y_rot == 0) ? true : (Mathf.Sign(y_rot) == Mathf.Sign(rots.y));
+        bool validate_z = (z_rot == 0) ? true : (Mathf.Sign(z_rot) == Mathf.Sign(rots.z));
 
         // check rot value
-        validate_x &= (x_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_x) - Mathf.Abs(x_rot)) ) <= iTT.rot_epsilon;
-        validate_y &= (y_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_y) - Mathf.Abs(y_rot)) ) <= iTT.rot_epsilon;
-        validate_z &= (z_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(iTT.rec_rot_z) - Mathf.Abs(z_rot)) ) <= iTT.rot_epsilon;
+        validate_x &= (x_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.x) - Mathf.Abs(x_rot)) ) <= iTT.rot_epsilon;
+        validate_y &= (y_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.y) - Mathf.Abs(y_rot)) ) <= iTT.rot_epsilon;
+        validate_z &= (z_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.z) - Mathf.Abs(z_rot)) ) <= iTT.rot_epsilon;
+        //validate_x &= (x_rot == 0) ? true : compareRotation(x_rot, rots.x, iTT.epsilon);
+        //validate_y &= (y_rot == 0) ? true : compareRotation(y_rot, rots.y, iTT.epsilon);
+        //validate_z &= (z_rot == 0) ? true : compareRotation(z_rot, rots.z, iTT.epsilon);
+        
+        return (validate_x && validate_y && validate_z);
+    }
 
-        if (validate_x && validate_y && validate_z)
-        {
-            return true;
-        }
-
-        return false;
+    private bool compareRotation(float iSource, float iTarget, float epsilon)
+    {
+        float delta = Mathf.Abs(iTarget - iSource);
+        return (delta <= epsilon) || 
+                delta <= (Mathf.Max(Mathf.Abs(iSource), Mathf.Abs(iTarget)) * epsilon);
     }
 
 }

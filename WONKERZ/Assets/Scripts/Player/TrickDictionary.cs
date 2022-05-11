@@ -32,16 +32,16 @@ public static class TrickDictionary
         // CHAINED
         new Trick( "FRONT FLIP"   , 125   , new TrickChainCondition( "1/2 FRONT FLIP", "1/2 BACK FLIP") ),
         new Trick( "BACK FLIP"    , 125   , new TrickChainCondition( "1/2 BACK FLIP", "1/2 FRONT FLIP" ) ),
-        new Trick( "FRONT BARREL" , 75    , new TrickChainCondition( "1/2 FRONT BARREL", "1/2 BACK BARREL")),
-        new Trick( "BACK BARREL"  , 75    , new TrickChainCondition( "1/2 BACK BARREL", "1/2 FRONT BARREL")),
-        new Trick( "360 FRONT"    , 40    , new TrickChainCondition( "180 FRONT", "180 BACK" ) ),
-        new Trick( "360 BACK"     , 40    , new TrickChainCondition( "180 BACK", "180 FRONT" ) ),
+        new Trick( "FRONT BARREL" , 75    , new TrickChainCondition( "1/2 FRONT BARREL", "1/2 FRONT BARREL")),
+        new Trick( "BACK BARREL"  , 75    , new TrickChainCondition( "1/2 BACK BARREL", "1/2 BACK BARREL")),
+        new Trick( "360 FRONT"    , 40    , new TrickChainCondition( "180 FRONT", "180 FRONT" ) ),
+        new Trick( "360 BACK"     , 40    , new TrickChainCondition( "180 BACK", "180 BACK" ) ),
         
         new Trick( "540 BACK"     , 90    , new TrickChainCondition( "360 BACK", "180 BACK" ) ),
         new Trick( "540 FRONT"     , 90    , new TrickChainCondition( "360 FRONT", "180 FRONT" ) ),
         
-        new Trick( "720 BACK"            , 185    , new TrickChainCondition( "540 BACK", "180 FRONT" ) ),
-        new Trick( "720 FRONT"           , 185    , new TrickChainCondition( "540 FRONT", "180 BACK" ) ),
+        new Trick( "720 BACK"            , 185    , new TrickChainCondition( "540 BACK", "180 BACK" ) ),
+        new Trick( "720 FRONT"           , 185    , new TrickChainCondition( "540 FRONT", "180 FRONT" ) ),
         new Trick( "DOUBLE FRONT BARREL" , 200    , new TrickChainCondition( "FRONT BARREL", "FRONT BARREL")),
         new Trick( "DOUBLE BACK BARREL"  , 200    , new TrickChainCondition( "BACK BARREL", "BACK BARREL")),
         new Trick( "DOUBLE FRONT FLIP"   , 300   , new TrickChainCondition( "FRONT FLIP", "FRONT FLIP") ),
