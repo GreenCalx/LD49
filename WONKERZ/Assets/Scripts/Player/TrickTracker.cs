@@ -20,7 +20,6 @@ public class TrickTracker : MonoBehaviour
     public TrickUI trickUI;
     public Transform player_transform;
     [Header("TWEAK PARAMS")]
-    public float epsilon = 1f; // rotation +-epsilon
     public float combo_multiplier = 1f;
     public float rot_epsilon = 2f;
     public float line_cooldown = 0.4f;
@@ -120,9 +119,43 @@ public class TrickTracker : MonoBehaviour
         //rec_rot_z = rotDiff(player_transform.eulerAngles.z, init_rot_z) - cons_rot_z;
                                               
         //rec_rot_x.Add( rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x );
-        rec_rot_x.Add(currentAngles.x);
-        rec_rot_y.Add(currentAngles.y);
-        rec_rot_z.Add(currentAngles.z);
+        //rec_rot_x.Add(currentAngles.x);
+        //rec_rot_y.Add(currentAngles.y);
+        //rec_rot_z.Add(currentAngles.z);
+        
+        // Reference :
+        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
+        Quaternion q = player_transform.rotation.normalized;
+        float x = q.x;
+        float y = q.y;
+        float z = q.z;
+        float w = q.w;
+
+        double gimbal_lock_tst = x*y + z*w;
+
+        float yaw =0f, pitch=0f, roll=0f;
+        if ( gimbal_lock_tst > 0.499 ) // north pole
+        {
+            yaw    = 0;
+            pitch  = 2*Mathf.Atan2(x,w);
+            roll   = Mathf.PI/2;
+        }
+        else if ( gimbal_lock_tst < -0.499) // south pole
+        {
+            yaw    = 0;
+            pitch  = -2*Mathf.Atan2(x,w);
+            roll   = -Mathf.PI/2;
+        } else {
+            yaw    = Mathf.Atan2(2*y*w - 2*x*z, 1 - 2*y*y - 2*z*z );
+            pitch  = Mathf.Atan2(2*x*w - 2*y*z, 1-  2*x*x - 2*z*z );
+            //pitch *= -2;  // pithc is between -90 and 90
+            roll   = Mathf.Asin( 2*x*y + 2*z*w);
+        }
+
+        // rad to deg
+        rec_rot_x.Add( pitch * 180/Mathf.PI );
+        rec_rot_y.Add( yaw   * 180/Mathf.PI );
+        rec_rot_z.Add( roll  * 180/Mathf.PI );
 
         updateRotations();
     }
@@ -233,10 +266,10 @@ public class TrickTracker : MonoBehaviour
     public bool tryContinueLine()
     {
         // NEW TRICK / continuing trick
-        Trick tbasic = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
-        Trick tflat = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
-        Trick tneutral = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
-        Trick tignore = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
+        Trick tbasic    = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
+        Trick tflat     = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
+        Trick tneutral  = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick tignore   = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
 
         double trick_duration = Time.time - time_trick_started;
         if (tbasic!=null)
@@ -245,14 +278,8 @@ public class TrickTracker : MonoBehaviour
             updateConsumedRotations( tbasic.condition );
             return true;
         } else if (tflat!=null){
-            if (!trick_line.is_opened)
+            if (trick_duration > hold_time_start_flat_trick)
             {
-                if (trick_duration > hold_time_start_flat_trick)
-                {
-                    trick_line.add(tflat, trick_duration);
-                    return true;
-                }
-            } else {
                 trick_line.add(tflat, trick_duration);
                 return true;
             }
