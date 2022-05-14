@@ -9,7 +9,7 @@ public class ManualCamera : PlayerCamera, IControllable
 
     /// TWEAKS
     [SerializeField] public Transform focus = default;
-    [SerializeField, Range(1f,50f)] public float distance = 5f;
+    [SerializeField, Range(1f,80f)] public float distance = 5f;
     [SerializeField, Min(0f)] public float focusRadius = 1f;
     [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
     [SerializeField, Range(1f, 360f)]public float rotationSpeed = 90f;
@@ -79,6 +79,7 @@ public class ManualCamera : PlayerCamera, IControllable
         } else {
             lookRotation = transform.localRotation;
         }
+
         Vector3 lookDirection = lookRotation * Vector3.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;
         
@@ -92,6 +93,7 @@ public class ManualCamera : PlayerCamera, IControllable
         // check if we hit something between camera and focuspoint
 		if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask)) 
 		{
+            //Debug.Log("hit something  : " + hit.transform.gameObject.name);
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
 

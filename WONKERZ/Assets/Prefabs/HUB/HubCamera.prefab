@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 384985052665168108}
   - component: {fileID: 8215968377043512466}
   - component: {fileID: 1185167716}
+  - component: {fileID: 3484342060929109041}
   m_Layer: 0
   m_Name: HubCamera
   m_TagString: Untagged
@@ -56,8 +57,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 3000
+  near clip plane: 8
+  far clip plane: 1000
   field of view: 70
   orthographic: 0
   orthographic size: 5
@@ -90,16 +91,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camType: 1
   playerRef: {fileID: 0}
-  cam: {fileID: 384985052665168108}
   focus: {fileID: 0}
-  distance: 50
-  focusRadius: 1
+  distance: 60
+  focusRadius: 2
   focusCentering: 0.5
-  rotationSpeed: 90
-  minVerticalAngle: -30
-  maxVerticalAngle: 60
-  alignDelay: 1
+  rotationSpeed: 264
+  minVerticalAngle: -15
+  maxVerticalAngle: 45
+  alignDelay: 0.8
   alignSmoothRange: 30
+  obstructionMask:
+    serializedVersion: 2
+    m_Bits: 4087
 --- !u!114 &1185167716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,3 +116,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat: {fileID: 2100000, guid: 90a19b5540cd93d41bbef412020f23cf, type: 2}
+--- !u!81 &3484342060929109041
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384985052665167888}
+  m_Enabled: 1
