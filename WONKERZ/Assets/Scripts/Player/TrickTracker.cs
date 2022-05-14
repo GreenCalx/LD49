@@ -112,50 +112,20 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        Vector3 currentAngles = player_transform.eulerAngles;
+        Vector3 curr_PYR = MathUtils.getPYR(player_transform.rotation);
 
-        //rec_rot_x = rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x;
-        //rec_rot_y = rotDiff(player_transform.eulerAngles.y, init_rot_y) - cons_rot_y;
-        //rec_rot_z = rotDiff(player_transform.eulerAngles.z, init_rot_z) - cons_rot_z;
-                                              
-        //rec_rot_x.Add( rotDiff(player_transform.eulerAngles.x, init_rot_x) - cons_rot_x );
-        //rec_rot_x.Add(currentAngles.x);
-        //rec_rot_y.Add(currentAngles.y);
-        //rec_rot_z.Add(currentAngles.z);
-        
-        // Reference :
-        // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToEuler/
-        Quaternion q = player_transform.rotation.normalized;
-        float x = q.x;
-        float y = q.y;
-        float z = q.z;
-        float w = q.w;
+        // rad to deg simplified as integers
+        int pitch_deg   = (int)( curr_PYR.x * 180/Mathf.PI ) ;
+        int yaw_deg     = (int)( curr_PYR.y * 180/Mathf.PI );
+        int roll_deg    = (int)( curr_PYR.z * 180/Mathf.PI );
 
-        double gimbal_lock_tst = x*y + z*w;
-
-        float yaw =0f, pitch=0f, roll=0f;
-        if ( gimbal_lock_tst > 0.499 ) // north pole
-        {
-            yaw    = 0;
-            pitch  = 2*Mathf.Atan2(x,w);
-            roll   = Mathf.PI/2;
-        }
-        else if ( gimbal_lock_tst < -0.499) // south pole
-        {
-            yaw    = 0;
-            pitch  = -2*Mathf.Atan2(x,w);
-            roll   = -Mathf.PI/2;
-        } else {
-            yaw    = Mathf.Atan2(2*y*w - 2*x*z, 1 - 2*y*y - 2*z*z );
-            pitch  = Mathf.Atan2(2*x*w - 2*y*z, 1-  2*x*x - 2*z*z );
-            //pitch *= -2;  // pithc is between -90 and 90
-            roll   = Mathf.Asin( 2*x*y + 2*z*w);
-        }
-
-        // rad to deg
-        rec_rot_x.Add( pitch * 180/Mathf.PI );
-        rec_rot_y.Add( yaw   * 180/Mathf.PI );
-        rec_rot_z.Add( roll  * 180/Mathf.PI );
+        // add to rec values
+        if (!rec_rot_x.Contains(pitch_deg))
+            rec_rot_x.Add( pitch_deg );
+        if (!rec_rot_y.Contains(yaw_deg))
+            rec_rot_y.Add( yaw_deg );
+        if (!rec_rot_z.Contains(roll_deg))
+            rec_rot_z.Add( roll_deg );
 
         updateRotations();
     }
@@ -169,39 +139,16 @@ public class TrickTracker : MonoBehaviour
 
     public void updateRotations()
     {
-        // Available rotation computation
-        // i=0..n => sum(recrot(i-1), recrot(i))  
-        rotations = new Vector3(0f,0f,0f);
+        int xcount = rec_rot_x.Count;
+        if (xcount > 0)
+            rotations.x = rotDiff( rec_rot_x[0], rec_rot_x[xcount-1]);
+        int ycount = rec_rot_y.Count;
+        if (ycount > 0)
+            rotations.y = rotDiff( rec_rot_y[0], rec_rot_y[ycount-1]);
+        int zcount = rec_rot_z.Count;
+        if (zcount > 0)
+            rotations.z = rotDiff( rec_rot_z[0], rec_rot_z[zcount-1]);
         
-        for( int i=0; i < rec_rot_x.Count; i++ )
-        {
-            if (i==0)
-            {
-                //rots.x += rec_rot_x[i];
-                continue;
-            }
-            rotations.x += rotDiff(rec_rot_x[i-1], rec_rot_x[i]);
-        }
-
-        for( int i=0; i < rec_rot_y.Count; i++ )
-        {
-            if (i==0)
-            {
-                //rots.y += rec_rot_y[i];
-                continue;
-            }
-            rotations.y += rotDiff(rec_rot_y[i-1], rec_rot_y[i]);
-        }
-
-        for( int i=0; i < rec_rot_z.Count; i++ )
-        {
-            if (i==0)
-            {
-                //rots.z += rec_rot_z[i];
-                continue;
-            }
-            rotations.z += rotDiff(rec_rot_z[i-1], rec_rot_z[i]);
-        }
     }
 
     public void initRotationsRecord()
@@ -218,12 +165,14 @@ public class TrickTracker : MonoBehaviour
     // consume rotation
     public void updateConsumedRotations( TrickCondition tc )
     {
+        //Vector3 curr_PYR = MathUtils.getPYR(player_transform.rotation);
         if (tc.x_rot!=0)
-        { rec_rot_x.Clear(); rec_rot_x.Add(player_transform.eulerAngles.x); }
+        { rec_rot_x.Clear(); }
         if (tc.y_rot!=0)
-        { rec_rot_y.Clear(); rec_rot_x.Add(player_transform.eulerAngles.y); }
+        { rec_rot_y.Clear(); }
         if (tc.z_rot!=0)
-        { rec_rot_z.Clear(); rec_rot_x.Add(player_transform.eulerAngles.z); }
+        { rec_rot_z.Clear(); }
+        //updateRotations();
     }
 
     public bool tryOpenLine()

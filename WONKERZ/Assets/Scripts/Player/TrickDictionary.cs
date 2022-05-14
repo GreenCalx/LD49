@@ -22,18 +22,19 @@ public static class TrickDictionary
         new Trick( TN.FLAT, "RIGHT WHEELIE",  15, new TrickCondition(new bool[4]{ false, true, false, true})),
 
         // BASIC AIRS
-        new Trick( TN.BASIC, "1/2 FRONT FLIP"   , 125   , new TrickCondition( -180, 0, 0 ) ),
-        new Trick( TN.BASIC, "1/2 BACK FLIP"    , 125   , new TrickCondition( 180, 0, 0 ) ),
-        new Trick( TN.BASIC, "1/2 FRONT BARREL" , 75    , new TrickCondition( 0, 0, -180)),
-        new Trick( TN.BASIC, "1/2 BACK BARREL"  , 75    , new TrickCondition( 0, 0, 180)),
-        new Trick( TN.BASIC, "180 FRONT"        , 40    , new TrickCondition( 0, 180, 0 ) ),
-        new Trick( TN.BASIC, "180 BACK"         , 40    , new TrickCondition( 0, -180, 0 ) ),
+        new Trick( TN.BASIC, "1/2 FRONT FLIP"   , 125   , new TrickCondition( 90, 0, 0 ) ),
+        new Trick( TN.BASIC, "1/2 BACK FLIP"    , 125   , new TrickCondition( -90, 0, 0 ) ),
+        new Trick( TN.BASIC, "1/2 FRONT BARREL" , 75    , new TrickCondition( 0, 0, -90)),
+        new Trick( TN.BASIC, "1/2 BACK BARREL"  , 75    , new TrickCondition( 0, 0, 90)),
+        new Trick( TN.BASIC, "180 FRONT"        , 40    , new TrickCondition( 0, 90, 0 ) ),
+        new Trick( TN.BASIC, "180 BACK"         , 40    , new TrickCondition( 0, -90, 0 ) ),
 
         // CHAINED
+            // classics
         new Trick( "FRONT FLIP"   , 125   , new TrickChainCondition( "1/2 FRONT FLIP", "1/2 FRONT FLIP") ),
         new Trick( "BACK FLIP"    , 125   , new TrickChainCondition( "1/2 BACK FLIP", "1/2 BACK FLIP" ) ),
-        new Trick( "FRONT BARREL" , 75    , new TrickChainCondition( "1/2 FRONT BARREL", "1/2 FRONT BARREL")),
-        new Trick( "BACK BARREL"  , 75    , new TrickChainCondition( "1/2 BACK BARREL", "1/2 BACK BARREL")),
+        new Trick( "FRONT BARREL" , 75    , new TrickChainCondition( "1/2 FRONT BARREL", "1/2 BACK BARREL")),
+        new Trick( "BACK BARREL"  , 75    , new TrickChainCondition( "1/2 BACK BARREL", "1/2 FRONT BARREL")),
         new Trick( "360 FRONT"    , 40    , new TrickChainCondition( "180 FRONT", "180 FRONT" ) ),
         new Trick( "360 BACK"     , 40    , new TrickChainCondition( "180 BACK", "180 BACK" ) ),
         
@@ -46,7 +47,18 @@ public static class TrickDictionary
         new Trick( "DOUBLE BACK BARREL"  , 200    , new TrickChainCondition( "BACK BARREL", "BACK BARREL")),
         new Trick( "DOUBLE FRONT FLIP"   , 300   , new TrickChainCondition( "FRONT FLIP", "FRONT FLIP") ),
         new Trick( "DOUBLE BACK FLIP"    , 300   , new TrickChainCondition( "BACK FLIP", "BACK FLIP" ) ),
-   
+
+            // fancy
+        new Trick( "FRONT TWIST"  , 185   , new TrickChainCondition( "1/2 FRONT FLIP", "180 FRONT") ),
+        new Trick( "SWEEPER"      , 132   , new TrickChainCondition( "180 BACK", "180 FRONT" ) ),
+        new Trick( "BACK TWIST"   , 185    , new TrickChainCondition( "1/2 BACK FLIP", "180 BACK")),
+        new Trick( "FRONT CORK"  , 122    , new TrickChainCondition( "180 FRONT", "1/2 FRONT BARREL")),
+        new Trick( "BACK CORK"    , 122    , new TrickChainCondition( "180 BACK", "1/2 BACK BARREL" ) ),
+        new Trick( "FRONT UNDERFLIP"     , 168    , new TrickChainCondition( "1/2 FRONT BARREL", "1/2 FRONT FLIP" ) ),
+        new Trick( "BACK UNDERFLIP"     , 168    , new TrickChainCondition( "1/2 BACK BARREL", "1/2 BACK FLIP" ) ),
+        new Trick( "FRONT CORKTWIST"     , 321    , new TrickChainCondition( "FRONT CORK", "FRONT TWIST" ) ),
+        new Trick( "BACK CORKTWIST"     , 321    , new TrickChainCondition( "BACK CORK", "BACK TWIST" ) ),
+
         // IGNORE
         new Trick( TN.IGNORE, "ONE WHEEL",   10,  new TrickCondition(new bool[4]{ true, false, false, false})),
         new Trick( TN.IGNORE, "ONE WHEEL",  10, new TrickCondition(new bool[4]{ false, true, false, false})),

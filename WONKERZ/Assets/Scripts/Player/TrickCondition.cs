@@ -65,18 +65,8 @@ public class TrickCondition
         validate_x &= (x_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.x) - Mathf.Abs(x_rot)) ) <= iTT.rot_epsilon;
         validate_y &= (y_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.y) - Mathf.Abs(y_rot)) ) <= iTT.rot_epsilon;
         validate_z &= (z_rot == 0) ? true : Mathf.Abs( (Mathf.Abs(rots.z) - Mathf.Abs(z_rot)) ) <= iTT.rot_epsilon;
-        //validate_x &= (x_rot == 0) ? true : compareRotation(x_rot, rots.x, iTT.epsilon);
-        //validate_y &= (y_rot == 0) ? true : compareRotation(y_rot, rots.y, iTT.epsilon);
-        //validate_z &= (z_rot == 0) ? true : compareRotation(z_rot, rots.z, iTT.epsilon);
         
         return (validate_x && validate_y && validate_z);
-    }
-
-    private bool compareRotation(float iSource, float iTarget, float epsilon)
-    {
-        float delta = Mathf.Abs(iTarget - iSource);
-        return (delta <= epsilon) || 
-                delta <= (Mathf.Max(Mathf.Abs(iSource), Mathf.Abs(iTarget)) * epsilon);
     }
 
 }
