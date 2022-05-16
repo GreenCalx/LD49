@@ -28,17 +28,14 @@ public class CheckPoint : MonoBehaviour
     public Transform respawn_location;
     [HideInInspector]
     public CheckPointManager cpm;
-    public string name;
-
-    public ParticleSystem particleSystem;
     public ParticleSystemForceField activation_pff;
     public ParticleSystemForceField base_pff;
     // Start is called before the first frame update
     void Start()
     {
         hasManager = subscribeToManager();
-        activation_pff.gameObject.active = false;
-        base_pff.gameObject.active = true;
+        activation_pff.gameObject.SetActive(false);
+        base_pff.gameObject.SetActive(true);
     }
 
 
@@ -88,8 +85,8 @@ public class CheckPoint : MonoBehaviour
         if (!!player)
         {
             cpm.notifyCP(this.gameObject);
-            activation_pff.gameObject.active = true;
-            base_pff.gameObject.active = false;
+            activation_pff.gameObject.SetActive(true);
+            base_pff.gameObject.SetActive(false);
 
             StartCameraAnimation();
         }

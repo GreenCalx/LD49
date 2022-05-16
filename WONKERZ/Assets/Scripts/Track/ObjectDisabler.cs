@@ -24,12 +24,12 @@ public class ObjectDisabler : MonoBehaviour
         CarController player = iCol.GetComponent<CarController>();
         if (!!player)
         {
-            to_disable.active = false;
+            to_disable.SetActive(false);
         }
     }
 
     public void reenable()
     {
-        to_disable.active = true;
+        to_disable.SetActive(true);
     }
 }

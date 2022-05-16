@@ -10,13 +10,8 @@ public class AnimateDeco1 : MonoBehaviour
     public float y_delta = 1.0f;
     public float y_step = 0.1f;
 
-    private float curr_x_angle = 0f;
-    private float curr_y_angle = 0f;
-    private float curr_z_angle = 0f;
+    private float curr_y_angle = 0f;   
    
-   
-    private float curr_y = 0f;
-
     private float base_y = 0f;
     private int y_direction = 1; // + or -
     private float upper_y_lim = 0f;
@@ -26,7 +21,6 @@ public class AnimateDeco1 : MonoBehaviour
     void Start()
     {
         curr_y_angle = 0f;
-        curr_y = 0f;
 
         base_y = transform.position.y;
         y_direction = 1;
@@ -56,7 +50,6 @@ public class AnimateDeco1 : MonoBehaviour
             y_direction *= (-1);
         }
         float new_y = transform.position.y + (y_step*y_direction);
-        //transform.position = new Vector3(transform.position.x, new_y, transform.position.z);
         Vector3 new_pos = new Vector3(transform.position.x, new_y, transform.position.z);
         transform.position = Vector3.Lerp(transform.position, new_pos, 0.5f );
     }

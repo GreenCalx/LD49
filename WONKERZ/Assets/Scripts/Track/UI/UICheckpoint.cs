@@ -22,23 +22,23 @@ public class UICheckpoint : MonoBehaviour
 
     public void disable()
     {
-        cp_text.gameObject.active = false;
-        cp_name_textval.gameObject.active = false;
-        cp_time_textval.gameObject.active = false;
+        cp_text.gameObject.SetActive(false);
+        cp_name_textval.gameObject.SetActive(false);
+        cp_time_textval.gameObject.SetActive(false);
         is_enabled = false;
     }
 
     public void enable()
     {
-        cp_text.gameObject.active = true;
-        cp_name_textval.gameObject.active = true;
-        cp_time_textval.gameObject.active = true;
+        cp_text.gameObject.SetActive(true);
+        cp_name_textval.gameObject.SetActive(true);
+        cp_time_textval.gameObject.SetActive(true);
         is_enabled = true;
     }
 
     public void disable_cpinfo()
     {
-        cp_text.gameObject.active = false;
+        cp_text.gameObject.SetActive(false);
     }
 
     // Update is called once per frame

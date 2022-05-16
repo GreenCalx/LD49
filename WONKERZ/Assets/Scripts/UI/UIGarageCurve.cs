@@ -72,10 +72,8 @@ public class UIGarageCurve : MonoBehaviour
                 break;
             case CAR_PARAM.TORQUE:
                 return torque_curve;
-                break;
             case CAR_PARAM.WEIGHT:
                 return weight_curve;
-                break;
             default:
                 break;
         }

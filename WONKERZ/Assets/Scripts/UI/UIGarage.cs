@@ -9,7 +9,6 @@ public class UIGarage : MonoBehaviour, IControllable
     private List<GarageUISelectable> selectables;
     private int i_selected;
     private float elapsed_time;
-    private bool submenu_is_active;
 
     /// PUB PARAMS
     // > COLORS
@@ -27,7 +26,6 @@ public class UIGarage : MonoBehaviour, IControllable
             Debug.LogWarning("No GarageUISelectable found in UIGarage.");
         i_selected = 0;
         elapsed_time = 0f;
-        submenu_is_active = false;
         select(i_selected);
 
         tryReadCurvesFromPlayer();
@@ -117,7 +115,6 @@ public class UIGarage : MonoBehaviour, IControllable
 
     private void enterSubMenu()
     {
-        submenu_is_active = true;
         selectables[i_selected].enter();
 
         // indicate we are navigating in this submenu now
@@ -132,7 +129,6 @@ public class UIGarage : MonoBehaviour, IControllable
     public void quitSubMenu()
     {
         selectables[i_selected].quit();
-        submenu_is_active = false;
         elapsed_time = 0f;
 
         // turn color back to std selected

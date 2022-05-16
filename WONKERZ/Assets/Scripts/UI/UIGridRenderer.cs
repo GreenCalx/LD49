@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UIGridRenderer : Graphic
 {
-    public Color color;
+    public Color cell_color;
 
     public Vector2Int gridSize = new Vector2Int(1,1);
     public float thickness = 10f;
@@ -52,7 +52,7 @@ public class UIGridRenderer : Graphic
         float yPos = cellHeight * y;
 
         UIVertex vertex = UIVertex.simpleVert;
-        vertex.color = color;
+        vertex.color = cell_color;
 
         vertex.position = new Vector3(xPos,yPos);
         vh.AddVert(vertex);
