@@ -24,6 +24,7 @@ public class TrickTracker : MonoBehaviour
     public float rot_epsilon = 2f;
     public float line_cooldown = 0.4f;
     public float hold_time_start_flat_trick = 0.4f;
+    public int MIN_SCORE_FOR_DISPLAY = 10;
 
     [Header("DEBUG")]
     public bool[] wheels_statuses;
@@ -276,6 +277,11 @@ public class TrickTracker : MonoBehaviour
         {
             trickUI.displayTrick("");
             trickUI.displayScore(0);
+            return;
+        }
+
+        if (trick_line.getLineScore(combo_multiplier) < MIN_SCORE_FOR_DISPLAY )
+        {
             return;
         }
 
