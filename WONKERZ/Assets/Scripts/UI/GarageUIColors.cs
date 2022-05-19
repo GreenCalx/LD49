@@ -17,11 +17,11 @@ public class GarageUIColors : GarageUISelectable, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<GarageUIColors>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<GarageUIColors>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry){

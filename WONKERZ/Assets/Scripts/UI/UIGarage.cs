@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIGarage : MonoBehaviour, IControllable
@@ -30,18 +31,18 @@ public class UIGarage : MonoBehaviour, IControllable
 
         tryReadCurvesFromPlayer();
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<UIGarage>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<UIGarage>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
         if ( elapsed_time > selector_latch )
         {
-            float Y = Entry.Inputs["Accelerator"].AxisValue;
-            if ( Y < -0.2f )
+            float X = Entry.Inputs[Constants.INPUT_TURN].AxisValue;
+            if ( X < -0.2f )
             {
                 deselect(i_selected);
 
@@ -51,7 +52,7 @@ public class UIGarage : MonoBehaviour, IControllable
                 select(i_selected);
                 elapsed_time = 0f;
             }
-            else if ( Y > 0.2f )
+            else if ( X > 0.2f )
             {
                 deselect(i_selected);
 
@@ -61,9 +62,9 @@ public class UIGarage : MonoBehaviour, IControllable
                 select(i_selected);
                 elapsed_time = 0f;
             }
-            if (Entry.Inputs["Jump"].IsDown)
+            if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
                 enterSubMenu();
-            else if(Entry.Inputs["Cancel"].IsDown)
+            else if(Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
                 quit();
         }
         elapsed_time += Time.unscaledDeltaTime;
@@ -97,7 +98,7 @@ public class UIGarage : MonoBehaviour, IControllable
     private void deselect(int index)
     {
         GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = disabled_category;
@@ -106,7 +107,7 @@ public class UIGarage : MonoBehaviour, IControllable
     private void select(int index)
     {
         GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = enabled_category;
@@ -119,7 +120,7 @@ public class UIGarage : MonoBehaviour, IControllable
 
         // indicate we are navigating in this submenu now
         GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = entered_category;

@@ -21,4 +21,9 @@ public struct Constants
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
 
+    // -- Inputs --
+    public const string INPUT_TURN = "Turn";
+    public const string INPUT_JUMP = "Jump";
+    public const string INPUT_CANCEL = "Cancel";
+
 }

@@ -23,11 +23,11 @@ public class GarageUICarStats : GarageUISelectable, IControllable
         enabled_stat = parent.enabled_category;
         disabled_stat = parent.disabled_category;
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<GarageUICarStats>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<GarageUICarStats>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
