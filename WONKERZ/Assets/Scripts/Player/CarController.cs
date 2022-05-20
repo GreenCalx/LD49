@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour, IControllable
 {
-
     /// ============ Structs =================
     //
     // A car is defined as having 4 springs attached to the body,
@@ -257,16 +256,31 @@ public class CarController : MonoBehaviour, IControllable
         DrawDebugAxle(RearAxle, C, C2);
     }
 
+    void DebugDrawCircle(float Radius, Vector3 Center, Vector3 Up, int LineCount, Color C)
+    {
+        float AngleStep = Mathf.PI * 2 / LineCount;
+        for (int i = 0; i < LineCount; ++i)
+        {
+            Vector3 start = Center + (Quaternion.FromToRotation(Vector3.up, Up) * new Vector3(Mathf.Sin(AngleStep * i), 0, Mathf.Cos(AngleStep * i))) * Radius;
+            Vector3 end = Center + (Quaternion.FromToRotation(Vector3.up, Up) * new Vector3(Mathf.Sin(AngleStep * (i + 1)), 0, Mathf.Cos(AngleStep * (i + 1)))) * Radius;
+            Debug.DrawLine(start, end, C);
+        }
+    }
+
     void DrawDebugWheel(ref Suspension S, Color C)
     {
-        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.transform.parent = transform;
-        go.transform.position = GetEnd(S);
-        var WheelDiameter = S.Wheel.Radius * 2;
-        go.transform.localScale = transform.InverseTransformVector(new Vector3(WheelDiameter, WheelDiameter, WheelDiameter));
-        go.GetComponent<SphereCollider>().enabled = false;
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S), transform.right, 10, C);
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) + transform.right * S.Wheel.Width, transform.right, 10, C);
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) - transform.right * S.Wheel.Width, transform.right, 10, C);
 
-        S.Wheel.Renderer = go;
+        //var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //go.transform.parent = transform;
+        //go.transform.position = GetEnd(S);
+        //var WheelDiameter = S.Wheel.Radius * 2;
+        //go.transform.localScale = transform.InverseTransformVector(new Vector3(WheelDiameter, WheelDiameter, WheelDiameter));
+        //go.GetComponent<SphereCollider>().enabled = false;
+
+        //S.Wheel.Renderer = go;
     }
 
     void DrawDebugWheels(Color C)
@@ -341,6 +355,7 @@ public class CarController : MonoBehaviour, IControllable
     {
         W.Renderer = GameObject.Instantiate(W.Renderer, pos, W.Renderer.transform.rotation, transform);
         W.Renderer.SetActive(true);
+        W.Renderer.transform.localScale = new Vector3(W.Radius * 2, W.Width, W.Radius * 2);
         W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
     }
 
@@ -398,11 +413,41 @@ public class CarController : MonoBehaviour, IControllable
         var NextWheelPosition = GetNextPointPosition(WheelPosition);
         var Epsilon = S.Spring.MaxLength + S.Wheel.Radius + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
 
-        RaycastHit Hit;
+        RaycastHit Hit, Hit1, Hit2;
         var SpringDirection = -transform.up;
 
-        bool IsCurrentlyGrounded = Physics.SphereCast(SpringAnchor, 1f, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
-        S.Wheel.IsGrounded = IsCurrentlyGrounded;
+        bool ResultHit = Physics.SphereCast(SpringAnchor + transform.right * S.Wheel.Width, S.Wheel.Radius, SpringDirection, out Hit, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
+        bool ResultHit1 = Physics.SphereCast(SpringAnchor - transform.right * S.Wheel.Width, S.Wheel.Radius, SpringDirection, out Hit1, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
+        bool ResultHit2 = Physics.SphereCast(SpringAnchor, S.Wheel.Radius, SpringDirection, out Hit2, Epsilon, ~(1 << LayerMask.NameToLayer("No Player Collision")));
+
+        // Chose closest hit possible
+        if (ResultHit)
+        {
+            if (ResultHit1 && Hit.distance < Hit1.distance)
+            {
+                if (ResultHit2 && Hit.distance < Hit2.distance)
+                {
+                    Hit = Hit;
+                }
+            }
+        }
+        else
+        {
+            if (ResultHit1 && !ResultHit2)
+            {
+                Hit = Hit1;
+            }
+            if (!ResultHit1 && ResultHit2)
+            {
+                Hit = Hit2;
+            }
+            if (ResultHit1 && ResultHit2)
+            {
+                Hit = (Hit1.distance < Hit2.distance) ? Hit1 : Hit2;
+            }
+        }
+
+        S.Wheel.IsGrounded = ResultHit1 || ResultHit2 || ResultHit;
 
         if (!SuspensionLock)
             S.Spring.CurrentLength = S.Spring.MaxLength;
@@ -417,7 +462,7 @@ public class CarController : MonoBehaviour, IControllable
             // This piece of code needs to be removed once we are using the groundinfos struct
             // to get back all infos we need.
             // For now it is only disable, we might need to still do this as a safetynet?
-            #if false
+#if false
             // disgusting...
             if (NeedCheckMaterial)
             {
@@ -473,7 +518,7 @@ public class CarController : MonoBehaviour, IControllable
                 NeedCheckMaterial = false;
             }
             //end disguting...
-            #endif
+#endif
 
             var G = Hit.collider?.gameObject?.GetComponent<Ground>();
             var GroundInfos = G ? G.GetGroundInfos(Hit.point) : new Ground.GroundInfos();
@@ -486,6 +531,14 @@ public class CarController : MonoBehaviour, IControllable
             var InitialSpringVelocity = GetWheelVelocity(SpringAnchor);
             var SpringVelocity = InitialSpringVelocity;
 
+            // TODO toffa :
+            // this is done because SphereCast Hit.normal DOES NOT RETURN THE SURFACE NORMAL, but the diff between sphere center and hit point.
+            // therefor I m doing a small raycast to get the right Hit.normal
+            RaycastHit HitRay;
+            Hit.collider.Raycast(new Ray(SpringAnchor, SpringDirection), out HitRay, Epsilon);
+            Debug.DrawLine(SpringAnchor, Hit.point, Color.white);
+
+
             while (TotalProcessedTime < Time.fixedDeltaTime)
             {
                 // Add gravity acceleration to velocity
@@ -497,7 +550,7 @@ public class CarController : MonoBehaviour, IControllable
                 // Compute what is the current distance to hit point now
                 var StepDistance = Hit.distance + GroundInfos.DepthPerturbation.y - TraveledDistance;
                 if (!SuspensionLock)
-                    S.Spring.CurrentLength = Mathf.Clamp(StepDistance - S.Wheel.Radius, S.Spring.MinLength, S.Spring.MaxLength);
+                    S.Spring.CurrentLength = Mathf.Clamp(StepDistance, S.Spring.MinLength, S.Spring.MaxLength);
 
                 S.Wheel.IsGrounded = StepDistance - (S.Spring.CurrentLength + S.Wheel.Radius) <= 0;
                 if (S.Wheel.IsGrounded)
@@ -512,11 +565,13 @@ public class CarController : MonoBehaviour, IControllable
                     if (IsSpringFullyCompressed)
                     {
                         // NOTE toffa : in this instance we reflect the force as a hard hit on collider
-                        var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
+                        //var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
+                        var FCollider = Vector3.Dot(SpringVelocity.normalized, HitRay.normal) < 0 ? Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, HitRay.normal) : SpringVelocity;
                         // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
                         // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
                         // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
                         StepForce += (FCollider - SpringVelocity);
+                        Debug.Log("HARD HIT");
                     }
                 }
 
@@ -528,7 +583,7 @@ public class CarController : MonoBehaviour, IControllable
                 SpringVelocity += StepForce;
 
             }
-            RB.AddForceAtPosition(ForceToApply, SpringAnchor, ForceMode.VelocityChange);
+            RB.AddForceAtPosition(ForceToApply, GetEnd(S), ForceMode.VelocityChange);
 
             // Direction
             var WheelVelocity = GetWheelVelocity(WheelPosition);
@@ -549,10 +604,10 @@ public class CarController : MonoBehaviour, IControllable
             }
             else
             {
-                if(GroundInfos.Type == Ground.EType.DESERT)
+                if (GroundInfos.Type == Ground.EType.DESERT)
                     S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
 
-                RB.AddForceAtPosition(T, SpringAnchor + Vector3.Project(CenterOfMass.transform.position - SpringAnchor, transform.up), ForceMode.VelocityChange);
+                RB.AddForceAtPosition(T, GetEnd(S), ForceMode.VelocityChange);
             }
 
             // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
@@ -594,28 +649,32 @@ public class CarController : MonoBehaviour, IControllable
 
     private Ground.EType CurrentGround = Ground.EType.NONE;
 
-    public enum CarMode {
+    public enum CarMode
+    {
         GROUND,
         WATER,
         DELTA,
         NONE
     };
 
-    public void SetModeFromGround(Ground.EType Mode) {
+    public void SetModeFromGround(Ground.EType Mode)
+    {
         if (Mode == Ground.EType.NONE) return;
         SetMode(CarMode.GROUND);
         if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
     }
 
     public CarMode CurrentMode = CarMode.NONE;
-    public void SetMode(CarMode Mode) {
+    public void SetMode(CarMode Mode)
+    {
         if (Mode == CurrentMode) return;
         CurrentMode = Mode;
 
         IsAircraft = false;
         RearAxle.IsTraction = true;
-        switch(Mode) {
-            case CarMode.GROUND :
+        switch (Mode)
+        {
+            case CarMode.GROUND:
                 {
                     FrontAxle.IsTraction = false;
                     FrontAxle.IsDirection = true;
@@ -623,8 +682,9 @@ public class CarController : MonoBehaviour, IControllable
 
                     RearAxle.IsDirection = false;
                     RearAxle.IsReversedDirection = false;
-                } break;
-            case CarMode.WATER :
+                }
+                break;
+            case CarMode.WATER:
                 {
                     FrontAxle.IsTraction = false;
                     FrontAxle.IsDirection = false;
@@ -632,7 +692,8 @@ public class CarController : MonoBehaviour, IControllable
 
                     RearAxle.IsDirection = true;
                     RearAxle.IsReversedDirection = true;
-                }break;
+                }
+                break;
             case CarMode.DELTA:
                 {
                     FrontAxle.IsTraction = true;
@@ -640,10 +701,11 @@ public class CarController : MonoBehaviour, IControllable
                     FrontAxle.IsReversedDirection = false;
 
                     RearAxle.IsDirection = true;
-                    RearAxle.IsReversedDirection = false;
+                    RearAxle.IsReversedDirection = true;
 
                     IsAircraft = true;
-                }break;
+                }
+                break;
         }
     }
 
@@ -696,7 +758,7 @@ public class CarController : MonoBehaviour, IControllable
         RB = GetComponent<Rigidbody>();
 
         SpawnAxles();
-        //DrawDebugWheels(Color.yellow);
+        DrawDebugWheels(Color.yellow);
         SetMode(CurrentMode);
 
         Utils.attachControllable<CarController>(this);
@@ -707,6 +769,7 @@ public class CarController : MonoBehaviour, IControllable
         FixedUpdateDone = false;
 
         DrawDebugAxles(Color.blue, Color.red);
+        DrawDebugWheels(Color.yellow);
         UpdateWheelsRenderer();
         UpdateSuspensionRenderers();
 

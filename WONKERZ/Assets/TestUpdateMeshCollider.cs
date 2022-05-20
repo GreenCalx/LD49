@@ -17,6 +17,7 @@ public class TestUpdateMeshCollider : MonoBehaviour
         M = GetComponent<MeshFilter>().mesh;
         Copy = Object.Instantiate(M);
         GetComponent<MeshFilter>().mesh = Copy;
+
     }
 
     // Update is called once per frame
@@ -25,9 +26,11 @@ public class TestUpdateMeshCollider : MonoBehaviour
         MC = GetComponent<MeshCollider>();
 
         var newVertices = M.vertices;
+        var normals = M.normals;
         for (var i = 0; i < newVertices.Length; ++i)
         {
             var v = transform.TransformPoint(newVertices[i]);
+            Debug.DrawLine(v, v + transform.TransformDirection(normals[i])*3);
             foreach (var Sand in SandPositions)
             {
                 var D = Vector2.Distance( new Vector2(v.x, v.z), new Vector2(Sand.transform.position.x, Sand.transform.position.z)) / MovingSandsRadius;
@@ -35,6 +38,7 @@ public class TestUpdateMeshCollider : MonoBehaviour
                 {
                     newVertices[i] += Depth * transform.TransformDirection(Vector3.up) * (1 - D);
                 }
+
             }
         }
 
