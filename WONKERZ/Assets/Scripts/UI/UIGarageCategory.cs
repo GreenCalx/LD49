@@ -17,9 +17,10 @@ public class UIGarageCategory : GarageUISelectable
     {
         
     }
-    public override void enter()
+    public override void enter(UIGarageSelector uigs)
     {
-        base.enter();
+        base.enter(uigs);
+        
         if (panelToLoad==null)
         {
             Debug.LogWarning("No Panel to load attached to selected category.");
@@ -37,8 +38,6 @@ public class UIGarageCategory : GarageUISelectable
 
     public override void quit() 
     { 
-        base.quit();
-
         if (panelToLoad==null)
         {
             Debug.LogWarning("No Panel to load attached to selected category.");
@@ -52,5 +51,7 @@ public class UIGarageCategory : GarageUISelectable
             uigp.close();
             uigp.gameObject.SetActive(false);
         }
+        
+        base.quit();
     }
 }

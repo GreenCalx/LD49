@@ -6,6 +6,7 @@ public class UIGaragePanel : UIGarageSelector, IControllable
 {    
     protected float elapsed_time;
     public UIGarageDisplayPanel displayPanel;
+      public UIGarage parentUI;
 
     // Start is called before the first frame update
     void Start()

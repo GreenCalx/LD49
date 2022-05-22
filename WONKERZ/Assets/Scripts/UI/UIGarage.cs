@@ -103,6 +103,11 @@ public class UIGarage : UIGarageSelector, IControllable
         }
     }
 
+    public override void handGivenBack()
+    {
+        base.handGivenBack();
+    }
+
     private void enterSubMenu()
     {
         if (i_entered_category >= 0)
@@ -110,7 +115,7 @@ public class UIGarage : UIGarageSelector, IControllable
 
         i_entered_category = i_selected;
 
-        selectables[i_entered_category].enter();
+        selectables[i_entered_category].enter(this);
 
         // indicate we are navigating in this submenu now
         GameObject target = getSelected().gameObject;

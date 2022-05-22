@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UICurveSelector : MonoBehaviour, IControllable
+public class UICurveSelector : GarageUISelectable, IControllable
 {
     [Header("Tweaks")]
     public float moveStep = 1f;
@@ -46,10 +46,12 @@ public class UICurveSelector : MonoBehaviour, IControllable
 
         if (Entry.Inputs["Cancel"].IsDown) {
             Utils.GetInputManager().UnsetUnique(this as IControllable);
+            quit();
             // TODO : set curve back to previous positon
         }
         else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
             Utils.GetInputManager().UnsetUnique(this as IControllable);
+            quit();
         }
     }
 
@@ -57,4 +59,14 @@ public class UICurveSelector : MonoBehaviour, IControllable
     void Update()
     {
     }
+
+    public override void enter(UIGarageSelector uigs)
+    {
+        base.enter(uigs);
+    }
+    public override void quit()
+    {
+        base.quit();
+    }
+
 }

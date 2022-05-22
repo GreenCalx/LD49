@@ -20,6 +20,6 @@ public class UIGaragePickableStat : GarageUISelectable
         
     }
 
-    public override void enter() { findParent(); is_active = true; }
-    public override void quit() { is_active = false; }
+    public override void enter(UIGarageSelector uigs) { base.enter(uigs); }
+    public override void quit() { base.quit(); }
 }

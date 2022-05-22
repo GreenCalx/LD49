@@ -54,7 +54,10 @@ public class UIGarageColors : GarageUISelectable, IControllable
         if (Entry.Inputs["Jump"].IsDown)
             pick();
         else if (Entry.Inputs["Cancel"].IsDown)
-        { parent.quitSubMenu(); return;}
+        { 
+            quit(); 
+            return;
+        }
     }
 
     // Update is called once per frame
@@ -89,9 +92,9 @@ public class UIGarageColors : GarageUISelectable, IControllable
         PlayerColorManager.Instance.colorize(target_img.color);
     }
 
-    public override void enter()
+    public override void enter(UIGarageSelector uigs)
     {
-        base.enter();
+        base.enter(uigs);
 
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
 

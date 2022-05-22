@@ -54,4 +54,6 @@ public class UIGarageSelector : MonoBehaviour
 
     protected virtual void deselect(int index) { }
     protected virtual void select(int index) {}
+
+    public virtual void handGivenBack() { select(i_selected); }
 }

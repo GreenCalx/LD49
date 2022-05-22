@@ -11,9 +11,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
     private Color enabled_stat;
     private Color disabled_stat;
+    private Color selected_stat;
     private UIGarageCurve curve;
-
-    public UIGarage parentUI;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +40,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         
         enabled_stat  = parentUI.enabled_category;
         disabled_stat = parentUI.disabled_category;
+        selected_stat = parentUI.entered_category;
     }
 
     void OnDestroy() {
@@ -106,16 +106,26 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         setCurveSlider(curr_stat.car_param, kvp.Value);
     }
 
+    public override void handGivenBack()
+    {
+        base.handGivenBack();
+    }
+
     public void pick()
     {
+        i_stat = i_selected;
         GameObject target = selectables[i_stat].gameObject;
+
+        // update text label
+        TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
+        target_txt.color = selected_stat;
 
         // write bnew curve in car controller
         GameObject player = parentUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
 
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
-
+        uics.enter(this);
         Utils.GetInputManager().SetUnique(uics as IControllable);
 
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
@@ -182,7 +192,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
         selectables = new List<GarageUISelectable>(GetComponentsInChildren<GarageUISelectable>());
         if (selectables.Count == 0)
-        { base.close(); return; }
+        { close(); return; }
         i_stat = 0;
         elapsed_time = 0f;
     }
@@ -194,5 +204,6 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         deselect(i_stat);
         if (!!UIGarageCurvePicker_Inst)
             Destroy(UIGarageCurvePicker_Inst);
+        parentUI.handGivenBack();
     }
 }

@@ -7,10 +7,12 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 {
     private int i_cosmetics;
 
-    private Color enabled_stat;
-    private Color disabled_stat;
+    private Color enabled_cosmetic;
+    private Color disabled_cosmetic;
+    private Color selected_cosmetic;
 
-    public UIGarage parentUI;
+  
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,8 +35,9 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         }
         elapsed_time = 0f;
         
-        enabled_stat  = parentUI.enabled_category;
-        disabled_stat = parentUI.disabled_category;
+        enabled_cosmetic  = parentUI.enabled_category;
+        disabled_cosmetic = parentUI.disabled_category;
+        selected_cosmetic = parentUI.entered_category;
     }
 
     void OnDestroy() {
@@ -76,7 +79,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = disabled_stat;
+        target_txt.color = disabled_cosmetic;
     }
     protected override void select(int index)
     {
@@ -84,23 +87,27 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = enabled_stat;
+        target_txt.color = enabled_cosmetic;
+    }
+
+    public override void handGivenBack()
+    {
+        base.handGivenBack();
     }
 
     public void pick()
     {
         GameObject target = selectables[i_cosmetics].gameObject;
-        //UIGarageSelector cosmetic_selector = target.GetComponent<UIGarageSelector>();
-        selectables[i_cosmetics].enter();
+        TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
+        target_txt.color = selected_cosmetic;
 
-        //Utils.GetInputManager().SetUnique(cosmetic_selector as IControllable);
+        selectables[i_cosmetics].enter(this);
     }
 
     public override void open()
     {   
         init();
         initSelector();
-
         Utils.GetInputManager().SetUnique(this as IControllable);
 
         initSelector();
@@ -113,5 +120,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         base.close();
         Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_cosmetics);
+        parentUI.handGivenBack();
     }
 }
