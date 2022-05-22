@@ -5,6 +5,27 @@ using UnityEngine;
 public struct Utils
 {
     
+    public struct Math{
+        
+    public static (float, bool) ValidateFloat(float f) {
+        bool IsWrongValue = float.IsNaN(f) || float.IsInfinity(f) || Mathf.Abs(f) > 10000;
+        return (IsWrongValue ? 0 : f, !IsWrongValue);
+    }
+    /// This function return True if the Vector is good
+    /// else it returns false, meaning at least one value was corrected.
+    public static (Vector3, bool) ValidateForce(Vector3 F) {
+        bool HasWrongNumber = true;
+        bool IsGoodValue = false;
+        (F.x, IsGoodValue) = ValidateFloat(F.x);
+        HasWrongNumber &= IsGoodValue;
+        (F.y, IsGoodValue) = ValidateFloat(F.y);
+        HasWrongNumber &= IsGoodValue;
+        (F.z, IsGoodValue) = ValidateFloat(F.z);
+        HasWrongNumber &= IsGoodValue;
+        
+        return (F, HasWrongNumber);
+    }
+}
     // TODO : Cache player reference to avoid high cost lookup
     // TODO : Cache InputManager
     public static GameObject getPlayerRef()
