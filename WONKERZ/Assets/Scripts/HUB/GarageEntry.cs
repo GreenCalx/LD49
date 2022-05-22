@@ -69,6 +69,7 @@ public class GarageEntry : MonoBehaviour,IControllable
             return;
         Time.timeScale = 0; // pause
         garageUI = Instantiate(garageUIRef);
+        garageUI.name = Constants.GO_UIGARAGE;
 
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());

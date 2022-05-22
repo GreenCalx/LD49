@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
-public class UIGarage : MonoBehaviour, IControllable
+public class UIGarage : UIGarageSelector, IControllable
 {
     private GarageEntry garageEntry;
-    private List<GarageUISelectable> selectables;
-    private int i_selected;
     private float elapsed_time;
+    private int i_entered_category;
 
     /// PUB PARAMS
     // > COLORS
@@ -16,55 +16,45 @@ public class UIGarage : MonoBehaviour, IControllable
     public Color disabled_category;
     public Color entered_category;
     // > MENU PARMS
-    public float selector_latch;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        selectables = new List<GarageUISelectable>(GetComponentsInChildren<GarageUISelectable>());
-        if (selectables.Count < 0)
-            Debug.LogWarning("No GarageUISelectable found in UIGarage.");
-        i_selected = 0;
         elapsed_time = 0f;
-        select(i_selected);
+        i_entered_category = -1;
+
+        initSelector();
 
         tryReadCurvesFromPlayer();
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<UIGarage>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<UIGarage>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
         if ( elapsed_time > selector_latch )
         {
-            float Y = Entry.Inputs["Accelerator"].AxisValue;
-            if ( Y < -0.2f )
+            float X = Entry.Inputs[Constants.INPUT_TURN].AxisValue;
+            if ( X < -0.2f )
             {
-                deselect(i_selected);
-
-                i_selected++;
-                if ( i_selected > selectables.Count - 1 )
-                { i_selected = 0; }
-                select(i_selected);
+                selectPrevious();
                 elapsed_time = 0f;
             }
-            else if ( Y > 0.2f )
+            else if ( X > 0.2f )
             {
-                deselect(i_selected);
-
-                i_selected--;
-                if ( i_selected < 0 )
-                { i_selected = selectables.Count - 1; }
-                select(i_selected);
+                selectNext();
                 elapsed_time = 0f;
             }
-            if (Entry.Inputs["Jump"].IsDown)
+            if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
                 enterSubMenu();
-            else if(Entry.Inputs["Cancel"].IsDown)
-                quit();
+            else if(Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
+                quitGarage();
+            else if( Entry.Inputs[Constants.INPUT_CANCEL].IsDown && (i_entered_category>=0) )
+                quitSubMenu();
         }
         elapsed_time += Time.unscaledDeltaTime;
     }
@@ -94,32 +84,42 @@ public class UIGarage : MonoBehaviour, IControllable
         } 
     }
 
-    private void deselect(int index)
+    protected override void deselect(int index)
     {
-        GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        GameObject target = selectables[index].gameObject;
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = disabled_category;
         }
     }
-    private void select(int index)
+    protected override void select(int index)
     {
-        GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        GameObject target = selectables[index].gameObject;
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = enabled_category;
         }
     }
 
+    public override void handGivenBack()
+    {
+        base.handGivenBack();
+    }
+
     private void enterSubMenu()
     {
-        selectables[i_selected].enter();
+        if (i_entered_category >= 0)
+            quitSubMenu();
+
+        i_entered_category = i_selected;
+
+        selectables[i_entered_category].enter(this);
 
         // indicate we are navigating in this submenu now
-        GameObject target = selectables[i_selected].gameObject;
-        TextMeshProUGUI tmp = target.GetComponent<TextMeshProUGUI>();
+        GameObject target = getSelected().gameObject;
+        Image tmp = target.GetComponent<Image>();
         if (tmp != null)
         {
             tmp.color = entered_category;
@@ -128,11 +128,12 @@ public class UIGarage : MonoBehaviour, IControllable
 
     public void quitSubMenu()
     {
-        selectables[i_selected].quit();
-        elapsed_time = 0f;
+        if (i_entered_category < 0)
+            return;
 
-        // turn color back to std selected
-        select(i_selected);
+        selectables[i_entered_category].quit();
+        
+        i_entered_category = -1;
     }
 
     public void setGarageEntry(GarageEntry iGE)
@@ -145,7 +146,7 @@ public class UIGarage : MonoBehaviour, IControllable
         return garageEntry;
     }
 
-    public void quit()
+    public void quitGarage()
     {
         if (!!garageEntry)
             garageEntry.closeGarage();

@@ -6,6 +6,12 @@ public class GarageUISelectable : MonoBehaviour
 {
     protected UIGarage parent;
     protected bool is_active;
+    protected UIGarageSelector originalCaller;
+
+    public void setOriginalCaller( UIGarageSelector uigs)
+    {
+        originalCaller = uigs;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +31,16 @@ public class GarageUISelectable : MonoBehaviour
         
     }
 
-    public virtual void enter() { findParent(); is_active = true; }
-    public virtual void quit() { is_active = false; }
+    public virtual void enter(UIGarageSelector uigs) 
+    { 
+        findParent(); 
+        is_active = true;
+         setOriginalCaller(uigs); 
+    }
+    public virtual void quit() 
+    { 
+        is_active = false; 
+        originalCaller.handGivenBack(); 
+        setOriginalCaller(null); 
+    }
 }

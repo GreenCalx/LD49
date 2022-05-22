@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GarageUIColors : GarageUISelectable, IControllable
+public class UIGarageColors : GarageUISelectable, IControllable
 {
     public GameObject UIGarageColorPicker_Ref;
     public float selector_latch;
@@ -17,11 +17,11 @@ public class GarageUIColors : GarageUISelectable, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<UIGarageColors>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<UIGarageColors>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry){
@@ -54,7 +54,10 @@ public class GarageUIColors : GarageUISelectable, IControllable
         if (Entry.Inputs["Jump"].IsDown)
             pick();
         else if (Entry.Inputs["Cancel"].IsDown)
-        { parent.quitSubMenu(); return;}
+        { 
+            quit(); 
+            return;
+        }
     }
 
     // Update is called once per frame
@@ -89,14 +92,13 @@ public class GarageUIColors : GarageUISelectable, IControllable
         PlayerColorManager.Instance.colorize(target_img.color);
     }
 
-    public override void enter()
+    public override void enter(UIGarageSelector uigs)
     {
-        base.enter();
-
+        base.enter(uigs);
 
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
 
-        colors = new List<UIGaragePickableColor>(parent.GetComponentsInChildren<UIGaragePickableColor>());
+        colors = new List<UIGaragePickableColor>(GetComponentsInChildren<UIGaragePickableColor>());
         UIGarageColorPicker_Inst = Instantiate(UIGarageColorPicker_Ref, this.transform);
 
         i_color = 0;

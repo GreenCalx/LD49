@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIGaragePickableStat : MonoBehaviour
+public class UIGaragePickableStat : GarageUISelectable
 {
     public string XLabel;
     public string YLabel;
@@ -19,4 +19,7 @@ public class UIGaragePickableStat : MonoBehaviour
     {
         
     }
+
+    public override void enter(UIGarageSelector uigs) { base.enter(uigs); }
+    public override void quit() { base.quit(); }
 }
