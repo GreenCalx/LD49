@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GarageUIColors : GarageUISelectable, IControllable
+public class UIGarageColors : GarageUISelectable, IControllable
 {
     public GameObject UIGarageColorPicker_Ref;
     public float selector_latch;
@@ -17,11 +17,11 @@ public class GarageUIColors : GarageUISelectable, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        Utils.attachControllable<GarageUIColors>(this);
+        Utils.attachControllable<UIGarageColors>(this);
     }
 
     void OnDestroy() {
-        Utils.detachControllable<GarageUIColors>(this);
+        Utils.detachControllable<UIGarageColors>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry){
@@ -93,10 +93,9 @@ public class GarageUIColors : GarageUISelectable, IControllable
     {
         base.enter();
 
-
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
 
-        colors = new List<UIGaragePickableColor>(parent.GetComponentsInChildren<UIGaragePickableColor>());
+        colors = new List<UIGaragePickableColor>(GetComponentsInChildren<UIGaragePickableColor>());
         UIGarageColorPicker_Inst = Instantiate(UIGarageColorPicker_Ref, this.transform);
 
         i_color = 0;

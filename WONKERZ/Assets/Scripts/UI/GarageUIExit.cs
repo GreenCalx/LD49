@@ -19,6 +19,6 @@ public class GarageUIExit : GarageUISelectable
     public override void enter()
     {
         base.enter();
-        parent.quit();
+        parent.quitGarage();
     }
 }

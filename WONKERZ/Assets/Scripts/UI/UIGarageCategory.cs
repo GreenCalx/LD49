@@ -30,7 +30,7 @@ public class UIGarageCategory : GarageUISelectable
         UIGaragePanel uigp = panelToLoad.GetComponent<UIGaragePanel>();
         if (!!uigp)
         {
-            uigp.enabled = true;
+            uigp.gameObject.SetActive(true);
             uigp.open();
         }
     }
@@ -50,7 +50,7 @@ public class UIGarageCategory : GarageUISelectable
         if (!!uigp)
         {
             uigp.close();
-            uigp.enabled = false;
+            uigp.gameObject.SetActive(false);
         }
     }
 }

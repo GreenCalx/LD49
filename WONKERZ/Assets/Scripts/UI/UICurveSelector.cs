@@ -12,18 +12,18 @@ public class UICurveSelector : MonoBehaviour, IControllable
     public float XRightBound;
     public float XKeyLeftBound;
     public float XKeyRightBound;
-    public GarageUICarStats observer;
+    public UIGarageCarStatsPanel observer;
     public int movable_key;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Attach(this as IControllable);
+        Utils.attachControllable<UICurveSelector>(this);
     }
 
     void OnDestroy() {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().Detach(this as IControllable);
+        Utils.detachControllable<UICurveSelector>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
@@ -45,7 +45,11 @@ public class UICurveSelector : MonoBehaviour, IControllable
         }
 
         if (Entry.Inputs["Cancel"].IsDown) {
-            GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
+            Utils.GetInputManager().UnsetUnique(this as IControllable);
+            // TODO : set curve back to previous positon
+        }
+        else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
+            Utils.GetInputManager().UnsetUnique(this as IControllable);
         }
     }
 

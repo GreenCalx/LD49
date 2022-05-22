@@ -50,6 +50,7 @@ static public class InputSettings
     // IMPORTANT toffa : joystick value first, then keyboard for now!!!!
     static public Dictionary<String, InputMappingData> Mapping = new Dictionary<String, InputMappingData>{
         {"Accelerator", new InputMappingData( true, false, new List<int>{(int)Joystick.RT, (int)KeyCode.W}, new List<int>{ (int)Joystick.LT, (int)KeyCode.S} )},
+        {"UIUpDown", new InputMappingData( true, false, new List<int>{(int)Joystick.LeftH, (int)KeyCode.W}, new List<int>{ (int)Joystick.LeftH, (int)KeyCode.S} )},
         {"Turn" , new InputMappingData(true, false, new List<int>{(int)Joystick.LeftH, (int)KeyCode.D}, new List<int>{-1, (int)KeyCode.A})},
         {"Jump", new InputMappingData(false, false, new List<int>{ (int) Joystick.A, (int)KeyCode.Space }, new List<int>{-1,-1} )},
         {"Respawn", new InputMappingData(false, false, new List<int>{ (int) Joystick.Start, (int)KeyCode.R }, new List<int>{-1,-1} )},
@@ -211,6 +212,7 @@ public class InputManager : MonoBehaviour
         if (iControllable != _PriorityList.Peek())
         {
             Debug.LogError("Trying to unstack while not the first item");
+            return;
         }
 
         _PriorityList.Pop();

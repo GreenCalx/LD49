@@ -17,6 +17,7 @@ public struct Constants
     public const string GO_HUBCAMERA = "HubCamera";
     public const string GO_SOUNDMANAGER = "SoundManager";
     public const string GO_MANAGERS = "------ MANAGERS ------";
+    public const string GO_UIGARAGE = "UIGarage";
     
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
@@ -25,5 +26,6 @@ public struct Constants
     public const string INPUT_TURN = "Turn";
     public const string INPUT_JUMP = "Jump";
     public const string INPUT_CANCEL = "Cancel";
+    public const string INPUT_UIUPDOWN = "UIUpDown";
 
 }

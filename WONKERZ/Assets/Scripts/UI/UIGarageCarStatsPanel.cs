@@ -2,56 +2,63 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class GarageUICarStats : GarageUISelectable, IControllable
+public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 {
-    public float selector_latch;
     public GameObject UIGarageCurvePicker_Ref;
 
     private GameObject UIGarageCurvePicker_Inst;
-    private List<UIGaragePickableStat> stats;
-    private float elapsed_time;
     private int i_stat;
 
     private Color enabled_stat;
     private Color disabled_stat;
     private UIGarageCurve curve;
 
+    public UIGarage parentUI;
+
     // Start is called before the first frame update
     void Start()
     {
-        findParent();
-        enabled_stat = parent.enabled_category;
-        disabled_stat = parent.disabled_category;
+        init();
+        initSelector();
+     
 
-        Utils.attachControllable<GarageUICarStats>(this);
+
+        Utils.attachControllable<UIGarageCarStatsPanel>(this);
+    }
+
+    private void init()
+    {
+        if (parentUI==null)
+        {
+            parentUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            if (parentUI==null)
+            {
+                Debug.LogError("ParentUI is null in UIGarageCarStatsPanel!");
+            }
+        }
+        curve = displayPanel.GetComponentInChildren<UIGarageCurve>();
+        elapsed_time = 0f;
+        
+        enabled_stat  = parentUI.enabled_category;
+        disabled_stat = parentUI.disabled_category;
     }
 
     void OnDestroy() {
-        Utils.detachControllable<GarageUICarStats>(this);
+        Utils.detachControllable<UIGarageCarStatsPanel>(this);
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
         if (elapsed_time > selector_latch)
         {
-            float Y = Entry.Inputs["Accelerator"].AxisValue;
-            if (Y > 0.2f)
+            float Y = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
+            if (Y < -0.2f)
             {
-                deselect(i_stat);
-
-                i_stat++;
-                if (i_stat > stats.Count - 1)
-                { i_stat = 0; }
-                select(i_stat);
+                selectPrevious();
                 elapsed_time = 0f;
             }
-            else if (Y < -0.2f)
+            else if ( Y > 0.2f )
             {
-                deselect(i_stat);
-
-                i_stat--;
-                if (i_stat < 0)
-                { i_stat = stats.Count - 1; }
-                select(i_stat);
+                selectNext();
                 elapsed_time = 0f;
             }
         }
@@ -60,10 +67,8 @@ public class GarageUICarStats : GarageUISelectable, IControllable
 
         if (Entry.Inputs["Jump"].IsDown)
             pick();
-        else if (Entry.Inputs["Cancel"].IsDown)
-        {
-            parent.quitSubMenu(); return;
-        }
+        if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
+            close();
     }
 
     // Update is called once per frame
@@ -71,18 +76,18 @@ public class GarageUICarStats : GarageUISelectable, IControllable
     {
     }
 
-    private void deselect(int index)
+    protected override void deselect(int index)
     {
-        GameObject target = stats[index].gameObject;
+        GameObject target = selectables[index].gameObject;
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = disabled_stat;
     }
-    private void select(int index)
+    protected override void select(int index)
     {
-        UIGaragePickableStat curr_stat = stats[index];
-        GameObject target = stats[index].gameObject;
+        GameObject target = selectables[index].gameObject;
+        UIGaragePickableStat curr_stat = target.GetComponent<UIGaragePickableStat>();
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
@@ -95,25 +100,23 @@ public class GarageUICarStats : GarageUISelectable, IControllable
         curve.changeCurve(curr_stat.car_param);
 
         // Set Slider to the right keyframe/curve
-        GameObject player = parent.getGarageEntry().playerRef;
+        GameObject player = parentUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
         setCurveSlider(curr_stat.car_param, kvp.Value);
-
-
     }
 
     public void pick()
     {
-        GameObject target = stats[i_stat].gameObject;
+        GameObject target = selectables[i_stat].gameObject;
 
         // write bnew curve in car controller
-        GameObject player = parent.getGarageEntry().playerRef;
+        GameObject player = parentUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
 
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(uics as IControllable);
+        Utils.GetInputManager().SetUnique(uics as IControllable);
 
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
     }
@@ -122,7 +125,7 @@ public class GarageUICarStats : GarageUISelectable, IControllable
     {
         // instantiate slider
         if (UIGarageCurvePicker_Inst == null)
-            UIGarageCurvePicker_Inst = Instantiate(UIGarageCurvePicker_Ref, this.transform);
+            UIGarageCurvePicker_Inst = Instantiate(UIGarageCurvePicker_Ref, parentUI.gameObject.transform);
 
         // set slider X/Y position
         // > Get Grid
@@ -163,32 +166,33 @@ public class GarageUICarStats : GarageUISelectable, IControllable
         curve.moveCurveKey(uics.movable_key, new_time);
     }
 
-    public override void enter()
-    {
-        base.enter();
+    public override void open()
+    {   
+        init();
+        initSelector();
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
-        curve = parent.GetComponentInChildren<UIGarageCurve>();
+        Utils.GetInputManager().SetUnique(this as IControllable);
+
 
         // Read curves from CarController
-        GameObject player = parent.getGarageEntry().playerRef;
+        GameObject player = parentUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         curve.setTorqueCurve(cc.TORQUE);
         curve.setWeightCurve(cc.WEIGHT);
 
-        stats = new List<UIGaragePickableStat>(GetComponentsInChildren<UIGaragePickableStat>());
-        if (stats.Count == 0)
-        { base.quit(); return; }
+        selectables = new List<GarageUISelectable>(GetComponentsInChildren<GarageUISelectable>());
+        if (selectables.Count == 0)
+        { base.close(); return; }
         i_stat = 0;
         elapsed_time = 0f;
-        select(i_stat);
     }
 
-    public override void quit()
+    public override void close()
     {
-        base.quit();
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
+        base.close();
+        Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_stat);
-        Destroy(UIGarageCurvePicker_Inst);
+        if (!!UIGarageCurvePicker_Inst)
+            Destroy(UIGarageCurvePicker_Inst);
     }
 }
