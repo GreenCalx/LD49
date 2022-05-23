@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GarageUISelectable : MonoBehaviour
+public class UIGarageSelectable : MonoBehaviour
 {
     protected UIGarage parent;
     protected bool is_active;

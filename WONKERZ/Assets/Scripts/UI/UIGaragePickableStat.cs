@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIGaragePickableStat : GarageUISelectable
+public class UIGaragePickableStat : UIGarageSelectable
 {
     public string XLabel;
     public string YLabel;

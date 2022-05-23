@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIGarageSelector : MonoBehaviour
 {
     public float selector_latch;
-    protected List<GarageUISelectable> selectables;
+    protected List<UIGarageSelectable> selectables;
     protected int i_selected;
 
     void Start()
@@ -16,7 +16,7 @@ public class UIGarageSelector : MonoBehaviour
 
     protected void initSelector()
     {
-        selectables = new List<GarageUISelectable>(GetComponentsInChildren<GarageUISelectable>());
+        selectables = new List<UIGarageSelectable>(GetComponentsInChildren<UIGarageSelectable>());
         if (selectables.Count < 0)
             Debug.LogWarning("No GarageUISelectable found in UIGarage.");
         i_selected = 0;
@@ -47,7 +47,7 @@ public class UIGarageSelector : MonoBehaviour
 
     }
 
-    protected GarageUISelectable getSelected()
+    protected UIGarageSelectable getSelected()
     {
         return selectables[i_selected];
     }

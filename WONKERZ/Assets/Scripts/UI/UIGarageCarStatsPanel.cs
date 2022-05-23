@@ -129,6 +129,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         Utils.GetInputManager().SetUnique(uics as IControllable);
 
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
+        UIGarageCurvePicker_Inst.SetActive(true);
     }
 
     public void setCurveSlider(UIGarageCurve.CAR_PARAM parm, int keyFrameID)
@@ -162,7 +163,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         uics.XKeyLeftBound     = uics.XLeftBound  + (curve.minbound_nomerge * curve.lineRenderer.unitWidth);
         uics.XKeyRightBound    = uics.XRightBound - (curve.maxbound_nomerge * curve.lineRenderer.unitWidth);
 
-        // deactivate this UI while controlling the slider
+        // make the cursor invisible while curve not select
+        UIGarageCurvePicker_Inst.SetActive(false);
 
     }
 
@@ -179,7 +181,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     public override void open()
     {   
         init();
-        initSelector();
+        //initSelector();
+        base.open();
 
         Utils.GetInputManager().SetUnique(this as IControllable);
 
@@ -190,7 +193,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         curve.setTorqueCurve(cc.TORQUE);
         curve.setWeightCurve(cc.WEIGHT);
 
-        selectables = new List<GarageUISelectable>(GetComponentsInChildren<GarageUISelectable>());
+        selectables = new List<UIGarageSelectable>(GetComponentsInChildren<UIGarageSelectable>());
         if (selectables.Count == 0)
         { close(); return; }
         i_stat = 0;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UICurveSelector : GarageUISelectable, IControllable
+public class UICurveSelector : UIGarageSelectable, IControllable
 {
     [Header("Tweaks")]
     public float moveStep = 1f;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIGarageColors : GarageUISelectable, IControllable
+public class UIGarageColors : UIGarageSelectable, IControllable
 {
     public GameObject UIGarageColorPicker_Ref;
     public float selector_latch;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIGarageCategory : GarageUISelectable
+public class UIGarageCategory : UIGarageSelectable
 {
     public GameObject panelToLoad;
 
