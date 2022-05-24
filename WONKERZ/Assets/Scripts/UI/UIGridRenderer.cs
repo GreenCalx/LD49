@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UIGridRenderer : Graphic
 {
     public Color cell_color;
+    public int cellSizeDivider = 2;
 
     public Vector2Int gridSize = new Vector2Int(1,1);
     public float thickness = 10f;
@@ -30,8 +31,8 @@ public class UIGridRenderer : Graphic
         RectTransform rectTransform = GetComponent<RectTransform>();
         width = rectTransform.rect.width;
         height = rectTransform.rect.height;
-        cellWidth = width / gridSize.x;
-        cellHeight = height / gridSize.y;
+        cellWidth = (width / gridSize.x);
+        cellHeight = (height / gridSize.y);
 
         int count = 0;
         for (int y=0;y<gridSize.y;y++)

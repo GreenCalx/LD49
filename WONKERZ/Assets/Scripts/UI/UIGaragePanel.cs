@@ -52,15 +52,17 @@ public class UIGaragePanel : UIGarageSelector, IControllable
 
     }
 
-    public virtual void open()
+    public virtual void open(bool iAnimate)
     {
         initSelector();
-        animateIn();
+        if (iAnimate)
+            animateIn();
     }
 
-    public virtual void close()
+    public virtual void close(bool iAnimate)
     {
-        animateOut();
+        if (iAnimate)
+            animateOut();
     }
 
     public void animateIn()

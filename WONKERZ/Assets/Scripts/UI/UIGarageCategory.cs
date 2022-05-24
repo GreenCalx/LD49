@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIGarageCategory : UIGarageSelectable
 {
     public GameObject panelToLoad;
+    private string openedPanelName;
 
     // Start is called before the first frame update
     void Start()
@@ -32,7 +33,9 @@ public class UIGarageCategory : UIGarageSelectable
         if (!!uigp)
         {
             uigp.gameObject.SetActive(true);
-            uigp.open();
+            bool animate = openedPanelName!=uigp.name; // new panel
+            uigp.open(animate);
+            openedPanelName = uigp.name;
         }
     }
 
@@ -48,7 +51,8 @@ public class UIGarageCategory : UIGarageSelectable
         UIGaragePanel uigp = panelToLoad.GetComponent<UIGaragePanel>();
         if (!!uigp)
         {
-            uigp.close();
+            openedPanelName = "";
+            uigp.close(true);
             uigp.gameObject.SetActive(false);
         }
         

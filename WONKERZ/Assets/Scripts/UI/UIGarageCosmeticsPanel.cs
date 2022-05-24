@@ -65,7 +65,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         if (Entry.Inputs["Jump"].IsDown)
             pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
-            close();
+            close(true);
     }
 
     // Update is called once per frame
@@ -104,10 +104,10 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         selectables[i_cosmetics].enter(this);
     }
 
-    public override void open()
+    public override void open(bool iAnimate)
     {   
         init();
-        initSelector();
+        base.open(iAnimate);
         Utils.GetInputManager().SetUnique(this as IControllable);
 
         initSelector();
@@ -115,9 +115,9 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         elapsed_time = 0f;
     }
 
-    public override void close()
+    public override void close(bool iAnimate)
     {
-        base.close();
+        base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_cosmetics);
         parentUI.handGivenBack();

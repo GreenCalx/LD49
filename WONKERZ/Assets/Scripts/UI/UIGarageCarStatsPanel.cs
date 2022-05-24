@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 {
@@ -68,7 +69,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         if (Entry.Inputs["Jump"].IsDown)
             pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
-            close();
+            close(true);
     }
 
     // Update is called once per frame
@@ -83,6 +84,11 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = disabled_stat;
+
+        // update background if it exists
+        Image bg = target.GetComponentInChildren<Image>();
+        if (!!bg)
+            bg.color = new Color( bg.color.r, bg.color.g, bg.color.b, 0.3f);
     }
     protected override void select(int index)
     {
@@ -92,6 +98,11 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = enabled_stat;
+
+        // update background if it exists
+        Image bg = target.GetComponentInChildren<Image>();
+        if (!!bg)
+            bg.color = new Color( bg.color.r, bg.color.g, bg.color.b, 0.8f);
 
         // update X/Y Labels of graph
         curve.setLabels(curr_stat.XLabel, curr_stat.YLabel);
@@ -178,14 +189,12 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         curve.moveCurveKey(uics.movable_key, new_time);
     }
 
-    public override void open()
+    public override void open(bool iAnimate)
     {   
         init();
-        //initSelector();
-        base.open();
+        base.open(iAnimate);
 
         Utils.GetInputManager().SetUnique(this as IControllable);
-
 
         // Read curves from CarController
         GameObject player = parentUI.getGarageEntry().playerRef;
@@ -195,14 +204,14 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
         selectables = new List<UIGarageSelectable>(GetComponentsInChildren<UIGarageSelectable>());
         if (selectables.Count == 0)
-        { close(); return; }
+        { close(true); return; }
         i_stat = 0;
         elapsed_time = 0f;
     }
 
-    public override void close()
+    public override void close(bool iAnimate)
     {
-        base.close();
+        base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_stat);
         if (!!UIGarageCurvePicker_Inst)
