@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 {
     public GameObject UIGarageCurvePicker_Ref;
+    public UICurveMotionRange motionRange;
 
     private GameObject UIGarageCurvePicker_Inst;
     private int i_stat;
@@ -173,6 +174,12 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         curve.refreshMovableKeyBounds(keyFrameID);
         uics.XKeyLeftBound     = uics.XLeftBound  + (curve.minbound_nomerge * curve.lineRenderer.unitWidth);
         uics.XKeyRightBound    = uics.XRightBound - (curve.maxbound_nomerge * curve.lineRenderer.unitWidth);
+
+        // transfer bounds to UICurveMotionRange
+        if (!!motionRange)
+        {
+            motionRange.setMotionRange(uics.XLeftBound, uics.XRightBound);
+        }
 
         // make the cursor invisible while curve not select
         UIGarageCurvePicker_Inst.SetActive(false);
