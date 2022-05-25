@@ -11,9 +11,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
     private Color disabled_cosmetic;
     private Color selected_cosmetic;
 
-  
-
-
     // Start is called before the first frame update
     void Start()
     {
