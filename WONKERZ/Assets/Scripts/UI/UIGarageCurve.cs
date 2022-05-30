@@ -53,6 +53,7 @@ public class UIGarageCurve : MonoBehaviour
         if (iSelectedKeyIndex <= 0)
         {
             Debug.LogWarning("Moving keyframe at 0 produce weird behaviour. Unable to compute anti merging keybounds.");
+            Debug.LogWarning("Cursor slider is frozen.");
             return;
         }
         // Compute min bound

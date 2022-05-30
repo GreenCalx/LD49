@@ -127,10 +127,18 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     {
         i_stat = i_selected;
         GameObject target = selectables[i_stat].gameObject;
+        UIGaragePickableStat curr_stat = target.GetComponent<UIGaragePickableStat>();
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = selected_stat;
+
+        // Refresh curve slider ;; 
+        // right bound incorrect when settled in the 'select()' ??
+        GameObject player = parentUI.getGarageEntry().playerRef;
+        CarController cc = player.GetComponent<CarController>();
+        KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
+        setCurveSlider(curr_stat.car_param, kvp.Value);
 
         // Activate slider
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
