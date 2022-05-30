@@ -51,6 +51,7 @@ public class UICurveSelector : UIGarageSelectable, IControllable
         }
         else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
             Utils.GetInputManager().UnsetUnique(this as IControllable);
+            observer.updatePlayerCurve();
             quit();
         }
     }

@@ -132,16 +132,20 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = selected_stat;
 
-        // write bnew curve in car controller
-        GameObject player = parentUI.getGarageEntry().playerRef;
-        CarController cc = player.GetComponent<CarController>();
-
+        // Activate slider
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
         uics.enter(this);
         Utils.GetInputManager().SetUnique(uics as IControllable);
 
-        cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
         UIGarageCurvePicker_Inst.SetActive(true);
+    }
+
+    public void updatePlayerCurve()
+    {
+        GameObject player = parentUI.getGarageEntry().playerRef;
+        CarController cc = player.GetComponent<CarController>();
+        cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
+        Debug.Log("player curve updated");
     }
 
     public void setCurveSlider(UIGarageCurve.CAR_PARAM parm, int keyFrameID)
@@ -181,7 +185,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
             motionRange.setMotionRange(uics.XLeftBound, uics.XRightBound);
         }
 
-        // make the cursor invisible while curve not select
+        // make the cursor invisible while curve not selected
         UIGarageCurvePicker_Inst.SetActive(false);
 
     }
