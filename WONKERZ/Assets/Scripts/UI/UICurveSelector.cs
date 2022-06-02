@@ -5,7 +5,7 @@ using UnityEngine;
 public class UICurveSelector : UIGarageSelectable, IControllable
 {
     [Header("Tweaks")]
-    public float moveStep = 1f;
+    public float moveStep = 0.005f; // percentage between 0f+ to 1f
     
     [Header("Internals")]
     public float XLeftBound;
@@ -15,15 +15,26 @@ public class UICurveSelector : UIGarageSelectable, IControllable
     public UIGarageCarStatsPanel observer;
     public int movable_key;
 
+    
+    private ResolutionManager resolutionManager;
 
     // Start is called before the first frame update
     void Start()
     {
+        resolutionManager = Utils.getResolutionManager();
         Utils.attachControllable<UICurveSelector>(this);
     }
 
     void OnDestroy() {
         Utils.detachControllable<UICurveSelector>(this);
+    }
+
+    private float getMoveStep()
+    {
+        if (!resolutionManager)
+            return moveStep;
+        Debug.Log(resolutionManager.getHorMoveStep(moveStep));
+        return resolutionManager.getStdMoveStep().x;
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
@@ -32,7 +43,7 @@ public class UICurveSelector : UIGarageSelectable, IControllable
         {
             if ((transform.position.x < XRightBound) && (transform.position.x < XKeyRightBound) )
             {
-                transform.position += new Vector3( moveStep, 0f, 0f);
+                transform.position += new Vector3( getMoveStep(), 0f, 0f);
                 observer.notifySliderMove(movable_key);
             }
         } else if ( X < -0.2f)
@@ -40,7 +51,7 @@ public class UICurveSelector : UIGarageSelectable, IControllable
             if ((transform.position.x > XLeftBound) && (transform.position.x > XKeyLeftBound))
             {
                 observer.notifySliderMove(movable_key);
-                transform.position -= new Vector3( moveStep, 0f, 0f);
+                transform.position -= new Vector3( getMoveStep(), 0f, 0f);
             }
         }
 

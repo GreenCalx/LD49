@@ -6,9 +6,10 @@ using UnityEngine.UI;
 public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 {
     public GameObject UIGarageCurvePicker_Ref;
-    public UICurveMotionRange motionRange;
-
     private GameObject UIGarageCurvePicker_Inst;
+    public UICurveMotionRange UICurveMotionRange_Ref;
+    private UICurveMotionRange UICurveMotionRange_Inst;
+
     private int i_stat;
 
     private Color enabled_stat;
@@ -43,6 +44,9 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         enabled_stat  = parentUI.enabled_category;
         disabled_stat = parentUI.disabled_category;
         selected_stat = parentUI.entered_category;
+
+        if (!!UICurveMotionRange_Inst)
+            UICurveMotionRange_Inst.gameObject.SetActive(false);
     }
 
     void OnDestroy() {
@@ -121,6 +125,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     public override void handGivenBack()
     {
         base.handGivenBack();
+        if (!!UICurveMotionRange_Inst)
+            UICurveMotionRange_Inst.gameObject.SetActive(false);
     }
 
     public void pick()
@@ -146,6 +152,10 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         Utils.GetInputManager().SetUnique(uics as IControllable);
 
         UIGarageCurvePicker_Inst.SetActive(true);
+
+        // transfer bounds to UICurveMotionRange
+        if (!!UICurveMotionRange_Ref)
+            setMotionRange(uics, kvp.Value);
     }
 
     public void updatePlayerCurve()
@@ -154,6 +164,32 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         CarController cc = player.GetComponent<CarController>();
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
         Debug.Log("player curve updated");
+    }
+
+    public void setMotionRange(UICurveSelector iUICS, int keyFrameID)
+    {
+        if (!UICurveMotionRange_Inst)
+        {
+            UICurveMotionRange_Inst = Instantiate(UICurveMotionRange_Ref, parentUI.gameObject.transform);
+        }
+        if (!!UICurveMotionRange_Inst)
+        {
+            UIGridRenderer uigr = curve.lineRenderer.gridRenderer;
+            RectTransform rectTransform   = UICurveMotionRange_Inst.GetComponent<RectTransform>();
+            float middle = (iUICS.XKeyLeftBound + iUICS.XKeyRightBound) / 2;
+            
+            //UICurveMotionRange_Inst.transform.position = uigr.transform.position; //init pos at grid origin
+            UICurveMotionRange_Inst.transform.position = new Vector3(middle,
+                                                                    uigr.transform.position.y,
+                                                                    uigr.transform.position.z) ;
+
+
+            float n = (iUICS.XKeyRightBound-iUICS.XKeyLeftBound)/(iUICS.XRightBound - iUICS.XLeftBound);
+            Vector3 new_scale = new Vector3( n, transform.localScale.y, transform.localScale.z );
+            UICurveMotionRange_Inst.transform.localScale = new_scale;
+
+            UICurveMotionRange_Inst.gameObject.SetActive(true);
+        }
     }
 
     public void setCurveSlider(UIGarageCurve.CAR_PARAM parm, int keyFrameID)
@@ -186,12 +222,6 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         curve.refreshMovableKeyBounds(keyFrameID);
         uics.XKeyLeftBound     = uics.XLeftBound  + (curve.minbound_nomerge * curve.lineRenderer.unitWidth);
         uics.XKeyRightBound    = uics.XRightBound - (curve.maxbound_nomerge * curve.lineRenderer.unitWidth);
-
-        // transfer bounds to UICurveMotionRange
-        if (!!motionRange)
-        {
-            motionRange.setMotionRange(uics.XLeftBound, uics.XRightBound);
-        }
 
         // make the cursor invisible while curve not selected
         UIGarageCurvePicker_Inst.SetActive(false);
@@ -235,6 +265,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         deselect(i_stat);
         if (!!UIGarageCurvePicker_Inst)
             Destroy(UIGarageCurvePicker_Inst);
+        if (!!UICurveMotionRange_Inst)
+            Destroy(UICurveMotionRange_Inst);
         parentUI.handGivenBack();
     }
 }

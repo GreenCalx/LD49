@@ -97,8 +97,10 @@ public class TrickLine
 
             if (hasChained)
             {
-                full_line.RemoveAt(full_line.Count-1);
-                full_line.RemoveAt(full_line.Count-1);
+                //full_line.RemoveAt(full_line.Count-1);
+                //full_line.RemoveAt(full_line.Count-1);
+                full_line.Remove(ttp1);
+                full_line.Remove(ttp2);
 
                 TrickTimePair chained_ttp = new TrickTimePair( chained, iDurationTime);
                 full_line.Add(chained_ttp);
@@ -113,11 +115,11 @@ public class TrickLine
         if ( iT1.isNeutral() && iT2.isNeutral() )
             return iT1;
 
-        // FLAT + NEUTRAL = FLAT + NEUTRAL
+        // FLAT + NEUTRAL = FLAT
         if ( iT1.isFlat() && iT2.isNeutral())
-            return null;
+            return iT1;
         if ( iT2.isFlat() && iT1.isNeutral())
-            return null;
+            return iT2;
 
         // NEUTRAL + X = X
         if ( iT1.isNeutral() && !iT2.isNeutral() )

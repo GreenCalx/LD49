@@ -28,6 +28,7 @@ public struct Utils
 }
     // TODO : Cache player reference to avoid high cost lookup
     // TODO : Cache InputManager
+    // TODO : Cache ResolutionManager
     public static GameObject getPlayerRef()
     {
         GameObject playerRef = null;
@@ -49,6 +50,12 @@ public struct Utils
     {
         GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
         return !!mgr ? mgr.GetComponent<InputManager>() : null;
+    }
+
+    public static ResolutionManager getResolutionManager()
+    {
+        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
+        return !!mgr ? mgr.GetComponent<ResolutionManager>() : null;      
     }
 
     public static void detachControllable<T>(T toDetach)
