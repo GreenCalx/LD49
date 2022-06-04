@@ -1,23 +1,28 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
-public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
+public class UIGarageProfilePanel :  UIGaragePanel, IControllable
 {
-    private int i_cosmetics;
+    public int n_slots = 5;
 
-    private Color enabled_cosmetic;
-    private Color disabled_cosmetic;
-    private Color selected_cosmetic;
+    private int i_profile;
 
+
+    private Color enabled_stat;
+    private Color disabled_stat;
+    private Color selected_stat;
+    
     // Start is called before the first frame update
     void Start()
     {
         init();
-        initSelector();
-     
-        Utils.attachControllable<UIGarageCosmeticsPanel>(this);
+        Utils.attachControllable<UIGarageProfilePanel>(this);
+    }
+
+    void OnDestroy() {
+        Utils.detachControllable<UIGarageProfilePanel>(this);
     }
 
     private void init()
@@ -27,21 +32,18 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
             parentUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
             if (parentUI==null)
             {
-                Debug.LogError("ParentUI is null in UIGarageCosmeticsPanel!");
+                Debug.LogError("ParentUI is null in UIGarageCarStatsPanel!");
             }
         }
         elapsed_time = 0f;
         
-        enabled_cosmetic  = parentUI.enabled_category;
-        disabled_cosmetic = parentUI.disabled_category;
-        selected_cosmetic = parentUI.entered_category;
+        enabled_stat  = parentUI.enabled_category;
+        disabled_stat = parentUI.disabled_category;
+        selected_stat = parentUI.entered_category;
     }
 
-    void OnDestroy() {
-        Utils.detachControllable<UIGarageCosmeticsPanel>(this);
-    }
-
-    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+    void IControllable.ProcessInputs(InputManager.InputData Entry) 
+    {
         if (elapsed_time > selector_latch)
         {
             float Y = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
@@ -58,7 +60,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         }
         elapsed_time += Time.unscaledDeltaTime;
 
-
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
             pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
@@ -68,6 +69,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
     // Update is called once per frame
     void Update()
     {
+        
     }
 
     protected override void deselect(int index)
@@ -76,7 +78,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = disabled_cosmetic;
+        target_txt.color = disabled_stat;
     }
     protected override void select(int index)
     {
@@ -84,39 +86,42 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = enabled_cosmetic;
+        target_txt.color = enabled_stat;
+    }
+    public void pick()
+    {
+        i_profile = i_selected;
+        GameObject target = selectables[i_profile].gameObject;
+        
+        // update text label
+        TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
+        target_txt.color = selected_stat;
+
+        // ::: TODO ::: 
+        // SAVE : 
+        // 1. Create UIGarageProfile
+        // 2. Fill it up with player stats
+        // 3. Call SaveAndLoad.save()
+
+        // LOAD :
+        // 1. Create UIGarageProfile
+        // 2. Call SaveAndLoad.load()
+        // 3. transfer loaded datas of UIGarageProfile to player
     }
 
     public override void handGivenBack()
     {
         base.handGivenBack();
     }
-
-    public void pick()
-    {
-        GameObject target = selectables[i_cosmetics].gameObject;
-        TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = selected_cosmetic;
-
-        selectables[i_cosmetics].enter(this);
-    }
-
     public override void open(bool iAnimate)
-    {   
-        init();
+    {
         base.open(iAnimate);
         Utils.GetInputManager().SetUnique(this as IControllable);
-
-        initSelector();
-        i_cosmetics = 0;
-        elapsed_time = 0f;
     }
-
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
-        deselect(i_cosmetics);
         parentUI.handGivenBack();
     }
 }

@@ -68,14 +68,16 @@ public class UIGaragePanel : UIGarageSelector, IControllable
     public void animateIn()
     {
         // Both panel come from under
-        animators = new List<Animator>(GetComponentsInChildren<Animator>());
+        if (animators==null)
+            animators = new List<Animator>(GetComponentsInChildren<Animator>());
         if (animators!=null)
         {
             foreach(Animator a in animators)
             { 
                 a.enabled = true;
                 a.updateMode = AnimatorUpdateMode.UnscaledTime; // as we pause game by putting deltaTime to 0
-                a.SetTrigger("animatePanel");
+                //a.SetTrigger("animatePanel");
+                a.Play("Base Layer.GaragePanelIn", -1, 0);
             }
         }
     }
@@ -84,14 +86,16 @@ public class UIGaragePanel : UIGarageSelector, IControllable
     {
         // Exit Left for LPanel, right for Rpanel
                 // Both panel come from under
-        animators = new List<Animator>(GetComponentsInChildren<Animator>());
+        if (animators==null)
+            animators = new List<Animator>(GetComponentsInChildren<Animator>());
         if (animators!=null)
         {
             foreach(Animator a in animators)
             { 
                 a.enabled = true;
                 a.updateMode = AnimatorUpdateMode.UnscaledTime; // as we pause game by putting deltaTime to 0
-                a.SetTrigger("animatePanel");
+                //a.SetTrigger("animatePanel");
+                a.Play("Base Layer.GaragePanelOut", -1, 0);
             }
         }
     }

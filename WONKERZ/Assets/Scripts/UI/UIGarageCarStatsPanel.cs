@@ -7,8 +7,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 {
     public GameObject UIGarageCurvePicker_Ref;
     private GameObject UIGarageCurvePicker_Inst;
-    public UICurveMotionRange UICurveMotionRange_Ref;
-    private UICurveMotionRange UICurveMotionRange_Inst;
+    public GameObject UICurveMotionRange_Ref;
+    private GameObject UICurveMotionRange_Inst;
 
     private int i_stat;
 
@@ -23,8 +23,6 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         init();
         initSelector();
      
-
-
         Utils.attachControllable<UIGarageCarStatsPanel>(this);
     }
 
@@ -46,7 +44,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         selected_stat = parentUI.entered_category;
 
         if (!!UICurveMotionRange_Inst)
-            UICurveMotionRange_Inst.gameObject.SetActive(false);
+            UICurveMotionRange_Inst.SetActive(false);
     }
 
     void OnDestroy() {
@@ -126,7 +124,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     {
         base.handGivenBack();
         if (!!UICurveMotionRange_Inst)
-            UICurveMotionRange_Inst.gameObject.SetActive(false);
+            UICurveMotionRange_Inst.SetActive(false);
     }
 
     public void pick()
@@ -168,10 +166,9 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
     public void setMotionRange(UICurveSelector iUICS, int keyFrameID)
     {
-        if (!UICurveMotionRange_Inst)
-        {
+        if (UICurveMotionRange_Inst==null)
             UICurveMotionRange_Inst = Instantiate(UICurveMotionRange_Ref, parentUI.gameObject.transform);
-        }
+        
         if (!!UICurveMotionRange_Inst)
         {
             UIGridRenderer uigr = curve.lineRenderer.gridRenderer;
@@ -188,7 +185,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
             Vector3 new_scale = new Vector3( n, transform.localScale.y, transform.localScale.z );
             UICurveMotionRange_Inst.transform.localScale = new_scale;
 
-            UICurveMotionRange_Inst.gameObject.SetActive(true);
+            UICurveMotionRange_Inst.SetActive(true);
         }
     }
 
