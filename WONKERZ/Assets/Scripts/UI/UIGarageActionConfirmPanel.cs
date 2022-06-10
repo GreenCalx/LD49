@@ -1,31 +1,34 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIGarageProfilePanel :  UIGaragePanel, IControllable
+public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
 {
-    //public int n_slots = 5;    
-    [Header("MAND")]
-    private UIGarageProfile profile;
-    public UIGarageActionConfirmPanel confirmPanel;
-    private int i_profile;
+    public string action_name;
+    public TextMeshProUGUI actionTextField;
     private Color enabled_stat;
     private Color disabled_stat;
     private Color selected_stat;
-    
-    
+    private int i_action;
+
+    // Delegation
+    private Action onConfirm = null;
+    public void setConfirmAction( Action methodOnConfirm )
+    {
+        onConfirm = methodOnConfirm;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         init();
-        Utils.attachControllable<UIGarageProfilePanel>(this);
+        Utils.attachControllable<UIGarageActionConfirmPanel>(this);
     }
-
     void OnDestroy() {
-        Utils.detachControllable<UIGarageProfilePanel>(this);
+        Utils.detachControllable<UIGarageActionConfirmPanel>(this);
     }
-
     private void init()
     {
         if (rootUI==null)
@@ -33,7 +36,7 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
             rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
             if (rootUI==null)
             {
-                Debug.LogError("rootUI is null in UIGarageCarStatsPanel!");
+                Debug.LogError("ParentUI is null in UIGarageCarStatsPanel!");
             }
         }
         elapsed_time = 0f;
@@ -41,12 +44,13 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         enabled_stat  = rootUI.enabled_category;
         disabled_stat = rootUI.disabled_category;
         selected_stat = rootUI.entered_category;
-
-        profile = GetComponent<UIGarageProfile>();
-        if (null==profile)
+        
+        if (null==actionTextField)
         {
-            Debug.LogWarning("UIGarageProfile is missing on UIGarageProfilePanel.");
+            Debug.LogWarning("No actionTextField given. TextBox won't be updated.");
+            return;
         }
+        actionTextField.text = action_name;
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) 
@@ -68,19 +72,10 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         elapsed_time += Time.unscaledDeltaTime;
 
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
-            save();
-        /*if (Entry.Inputs[Constants.<...>].IsDown)
-            load();*/
+            pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
             close(true);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     protected override void deselect(int index)
     {
         GameObject target = selectables[index].gameObject;
@@ -97,58 +92,28 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = enabled_stat;
     }
-    public void save()
+    public void pick()
     {
-        i_profile = i_selected;
-        GameObject target = selectables[i_profile].gameObject;
+        i_action = i_selected;
+        GameObject target = selectables[i_action].gameObject;
         
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = selected_stat;
 
-        UIGaragePickableProfile pickable_profile = target.GetComponent<UIGaragePickableProfile>();
-        if (null==pickable_profile)
-            return;
-
-        if (!!confirmPanel)
-        {
-            confirmPanel.gameObject.SetActive(true);
-            confirmPanel.parentUI = this.gameObject;
-            confirmPanel.open(true);
-            confirmPanel.action_name = "SAVE ?";
-            confirmPanel.setConfirmAction(() => SaveAndLoad.save(pickable_profile.profile_name));
-        }
-
-    }
-
-    public void load()
-    {
-        i_profile = i_selected;
-        GameObject target = selectables[i_profile].gameObject;
-        
-        // update text label
-        TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = selected_stat;
-
-        UIGaragePickableProfile pickable_profile = target.GetComponent<UIGaragePickableProfile>();
-        if (null==pickable_profile)
-            return;
-
-        if (!!confirmPanel)
-        {
-            confirmPanel.gameObject.SetActive(true);
-            confirmPanel.open(true);
-            confirmPanel.parentUI = this.gameObject;
-            confirmPanel.action_name = "LOAD ?";
-            confirmPanel.setConfirmAction(() => SaveAndLoad.load(pickable_profile.profile_name));
-        }        
+        // call action delegate
+        if (onConfirm!=null)
+            onConfirm.Invoke();
+        else
+            Debug.LogError("Failed to invoke onConfirm() method cause onConfirm is NULL");
+        close(true);
     }
 
     public override void handGivenBack()
     {
-        confirmPanel.gameObject.SetActive(false);
         base.handGivenBack();
     }
+    
     public override void open(bool iAnimate)
     {
         base.open(iAnimate);
@@ -158,6 +123,21 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
     {
         base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
-        rootUI.handGivenBack();
+        if (!!parentUI)
+        { 
+            UIGaragePanel uigp = parentUI.GetComponent<UIGaragePanel>();
+            if (!!uigp)
+                uigp.handGivenBack();
+            else
+                Debug.LogWarning("No parentUI extending UIGaragePanel found.");
+        } else {
+            rootUI.handGivenBack();
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

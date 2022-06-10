@@ -7,8 +7,8 @@ public class UIGaragePanel : UIGarageSelector, IControllable
 {    
     protected float elapsed_time;
     public UIGarageDisplayPanel displayPanel;
-    public UIGarage parentUI;
-
+    public GameObject parentUI;
+    protected UIGarage rootUI;
     private List<Animator> animators;
 
 

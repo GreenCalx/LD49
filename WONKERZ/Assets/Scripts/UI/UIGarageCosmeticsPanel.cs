@@ -22,19 +22,19 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
 
     private void init()
     {
-        if (parentUI==null)
+        if (rootUI==null)
         {
-            parentUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
-            if (parentUI==null)
+            rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            if (rootUI==null)
             {
-                Debug.LogError("ParentUI is null in UIGarageCosmeticsPanel!");
+                Debug.LogError("rootUI is null in UIGarageCosmeticsPanel!");
             }
         }
         elapsed_time = 0f;
         
-        enabled_cosmetic  = parentUI.enabled_category;
-        disabled_cosmetic = parentUI.disabled_category;
-        selected_cosmetic = parentUI.entered_category;
+        enabled_cosmetic  = rootUI.enabled_category;
+        disabled_cosmetic = rootUI.disabled_category;
+        selected_cosmetic = rootUI.entered_category;
     }
 
     void OnDestroy() {
@@ -117,6 +117,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_cosmetics);
-        parentUI.handGivenBack();
+        rootUI.handGivenBack();
     }
 }

@@ -28,20 +28,20 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
     private void init()
     {
-        if (parentUI==null)
+        if (rootUI==null)
         {
-            parentUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
-            if (parentUI==null)
+            rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            if (rootUI==null)
             {
-                Debug.LogError("ParentUI is null in UIGarageCarStatsPanel!");
+                Debug.LogError("rootUI is null in UIGarageCarStatsPanel!");
             }
         }
         curve = displayPanel.GetComponentInChildren<UIGarageCurve>();
         elapsed_time = 0f;
         
-        enabled_stat  = parentUI.enabled_category;
-        disabled_stat = parentUI.disabled_category;
-        selected_stat = parentUI.entered_category;
+        enabled_stat  = rootUI.enabled_category;
+        disabled_stat = rootUI.disabled_category;
+        selected_stat = rootUI.entered_category;
 
         if (!!UICurveMotionRange_Inst)
             UICurveMotionRange_Inst.SetActive(false);
@@ -114,7 +114,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         curve.changeCurve(curr_stat.car_param);
 
         // Set Slider to the right keyframe/curve
-        GameObject player = parentUI.getGarageEntry().playerRef;
+        GameObject player = rootUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
         setCurveSlider(curr_stat.car_param, kvp.Value);
@@ -139,7 +139,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
         // Refresh curve slider ;; 
         // right bound incorrect when settled in the 'select()' ??
-        GameObject player = parentUI.getGarageEntry().playerRef;
+        GameObject player = rootUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         KeyValuePair<AnimationCurve, int> kvp = cc.getCurveKVP(curr_stat.car_param);
         setCurveSlider(curr_stat.car_param, kvp.Value);
@@ -158,7 +158,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
 
     public void updatePlayerCurve()
     {
-        GameObject player = parentUI.getGarageEntry().playerRef;
+        GameObject player = rootUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
         Debug.Log("player curve updated");
@@ -167,7 +167,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     public void setMotionRange(UICurveSelector iUICS, int keyFrameID)
     {
         if (UICurveMotionRange_Inst==null)
-            UICurveMotionRange_Inst = Instantiate(UICurveMotionRange_Ref, parentUI.gameObject.transform);
+            UICurveMotionRange_Inst = Instantiate(UICurveMotionRange_Ref, rootUI.gameObject.transform);
         
         if (!!UICurveMotionRange_Inst)
         {
@@ -193,7 +193,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
     {
         // instantiate slider
         if (UIGarageCurvePicker_Inst == null)
-            UIGarageCurvePicker_Inst = Instantiate(UIGarageCurvePicker_Ref, parentUI.gameObject.transform);
+            UIGarageCurvePicker_Inst = Instantiate(UIGarageCurvePicker_Ref, rootUI.gameObject.transform);
 
         // set slider X/Y position
         // > Get Grid
@@ -243,7 +243,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         Utils.GetInputManager().SetUnique(this as IControllable);
 
         // Read curves from CarController
-        GameObject player = parentUI.getGarageEntry().playerRef;
+        GameObject player = rootUI.getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
         curve.setTorqueCurve(cc.TORQUE);
         curve.setWeightCurve(cc.WEIGHT);
@@ -264,6 +264,6 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
             Destroy(UIGarageCurvePicker_Inst);
         if (!!UICurveMotionRange_Inst)
             Destroy(UICurveMotionRange_Inst);
-        parentUI.handGivenBack();
+        rootUI.handGivenBack();
     }
 }
