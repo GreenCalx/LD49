@@ -1004,6 +1004,7 @@ GameObject:
   - component: {fileID: 7825894445063507048}
   - component: {fileID: 1044042789274414854}
   - component: {fileID: 2404907657628586622}
+  - component: {fileID: 5680739719456409320}
   m_Layer: 5
   m_Name: SaveLoadConfirm
   m_TagString: Untagged
@@ -1101,7 +1102,27 @@ MonoBehaviour:
   displayPanel: {fileID: 0}
   parentUI: {fileID: 0}
   action_name: 
+  action_nature: 0
   actionTextField: {fileID: 2746199270137007873}
+--- !u!95 &5680739719456409320
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1700609364803097961}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c2a81b8a1fe2fd4498390aa920641e53, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1919197706009538037
 GameObject:
   m_ObjectHideFlags: 0
@@ -3711,20 +3732,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   color: {r: 0, g: 0, b: 0, a: 0}
   profileData:
-    ResourcesPath: 
-    ac_torque:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    ac_weight:
-      serializedVersion: 2
-      m_Curve: []
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    color: {r: 0, g: 0, b: 0, a: 0}
+    ResourcesPath: Assets/Resources/SaveAndLoad
+    color:
+      colorStore:
+      - 1
+      - 1
+      - 1
+      - 1
 --- !u!1 &5870291400622173316
 GameObject:
   m_ObjectHideFlags: 0

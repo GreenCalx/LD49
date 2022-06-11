@@ -16,7 +16,7 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
     
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         init();
         Utils.attachControllable<UIGarageProfilePanel>(this);
@@ -69,8 +69,8 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
 
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
             save();
-        /*if (Entry.Inputs[Constants.<...>].IsDown)
-            load();*/
+        if (Entry.Inputs[Constants.INPUT_RESPAWN].IsDown)
+            load();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
             close(true);
     }
@@ -109,16 +109,30 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         UIGaragePickableProfile pickable_profile = target.GetComponent<UIGaragePickableProfile>();
         if (null==pickable_profile)
             return;
+        
+        fillProfileFromPlayerCC();
 
         if (!!confirmPanel)
         {
             confirmPanel.gameObject.SetActive(true);
             confirmPanel.parentUI = this.gameObject;
             confirmPanel.open(true);
-            confirmPanel.action_name = "SAVE ?";
+            confirmPanel.setTextBoxField("SAVE ?");
+            confirmPanel.action_nature = UIGarageActionConfirmPanel.ACTION_NATURE.SAVE;
             confirmPanel.setConfirmAction(() => SaveAndLoad.save(pickable_profile.profile_name));
         }
 
+    }
+
+    public void fillProfileFromPlayerCC()
+    {
+        CarController cc = rootUI.getPlayerCC();
+        if (!!cc)
+        {
+            profile.color = PlayerColorManager.Instance.getCurrentColor();
+        } else {
+            Debug.LogError("Failed to retrieve player CC from rootUI");
+        }
     }
 
     public void load()
@@ -139,13 +153,31 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
             confirmPanel.gameObject.SetActive(true);
             confirmPanel.open(true);
             confirmPanel.parentUI = this.gameObject;
-            confirmPanel.action_name = "LOAD ?";
-            confirmPanel.setConfirmAction(() => SaveAndLoad.load(pickable_profile.profile_name));
-        }        
+            confirmPanel.setTextBoxField("LOAD ?");
+            confirmPanel.action_nature = UIGarageActionConfirmPanel.ACTION_NATURE.LOAD;
+            confirmPanel.setConfirmAction(() => SaveAndLoad.loadGarageProfile(pickable_profile.profile_name, profile));
+        }
+    }
+
+    public void updatePlayerFromProfile()
+    {
+        CarController cc = rootUI.getPlayerCC();
+        if (!!cc)
+        {
+            //curves
+            //color
+            PlayerColorManager.Instance.colorize(profile.color);
+        } else {
+            Debug.LogError("Failed to retrieve player CC from rootUI");
+        }
     }
 
     public override void handGivenBack()
     {
+        if (confirmPanel.action_nature == UIGarageActionConfirmPanel.ACTION_NATURE.LOAD )
+        {
+            updatePlayerFromProfile();
+        }
         confirmPanel.gameObject.SetActive(false);
         base.handGivenBack();
     }

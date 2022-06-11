@@ -13,7 +13,9 @@ public class PlayerColorManager : MonoBehaviour
          { new Color(0.953f, 0.624f, 0.943f, 1.000f), "CarColorPink"    }
     };
 
-    // List of all player to retrieve for mat update
+    public static Color currentColor;
+
+    // List of all player to retrieve for mat update : OBSOLETE?
     private static readonly List<string> playerNames = new List<string>
     {
         "Player",
@@ -40,6 +42,32 @@ public class PlayerColorManager : MonoBehaviour
             if (!!p)
                 playerRefs.Add( p );
         }
+        initCurrentColor();
+    }
+
+    private void initCurrentColor()
+    {
+        if ( playerRefs.Count <= 0 )
+        { Debug.LogError("No player refs in PlayerColorManager to init current color."); return; }
+
+        GameObject p = playerRefs[0];
+        Renderer pRend = p.GetComponentInChildren<Renderer>();
+        if (pRend == null)
+        { Debug.LogError("No Renderer Component found on player in PlayerColorManager to init current color."); return; }
+        
+
+        
+        foreach( KeyValuePair<Color, string> kvp in col_matname_dico)
+        {
+            // material is copied on player, thus unity adds (Instance) extensions to its name
+            string matInstName = kvp.Value + Constants.EXT_INSTANCE;
+            if (matInstName==pRend.material.name)
+            {
+                currentColor = kvp.Key;
+                Debug.Log("Current color : " + kvp.Value);
+                break;
+            }
+        }
     }
 
     public void colorize(Color iColor)
@@ -62,6 +90,7 @@ public class PlayerColorManager : MonoBehaviour
                     if (!!pRend)
                         pRend.material = newmat;
                 }
+                currentColor = c;
                 break;
             }
         }
@@ -74,5 +103,10 @@ public class PlayerColorManager : MonoBehaviour
         bool b = ((float)Mathf.Round(first.b * 100f) / 100f) == ((float)Mathf.Round(second.b * 100f) / 100f);
         bool a = ((float)Mathf.Round(first.a * 100f) / 100f) == ((float)Mathf.Round(second.a * 100f) / 100f);
         return r && g && b && a;
+    }
+
+    public Color getCurrentColor()
+    {
+        return currentColor;
     }
 }

@@ -17,7 +17,6 @@ public class UIGarage : UIGarageSelector, IControllable
     public Color entered_category;
     // > MENU PARMS
 
-
     // Start is called before the first frame update
     void Start()
     {
@@ -144,6 +143,11 @@ public class UIGarage : UIGarageSelector, IControllable
     public GarageEntry getGarageEntry()
     {
         return garageEntry;
+    }
+
+    public CarController getPlayerCC()
+    {
+        return garageEntry.playerCC;
     }
 
     public void quitGarage()

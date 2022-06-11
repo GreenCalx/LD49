@@ -6,7 +6,15 @@ using TMPro;
 
 public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
 {
+    public enum ACTION_NATURE {
+        NONE = 0,
+        LOAD = 1,
+        SAVE = 2
+    };
+
     public string action_name;
+    public ACTION_NATURE action_nature;
+
     public TextMeshProUGUI actionTextField;
     private Color enabled_stat;
     private Color disabled_stat;
@@ -21,7 +29,7 @@ public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
     }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         init();
         Utils.attachControllable<UIGarageActionConfirmPanel>(this);
@@ -45,12 +53,17 @@ public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
         disabled_stat = rootUI.disabled_category;
         selected_stat = rootUI.entered_category;
         
+        setTextBoxField(action_name);
+    }
+
+    public void setTextBoxField(string iStr)
+    {
         if (null==actionTextField)
         {
             Debug.LogWarning("No actionTextField given. TextBox won't be updated.");
             return;
         }
-        actionTextField.text = action_name;
+        actionTextField.text = iStr;
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) 

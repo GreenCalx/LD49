@@ -1,6 +1,9 @@
 
 public struct Constants
 {
+  // -- Generic Object names extensions --
+  public const string EXT_INSTANCE = " (Instance)";
+
   // -- Scene names --
     public const string SN_SPLASH="SchnibbleSplash";
     public const string SN_TITLE="titlescene";
@@ -27,5 +30,6 @@ public struct Constants
     public const string INPUT_JUMP = "Jump";
     public const string INPUT_CANCEL = "Cancel";
     public const string INPUT_UIUPDOWN = "UIUpDown";
+    public const string INPUT_RESPAWN = "Respawn";
 
 }

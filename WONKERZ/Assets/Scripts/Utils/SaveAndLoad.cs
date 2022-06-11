@@ -93,4 +93,39 @@ public static class SaveAndLoad
         return true;
     }
 
+    public static bool loadGarageProfile(string iFileName, UIGarageProfile target)
+    {
+        fileName = iFileName;
+
+        if (!File.Exists(fileName))
+        { return false; }
+
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        ArrayList load_datas;
+        
+        try {
+            BinaryFormatter formatter = new BinaryFormatter();
+            load_datas = (ArrayList) formatter.Deserialize(fs);
+            formatter = null;
+        } catch ( System.Runtime.Serialization.SerializationException e){
+            Debug.LogError("Failed to deserialize profile : " + e.Message);
+            return false;
+        } finally {
+            fs.Close();
+        }
+
+        datas.Clear();
+        foreach ( object o in load_datas )
+        {
+            EntityData ed = (EntityData) o;
+            ed.OnLoad(target.gameObject);
+        }
+
+        load_datas.Clear();
+        load_datas = null;
+        fs = null;
+
+        return true;
+    }
+
 }
