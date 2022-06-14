@@ -129,7 +129,13 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         CarController cc = rootUI.getPlayerCC();
         if (!!cc)
         {
+            // TORQUE
+            profile.TORQUE_CURVE = new List<Keyframe>(cc.TORQUE.keys);
+            // WEIGHT
+            profile.WEIGHT_CURVE = new List<Keyframe>(cc.WEIGHT.keys);
+            // COLOR
             profile.color = PlayerColorManager.Instance.getCurrentColor();
+            
         } else {
             Debug.LogError("Failed to retrieve player CC from rootUI");
         }
@@ -164,7 +170,10 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
         CarController cc = rootUI.getPlayerCC();
         if (!!cc)
         {
-            //curves
+            // TORQUE
+            cc.TORQUE = new AnimationCurve(profile.TORQUE_CURVE.ToArray());
+            // WEIGHT
+            cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
             //color
             PlayerColorManager.Instance.colorize(profile.color);
         } else {
