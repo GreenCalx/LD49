@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UICurveSelector : UIGarageSelectable, IControllable
+public class UICurveSelector : UIGarageSelectable, IControllable, IUIGarageElement
 {
     [Header("Tweaks")]
     public float moveStep = 0.005f; // percentage between 0f+ to 1f
@@ -65,6 +65,16 @@ public class UICurveSelector : UIGarageSelectable, IControllable
             observer.updatePlayerCurve();
             quit();
         }
+    }
+
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "CONFIRM");
+        retval.Add(Constants.RES_ICON_B, "CANCEL");
+
+        return retval;
     }
 
     // Update is called once per frame

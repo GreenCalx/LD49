@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIGarageProfilePanel :  UIGaragePanel, IControllable
+public class UIGarageProfilePanel :  UIGaragePanel, IControllable, IUIGarageElement
 {
     //public int n_slots = 5;    
     [Header("MAND")]
@@ -73,6 +73,17 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
             load();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
             close(true);
+    }
+
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "SAVE");
+        retval.Add(Constants.RES_ICON_B, "CANCEL");
+        retval.Add(Constants.RES_ICON_Y, "LOAD");
+
+        return retval;
     }
 
     // Update is called once per frame
@@ -194,6 +205,7 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable
     {
         base.open(iAnimate);
         Utils.GetInputManager().SetUnique(this as IControllable);
+        rootUI.inputHelper.refreshHelper(this);
     }
     public override void close(bool iAnimate)
     {

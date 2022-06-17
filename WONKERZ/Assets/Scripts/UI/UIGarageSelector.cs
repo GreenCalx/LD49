@@ -8,6 +8,7 @@ public class UIGarageSelector : MonoBehaviour
     public float selector_latch;
     protected List<UIGarageSelectable> selectables;
     protected int i_selected;
+    public UIGarageInputHelper inputHelper;
 
     void Start()
     {
