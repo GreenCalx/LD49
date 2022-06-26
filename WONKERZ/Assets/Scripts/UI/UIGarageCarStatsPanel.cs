@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
+public class UIGarageCarStatsPanel : UIGaragePanel, IControllable, IUIGarageElement
 {
     public GameObject UIGarageCurvePicker_Ref;
     private GameObject UIGarageCurvePicker_Inst;
@@ -36,6 +36,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
                 Debug.LogError("rootUI is null in UIGarageCarStatsPanel!");
             }
         }
+        
         curve = displayPanel.GetComponentInChildren<UIGarageCurve>();
         elapsed_time = 0f;
         
@@ -73,6 +74,16 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
             pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
             close(true);
+    }
+
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "EDIT");
+        retval.Add(Constants.RES_ICON_B, "BACK");
+
+        return retval;
     }
 
     // Update is called once per frame
@@ -125,6 +136,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         base.handGivenBack();
         if (!!UICurveMotionRange_Inst)
             UICurveMotionRange_Inst.SetActive(false);
+        rootUI.inputHelper.refreshHelper(this);
     }
 
     public void pick()
@@ -148,6 +160,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
         uics.enter(this);
         Utils.GetInputManager().SetUnique(uics as IControllable);
+        rootUI.inputHelper.refreshHelper(uics);
 
         UIGarageCurvePicker_Inst.SetActive(true);
 
@@ -241,6 +254,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable
         base.open(iAnimate);
 
         Utils.GetInputManager().SetUnique(this as IControllable);
+        rootUI.inputHelper.refreshHelper(this);
 
         // Read curves from CarController
         GameObject player = rootUI.getGarageEntry().playerRef;

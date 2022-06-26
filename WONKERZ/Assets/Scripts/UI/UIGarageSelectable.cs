@@ -35,7 +35,7 @@ public class UIGarageSelectable : MonoBehaviour
     { 
         findParent(); 
         is_active = true;
-         setOriginalCaller(uigs); 
+        setOriginalCaller(uigs); 
     }
     public virtual void quit() 
     { 

@@ -32,4 +32,10 @@ public struct Constants
     public const string INPUT_UIUPDOWN = "UIUpDown";
     public const string INPUT_RESPAWN = "Respawn";
 
+    // -- Resources paths --
+    public const string RES_ICON_BLANK = "Icons/UI_InputBlank";
+    public const string RES_ICON_A = "Icons/UI_InputA";
+    public const string RES_ICON_B = "Icons/UI_InputB";
+    public const string RES_ICON_Y = "Icons/UI_InputY";
+
 }

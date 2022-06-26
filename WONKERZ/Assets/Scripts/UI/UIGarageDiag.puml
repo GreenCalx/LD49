@@ -1,0 +1,71 @@
+@startuml UIGarageDiag
+skinparam groupInheritance 2
+
+interface IUIGarageElement
+interface IControllable
+
+object UIGarageSelector
+
+object UIGarage
+IControllable <|-- UIGarage
+UIGarageSelector <|-- UIGarage
+
+object UIGaragePanel
+IControllable <|-- UIGaragePanel
+UIGarageSelector <|-- UIGaragePanel
+
+object UIGarageProfilePanel
+IControllable <|-- UIGarageProfilePanel
+UIGaragePanel <|-- UIGarageProfilePanel
+' IUIGarageElement <|-- UIGarageProfilePanel
+
+object UIGarageCarStatsPanel
+IControllable <|-- UIGarageCarStatsPanel
+UIGaragePanel <|-- UIGarageCarStatsPanel
+
+object UIGarageCosmeticsPanel
+IControllable <|-- UIGarageCosmeticsPanel
+UIGaragePanel <|-- UIGarageCosmeticsPanel
+
+package "Selectables" #FEFEFE  {
+object UIGarageSelectable
+
+object UIGarageCategory
+UIGarageSelectable <|-- UIGarageCategory
+
+object UIGarageExit
+UIGarageSelectable <|-- UIGarageExit
+
+object UIGaragePickableStat
+UIGarageSelectable <|-- UIGaragePickableStat
+
+object UICurveSelector
+UIGarageSelectable <|-- UICurveSelector
+IControllable <|-- UICurveSelector
+
+object UIGarageColors
+UIGarageSelectable <|-- UIGarageColors
+IControllable <|-- UIGarageColors
+
+object UIGaragePickableProfile
+UIGarageSelectable <|-- UIGaragePickableProfile
+}
+
+object UIGarageDisplayPanel
+object UIGarageProfileDspPanel
+object UIGarageCarStatsDspPanel
+UIGarageDisplayPanel <|-- UIGarageProfileDspPanel
+UIGarageDisplayPanel <|-- UIGarageCarStatsDspPanel
+
+package "Graphx" #DDDDDD  {
+object UIGridRenderer
+object UILineRenderer
+object Graphic
+Graphic <|-- UIGridRenderer
+Graphic <|-- UILineRenderer
+}
+
+object UIGaragePickableColor
+object UICurveMotionRange
+
+@enduml

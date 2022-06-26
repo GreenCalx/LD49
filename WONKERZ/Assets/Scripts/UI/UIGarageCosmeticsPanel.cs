@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
+public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageElement
 {
     private int i_cosmetics;
 
@@ -65,6 +65,16 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
             close(true);
     }
 
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "EDIT");
+        retval.Add(Constants.RES_ICON_B, "BACK");
+
+        return retval;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -90,6 +100,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
     public override void handGivenBack()
     {
         base.handGivenBack();
+        rootUI.inputHelper.refreshHelper(this);
     }
 
     public void pick()
@@ -99,13 +110,23 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable
         target_txt.color = selected_cosmetic;
 
         selectables[i_cosmetics].enter(this);
+
+        // update input helper according to selectable specialization
+        UIGarageColors uigc = target.GetComponent<UIGarageColors>();
+        // UIGarageWheels uigw = target.GetComponent<UIGarageWheels>();
+        if (!!uigc) {
+            rootUI.inputHelper.refreshHelper(uigc);
+        }
+        // else if (!!uigw) { ... }
     }
 
     public override void open(bool iAnimate)
     {   
         init();
         base.open(iAnimate);
+
         Utils.GetInputManager().SetUnique(this as IControllable);
+        rootUI.inputHelper.refreshHelper(this);
 
         initSelector();
         i_cosmetics = 0;

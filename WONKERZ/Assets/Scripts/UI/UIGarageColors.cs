@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIGarageColors : UIGarageSelectable, IControllable
+public class UIGarageColors : UIGarageSelectable, IControllable, IUIGarageElement
 {
     public GameObject UIGarageColorPicker_Ref;
     public float selector_latch;
@@ -58,6 +58,16 @@ public class UIGarageColors : UIGarageSelectable, IControllable
             quit(); 
             return;
         }
+    }
+
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "APPLY");
+        retval.Add(Constants.RES_ICON_B, "BACK");
+
+        return retval;
     }
 
     // Update is called once per frame

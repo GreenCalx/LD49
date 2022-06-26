@@ -4,12 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class UIGarage : UIGarageSelector, IControllable
+public class UIGarage : UIGarageSelector, IControllable, IUIGarageElement
 {
     private GarageEntry garageEntry;
     private float elapsed_time;
     private int i_entered_category;
-
+    
+    
     /// PUB PARAMS
     // > COLORS
     public Color enabled_category;
@@ -28,6 +29,8 @@ public class UIGarage : UIGarageSelector, IControllable
         tryReadCurvesFromPlayer();
 
         Utils.attachControllable<UIGarage>(this);
+
+        inputHelper.refreshHelper(this);
     }
 
     void OnDestroy() {
@@ -56,6 +59,16 @@ public class UIGarage : UIGarageSelector, IControllable
                 quitSubMenu();
         }
         elapsed_time += Time.unscaledDeltaTime;
+    }
+
+    Dictionary<string,string> IUIGarageElement.getHelperInputs()
+    {
+        Dictionary<string,string> retval = new Dictionary<string, string>();
+
+        retval.Add(Constants.RES_ICON_A, "ENTER");
+        retval.Add(Constants.RES_ICON_B, "QUIT");
+
+        return retval;
     }
 
     // Update is called once per frame
@@ -105,6 +118,7 @@ public class UIGarage : UIGarageSelector, IControllable
     public override void handGivenBack()
     {
         base.handGivenBack();
+        inputHelper.refreshHelper(this);
     }
 
     private void enterSubMenu()
