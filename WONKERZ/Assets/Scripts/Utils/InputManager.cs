@@ -160,7 +160,7 @@ public class InputManager : MonoBehaviour
     private float _LastDpadAxisVertical = 0;
     private static Vector2 _LastMousePosition;
 
-    public enum Mode { PLAYER, DEACTIVATED };
+    public enum Mode { PLAYER, DEACTIVATED, AUTOPILOT };
     public Mode CurrentMode = Mode.DEACTIVATED;
 
     private bool _Lock = false;
@@ -259,7 +259,6 @@ public class InputManager : MonoBehaviour
         }
         else
         {
-
             for (int i = 0; i < _Controllees.Count; ++i)
             {
                 _Controllees[i].ProcessInputs(Entry);

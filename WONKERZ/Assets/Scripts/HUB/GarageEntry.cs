@@ -67,7 +67,7 @@ public class GarageEntry : MonoBehaviour,IControllable
     {
         if (garageOpened)
             return;
-        Time.timeScale = 0; // pause
+        //Time.timeScale = 0; // pause
         garageUI = Instantiate(garageUIRef);
         garageUI.name = Constants.GO_UIGARAGE;
 
@@ -76,6 +76,8 @@ public class GarageEntry : MonoBehaviour,IControllable
         garageOpened = true;
 
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(uig as IControllable);
+        //Utils.detachControllable<CarController>(playerCC);
+        playerCC.isFrozen = true;
     }
 
     public void closeGarage()
@@ -86,9 +88,14 @@ public class GarageEntry : MonoBehaviour,IControllable
 
         GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(garageUI.GetComponent<UIGarage>() as IControllable);
 
-        Time.timeScale = 1; // unpause
+        //Time.timeScale = 1; // unpause
         Destroy(garageUI);
 
+        //Utils.attachControllable<CarController>(playerCC);
+        if (!!playerCC)
+            playerCC.isFrozen = false;
+        else
+            Utils.getPlayerRef().GetComponent<CarController>().isFrozen = false;
         garageOpened = false;
     }
 }

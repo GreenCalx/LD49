@@ -58,6 +58,12 @@ public struct Utils
         return !!mgr ? mgr.GetComponent<ResolutionManager>() : null;      
     }
 
+    public static UIGarageTestManager getTestManager()
+    {
+        GameObject mgr = GameObject.Find(Constants.GO_TESTMANAGER);
+        return !!mgr ? mgr.GetComponent<UIGarageTestManager>() : null;      
+    }
+
     public static void detachControllable<T>(T toDetach)
     {
         InputManager IM = GetInputManager();
@@ -66,6 +72,14 @@ public struct Utils
         else
             Debug.LogWarning("InputManager is null. Failed to detach.");
     }
+    public static void detachUniqueControllable<T>(T toDetach)
+    {
+        InputManager IM = GetInputManager();
+        if (!!IM)
+            IM.UnsetUnique(toDetach as IControllable);
+        else
+            Debug.LogWarning("InputManager is null. Failed to detach unique.");
+    }
 
     public static void attachControllable<T>(T toAttach)
     {
@@ -73,7 +87,21 @@ public struct Utils
         if (!!IM)
             IM.Attach(toAttach as IControllable);
         else
-            Debug.LogWarning("InputManager is null. Failed to detach.");
+            Debug.LogWarning("InputManager is null. Failed to attach.");
+    }
+
+    public static void attachUniqueControllable<T>(T toAttach)
+    {
+        InputManager IM = GetInputManager();
+        if (!!IM)
+            IM.SetUnique(toAttach as IControllable);
+        else
+            Debug.LogWarning("InputManager is null. Failed to attach unique.");
+    }
+
+    public static int getLayerIndex(string iLayerName)
+    {
+        return LayerMask.NameToLayer(iLayerName);
     }
         
     public static void exitOnError(string e)

@@ -127,6 +127,9 @@ public class CarController : MonoBehaviour, IControllable
     public int torque_movable_keyframe; // the keyframe we want to move in garage w slider
     public AnimationCurve WEIGHT;
     public int weight_movable_keyframe;
+    
+    [Header("Behaviours")]
+    public bool isFrozen;
 
     [Header("Debug")]
     public float SpringStiffness;
@@ -958,10 +961,16 @@ public class CarController : MonoBehaviour, IControllable
         SetMode(CurrentMode);
 
         Utils.attachControllable<CarController>(this);
+        isFrozen = false;
     }
 
     void Update()
     {
+        if (isFrozen)
+        {
+            return;
+        }
+
         FixedUpdateDone = false;
 
 
@@ -985,7 +994,11 @@ public class CarController : MonoBehaviour, IControllable
 
     void FixedUpdate()
     {
-
+        if (isFrozen)
+        {
+            return;
+        }
+        
         UpdateSprings();
 
         ResolveAxle(ref FrontAxle);

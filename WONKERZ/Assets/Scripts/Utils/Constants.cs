@@ -21,6 +21,7 @@ public struct Constants
     public const string GO_SOUNDMANAGER = "SoundManager";
     public const string GO_MANAGERS = "------ MANAGERS ------";
     public const string GO_UIGARAGE = "UIGarage";
+    public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
     
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
@@ -37,5 +38,8 @@ public struct Constants
     public const string RES_ICON_A = "Icons/UI_InputA";
     public const string RES_ICON_B = "Icons/UI_InputB";
     public const string RES_ICON_Y = "Icons/UI_InputY";
+
+    // -- Layers --
+    public const string LYR_UIMESH = "UIMesh";
 
 }

@@ -1,23 +1,24 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
-public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageElement
+public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageElement
 {
-    private int i_cosmetics;
+    private int i_test;
 
-    private Color enabled_cosmetic;
-    private Color disabled_cosmetic;
-    private Color selected_cosmetic;
+    private Color enabled_test;
+    private Color disabled_test;
+    private Color selected_test;
 
+    private bool test_is_running = false;
     // Start is called before the first frame update
     void Start()
     {
         init();
         initSelector();
      
-        Utils.attachControllable<UIGarageCosmeticsPanel>(this);
+        Utils.attachControllable<UIGarageTestingPanel>(this);
     }
 
     private void init()
@@ -32,13 +33,27 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
         }
         elapsed_time = 0f;
         
-        enabled_cosmetic  = rootUI.enabled_category;
-        disabled_cosmetic = rootUI.disabled_category;
-        selected_cosmetic = rootUI.entered_category;
+        enabled_test  = rootUI.enabled_category;
+        disabled_test = rootUI.disabled_category;
+        selected_test = rootUI.entered_category;
+        
+        test_is_running = false;
     }
 
     void OnDestroy() {
-        Utils.detachControllable<UIGarageCosmeticsPanel>(this);
+        Utils.detachControllable<UIGarageTestingPanel>(this);
+    }
+
+    void Update()
+    {
+        // Hack to quit test simulation
+        // when InputManager is in autopilot
+        // and test car is the unique controllable
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            selectables[i_test].quit();
+            test_is_running = false;
+        }
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
@@ -62,22 +77,23 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
             pick();
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
-            close(true);
+        {
+            if (!test_is_running)
+                close(true);
+            else
+                selectables[i_test].quit();
+            test_is_running = false;
+        }
     }
 
     Dictionary<string,string> IUIGarageElement.getHelperInputs()
     {
         Dictionary<string,string> retval = new Dictionary<string, string>();
 
-        retval.Add(Constants.RES_ICON_A, "EDIT");
+        retval.Add(Constants.RES_ICON_A, "PLAY");
         retval.Add(Constants.RES_ICON_B, "BACK");
 
         return retval;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     protected override void deselect(int index)
@@ -86,7 +102,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = disabled_cosmetic;
+        target_txt.color = disabled_test;
     }
     protected override void select(int index)
     {
@@ -94,7 +110,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
 
         // update text label
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = enabled_cosmetic;
+        target_txt.color = enabled_test;
     }
 
     public override void handGivenBack()
@@ -105,20 +121,14 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
 
     public void pick()
     {
-        i_cosmetics = i_selected;
-        GameObject target = selectables[i_cosmetics].gameObject;
+        i_test = i_selected;
+
+        GameObject target = selectables[i_test].gameObject;
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
-        target_txt.color = selected_cosmetic;
+        target_txt.color = selected_test;
 
-        selectables[i_cosmetics].enter(this);
-
-        // update input helper according to selectable specialization
-        UIGarageColors uigc = target.GetComponent<UIGarageColors>();
-        // UIGarageWheels uigw = target.GetComponent<UIGarageWheels>();
-        if (!!uigc) {
-            rootUI.inputHelper.refreshHelper(uigc);
-        }
-        // else if (!!uigw) { ... }
+        selectables[i_test].enter(this);
+        test_is_running = true;
     }
 
     public override void open(bool iAnimate)
@@ -130,15 +140,17 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
         rootUI.inputHelper.refreshHelper(this);
 
         initSelector();
-        i_cosmetics = 0;
+        i_test = 0;
         elapsed_time = 0f;
     }
 
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
+        
         Utils.GetInputManager().UnsetUnique(this as IControllable);
-        deselect(i_cosmetics);
+        deselect(i_test);
+
         rootUI.handGivenBack();
     }
 }
