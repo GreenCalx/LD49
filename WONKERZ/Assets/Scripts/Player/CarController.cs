@@ -926,6 +926,13 @@ public class CarController : MonoBehaviour, IControllable
         SuspensionLock = true;
     }
 
+    private void clonedForTestInit()
+    {
+        Debug.Log("Alternative init for cloned car in test scenarios.");
+        RB = GetComponent<Rigidbody>();
+        RB.centerOfMass = CenterOfMass.transform.localPosition;
+    }
+
     public Vector2 MouseLastPosition = Vector2.zero;
     // Update is called once per frame
     public float TorqueForce;
@@ -943,6 +950,13 @@ public class CarController : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Awake()
     {
+        // Avoid instantiating again wheels and such
+        // when the Player is duplicated for garage tests
+        // > We could also just remove certain awake calls
+        // but i want to check that wit u toff
+        if (transform.parent.GetComponent<UIGarageTestManager>())
+        { clonedForTestInit(); return; }
+
         if (UseRefs)
         {
             RefAxle.Right = RefSuspension;

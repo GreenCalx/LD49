@@ -49,6 +49,9 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
         // Hack to quit test simulation
         // when InputManager is in autopilot
         // and test car is the unique controllable
+        // It causes NPE on quit because its called multiple times
+        // here, which is not the case with input manager
+        // > will be fixed by moving onto InputManager
         if (Input.GetKey(KeyCode.Escape))
         {
             selectables[i_test].quit();

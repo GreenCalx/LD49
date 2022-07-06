@@ -30,7 +30,16 @@ public class UIGarageTestManager : MonoBehaviour
         
         CarController cc = testCC.GetComponent<CarController>();
         cc.isFrozen = false;
+
         testCC.transform.position = uigts.respawnPoint.position;
+        testCC.transform.rotation = uigts.respawnPoint.rotation;
+        Rigidbody rb2d = testCC.GetComponentInChildren<Rigidbody>();
+        if (!!rb2d)
+        {
+            rb2d.velocity = Vector3.zero;
+            rb2d.angularVelocity = Vector3.zero;
+        }
+
         //Utils.detachControllable<CarController>(cc);
         Utils.attachUniqueControllable(cc);
         
