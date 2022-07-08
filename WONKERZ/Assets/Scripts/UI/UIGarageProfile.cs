@@ -142,10 +142,10 @@ public class UIGarageProfile : MonoBehaviour, ISaveLoad
 
     void Start()
     {
-        SaveAndLoad.datas.Add(this);
+        //SaveAndLoad.datas.Add(this);
     }
     void OnDestroy()
     {
-        SaveAndLoad.datas.Remove(this);
+        //SaveAndLoad.datas.Remove(this);
     }
 }

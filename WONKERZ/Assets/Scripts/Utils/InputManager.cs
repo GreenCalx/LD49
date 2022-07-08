@@ -63,6 +63,7 @@ static public class InputSettings
 
 public class InputManager : MonoBehaviour
 {
+    [System.Serializable]
     public class InputState
     {
         public bool IsUp = false;
@@ -84,7 +85,7 @@ public class InputManager : MonoBehaviour
             }
         }
     }
-
+    [System.Serializable]
     public class InputData
     {
         public Dictionary<String, InputState> Inputs = new Dictionary<string, InputState>();
@@ -160,7 +161,11 @@ public class InputManager : MonoBehaviour
     private float _LastDpadAxisVertical = 0;
     private static Vector2 _LastMousePosition;
 
-    public enum Mode { PLAYER, DEACTIVATED, AUTOPILOT };
+    public enum Mode {  PLAYER, // default mode to control stuff
+                        DEACTIVATED, 
+                        RECORD, // Like Player but records inputs until stopRecord() is called
+                        AUTOPILOT // Pushes recordedInputs into Entry instead of real inputs
+                        };
     public Mode CurrentMode = Mode.DEACTIVATED;
 
     private bool _Lock = false;
@@ -168,6 +173,9 @@ public class InputManager : MonoBehaviour
     public bool _Activated = true;
 
     private Stack<IControllable> _PriorityList = new Stack<IControllable>();
+
+    public Queue<InputData> recordedInputs = new Queue<InputData>();
+
 
     public void Activate() { _Activated = true; }
     public void DeActivate() { _Activated = false; }
@@ -233,15 +241,51 @@ public class InputManager : MonoBehaviour
         _DeferRemove.Clear();
     }
 
+    public void startRecord()
+    {
+        recordedInputs.Clear();
+        CurrentMode = Mode.RECORD;
+    }
+
+    public Queue<InputData> stopRecord()
+    {
+        CurrentMode = Mode.PLAYER;
+        return recordedInputs;
+    }
+
+    public void startAutoPilot(Queue<InputData> iDatas)
+    {
+        CurrentMode = Mode.AUTOPILOT;
+        recordedInputs = iDatas;
+    }
+    public void stopAutoPilot()
+    {
+        if (recordedInputs.Count == 0 )
+        { Debug.Log("All recorded inputs have been processed.");}
+        else { Debug.Log( recordedInputs.Count +" Inputs unplayed."); }
+        CurrentMode = Mode.PLAYER;
+    }
+
     void Update()
     {
         if (!_Activated) return;
         // NOTE(toffa): Saver stuff test
         InputData Entry = new InputData();
-        foreach (string K in InputSettings.Mapping.Keys)
+
+        if (CurrentMode == Mode.AUTOPILOT )
         {
-            Entry.Add(K);
+            Entry = recordedInputs.Dequeue();
+        } else {
+            foreach (string K in InputSettings.Mapping.Keys)
+            {
+                Entry.Add(K);
+            }
         }
+        if (CurrentMode == Mode.RECORD)
+        {
+            recordedInputs.Enqueue(Entry);
+        }
+
         //_LastDpadAxisHorizontal = Entry.Inputs["DPad_Horizontal"].AxisValue;
         //_LastDpadAxisVertical = Entry.Inputs["DPad_Vertical"].AxisValue;
 

@@ -110,6 +110,8 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable, IUIGarageElem
     }
     public void save()
     {
+        SaveAndLoad.datas.Add(profile);
+
         i_profile = i_selected;
         GameObject target = selectables[i_profile].gameObject;
         
@@ -154,6 +156,8 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable, IUIGarageElem
 
     public void load()
     {
+        SaveAndLoad.datas.Add(profile);
+
         i_profile = i_selected;
         GameObject target = selectables[i_profile].gameObject;
         
@@ -211,6 +215,7 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable, IUIGarageElem
     {
         base.close(iAnimate);
         Utils.GetInputManager().UnsetUnique(this as IControllable);
+        SaveAndLoad.datas.Remove(this);
         rootUI.handGivenBack();
     }
 }

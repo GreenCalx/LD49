@@ -44,7 +44,7 @@ public static class SaveAndLoad
         try{
             formatter.Serialize(fs, save_datas);
         } catch ( System.Runtime.Serialization.SerializationException e){
-            Debug.LogError("Failed to serialize profile : " + e.Message);
+            Debug.LogError("Failed to serialize : " + e.Message);
             return false;
         } finally {
             fs.Close();

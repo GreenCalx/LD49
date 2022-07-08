@@ -78,7 +78,9 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
 
 
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
-            pick();
+        { Utils.getTestManager().testMode = UIGarageTestManager.MODE.REPLAY; pick(); }
+        if (Entry.Inputs[Constants.INPUT_RESPAWN].IsDown)
+        { Utils.getTestManager().testMode = UIGarageTestManager.MODE.RECORD; pick(); }
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
         {
             if (!test_is_running)
@@ -95,6 +97,7 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
 
         retval.Add(Constants.RES_ICON_A, "PLAY");
         retval.Add(Constants.RES_ICON_B, "BACK");
+        retval.Add(Constants.RES_ICON_Y, "RECORD");
 
         return retval;
     }
