@@ -26,13 +26,16 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             player = Utils.getPlayerRef();
         }
-        if (Cam == null)
-        {
-            Cam = CameraManager.Instance.active_camera.gameObject;
-        }
+        refreshCameras();
         last_checkpoint = race_start;
 
         Utils.attachControllable<CheckPointManager>(this);
+    }
+
+
+    void Awake()
+    {
+        refreshCameras();
     }
 
     void OnDestroy()
@@ -48,6 +51,20 @@ public class CheckPointManager : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
+        refreshCameras();
+    }
+
+    private void refreshCameras()
+    {   
+        if (Cam == null)
+        {
+            Cam = CameraManager.Instance.active_camera.gameObject;
+            Debug.LogWarning("Camera Ref refreshed in CheckPointManager.");
+            foreach(GameObject cp in checkpoints)
+            {
+                cp.GetComponent<CheckPoint>().Cam = Cam.GetComponent<Camera>();
+            }
+        }
     }
 
     private void findCheckpoints()

@@ -64,6 +64,12 @@ public struct Utils
         return !!mgr ? mgr.GetComponent<UIGarageTestManager>() : null;      
     }
 
+    public static CheckPointManager getCheckPointManager()
+    {
+        GameObject mgr = GameObject.Find(Constants.GO_CPManager);
+        return !!mgr ? mgr.GetComponent<CheckPointManager>() : null;      
+    }
+
     public static void detachControllable<T>(T toDetach)
     {
         InputManager IM = GetInputManager();

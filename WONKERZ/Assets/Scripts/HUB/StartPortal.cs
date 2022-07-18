@@ -23,6 +23,7 @@ public class StartPortal : MonoBehaviour
             relocatePlayer();
 
             CameraManager.Instance.changeCamera(camera_type);
+            
             if (enable_tricks)
                 activateTricks();
         }
