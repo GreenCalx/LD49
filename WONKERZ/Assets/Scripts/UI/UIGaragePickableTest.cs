@@ -1,31 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class UIGaragePickableTest : UIGarageSelectable, ISaveLoad
+[RequireComponent(typeof(TextMeshProUGUI))]
+public class UIGaragePickableTest : UIGarageSelectable
 {
-    public string test_name;
-    public RecordData recordData;
     private UIGarageTestManager uigtm;
+    [Header("MANDATORY")]
+    public UIGarageTestData test_data;
+    private TextMeshProUGUI txt_elem;
     // Start is called before the first frame update
     void Start()
     {
+        if (test_data==null)
+        {
+            Debug.LogError("No TEST DATA given to a test!!");
+            return;
+        }
         uigtm = Utils.getTestManager();
+        // set text to test_data name
+        txt_elem = GetComponent<TextMeshProUGUI>();
+        txt_elem.text = test_data.test_name;
     }
     void OnDestroy()
     {
         
-    }
-    object ISaveLoad.GetData() // fill recordData
-    {
-        InputManager im = Utils.GetInputManager();
-        recordData.record = new Queue<SerializableInputData>();
-        foreach( InputManager.InputData data in im.recordedInputs)
-        {
-            recordData.record.Enqueue(data);
-        }
-
-        return recordData;
     }
     // Update is called once per frame
     void Update()
@@ -41,7 +41,7 @@ public class UIGaragePickableTest : UIGarageSelectable, ISaveLoad
             Debug.LogError("Missing UIGarage Test Manager.");
             return;
         }
-        SaveAndLoad.datas.Add(this);
+        SaveAndLoad.datas.Add(test_data);
         uigtm.launchTest(this);
     }
     public override void quit() 
@@ -52,7 +52,7 @@ public class UIGaragePickableTest : UIGarageSelectable, ISaveLoad
         } else {
             uigtm.quitTest();
         }
-        SaveAndLoad.datas.Remove(this);
+        SaveAndLoad.datas.Remove(test_data);
         base.quit(); 
     }
 

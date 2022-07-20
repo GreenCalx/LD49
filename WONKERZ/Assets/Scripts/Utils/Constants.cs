@@ -1,6 +1,10 @@
 
 public struct Constants
 {
+  // -- Paths -- 
+  public const string FD_SAVEFILES = "./savefiles/";
+  public const string unix_FD_SAVEFILES = "";
+
   // -- Generic Object names extensions --
   public const string EXT_INSTANCE = " (Instance)";
 

@@ -1,3 +1,5 @@
+using System.Security.AccessControl;
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using System.IO;
@@ -25,9 +27,26 @@ public static class SaveAndLoad
     [HideInInspector]
     public static ArrayList datas = new ArrayList();
 
+    private static void updateFileName(string iFileName)
+    {
+        // CreateDirectory by default is readonly
+        // But i can't manage to call the right using somehow...
+        // TODO : Make the savefiles folder happen
+
+        fileName = /*Constants.FD_SAVEFILES +*/ iFileName;
+        /*
+        if (!Directory.Exists(Constants.FD_SAVEFILES))
+        {
+            DirectorySecurity securityRules = new DirectorySecurity();
+            securityRules.AddAccessRule(new FileSystemAccessRule("Users", FileSystemRights.FullControl, AccessControlType.Allow));
+            Directory.CreateDirectory(Constants.FD_SAVEFILES);
+        }
+        */
+    }
+
     public static bool save(string iFileName)
     {
-        fileName = iFileName;
+        updateFileName(iFileName);
 
         if (File.Exists(fileName))
         { File.Delete(fileName); }
@@ -60,7 +79,7 @@ public static class SaveAndLoad
 
     public static bool load(string iFileName)
     {
-        fileName = iFileName;
+        updateFileName(iFileName);
 
         if (!File.Exists(fileName))
         { return false; }
@@ -93,9 +112,45 @@ public static class SaveAndLoad
         return true;
     }
 
+    // TODO : Make me Generic
     public static bool loadGarageProfile(string iFileName, UIGarageProfile target)
     {
-        fileName = iFileName;
+        updateFileName(iFileName);
+
+        if (!File.Exists(fileName))
+        { return false; }
+
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        ArrayList load_datas;
+        
+        try {
+            BinaryFormatter formatter = new BinaryFormatter();
+            load_datas = (ArrayList) formatter.Deserialize(fs);
+            formatter = null;
+        } catch ( System.Runtime.Serialization.SerializationException e){
+            Debug.LogError("Failed to deserialize profile : " + e.Message);
+            return false;
+        } finally {
+            fs.Close();
+        }
+
+        datas.Clear();
+        foreach ( object o in load_datas )
+        {
+            EntityData ed = (EntityData) o;
+            ed.OnLoad(target.gameObject);
+        }
+
+        load_datas.Clear();
+        load_datas = null;
+        fs = null;
+
+        return true;
+    }
+
+    public static bool loadGarageTest(string iFileName, UIGarageTestData target)
+    {
+        updateFileName(iFileName);
 
         if (!File.Exists(fileName))
         { return false; }
