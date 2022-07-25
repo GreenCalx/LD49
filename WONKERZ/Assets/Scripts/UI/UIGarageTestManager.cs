@@ -24,10 +24,11 @@ public class UIGarageTestManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
+            Utils.getTestManager().quitTest();
     }
 
-    public void launchTest(UIGaragePickableTest iTest)
+    public void launchTest(UIGaragePickableTest iTest) 
     {
         if (testCC!=null)
             Destroy(testCC.gameObject);
@@ -78,9 +79,16 @@ public class UIGarageTestManager : MonoBehaviour
         bool file_loaded = SaveAndLoad.loadGarageTest(activeTest.test_data.test_name, activeTest.test_data);
         if (!file_loaded)
         {
+            Debug.LogWarning("Failed to load data.");
             quitTest();
             return;
         }
+        if (!activeTest.test_data.hasData()) // empty record data
+        { 
+            Debug.LogWarning("Not data loaded from the file.");
+            quitTest();
+            return;
+        } 
 
         Queue<InputManager.InputData> d = new Queue<InputManager.InputData>();
         foreach( SerializableInputData sid in activeTest.test_data.recordData.record)

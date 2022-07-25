@@ -274,7 +274,8 @@ public class InputManager : MonoBehaviour
 
         if (CurrentMode == Mode.AUTOPILOT )
         {
-            Entry = recordedInputs.Dequeue();
+            if (recordedInputs.Count > 0 )
+                Entry = recordedInputs.Dequeue();
         } else {
             foreach (string K in InputSettings.Mapping.Keys)
             {

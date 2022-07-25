@@ -123,6 +123,13 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
 
     }
 
+    public bool hasData()
+    {
+        if (recordData.record == null)
+            return false;
+        return recordData.record.Count > 0;
+    }
+
     object ISaveLoad.GetData()
     {
         InputManager im = Utils.GetInputManager();
