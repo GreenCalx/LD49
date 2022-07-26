@@ -40,7 +40,8 @@ public class UIGarageSelectable : MonoBehaviour
     public virtual void quit() 
     { 
         is_active = false; 
-        originalCaller.handGivenBack(); 
+        if (originalCaller!=null)
+            originalCaller.handGivenBack(); 
         setOriginalCaller(null); 
     }
 }

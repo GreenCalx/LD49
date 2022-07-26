@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+
 public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageElement
 {
+    [Header("MANDATORY")]
+    public TextMeshProUGUI txt_load_status;
+    
     private int i_test;
 
     private Color enabled_test;
@@ -17,6 +21,13 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
     {
         init();
         initSelector();
+
+        txt_load_status.gameObject.SetActive(false);
+        foreach( UIGarageSelectable s in selectables )
+        {
+            UIGaragePickableTest uigpt = s.GetComponent<UIGaragePickableTest>();
+            uigpt.txt_load_status = txt_load_status;
+        }
      
         Utils.attachControllable<UIGarageTestingPanel>(this);
     }
@@ -54,8 +65,11 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
         // > will be fixed by moving onto InputManager
         if (Input.GetKey(KeyCode.Escape))
         {
-            selectables[i_test].quit();
-            test_is_running = false;
+            if (test_is_running)
+            {
+                selectables[i_test].quit();
+                test_is_running = false;
+            }
         }
     }
 
@@ -123,6 +137,7 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
     {
         base.handGivenBack();
         rootUI.inputHelper.refreshHelper(this);
+        test_is_running = false;
     }
 
     public void pick()
@@ -132,9 +147,9 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
         GameObject target = selectables[i_test].gameObject;
         TextMeshProUGUI target_txt = target.GetComponent<TextMeshProUGUI>();
         target_txt.color = selected_test;
-
-        selectables[i_test].enter(this);
+        
         test_is_running = true;
+        selectables[i_test].enter(this);
     }
 
     public override void open(bool iAnimate)
@@ -156,7 +171,8 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
         
         Utils.GetInputManager().UnsetUnique(this as IControllable);
         deselect(i_test);
-
+        txt_load_status.gameObject.SetActive(false);
+        
         rootUI.handGivenBack();
     }
 }

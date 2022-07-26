@@ -28,7 +28,7 @@ public class UIGarageTestManager : MonoBehaviour
             Utils.getTestManager().quitTest();
     }
 
-    public void launchTest(UIGaragePickableTest iTest) 
+    public bool launchTest(UIGaragePickableTest iTest) 
     {
         if (testCC!=null)
             Destroy(testCC.gameObject);
@@ -61,12 +61,12 @@ public class UIGarageTestManager : MonoBehaviour
         else if ( testMode == MODE.REPLAY )
         {
             Utils.attachUniqueControllable(cc);
-            replay();
+            if (!replay())
+            { IM.Activate(); return false; }
         }
         IM.Activate();
-    
-        // launch simulation until it reaches end position
         
+        return true;
     }
 
     public void record()
@@ -74,26 +74,28 @@ public class UIGarageTestManager : MonoBehaviour
         IM.startRecord();
     }
 
-    public void replay()
+    public bool replay()
     {
         bool file_loaded = SaveAndLoad.loadGarageTest(activeTest.test_data.test_name, activeTest.test_data);
         if (!file_loaded)
         {
             Debug.LogWarning("Failed to load data.");
             quitTest();
-            return;
+            return false;
         }
         if (!activeTest.test_data.hasData()) // empty record data
-        { 
+        {
             Debug.LogWarning("Not data loaded from the file.");
             quitTest();
-            return;
+            return false;
         } 
 
         Queue<InputManager.InputData> d = new Queue<InputManager.InputData>();
         foreach( SerializableInputData sid in activeTest.test_data.recordData.record)
         { d.Enqueue(sid); }
         IM.startAutoPilot(d);
+
+        return true;
     }
 
     public void updateLayers(GameObject iGO, int iLayer)
@@ -129,7 +131,6 @@ public class UIGarageTestManager : MonoBehaviour
             if (IM.CurrentMode == InputManager.Mode.RECORD)
             {
                 Queue<InputManager.InputData> recorded = IM.stopRecord();
-                // TODO : Serialize here
                 SaveAndLoad.save(activeTest.test_data.test_name);
             }
         } else {
