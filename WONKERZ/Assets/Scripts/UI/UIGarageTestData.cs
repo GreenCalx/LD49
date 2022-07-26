@@ -126,7 +126,19 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
     public bool hasData()
     {
         if (recordData.record == null)
-            return false;
+        { 
+            // As we are loading input ino InputManager,
+            // if we're loading data without recording it in the same session
+            // recordData will be null even though its loaded in the IM
+            // thus we refresh datas...
+            // TODO : Find a better way to broadcast data loading to every entities?
+            InputManager im = Utils.GetInputManager();
+            recordData.record = new Queue<SerializableInputData>();
+            foreach( InputManager.InputData data in im.recordedInputs)
+            {
+                recordData.record.Enqueue(data);
+            }
+        }
         return recordData.record.Count > 0;
     }
 
