@@ -28,7 +28,7 @@ public class PlayerCamera : GameCamera
         Camera cam = GetComponent<Camera>();
 
         // apply_factor : [0:~1,1] intensity of effect
-        double apply_factor = (iSpeed-50)/100;
+        double apply_factor = (iSpeed-FOVEffect_speedThreshold)/100;
         apply_factor = (apply_factor<0)? 0:apply_factor; // remove neg vals
         cam.fieldOfView = initial_FOV + ((initial_FOV*(float)apply_factor)*FOVEffect_damp);
     }
