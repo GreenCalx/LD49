@@ -1,6 +1,10 @@
 
 public struct Constants
 {
+
+  // -- Debug vars --
+  public const bool DBG_REPLAYDUMP = true;
+
   // -- Paths -- 
   public const string FD_SAVEFILES = "./savefiles/";
   public const string unix_FD_SAVEFILES = "";

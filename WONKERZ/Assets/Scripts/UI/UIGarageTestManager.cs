@@ -13,6 +13,9 @@ public class UIGarageTestManager : MonoBehaviour
 
     private UIGaragePickableTest activeTest;
 
+    [HideInInspector]
+    public float currTestDuration = 0f;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -26,6 +29,9 @@ public class UIGarageTestManager : MonoBehaviour
     {
         if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
             Utils.getTestManager().quitTest();
+        
+        if (!!activeTest)
+            currTestDuration += Time.deltaTime;
     }
 
     public bool launchTest(UIGaragePickableTest iTest) 
@@ -64,6 +70,7 @@ public class UIGarageTestManager : MonoBehaviour
             if (!replay())
             { IM.Activate(); return false; }
         }
+        currTestDuration = 0f;
         IM.Activate();
         
         return true;
@@ -114,7 +121,10 @@ public class UIGarageTestManager : MonoBehaviour
 
     public void quitTest()
     {
-        IM.stopAutoPilot();
+        if (IM.CurrentMode == InputManager.Mode.AUTOPILOT)
+        {
+            IM.stopAutoPilot();
+        }
         if (testCC!=null)
         {
             Utils.detachUniqueControllable(testCC.GetComponent<CarController>());

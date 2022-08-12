@@ -176,6 +176,9 @@ public class InputManager : MonoBehaviour
 
     public Queue<InputData> recordedInputs = new Queue<InputData>();
 
+    private bool frameLock; // for replay consistency
+    private int nLockedFrames;
+
 
     public void Activate() { _Activated = true; }
     public void DeActivate() { _Activated = false; }
@@ -244,12 +247,16 @@ public class InputManager : MonoBehaviour
     public void startRecord()
     {
         recordedInputs.Clear();
+        if (Constants.DBG_REPLAYDUMP)
+        { GarageTestDump.initStack(); }
         CurrentMode = Mode.RECORD;
     }
 
     public Queue<InputData> stopRecord()
     {
         CurrentMode = Mode.PLAYER;
+        if (Constants.DBG_REPLAYDUMP)
+        { GarageTestDump.dumpStack("last_test_record.txt"); }
         return recordedInputs;
     }
 
@@ -257,6 +264,9 @@ public class InputManager : MonoBehaviour
     {
         CurrentMode = Mode.AUTOPILOT;
         recordedInputs = iDatas;
+        nLockedFrames = 0;
+        if (Constants.DBG_REPLAYDUMP)
+        { GarageTestDump.initStack(); }
     }
     public void stopAutoPilot()
     {
@@ -264,6 +274,15 @@ public class InputManager : MonoBehaviour
         { Debug.Log("All recorded inputs have been processed.");}
         else { Debug.Log( recordedInputs.Count +" Inputs unplayed."); }
         CurrentMode = Mode.PLAYER;
+        Debug.Log("Number of frames locked by physics : " + nLockedFrames);
+        nLockedFrames = 0;
+        if (Constants.DBG_REPLAYDUMP)
+        { GarageTestDump.dumpStack("last_test_replay.txt"); }
+    }
+
+    void FixedUpdate()
+    {
+        frameLock = false; // physx tick
     }
 
     void Update()
@@ -275,7 +294,14 @@ public class InputManager : MonoBehaviour
         if (CurrentMode == Mode.AUTOPILOT )
         {
             if (recordedInputs.Count > 0 )
+            {
                 Entry = recordedInputs.Dequeue();
+                if (Constants.DBG_REPLAYDUMP)
+                { GarageTestDump.addToStack(Utils.getTestManager().currTestDuration, Entry); }
+                if (frameLock)
+                { nLockedFrames++; return; }
+                frameLock = true;
+            }
         } else {
             foreach (string K in InputSettings.Mapping.Keys)
             {
@@ -285,6 +311,8 @@ public class InputManager : MonoBehaviour
         if (CurrentMode == Mode.RECORD)
         {
             recordedInputs.Enqueue(Entry);
+            if (Constants.DBG_REPLAYDUMP)
+            { GarageTestDump.addToStack(Utils.getTestManager().currTestDuration, Entry); }
         }
 
         //_LastDpadAxisHorizontal = Entry.Inputs["DPad_Horizontal"].AxisValue;
