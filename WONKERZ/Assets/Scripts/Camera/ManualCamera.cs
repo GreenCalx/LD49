@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ManualCamera : PlayerCamera, IControllable
 {
+    [Header("ManualCamera")]
     /// TWEAKS
     [SerializeField] public Transform focus = default;
     [SerializeField, Range(1f,80f)] public float distance = 5f;

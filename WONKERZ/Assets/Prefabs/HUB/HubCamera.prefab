@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 384985052665168108}
   - component: {fileID: 8215968377043512466}
   - component: {fileID: 1185167716}
-  - component: {fileID: 3484342060929109041}
+  - component: {fileID: 9146344591090550490}
   m_Layer: 0
   m_Name: HubCamera
   m_TagString: Untagged
@@ -66,7 +66,7 @@ Camera:
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 1007
-  m_RenderingPath: -1
+  m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
@@ -74,7 +74,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
+  m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!114 &8215968377043512466
@@ -90,6 +90,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camType: 1
+  FOVEffect_damp: 0.3
+  FOVEffect_speedThreshold: 80
   playerRef: {fileID: 0}
   focus: {fileID: 0}
   distance: 60
@@ -116,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat: {fileID: 2100000, guid: 90a19b5540cd93d41bbef412020f23cf, type: 2}
---- !u!81 &3484342060929109041
+--- !u!81 &9146344591090550490
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

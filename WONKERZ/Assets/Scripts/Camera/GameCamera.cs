@@ -33,7 +33,7 @@ public class GameCamera : MonoBehaviour
         TRANSITION=5    // Camera used to transition between 2 cameras
                         // Is automatically cleaned by CameraManager on endTransition()
     }
-
+    [Header("GameCamera")]
     public CAM_TYPE camType = CAM_TYPE.UNDEFINED;
 
     protected float initial_FOV;
