@@ -6,11 +6,15 @@ public class FollowPlayer : PlayerCamera
     public float LerpMult;
     public bool Active = true;
     public CheckPointManager CPM;
+    private Camera cam;
+
     // Start is called before the first frame update
     
     void Awake()
     {
         camType = CAM_TYPE.TRACK;
+        cam = GetComponent<Camera>();
+        initial_FOV = cam.fieldOfView;
     }
 
     void Start()
@@ -22,7 +26,7 @@ public class FollowPlayer : PlayerCamera
     {
         playerRef = Utils.getPlayerRef();
         //CPM = FindObjectOfType<CheckPointManager>();
-        CPM = GameObject.Find(Constants.GO_CPManager).GetComponent<CheckPointManager>();
+        CPM = Utils.getCheckPointManager();
     }
 
     // Update is called once per frame

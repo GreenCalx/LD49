@@ -36,6 +36,8 @@ public class GameCamera : MonoBehaviour
 
     public CAM_TYPE camType = CAM_TYPE.UNDEFINED;
 
+    protected float initial_FOV;
+
     // Start is called before the first frame update
     void Start()
     {

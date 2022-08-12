@@ -928,7 +928,6 @@ public class CarController : MonoBehaviour, IControllable
 
     private void clonedForTestInit()
     {
-        Debug.Log("Alternative init for cloned car in test scenarios.");
         RB = GetComponent<Rigidbody>();
         RB.centerOfMass = CenterOfMass.transform.localPosition;
     }
@@ -936,6 +935,17 @@ public class CarController : MonoBehaviour, IControllable
     public Vector2 MouseLastPosition = Vector2.zero;
     // Update is called once per frame
     public float TorqueForce;
+
+    public float currentSpeed = 0f;
+    private float updateCurrentSpeed()
+    {
+        if (!RB)
+            return 0f;
+        var PlayerVelocity = RB.velocity;
+        var PlayerForward = RB.transform.forward;
+        currentSpeed = new Vector3(PlayerVelocity.x * PlayerForward.x, PlayerVelocity.y * PlayerForward.y, PlayerVelocity.z * PlayerForward.z).magnitude;
+        return currentSpeed;
+    }
 
     /// =============== Unity ==================
 
@@ -1003,6 +1013,18 @@ public class CarController : MonoBehaviour, IControllable
             // - up/down for aircraft, might control suspension on car
             // - right/left
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
+        }
+
+        // Speed effect on camera
+        if ( updateCurrentSpeed() > 5f )
+        {
+            // update camera FOV/DIST if a PlayerCamera
+            CameraManager CamMgr = Utils.getCameraManager();
+            if (CamMgr.active_camera is PlayerCamera )
+            {
+                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                pc.applySpeedEffect(currentSpeed);
+            }
         }
     }
 

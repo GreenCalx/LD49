@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 public class ManualCamera : PlayerCamera, IControllable
 {
-    
-    
-    
-
     /// TWEAKS
     [SerializeField] public Transform focus = default;
     [SerializeField, Range(1f,80f)] public float distance = 5f;
@@ -40,6 +36,7 @@ public class ManualCamera : PlayerCamera, IControllable
         camType = CAM_TYPE.HUB;
         cam = GetComponent<Camera>();
         Utils.attachControllable<ManualCamera>(this);
+        initial_FOV = cam.fieldOfView;
     }
     private void Start()
     {

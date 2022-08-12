@@ -57,6 +57,12 @@ public struct Utils
         GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
         return !!mgr ? mgr.GetComponent<ResolutionManager>() : null;      
     }
+    
+    public static CameraManager getCameraManager()
+    {
+        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
+        return !!mgr ? mgr.GetComponent<CameraManager>() : null;      
+    }
 
     public static UIGarageTestManager getTestManager()
     {
@@ -69,6 +75,8 @@ public struct Utils
         GameObject mgr = GameObject.Find(Constants.GO_CPManager);
         return !!mgr ? mgr.GetComponent<CheckPointManager>() : null;      
     }
+
+
 
     public static void detachControllable<T>(T toDetach)
     {
