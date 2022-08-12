@@ -102,6 +102,7 @@ public class CarController : MonoBehaviour, IControllable
     }
 
     /// ================== Variables ===================
+    public GameObject SpeedParticles;
 
     [Header("Car PhysX")]
     /// A car is for now 2 axles (4 wheels)
@@ -127,7 +128,7 @@ public class CarController : MonoBehaviour, IControllable
     public int torque_movable_keyframe; // the keyframe we want to move in garage w slider
     public AnimationCurve WEIGHT;
     public int weight_movable_keyframe;
-    
+
     [Header("Behaviours")]
     public bool isFrozen;
 
@@ -1015,7 +1016,7 @@ public class CarController : MonoBehaviour, IControllable
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
         }
 
-        // Speed effect on camera
+         // Speed effect on camera
         if ( updateCurrentSpeed() > 5f )
         {
             // update camera FOV/DIST if a PlayerCamera
@@ -1026,6 +1027,28 @@ public class CarController : MonoBehaviour, IControllable
                 pc.applySpeedEffect(currentSpeed);
             }
         }
+
+        var SpeedDirection = RB.velocity;
+        var particules = SpeedParticles.GetComponent<ParticleSystem>();
+        if (SpeedDirection.magnitude > 20) 
+        {
+            var e = particules.emission;
+            e.enabled = true;
+        }
+        else
+        {
+            var e = particules.emission;
+            e.enabled = false;
+        }
+        SpeedParticles.GetComponent<ParticleSystem>().transform.LookAt(transform.position + SpeedDirection);
+        var lifemin = 0.2f;
+        var lifemax = 0.6f;
+        var speedmin = 20f;
+        var speedmax = 100f;
+        var partmain = particules.main;
+        partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
+
+
     }
 
     void FixedUpdate()
@@ -1034,7 +1057,7 @@ public class CarController : MonoBehaviour, IControllable
         {
             return;
         }
-        
+
         UpdateSprings();
 
         ResolveAxle(ref FrontAxle);
