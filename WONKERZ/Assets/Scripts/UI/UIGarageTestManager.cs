@@ -16,12 +16,17 @@ public class UIGarageTestManager : MonoBehaviour
     [HideInInspector]
     public float currTestDuration = 0f;
 
+    // To avoid a latch where unity replays physx frames X times to catch up
+    private bool replayReadyToStartNextUpdate = false;
+    private Queue<InputManager.InputData> replayQueue;
+
     // Start is called before the first frame update
     void Awake()
     {
         testMode = MODE.REPLAY;
         IM = Utils.GetInputManager();
         activeTest = null;
+        replayQueue = new Queue<InputManager.InputData>();
     }
 
     // Update is called once per frame
@@ -29,6 +34,12 @@ public class UIGarageTestManager : MonoBehaviour
     {
         if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
             Utils.getTestManager().quitTest();
+
+        if (replayReadyToStartNextUpdate)
+        {
+            IM.startAutoPilot(replayQueue);
+            replayReadyToStartNextUpdate = false;
+        }
         
         if (!!activeTest)
             currTestDuration += Time.deltaTime;
@@ -97,10 +108,11 @@ public class UIGarageTestManager : MonoBehaviour
             return false;
         } 
 
-        Queue<InputManager.InputData> d = new Queue<InputManager.InputData>();
+        replayQueue = new Queue<InputManager.InputData>();
         foreach( SerializableInputData sid in activeTest.test_data.recordData.record)
-        { d.Enqueue(sid); }
-        IM.startAutoPilot(d);
+        { replayQueue.Enqueue(sid); }
+
+        replayReadyToStartNextUpdate = true;
 
         return true;
     }

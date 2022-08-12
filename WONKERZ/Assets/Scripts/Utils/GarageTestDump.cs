@@ -26,7 +26,7 @@ public class GarageTestDump
     }
     public static void addToStack(float currTime, IM.InputData inputData)
     {
-        string currentTime = currTime.ToString("N2");
+        string currentTime = currTime.ToString("N3");
         stack.Add(currentTime, inputData);
     }
     public static void dumpStack(string iFileName)
