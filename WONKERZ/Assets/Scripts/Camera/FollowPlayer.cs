@@ -26,7 +26,7 @@ public class FollowPlayer : PlayerCamera
     {
         playerRef = Utils.getPlayerRef();
         //CPM = FindObjectOfType<CheckPointManager>();
-        CPM = Utils.getCheckPointManager();
+        CPM = Access.CheckPointManager();
     }
 
     // Update is called once per frame

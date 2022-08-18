@@ -24,7 +24,7 @@ public class UIGarageTestManager : MonoBehaviour
     void Awake()
     {
         testMode = MODE.REPLAY;
-        IM = Utils.GetInputManager();
+        IM = Access.InputManager();
         activeTest = null;
         replayQueue = new Queue<InputManager.InputData>();
     }
@@ -33,7 +33,7 @@ public class UIGarageTestManager : MonoBehaviour
     void Update()
     {
         if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
-            Utils.getTestManager().quitTest();
+            Access.TestManager().quitTest();
 
         if (replayReadyToStartNextUpdate)
         {

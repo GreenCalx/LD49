@@ -96,7 +96,7 @@ public class RecordData : EntityData
     public override void OnLoad(GameObject gameObject) // load in inputmanager
     {
         UIGarageTestData uigpt = gameObject.GetComponent<UIGarageTestData>();
-        InputManager im = Utils.GetInputManager();
+        InputManager im = Access.InputManager();
         if (!!im && !!uigpt)
         {
             im.recordedInputs = new Queue<InputManager.InputData>();
@@ -132,7 +132,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
             // recordData will be null even though its loaded in the IM
             // thus we refresh datas...
             // TODO : Find a better way to broadcast data loading to every entities?
-            InputManager im = Utils.GetInputManager();
+            InputManager im = Access.InputManager();
             recordData.record = new Queue<SerializableInputData>();
             foreach( InputManager.InputData data in im.recordedInputs)
             {
@@ -144,7 +144,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
 
     object ISaveLoad.GetData()
     {
-        InputManager im = Utils.GetInputManager();
+        InputManager im = Access.InputManager();
         recordData.record = new Queue<SerializableInputData>();
         foreach( InputManager.InputData data in im.recordedInputs)
         {

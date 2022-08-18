@@ -24,7 +24,7 @@ public class UIGaragePickableTest : UIGarageSelectable
             Debug.LogError("No TEST DATA given to a test!!");
             return;
         }
-        uigtm = Utils.getTestManager();
+        uigtm = Access.TestManager();
         // set text to test_data name
         txt_elem = GetComponent<TextMeshProUGUI>();
         txt_elem.text = test_data.test_name;

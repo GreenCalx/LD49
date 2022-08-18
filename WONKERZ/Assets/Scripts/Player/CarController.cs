@@ -1020,7 +1020,7 @@ public class CarController : MonoBehaviour, IControllable
         if ( updateCurrentSpeed() > 5f )
         {
             // update camera FOV/DIST if a PlayerCamera
-            CameraManager CamMgr = Utils.getCameraManager();
+            CameraManager CamMgr = Access.CameraManager();
             if (CamMgr.active_camera is PlayerCamera )
             {
                 PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;

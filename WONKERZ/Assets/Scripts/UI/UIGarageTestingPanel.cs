@@ -92,9 +92,9 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
 
 
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
-        { Utils.getTestManager().testMode = UIGarageTestManager.MODE.REPLAY; pick(); }
+        { Access.TestManager().testMode = UIGarageTestManager.MODE.REPLAY; pick(); }
         if (Entry.Inputs[Constants.INPUT_RESPAWN].IsDown)
-        { Utils.getTestManager().testMode = UIGarageTestManager.MODE.RECORD; pick(); }
+        { Access.TestManager().testMode = UIGarageTestManager.MODE.RECORD; pick(); }
         if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
         {
             if (!test_is_running)
@@ -157,7 +157,7 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
         init();
         base.open(iAnimate);
 
-        Utils.GetInputManager().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable<UIGarageTestingPanel>(this);
         rootUI.inputHelper.refreshHelper(this);
 
         initSelector();
@@ -169,7 +169,7 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
     {
         base.close(iAnimate);
         
-        Utils.GetInputManager().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable<UIGarageTestingPanel>(this);
         deselect(i_test);
         txt_load_status.gameObject.SetActive(false);
         

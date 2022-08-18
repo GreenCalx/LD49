@@ -27,8 +27,6 @@ public struct Utils
     }
 }
     // TODO : Cache player reference to avoid high cost lookup
-    // TODO : Cache InputManager
-    // TODO : Cache ResolutionManager
     public static GameObject getPlayerRef()
     {
         GameObject playerRef = null;
@@ -45,42 +43,10 @@ public struct Utils
         }
         return playerRef;
     }
-
-    public static InputManager GetInputManager()
-    {
-        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
-        return !!mgr ? mgr.GetComponent<InputManager>() : null;
-    }
-
-    public static ResolutionManager getResolutionManager()
-    {
-        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
-        return !!mgr ? mgr.GetComponent<ResolutionManager>() : null;      
-    }
     
-    public static CameraManager getCameraManager()
-    {
-        GameObject mgr = GameObject.Find(Constants.GO_MANAGERS);
-        return !!mgr ? mgr.GetComponent<CameraManager>() : null;      
-    }
-
-    public static UIGarageTestManager getTestManager()
-    {
-        GameObject mgr = GameObject.Find(Constants.GO_TESTMANAGER);
-        return !!mgr ? mgr.GetComponent<UIGarageTestManager>() : null;      
-    }
-
-    public static CheckPointManager getCheckPointManager()
-    {
-        GameObject mgr = GameObject.Find(Constants.GO_CPManager);
-        return !!mgr ? mgr.GetComponent<CheckPointManager>() : null;      
-    }
-
-
-
     public static void detachControllable<T>(T toDetach)
     {
-        InputManager IM = GetInputManager();
+        InputManager IM = Access.InputManager();
         if (!!IM)
             IM.Detach(toDetach as IControllable);
         else
@@ -88,7 +54,7 @@ public struct Utils
     }
     public static void detachUniqueControllable<T>(T toDetach)
     {
-        InputManager IM = GetInputManager();
+        InputManager IM = Access.InputManager();
         if (!!IM)
             IM.UnsetUnique(toDetach as IControllable);
         else
@@ -97,7 +63,7 @@ public struct Utils
 
     public static void attachControllable<T>(T toAttach)
     {
-        InputManager IM = GetInputManager();
+        InputManager IM = Access.InputManager();
         if (!!IM)
             IM.Attach(toAttach as IControllable);
         else
@@ -106,7 +72,7 @@ public struct Utils
 
     public static void attachUniqueControllable<T>(T toAttach)
     {
-        InputManager IM = GetInputManager();
+        InputManager IM = Access.InputManager();
         if (!!IM)
             IM.SetUnique(toAttach as IControllable);
         else

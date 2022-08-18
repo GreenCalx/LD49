@@ -126,7 +126,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
         init();
         base.open(iAnimate);
 
-        Utils.GetInputManager().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable<UIGarageCosmeticsPanel>(this);
         rootUI.inputHelper.refreshHelper(this);
 
         initSelector();
@@ -137,7 +137,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel, IControllable, IUIGarageEle
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
-        Utils.GetInputManager().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable<UIGarageCosmeticsPanel>(this);
         deselect(i_cosmetics);
         rootUI.handGivenBack();
     }

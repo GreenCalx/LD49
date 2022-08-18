@@ -21,7 +21,7 @@ public class UICurveSelector : UIGarageSelectable, IControllable, IUIGarageEleme
     // Start is called before the first frame update
     void Start()
     {
-        resolutionManager = Utils.getResolutionManager();
+        resolutionManager = Access.ResolutionManager();
         Utils.attachControllable<UICurveSelector>(this);
     }
 
@@ -56,12 +56,12 @@ public class UICurveSelector : UIGarageSelectable, IControllable, IUIGarageEleme
         }
 
         if (Entry.Inputs["Cancel"].IsDown) {
-            Utils.GetInputManager().UnsetUnique(this as IControllable);
+            Access.InputManager().UnsetUnique(this as IControllable);
             quit();
             // TODO : set curve back to previous positon
         }
         else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
-            Utils.GetInputManager().UnsetUnique(this as IControllable);
+            Access.InputManager().UnsetUnique(this as IControllable);
             observer.updatePlayerCurve();
             quit();
         }

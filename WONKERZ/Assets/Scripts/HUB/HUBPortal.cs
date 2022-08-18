@@ -69,6 +69,9 @@ public class HUBPortal : MonoBehaviour
             if (!activeSceneChanged)
                 Debug.LogError("Failed to changed active scene for : " + sceneToLoad.name);
             SceneManager.UnloadSceneAsync(currentScene);
+
+            // Invalidate cache
+            Access.invalidate();
         }
     }
 

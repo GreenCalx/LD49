@@ -297,7 +297,7 @@ public class InputManager : MonoBehaviour
             {
                 Entry = recordedInputs.Dequeue();
                 if (Constants.DBG_REPLAYDUMP)
-                { GarageTestDump.addToStack(Utils.getTestManager().currTestDuration, Entry); }
+                { GarageTestDump.addToStack(Access.TestManager().currTestDuration, Entry); }
                 if (frameLock)
                 { nLockedFrames++; return; }
                 frameLock = true;
@@ -312,7 +312,7 @@ public class InputManager : MonoBehaviour
         {
             recordedInputs.Enqueue(Entry);
             if (Constants.DBG_REPLAYDUMP)
-            { GarageTestDump.addToStack(Utils.getTestManager().currTestDuration, Entry); }
+            { GarageTestDump.addToStack(Access.TestManager().currTestDuration, Entry); }
         }
 
         //_LastDpadAxisHorizontal = Entry.Inputs["DPad_Horizontal"].AxisValue;

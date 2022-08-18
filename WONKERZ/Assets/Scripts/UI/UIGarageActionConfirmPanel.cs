@@ -41,6 +41,7 @@ public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
     {
         if (rootUI==null)
         {
+            Debug.LogWarning("rootUI not given. calling GameObject.Find. Fix the prefab.");
             rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
             if (rootUI==null)
             {
@@ -130,12 +131,12 @@ public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
     public override void open(bool iAnimate)
     {
         base.open(iAnimate);
-        Utils.GetInputManager().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable<UIGarageActionConfirmPanel>(this);
     }
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
-        Utils.GetInputManager().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable<UIGarageActionConfirmPanel>(this);
         if (!!parentUI)
         { 
             UIGaragePanel uigp = parentUI.GetComponent<UIGaragePanel>();

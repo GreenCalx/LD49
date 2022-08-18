@@ -208,13 +208,13 @@ public class UIGarageProfilePanel :  UIGaragePanel, IControllable, IUIGarageElem
     public override void open(bool iAnimate)
     {
         base.open(iAnimate);
-        Utils.GetInputManager().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable<UIGarageProfilePanel>(this);
         rootUI.inputHelper.refreshHelper(this);
     }
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
-        Utils.GetInputManager().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable<UIGarageProfilePanel>(this);
         SaveAndLoad.datas.Remove(this);
         rootUI.handGivenBack();
     }

@@ -159,7 +159,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable, IUIGarageElem
         // Activate slider
         UICurveSelector uics = UIGarageCurvePicker_Inst.GetComponent<UICurveSelector>();
         uics.enter(this);
-        Utils.GetInputManager().SetUnique(uics as IControllable);
+        Utils.attachUniqueControllable<UIGarageCarStatsPanel>(this);
         rootUI.inputHelper.refreshHelper(uics);
 
         UIGarageCurvePicker_Inst.SetActive(true);
@@ -253,7 +253,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable, IUIGarageElem
         init();
         base.open(iAnimate);
 
-        Utils.GetInputManager().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable<UIGarageCarStatsPanel>(this);
         rootUI.inputHelper.refreshHelper(this);
 
         // Read curves from CarController
@@ -272,7 +272,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable, IUIGarageElem
     public override void close(bool iAnimate)
     {
         base.close(iAnimate);
-        Utils.GetInputManager().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable<UIGarageCarStatsPanel>(this);
         deselect(i_stat);
         if (!!UIGarageCurvePicker_Inst)
             Destroy(UIGarageCurvePicker_Inst);

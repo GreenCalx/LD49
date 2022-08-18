@@ -8,7 +8,7 @@ public class UIGarageTestEnd : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        uigtm = Utils.getTestManager();
+        uigtm = Access.TestManager();
     }
 
     // Update is called once per frame
