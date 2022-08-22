@@ -7,6 +7,7 @@ public class NPC_SQR : MonoBehaviour
 {
     public float walkable_radius = 20f;
     public float idle_duration = 2.0f;
+    public float destination_tolerance = 0.5f;
 
     private NavMeshAgent    navmesh;
     private NavMeshPath     path;
@@ -14,7 +15,7 @@ public class NPC_SQR : MonoBehaviour
     private bool is_running;
     private float idle_elapsed_time;
 
-    private Animator        animator;
+    public  Animator    animator;
     private const string    run_anim_parm = "RUN";
 
     // Start is called before the first frame update
@@ -26,10 +27,10 @@ public class NPC_SQR : MonoBehaviour
     public void init()
     {
         navmesh = GetComponent<NavMeshAgent>();
+        //animator = GetComponent<Animator>();
         is_running = false;
         path = new NavMeshPath();
         idle_elapsed_time = 0f;
-        animator = GetComponent<Animator>();
 
         updateTarget( RandomNavmeshLocation(walkable_radius));
     }
@@ -37,7 +38,7 @@ public class NPC_SQR : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (navmesh.remainingDistance == 0f)
+        if (navmesh.remainingDistance <= destination_tolerance)
         {
             if (is_running)
                 idle_elapsed_time = 0f;
@@ -54,8 +55,7 @@ public class NPC_SQR : MonoBehaviour
         } else {
             is_running = true;
         }
-        
-        //animator.SetBool( run_anim_parm, is_running);     
+        animator.SetBool( run_anim_parm, is_running);
     }
 
     private Vector3 RandomNavmeshLocation(float radius) {
