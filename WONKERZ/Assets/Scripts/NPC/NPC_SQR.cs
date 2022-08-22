@@ -27,12 +27,11 @@ public class NPC_SQR : MonoBehaviour
     public void init()
     {
         navmesh = GetComponent<NavMeshAgent>();
-        //animator = GetComponent<Animator>();
         is_running = false;
         path = new NavMeshPath();
         idle_elapsed_time = 0f;
 
-        updateTarget( RandomNavmeshLocation(walkable_radius));
+        navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
     }
 
     // Update is called once per frame
@@ -46,8 +45,8 @@ public class NPC_SQR : MonoBehaviour
 
             if ( idle_elapsed_time > idle_duration )
             {
-                //updateTarget( RandomNavmeshLocation(walkable_radius)); // request new target position
                 navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
+                is_running = true;
             } else {
                 idle_elapsed_time += Time.deltaTime;
             }
@@ -66,7 +65,6 @@ public class NPC_SQR : MonoBehaviour
          if (NavMesh.SamplePosition(randomDirection, out hit, radius, 1)) {
              finalPosition = hit.position;            
          }
-         Debug.Log("SQR : Next random position" + finalPosition.ToString());
          return finalPosition;
      }
 
