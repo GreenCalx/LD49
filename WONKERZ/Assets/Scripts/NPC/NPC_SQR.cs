@@ -17,6 +17,11 @@ public class NPC_SQR : MonoBehaviour
 
     public  Animator    animator;
     private const string    run_anim_parm = "RUN";
+    private const string    kick_anim_parm = "KICK";
+
+    public PlayerDetector detector;
+    public PlayerDetector attackRangeDetector;
+    public KickAction       kickAction;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +42,35 @@ public class NPC_SQR : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Player detec for chase
+        if (detector.playerInRange)
+        {
+            if (attackRangeDetector.playerInRange)
+            {
+                animator.SetBool( run_anim_parm, false);
+                animator.SetBool( kick_anim_parm, true);
+                if (!kickAction.kicking)
+                    kickAction.kick();
+            } else {
+                navmesh.SetDestination(detector.player.position);
+            }
+        }
+
+        // Dummy detection for tests
+        if (detector.dummyInRange)
+        {
+            if (attackRangeDetector.dummyInRange)
+            {
+                animator.SetBool( run_anim_parm, false);
+                animator.SetBool( kick_anim_parm, true);
+                if (!kickAction.kicking)
+                    kickAction.kick();
+            } else {
+                navmesh.SetDestination(detector.dummy.position);
+            }
+        }
+
+        // Running
         if (navmesh.remainingDistance <= destination_tolerance)
         {
             if (is_running)
