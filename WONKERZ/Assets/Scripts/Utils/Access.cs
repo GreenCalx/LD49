@@ -27,11 +27,23 @@ public class Access
         {
             GameObject mgr = null;
             if (iHolder==Constants.GO_MANAGERS)
+            {
                 mgr = !!GO_MGR ? GO_MGR : GameObject.Find(Constants.GO_MANAGERS);
+                if (!GO_MGR && !!mgr)
+                    GO_MGR = mgr;
+            }
             else if (iHolder==Constants.GO_TESTMANAGER)
+            {
                 mgr = !!GO_TSTMGR ? GO_TSTMGR : GameObject.Find(Constants.GO_TESTMANAGER);
+                if (!GO_TSTMGR && !!mgr)
+                    GO_TSTMGR = mgr;
+            }   
             else if (iHolder==Constants.GO_CPManager)
+            {
                 mgr = !!GO_CPMGR ? GO_CPMGR : GameObject.Find(Constants.GO_CPManager);
+                if (!GO_CPMGR && !!mgr)
+                    GO_CPMGR = mgr;
+            }
             else
             { 
                 Debug.LogWarning("Trying to access : " + iHolder + " as holding object, but is absent from cache.");

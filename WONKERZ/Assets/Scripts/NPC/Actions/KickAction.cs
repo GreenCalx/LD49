@@ -9,6 +9,7 @@ public class KickAction : MonoBehaviour
 
     private BoxCollider kickCollider;
     [Header("Tweaks")]
+    public ForceMode forceMode;
     public float kickStrength = 5.0f;
     public float Y_Slope;
     public float massMultiplier = 10f;
@@ -75,14 +76,14 @@ public class KickAction : MonoBehaviour
         {
             Rigidbody rb = cc.GetComponent<Rigidbody>();
             float kickForce = computeKickStrength(rb.mass);
-            rb.AddForce( kickDirection * kickForce, ForceMode.Force);
+            rb.AddForce( kickDirection * kickForce, forceMode);
         }
         Dummy d = collision.gameObject.GetComponent<Dummy>();
         if (d!=null)
         {
             Rigidbody rb = d.GetComponent<Rigidbody>();
             float kickForce = computeKickStrength(rb.mass);
-            rb.AddForce( kickDirection * kickForce, ForceMode.Impulse);
+            rb.AddForce( kickDirection * kickForce, forceMode);
         }
     }
 }

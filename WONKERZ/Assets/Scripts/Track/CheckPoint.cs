@@ -24,7 +24,6 @@ public class CheckPoint : MonoBehaviour
     private float CurrentAnimationLength;
     private bool IsAnimating = false;
 
-    private bool hasManager = false;
     public Transform respawn_location;
     [HideInInspector]
     public CheckPointManager cpm;
@@ -33,7 +32,7 @@ public class CheckPoint : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        hasManager = subscribeToManager();
+        //hasManager = subscribeToManager();
         activation_pff.gameObject.SetActive(false);
         base_pff.gameObject.SetActive(true);
     }
@@ -42,9 +41,6 @@ public class CheckPoint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!hasManager)
-            hasManager = subscribeToManager();
-
         if (IsAnimating)
         {
             CurrentAnimationLength += Time.deltaTime;
@@ -55,16 +51,10 @@ public class CheckPoint : MonoBehaviour
 
     }
 
-    public bool subscribeToManager()
+    public bool subscribeToManager(CheckPointManager iCPM)
     {
-        GameObject manager = GameObject.Find(Constants.GO_CPManager);
-        cpm = manager.GetComponent<CheckPointManager>();
-        if (!!cpm)
-        {
-            cpm.subscribe(this.gameObject);
-            return true;
-        }
-        return false;
+        cpm = iCPM;
+        return iCPM.subscribe(this.gameObject);
     }
 
     void StartCameraAnimation()
@@ -74,8 +64,6 @@ public class CheckPoint : MonoBehaviour
             CurrentAnimationLength = 0;
             CamDescStart.position = Cam.transform.position;
             IsAnimating = true;
-
-            //Cam.GetComponent<FollowPlayer>().Active = CamDescEnd.mode == CameraMode.Fixed;
         }
     }
 
