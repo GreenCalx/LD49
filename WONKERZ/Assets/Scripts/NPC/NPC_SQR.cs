@@ -49,10 +49,10 @@ public class NPC_SQR : MonoBehaviour
             {
                 animator.SetBool( run_anim_parm, false);
                 animator.SetBool( kick_anim_parm, true);
-                if (!kickAction.kicking)
-                    kickAction.kick();
+
             } else {
                 navmesh.SetDestination(detector.player.position);
+                animator.SetBool( kick_anim_parm, false);
             }
         }
 
@@ -63,10 +63,10 @@ public class NPC_SQR : MonoBehaviour
             {
                 animator.SetBool( run_anim_parm, false);
                 animator.SetBool( kick_anim_parm, true);
-                if (!kickAction.kicking)
-                    kickAction.kick();
+            
             } else {
                 navmesh.SetDestination(detector.dummy.position);
+                animator.SetBool( kick_anim_parm, false);
             }
         }
 
