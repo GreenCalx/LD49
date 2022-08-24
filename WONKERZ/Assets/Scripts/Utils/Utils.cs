@@ -5,43 +5,33 @@ using UnityEngine;
 public struct Utils
 {
     
-    public struct Math{
+    public struct Math
+    {
         
-    public static (float, bool) ValidateFloat(float f) {
-        bool IsWrongValue = float.IsNaN(f) || float.IsInfinity(f) || Mathf.Abs(f) > 10000;
-        return (IsWrongValue ? 0 : f, !IsWrongValue);
-    }
-    /// This function return True if the Vector is good
-    /// else it returns false, meaning at least one value was corrected.
-    public static (Vector3, bool) ValidateForce(Vector3 F) {
-        bool HasWrongNumber = true;
-        bool IsGoodValue = false;
-        (F.x, IsGoodValue) = ValidateFloat(F.x);
-        HasWrongNumber &= IsGoodValue;
-        (F.y, IsGoodValue) = ValidateFloat(F.y);
-        HasWrongNumber &= IsGoodValue;
-        (F.z, IsGoodValue) = ValidateFloat(F.z);
-        HasWrongNumber &= IsGoodValue;
+        public static (float, bool) ValidateFloat(float f) {
+            bool IsWrongValue = float.IsNaN(f) || float.IsInfinity(f) || Mathf.Abs(f) > 10000;
+            return (IsWrongValue ? 0 : f, !IsWrongValue);
+        }
+        /// This function return True if the Vector is good
+        /// else it returns false, meaning at least one value was corrected.
+        public static (Vector3, bool) ValidateForce(Vector3 F) 
+        {
+            bool HasWrongNumber = true;
+            bool IsGoodValue = false;
+            (F.x, IsGoodValue) = ValidateFloat(F.x);
+            HasWrongNumber &= IsGoodValue;
+            (F.y, IsGoodValue) = ValidateFloat(F.y);
+            HasWrongNumber &= IsGoodValue;
+            (F.z, IsGoodValue) = ValidateFloat(F.z);
+            HasWrongNumber &= IsGoodValue;
         
-        return (F, HasWrongNumber);
+            return (F, HasWrongNumber);
+        }
     }
-}
-    // TODO : Cache player reference to avoid high cost lookup
+    
     public static GameObject getPlayerRef()
     {
-        GameObject playerRef = null;
-        GameObject playerRoot = GameObject.Find( Constants.GO_PLAYER );
-        if (!!playerRoot)
-        {
-            playerRef = playerRoot.GetComponentInChildren<CarController>().gameObject;
-            if ( playerRef == null )
-            {
-                exitOnError("Failed to find a reference to the Player in Utils.getPlayer");
-            }
-        } else {
-            exitOnError("Failed to find a reference to the PlayerRoot in Utils.getPlayer.");
-        }
-        return playerRef;
+        return Access.Player().gameObject;
     }
     
     public static void detachControllable<T>(T toDetach)
