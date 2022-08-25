@@ -30,7 +30,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel, IControllable, IUIGarageElem
     {
         if (rootUI==null)
         {
-            rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            rootUI = Access.UIGarage();
             if (rootUI==null)
             {
                 Debug.LogError("rootUI is null in UIGarageCarStatsPanel!");

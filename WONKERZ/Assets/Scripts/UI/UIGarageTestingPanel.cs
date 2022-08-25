@@ -36,7 +36,7 @@ public class UIGarageTestingPanel : UIGaragePanel, IControllable, IUIGarageEleme
     {
         if (rootUI==null)
         {
-            rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            rootUI = Access.UIGarage();
             if (rootUI==null)
             {
                 Debug.LogError("rootUI is null in UIGarageCosmeticsPanel!");

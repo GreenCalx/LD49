@@ -106,7 +106,7 @@ public class UIGarageColors : UIGarageSelectable, IControllable, IUIGarageElemen
     {
         base.enter(uigs);
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(this as IControllable);
+        Utils.attachUniqueControllable(this);
 
         colors = new List<UIGaragePickableColor>(GetComponentsInChildren<UIGaragePickableColor>());
         UIGarageColorPicker_Inst = Instantiate(UIGarageColorPicker_Ref, this.transform);
@@ -118,7 +118,7 @@ public class UIGarageColors : UIGarageSelectable, IControllable, IUIGarageElemen
 
     public override void quit()
     {
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(this as IControllable);
+        Utils.detachUniqueControllable(this);
         Destroy(UIGarageColorPicker_Inst);
 
         base.quit();

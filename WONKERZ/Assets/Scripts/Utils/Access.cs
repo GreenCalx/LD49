@@ -9,9 +9,10 @@ public class Access
         private GameObject GO_MGR;
         private GameObject GO_TSTMGR;
         private GameObject GO_CPMGR;
+        private GameObject GO_SOUNDMANAGER;
 
         private GameObject GO_PLAYER;
-
+        private GameObject GO_UIGARAGE;
 /* IF WE WANT TO ECO GetComponent<> call..
         public InputManager         IM;
         public ResolutionManager    RM;
@@ -51,6 +52,12 @@ public class Access
             else if (iHolder==Constants.GO_PLAYER)
             {
                 handler = checkCacheObject(iHolder, ref GO_PLAYER);
+            } else if (iHolder==Constants.GO_UIGARAGE)
+            {
+                handler = checkCacheObject(iHolder, ref GO_UIGARAGE);
+            } else if (iHolder==Constants.GO_SOUNDMANAGER)
+            {
+                handler = checkCacheObject(iHolder, ref GO_SOUNDMANAGER);
             }
             else
             { 
@@ -69,6 +76,8 @@ public class Access
             GO_TSTMGR = null;
             GO_CPMGR = null;
             GO_PLAYER = null;
+            GO_UIGARAGE = null;
+            GO_SOUNDMANAGER = null;
         }
     }
 
@@ -94,6 +103,11 @@ public class Access
         return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);    
     }
 
+    public static PlayerColorManager PlayerColorManager()
+    {
+        return cache.getObject<PlayerColorManager>(Constants.GO_MANAGERS, false);    
+    }
+
     public static UIGarageTestManager TestManager()
     {
         return cache.getObject<UIGarageTestManager>(Constants.GO_TESTMANAGER, false);         
@@ -107,5 +121,15 @@ public class Access
     public static CarController Player()
     {
         return cache.getObject<CarController>(Constants.GO_PLAYER, true);
+    }
+
+    public static UIGarage UIGarage()
+    {
+        return cache.getObject<UIGarage>(Constants.GO_UIGARAGE, false);
+    }
+
+    public static SoundManager SoundManager()
+    {
+        return cache.getObject<SoundManager>(Constants.GO_SOUNDMANAGER, false);
     }
 }

@@ -42,7 +42,7 @@ public class GarageEntry : MonoBehaviour,IControllable
             playerRef = iCol.gameObject;
             playerInGarage = true;
 
-            var SndMgr = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+            var SndMgr = Access.SoundManager();
             SndMgr.SwitchClip("garage");
         }
     }
@@ -58,7 +58,7 @@ public class GarageEntry : MonoBehaviour,IControllable
             closeGarage();
 
 
-            var SndMgr = GameObject.Find("SoundManager").GetComponent<SoundManager>();
+            var SndMgr = Access.SoundManager();
             SndMgr.SwitchClip("theme");
         }
     }
@@ -75,7 +75,7 @@ public class GarageEntry : MonoBehaviour,IControllable
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         garageOpened = true;
 
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().SetUnique(uig as IControllable);
+        Utils.attachUniqueControllable<UIGarage>(uig);
         //Utils.detachControllable<CarController>(playerCC);
         playerCC.isFrozen = true;
     }
@@ -85,8 +85,7 @@ public class GarageEntry : MonoBehaviour,IControllable
         if (!garageOpened)
             return;
 
-
-        GameObject.Find(Constants.GO_MANAGERS).GetComponent<InputManager>().UnsetUnique(garageUI.GetComponent<UIGarage>() as IControllable);
+        Utils.detachUniqueControllable<UIGarage>(Access.UIGarage());
 
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);

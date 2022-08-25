@@ -41,8 +41,7 @@ public class UIGarageActionConfirmPanel : UIGaragePanel, IControllable
     {
         if (rootUI==null)
         {
-            Debug.LogWarning("rootUI not given. calling GameObject.Find. Fix the prefab.");
-            rootUI = GameObject.Find(Constants.GO_UIGARAGE).GetComponent<UIGarage>();
+            rootUI = Access.UIGarage();
             if (rootUI==null)
             {
                 Debug.LogError("ParentUI is null in UIGarageCarStatsPanel!");

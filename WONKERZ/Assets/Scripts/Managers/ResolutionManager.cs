@@ -11,7 +11,7 @@ public class ResolutionManager : MonoBehaviour
     private static ResolutionManager inst;
     public static ResolutionManager Instance
     {
-        get { return inst ?? (inst = GameObject.Find(Constants.GO_MANAGERS).GetComponent<ResolutionManager>()); }
+        get { return inst ?? (inst = Access.ResolutionManager()); }
         private set { inst = value; }
     }
     // Start is called before the first frame update

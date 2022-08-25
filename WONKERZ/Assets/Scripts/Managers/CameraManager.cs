@@ -25,7 +25,7 @@ public class CameraManager : MonoBehaviour
 
     public static CameraManager Instance
     { 
-        get { return inst ?? (inst = GameObject.Find(Constants.GO_MANAGERS).GetComponent<CameraManager>()); }
+        get { return inst ?? (inst = Access.CameraManager()); }
         private set { inst = value; }
     }
 
