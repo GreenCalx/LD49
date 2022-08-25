@@ -40,6 +40,7 @@ public struct Constants
     public const string INPUT_CANCEL = "Cancel";
     public const string INPUT_UIUPDOWN = "UIUpDown";
     public const string INPUT_RESPAWN = "Respawn";
+    public const string INPUT_START = "Start";
 
     // -- Resources paths --
     public const string RES_ICON_BLANK = "Icons/UI_InputBlank";

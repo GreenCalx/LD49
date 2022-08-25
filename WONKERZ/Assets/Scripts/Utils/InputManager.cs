@@ -58,6 +58,7 @@ static public class InputSettings
         {"CameraY" , new InputMappingData(true, true, new List<int>{ (int) (InverseRSMapping ? Joystick.RightV : Joystick.RightH) }, new List<int>{-1})},
         {"Grapin", new InputMappingData(false, false, new List<int>{ (int) Joystick.X, (int)KeyCode.F }, new List<int>{-1,-1} )},
         {"Cancel", new InputMappingData(false, false, new List<int>{ (int) Joystick.B, (int)KeyCode.Escape }, new List<int>{-1,-1} )},
+        {"Start", new InputMappingData(false, false, new List<int>{ (int) Joystick.Start, (int)KeyCode.Backspace }, new List<int>{-1,-1} )},
     };
 }
 
