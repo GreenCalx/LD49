@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 
+// Known issue :
+//  * If a camera is active in a new scene, it can take the lead over the active_camera
+//  ** FIX : Disable all cameras by default
 public class CameraManager : MonoBehaviour
 {
     public GameObject transitionCameraRef;

@@ -21,8 +21,7 @@ public class StartPortal : MonoBehaviour
         if (!!player)
         {
             relocatePlayer();
-
-            CameraManager.Instance.changeCamera(camera_type);
+            Access.CameraManager().changeCamera(camera_type);
             
             if (enable_tricks)
                 activateTricks();
