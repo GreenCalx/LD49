@@ -38,7 +38,7 @@ public class FollowPlayer : PlayerCamera
             init();
 
 
-        Distance = CPM.last_checkpoint.GetComponent<CheckPoint>().CamDescEnd.position;
+        Distance = CPM.last_camerapoint.CamDescEnd.position;
 
         var FinalPosition = playerRef.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
         var FinalPositionDirection = playerRef.transform.position - FinalPosition;

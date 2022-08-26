@@ -1,23 +1,8 @@
 using UnityEngine;
 
-public class CheckPoint : MonoBehaviour
+public class CheckPoint : AbstractCameraPoint
 {
-    public enum CameraMode
-    {
-        Follow,
-        Fixed,
-    };
-    [System.Serializable]
-    public class CameraDescriptor
-    {
-        public Vector3 position;
-        public CameraMode mode;
-        public Quaternion rotation;
-
-    };
-
-    public CameraDescriptor CamDescEnd;
-    public CameraDescriptor CamDescStart;
+    [Header("Tweaks")]
     public Camera Cam;
 
     public float CameraAnimationLength;
@@ -76,6 +61,7 @@ public class CheckPoint : MonoBehaviour
             activation_pff.gameObject.SetActive(true);
             base_pff.gameObject.SetActive(false);
 
+            Cam = Access.CameraManager().active_camera.GetComponent<Camera>();
             StartCameraAnimation();
         }
     }

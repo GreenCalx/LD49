@@ -14,6 +14,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
     [HideInInspector]
     public GameObject last_checkpoint;
 
+    [HideInInspector]
+    public AbstractCameraPoint last_camerapoint;
 
     void Start()
     {
@@ -28,6 +30,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
         refreshCameras();
         last_checkpoint = race_start;
+        last_camerapoint = race_start.GetComponent<CheckPoint>();
 
         Utils.attachControllable<CheckPointManager>(this);
     }
@@ -98,6 +101,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 return;
 
             last_checkpoint = iGO;
+            last_camerapoint = iGO.GetComponent<CheckPoint>();
 
         }
         else
@@ -107,6 +111,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public void loadLastCP()
     {
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
+        last_camerapoint = as_cp;
         if (as_cp == null)
             Debug.Log("not a cp");
 

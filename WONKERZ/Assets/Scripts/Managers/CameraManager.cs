@@ -256,4 +256,9 @@ public class CameraManager : MonoBehaviour
         }
         return false;
     }
+
+    public void moveActiveCameraTo(Vector3 iTransform)
+    {
+        
+    }
 }
