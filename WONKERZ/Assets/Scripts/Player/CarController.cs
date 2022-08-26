@@ -649,7 +649,8 @@ public class CarController : MonoBehaviour, IControllable
         Debug.DrawLine(GetEnd(S) - S.Wheel.Radius * transform.forward, GetEnd(S) - S.Wheel.Radius * transform.forward + Result.PenetrationCorrectionDistance * Result.PenetrationCorrectionDirection);
         return Result;
     }
-
+    [Range(0f, 1f)]
+    public float Bounciness = 1;
     Vector3 ComputeSuspensionForce(ref Suspension S, WheelHitInfo HitInfo)
     {
         var SpringAnchor = S.Spring.Anchor.transform.position;
@@ -694,6 +695,8 @@ public class CarController : MonoBehaviour, IControllable
                     // NOTE toffa : in this instance we reflect the force as a hard hit on collider
                     //var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
                     var FCollider = Vector3.Dot(SpringVelocity.normalized, HitInfo.Normal) < 0 ? Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, HitInfo.Normal) : SpringVelocity;
+                    // adding multiplier to choose bounciness
+                    FCollider *= (Bounciness);
                     // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
                     // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
                     // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.

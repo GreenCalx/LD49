@@ -1,10 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UIGarageTestManager : MonoBehaviour
 {
-    public enum MODE { RECORD = 0, REPLAY = 1};
+    public enum MODE { RECORD = 0, REPLAY = 1 };
     public MODE testMode;
 
     public GameObject startTest;
@@ -12,6 +11,7 @@ public class UIGarageTestManager : MonoBehaviour
     private InputManager IM;
 
     private UIGaragePickableTest activeTest;
+    private bool isActiveTestReady = false;
 
     [HideInInspector]
     public float currTestDuration = 0f;
@@ -19,6 +19,7 @@ public class UIGarageTestManager : MonoBehaviour
     // To avoid a latch where unity replays physx frames X times to catch up
     private bool replayReadyToStartNextUpdate = false;
     private Queue<InputManager.InputData> replayQueue;
+    private int frametowait = 0;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,33 +30,52 @@ public class UIGarageTestManager : MonoBehaviour
         replayQueue = new Queue<InputManager.InputData>();
     }
 
+    void FixedUpdate()
+    {
+        if (frametowait >= 0)
+        {
+            --frametowait;
+        }
+
+        if (frametowait == 0)
+        {
+            isActiveTestReady = initTest();
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
-            Access.TestManager().quitTest();
-
-        if (replayReadyToStartNextUpdate)
+        if (!!activeTest && isActiveTestReady)
         {
-            IM.startAutoPilot(replayQueue);
-            replayReadyToStartNextUpdate = false;
-        }
-        
-        if (!!activeTest)
+            if ((IM.recordedInputs.Count <= 0) && (IM.CurrentMode == InputManager.Mode.AUTOPILOT))
+                Access.TestManager().quitTest();
+
             currTestDuration += Time.deltaTime;
+        }
     }
 
-    public bool launchTest(UIGaragePickableTest iTest) 
+    private bool prepareTest()
     {
-        if (testCC!=null)
-            Destroy(testCC.gameObject);
+        if (testMode == MODE.RECORD)
+        {
+            // record();
+            frametowait = 60;
+        }
+        else if (testMode == MODE.REPLAY)
+        {
+            return replay();
+        }
 
-        activeTest = iTest;
+        return true;
 
+    }
+
+    private bool initTest()
+    {
         // clone player to start test position
         testCC = Instantiate(Utils.getPlayerRef(), transform);
         UIGarageTestStart uigts = startTest.GetComponent<UIGarageTestStart>();
-        
+
         CarController cc = testCC.GetComponent<CarController>();
         cc.isFrozen = false;
 
@@ -67,24 +87,33 @@ public class UIGarageTestManager : MonoBehaviour
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
         }
-        updateLayers( testCC, Utils.getLayerIndex(Constants.LYR_UIMESH));
+        updateLayers(testCC, Utils.getLayerIndex(Constants.LYR_UIMESH));
 
         IM.DeActivate();
         if (testMode == MODE.RECORD)
         {
             Utils.attachUniqueControllable(cc);
             record();
-        } 
-        else if ( testMode == MODE.REPLAY )
+        }
+        else if (testMode == MODE.REPLAY)
         {
             Utils.attachUniqueControllable(cc);
-            if (!replay())
-            { IM.Activate(); return false; }
+            IM.startAutoPilot(replayQueue);
         }
         currTestDuration = 0f;
         IM.Activate();
-        
+
         return true;
+    }
+
+    public bool launchTest(UIGaragePickableTest iTest)
+    {
+        if (testCC != null)
+            Destroy(testCC.gameObject);
+
+        activeTest = iTest;
+
+        return prepareTest();
     }
 
     public void record()
@@ -106,26 +135,26 @@ public class UIGarageTestManager : MonoBehaviour
             Debug.LogWarning("Not data loaded from the file.");
             quitTest();
             return false;
-        } 
+        }
 
         replayQueue = new Queue<InputManager.InputData>();
-        foreach( SerializableInputData sid in activeTest.test_data.recordData.record)
+        foreach (SerializableInputData sid in activeTest.test_data.recordData.record)
         { replayQueue.Enqueue(sid); }
 
-        replayReadyToStartNextUpdate = true;
+        frametowait = 60;
 
         return true;
     }
 
     public void updateLayers(GameObject iGO, int iLayer)
     {
-        if (iGO==null)
+        if (iGO == null)
             return;
 
         iGO.layer = iLayer;
-        foreach( Transform child in iGO.transform )
+        foreach (Transform child in iGO.transform)
         {
-            if (null==child)
+            if (null == child)
                 continue;
             updateLayers(child.gameObject, iLayer);
         }
@@ -137,7 +166,7 @@ public class UIGarageTestManager : MonoBehaviour
         {
             IM.stopAutoPilot();
         }
-        if (testCC!=null)
+        if (testCC != null)
         {
             Utils.detachUniqueControllable(testCC.GetComponent<CarController>());
             Destroy(testCC.gameObject);
@@ -145,7 +174,7 @@ public class UIGarageTestManager : MonoBehaviour
         activeTest = null;
     }
 
-    public void endTest( bool iSuccess)
+    public void endTest(bool iSuccess)
     {
         if (iSuccess)
         {
@@ -155,7 +184,9 @@ public class UIGarageTestManager : MonoBehaviour
                 Queue<InputManager.InputData> recorded = IM.stopRecord();
                 SaveAndLoad.save(activeTest.test_data.test_name);
             }
-        } else {
+        }
+        else
+        {
             Debug.Log("TEST KO!");
         }
         quitTest();
