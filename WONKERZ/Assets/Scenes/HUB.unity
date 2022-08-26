@@ -23753,7 +23753,7 @@ PrefabInstance:
       objectReference: {fileID: 5074348953397788722}
     - target: {fileID: 3812381100351190615, guid: ee63046c778f6084ea060e8fdfc168b3, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4104595774437131136, guid: ee63046c778f6084ea060e8fdfc168b3, type: 3}
       propertyPath: m_RootOrder
@@ -23867,6 +23867,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 211535281}
     m_Modifications:
+    - target: {fileID: 1328566403688145113, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
+    - target: {fileID: 1862358102752931894, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     - target: {fileID: 2370845261705078149, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -23891,6 +23899,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3613061436462549220, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3683300931326619605, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3683300931326619605, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
+      propertyPath: m_FontData.m_Font
+      value: 
+      objectReference: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75, type: 3}
     - target: {fileID: 5345911040726819271, guid: 88cd9852e334f4b4fbaa7a19c8a3aea2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -24603,7 +24623,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5074348953397788722}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -27, y: 408.98, z: -843}
+  m_LocalPosition: {x: -27, y: 852, z: -843}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2096190035}
@@ -24782,7 +24802,7 @@ MonoBehaviour:
     Spring:
       RestLength: 3
       MaxLength: 6
-      MinLength: 2
+      MinLength: 0
       Frequency: 0.159
       Stiffness: 0.1
       DampRatio: 0.1
@@ -24855,8 +24875,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.0129776
-      value: 0.40126038
+      time: -0.004638672
+      value: 0.08267212
       inSlope: 0.07862756
       outSlope: 0.07862756
       tangentMode: 0
@@ -24864,8 +24884,26 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.3975679
     - serializedVersion: 3
-      time: 0.66390955
-      value: 0.42195874
+      time: 0.63595635
+      value: 0.27093834
+      inSlope: 0.44438842
+      outSlope: 0.44438842
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4631965
+      outWeight: 0.28109524
+    - serializedVersion: 3
+      time: 0.8075422
+      value: 0.7609382
+      inSlope: 0.018518232
+      outSlope: 0.018518232
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.2824311
+    - serializedVersion: 3
+      time: 0.93133295
+      value: 0.76168454
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -24873,14 +24911,23 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 5.1335897
-      value: 0.23198128
-      inSlope: 0
-      outSlope: 0
+      time: 0.99696803
+      value: 0.2070546
+      inSlope: -2.6805942
+      outSlope: -2.6805942
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -24889,22 +24936,31 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0047912598
-      value: 0.51071167
-      inSlope: 0.19450742
-      outSlope: 0.19450742
-      tangentMode: 34
+      time: -0.00464079
+      value: 0.50614315
+      inSlope: -0.090731554
+      outSlope: -0.090731554
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0.33333334
+      outWeight: 0.57141167
     - serializedVersion: 3
-      time: 5.001649
-      value: 1.4826375
-      inSlope: 0.19450742
-      outSlope: 0.19450742
-      tangentMode: 34
+      time: 0.6642167
+      value: 0.22366206
+      inSlope: -0.060991965
+      outSlope: -0.060991965
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
+      outWeight: 0.27398235
+    - serializedVersion: 3
+      time: 1
+      value: 0.2
+      inSlope: -0.058352612
+      outSlope: -0.058352612
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.12598525
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -24912,10 +24968,10 @@ MonoBehaviour:
   weight_movable_keyframe: 0
   isFrozen: 0
   SpringStiffness: 0.01
-  SpringDamper: 0.005
+  SpringDamper: 0.001
   SpringMax: 6
   SpringMultiplier: 1000
-  SpringMin: 2
+  SpringMin: 0
   SpringRestPercent: 0.5
   SuspensionLock: 0
   FixedUpdateDone: 0

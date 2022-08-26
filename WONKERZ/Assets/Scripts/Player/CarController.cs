@@ -645,7 +645,6 @@ public class CarController : MonoBehaviour, IControllable
             Result.GroundI = new Ground.GroundInfos();
         }
 
-
         Debug.DrawLine(GetEnd(S) - S.Wheel.Radius * transform.forward, GetEnd(S) - S.Wheel.Radius * transform.forward + Result.PenetrationCorrectionDistance * Result.PenetrationCorrectionDirection);
         return Result;
     }
@@ -690,18 +689,18 @@ public class CarController : MonoBehaviour, IControllable
 
                 // If suspension is fully compressed then we are hard hitting the ground
                 var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
-                if (IsSpringFullyCompressed)
-                {
-                    // NOTE toffa : in this instance we reflect the force as a hard hit on collider
-                    //var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
-                    var FCollider = Vector3.Dot(SpringVelocity.normalized, HitInfo.Normal) < 0 ? Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, HitInfo.Normal) : SpringVelocity;
-                    // adding multiplier to choose bounciness
-                    FCollider *= (Bounciness);
-                    // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
-                    // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
-                    // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
-                    StepForce += (FCollider - SpringVelocity);
-                }
+                // if (IsSpringFullyCompressed)
+                // {
+                //     // NOTE toffa : in this instance we reflect the force as a hard hit on collider
+                //     //var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
+                //     var FCollider = Vector3.Dot(SpringVelocity.normalized, HitInfo.Normal) < 0 ? Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, HitInfo.Normal) : SpringVelocity;
+                //     // adding multiplier to choose bounciness
+                //     FCollider *= (Bounciness);
+                //     // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
+                //     // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
+                //     // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
+                //     StepForce += (FCollider - SpringVelocity);
+                // }
             }
 
             TotalProcessedTime += SubStepDeltaTime;
@@ -732,12 +731,21 @@ public class CarController : MonoBehaviour, IControllable
         var f = Vector3.Cross(transform.up, W.Direction);
         var WheelVelocityY = Vector3.Project(WheelVelocity, f);
 
-        var T = -WheelVelocityX * HitInfo.GroundI.Friction.x;
-        T -= WheelVelocityY * HitInfo.GroundI.Friction.y;
-        T += MotorVelocity;
-        T *= Mathf.Pow(Mathf.Clamp01(Vector3.Dot(HitInfo.Normal, Vector3.up)), 3);
+        var GripY = WEIGHT.Evaluate(WheelVelocity.magnitude / WheelVelocityY.magnitude);
+        var Speed = Vector3.Dot(transform.forward, RB.velocity);
+        var MaxSpeed = 100f;
+        var RollingResistance = .2f;
+        var GripX = TORQUE.Evaluate(Mathf.Clamp01(Mathf.Abs(Speed) / MaxSpeed));
+        var Force = -WheelVelocityY * GripY;
+        Force += WheelForward * GripX * CarMotor.CurrentRPM;
+        Force -= Speed > 1 ? WheelForward * RollingResistance * Mathf.Clamp01(1f - CarMotor.CurrentRPM) : Vector3.zero;
 
-        var ValidationValue = Utils.Math.ValidateForce(T);
+        // var T = -WheelVelocityX * HitInfo.GroundI.Friction.x;
+        // T -= WheelVelocityY * HitInfo.GroundI.Friction.y;
+        // T += MotorVelocity;
+        // T *= Mathf.Pow(Mathf.Clamp01(Vector3.Dot(HitInfo.Normal, Vector3.up)), 3);
+
+        var ValidationValue = Utils.Math.ValidateForce(Force);
         if (!ValidationValue.Item2)
         {
             Debug.Log("FAILED TO VALIDATE FORCE");
@@ -1019,12 +1027,12 @@ public class CarController : MonoBehaviour, IControllable
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
         }
 
-         // Speed effect on camera
-        if ( updateCurrentSpeed() > 5f )
+        // Speed effect on camera
+        if (updateCurrentSpeed() > 5f)
         {
             // update camera FOV/DIST if a PlayerCamera
             CameraManager CamMgr = Access.CameraManager();
-            if (CamMgr.active_camera is PlayerCamera )
+            if (CamMgr.active_camera is PlayerCamera)
             {
                 PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
                 pc.applySpeedEffect(currentSpeed);
@@ -1033,7 +1041,7 @@ public class CarController : MonoBehaviour, IControllable
 
         var SpeedDirection = RB.velocity;
         var particules = SpeedParticles.GetComponent<ParticleSystem>();
-        if (SpeedDirection.magnitude > 20) 
+        if (SpeedDirection.magnitude > 20)
         {
             var e = particules.emission;
             e.enabled = true;
@@ -1096,20 +1104,21 @@ public class CarController : MonoBehaviour, IControllable
     {
         var Turn = Entry.Inputs["Turn"].AxisValue;
         var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
-        CarMotor.CurrentRPM = 0;
+        // CarMotor.CurrentRPM = 0;
+        CarMotor.CurrentRPM = Acceleration;
 
         // Accelration
         if (!IsAircraft)
         {
-            if (Acceleration != 0)
-            {
-                CurrentAccelerationTime += Time.deltaTime;
-                CarMotor.CurrentRPM = Acceleration * TORQUE.Evaluate(CurrentAccelerationTime);
-            }
-            else
-            {
-                CurrentAccelerationTime = 0;
-            }
+            // if (Acceleration != 0)
+            // {
+            //     CurrentAccelerationTime += Time.deltaTime;
+            //     CarMotor.CurrentRPM = Acceleration * TORQUE.Evaluate(CurrentAccelerationTime);
+            // }
+            // else
+            // {
+            //     CurrentAccelerationTime = 0;
+            // }
 
             FrontAxle.Right.Wheel.Direction = transform.forward;
             FrontAxle.Left.Wheel.Direction = transform.forward;
