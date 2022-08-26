@@ -65,7 +65,7 @@ public class Grass : MonoBehaviour
         for(int i=0; i < vertices.Length; i++) {
             Matrix4x4 t = (Island != null ? Island.transform.localToWorldMatrix : Matrix4x4.identity);
             vertices[i] = new SourceVertex() {
-                position = Island.transform.rotation * Vector3.Scale(positions[i],Island.transform.lossyScale),
+                position = Island.transform.position + (Island.transform.rotation * Vector3.Scale(positions[i],Island.transform.lossyScale)),
             };
         }
 
