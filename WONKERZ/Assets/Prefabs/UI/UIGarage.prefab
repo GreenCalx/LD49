@@ -164,8 +164,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: GARAGE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -242,7 +242,6 @@ GameObject:
   - component: {fileID: 2094517428109815428}
   - component: {fileID: 4230311273294876290}
   - component: {fileID: 780161742513439400}
-  - component: {fileID: 4276056478613087488}
   - component: {fileID: 1981256098317724075}
   m_Layer: 5
   m_Name: COLOR2
@@ -261,7 +260,8 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 8620757827543015486}
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -308,50 +308,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4276056478613087488
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615751119305082683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 780161742513439400}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1981256098317724075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -364,6 +320,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa8356309b09024cbcd0cd505e9cf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6656177162620764295}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981256098317724075}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981256098317724075}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 1, g: 1, b: 1, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981256098317724075}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1981256098317724075}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 0
+  toActivate: {fileID: 0}
+  image: {fileID: 3816596119276243971}
 --- !u!1 &647257153022793412
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,8 +539,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 105.287415, y: -275}
-  m_SizeDelta: {x: 210.5748, y: 550}
+  m_AnchoredPosition: {x: 236.95, y: -275}
+  m_SizeDelta: {x: 473.9, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3711894948014049925
 CanvasRenderer:
@@ -588,83 +614,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!1 &839238149216876687
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2489854959330405969}
-  - component: {fileID: 7977464220263983976}
-  - component: {fileID: 7932193777116785411}
-  m_Layer: 5
-  m_Name: HELP3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2489854959330405969
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 839238149216876687}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 6131210847537959514}
-  - {fileID: 6022870023900284296}
-  m_Father: {fileID: 5438781966158276265}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7977464220263983976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 839238149216876687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 10
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 3
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 70, y: 45}
-  m_Spacing: {x: -10, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
---- !u!114 &7932193777116785411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 839238149216876687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fa043214e131ad42b043a9fdc858ffe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  img_elem: {fileID: 6630606732940671785}
-  txt_elem: {fileID: 2531528733916502673}
 --- !u!1 &947023235596138791
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,7 +627,6 @@ GameObject:
   - component: {fileID: 6558211140639479011}
   - component: {fileID: 1102285415632383793}
   - component: {fileID: 3640917167751762402}
-  - component: {fileID: 5874234552537717632}
   m_Layer: 5
   m_Name: RPanel
   m_TagString: Untagged
@@ -777,18 +725,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &5874234552537717632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 947023235596138791}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d3c185aa7b34f14683be98310eaf37d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1083551601417364138
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,10 +907,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 1161962030700747641}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b008162b109cded489606b5969909d34, type: 3}
+  m_Script: {fileID: 11500000, guid: 99eb1fe05877c1549ac3cc743effcc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToLoad: {fileID: 4215310047813488659}
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3250941839584153397}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3250941839584153397}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3250941839584153397}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3250941839584153397}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 2443288426316825119}
+  copyColorFromParent: 1
+  toActivate: {fileID: 6424697484543094091}
+  image: {fileID: 7239165918485019417}
 --- !u!1 &1642648890401069512
 GameObject:
   m_ObjectHideFlags: 0
@@ -988,7 +993,6 @@ GameObject:
   - component: {fileID: 2675312120460055974}
   - component: {fileID: 5616796295616324626}
   - component: {fileID: 2106599192952819506}
-  - component: {fileID: 8995408892651789365}
   m_Layer: 5
   m_Name: RPanel
   m_TagString: Untagged
@@ -1014,8 +1018,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 594.8706, y: -275}
-  m_SizeDelta: {x: 745.8586, y: 550}
+  m_AnchoredPosition: {x: 730.85, y: -275}
+  m_SizeDelta: {x: 473.9, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5749817441838526871
 CanvasRenderer:
@@ -1089,18 +1093,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8995408892651789365
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642648890401069512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df818bbc91742d04380f17930a3e55bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1695742298179822340
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,7 +1104,6 @@ GameObject:
   - component: {fileID: 8875827923381340554}
   - component: {fileID: 583853665261458708}
   - component: {fileID: 4591305737067460952}
-  - component: {fileID: 2540207661329027233}
   - component: {fileID: 4029564812103378864}
   m_Layer: 5
   m_Name: COLOR3
@@ -1131,7 +1122,8 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 2240761890748608077}
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1178,50 +1170,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2540207661329027233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1695742298179822340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 4591305737067460952}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4029564812103378864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1234,6 +1182,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa8356309b09024cbcd0cd505e9cf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6656177162620764295}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4029564812103378864}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4029564812103378864}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4029564812103378864}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 0
+  toActivate: {fileID: 0}
+  image: {fileID: 8194988859162137934}
 --- !u!1 &1700609364803097961
 GameObject:
   m_ObjectHideFlags: 0
@@ -1341,12 +1347,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa595b39c15da540aff33d7648ffb4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  Tabs:
+  - {fileID: 8338176663936506305}
+  - {fileID: 5389733762841108001}
+  selected: 0
+  CurrentMode: 1
+  isActivated: 0
   inputHelper: {fileID: 0}
-  displayPanel: {fileID: 0}
-  parentUI: {fileID: 0}
   action_name: 
-  action_nature: 0
   actionTextField: {fileID: 2746199270137007873}
 --- !u!95 &5680739719456409320
 Animator:
@@ -1434,8 +1510,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SPEED
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1513,7 +1589,7 @@ GameObject:
   - component: {fileID: 8487402451362868968}
   - component: {fileID: 5219276021167130987}
   - component: {fileID: 7055209182507682820}
-  - component: {fileID: 4243867042517729192}
+  - component: {fileID: 2959613121479996623}
   m_Layer: 5
   m_Name: IC_COSMETICS
   m_TagString: Untagged
@@ -1599,7 +1675,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &4243867042517729192
+--- !u!114 &2959613121479996623
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1608,10 +1684,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 1953666214854233021}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b008162b109cded489606b5969909d34, type: 3}
+  m_Script: {fileID: 11500000, guid: 99eb1fe05877c1549ac3cc743effcc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToLoad: {fileID: 7485342201075873857}
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2959613121479996623}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2959613121479996623}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2959613121479996623}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2959613121479996623}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 2443288426316825119}
+  copyColorFromParent: 1
+  toActivate: {fileID: 6656177162620764295}
+  image: {fileID: 5219276021167130987}
 --- !u!1 &1986580998970946200
 GameObject:
   m_ObjectHideFlags: 0
@@ -1708,8 +1853,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1685047504736698687}
-  - {fileID: 722519520026348601}
-  - {fileID: 2489854959330405969}
   m_Father: {fileID: 4795360629091454141}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1807,6 +1950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1c756ce0cf5a4a4c9e7d58e60585393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  helperBox_ref: {fileID: 7133008044153180184}
 --- !u!1 &2407832681737778313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1839,10 +1983,10 @@ RectTransform:
   m_Father: {fileID: 1685047504736698687}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 105, y: -25}
+  m_SizeDelta: {x: 70, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1347211103959143871
 CanvasRenderer:
@@ -2016,6 +2160,81 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2719573489022821748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3351007174499843233}
+  - component: {fileID: 1748192436665313403}
+  - component: {fileID: 7316441140493761623}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3351007174499843233
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719573489022821748}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8067857250329826389}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 30, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1748192436665313403
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719573489022821748}
+  m_CullTransparentMesh: 1
+--- !u!114 &7316441140493761623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2719573489022821748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 0
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2753426027284101009
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,7 +2245,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2445213077518631621}
   - component: {fileID: 8368325197605365260}
-  - component: {fileID: 9181911340861869630}
   m_Layer: 5
   m_Name: Grid
   m_TagString: Untagged
@@ -2046,6 +2264,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5213866433426540880}
+  - {fileID: 6257568696331481474}
+  - {fileID: 7992185376283308779}
   m_Father: {fileID: 1836271944319396641}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2062,26 +2282,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2753426027284101009}
   m_CullTransparentMesh: 1
---- !u!114 &9181911340861869630
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2753426027284101009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172d2ffd09dd2bf4e9f94f28f77003cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  cell_color: {r: 0.20784314, g: 0.44705883, b: 0.4, a: 0.74509805}
-  cellSizeSubDivider: 2
-  gridSize: {x: 12, y: 5}
-  thickness: 2.2
 --- !u!1 &2923491516725361778
 GameObject:
   m_ObjectHideFlags: 0
@@ -2213,8 +2413,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: STRAIGHT
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2292,6 +2492,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a0276b2adad5e8489e4091f657af752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6424697484543094091}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3714210338715463683}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3714210338715463683}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: setModeReplay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3714210338715463683}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3714210338715463683}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 761604148781363453}
   test_data: {fileID: -4702677820390092140, guid: 299979c8ffda30d43926f4e83b3de2f8, type: 3}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &2990796845841500380
@@ -2305,7 +2575,6 @@ GameObject:
   - component: {fileID: 8067857250329826389}
   - component: {fileID: 2509749473906179191}
   - component: {fileID: 3603625028821243255}
-  - component: {fileID: 8328249030052703583}
   - component: {fileID: 4134988146671346502}
   m_Layer: 5
   m_Name: COLOR1
@@ -2324,7 +2593,8 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 3351007174499843233}
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2371,50 +2641,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8328249030052703583
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2990796845841500380}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 3
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 3603625028821243255}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &4134988146671346502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2427,6 +2653,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffa8356309b09024cbcd0cd505e9cf6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6656177162620764295}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4134988146671346502}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4134988146671346502}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 1, g: 1, b: 1, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4134988146671346502}
+        m_TargetAssemblyTypeName: UIGaragePickableColor, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 1, g: 1, b: 1, a: 1}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4134988146671346502}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0.2
+  activator: {fileID: 0}
+  copyColorFromParent: 0
+  toActivate: {fileID: 0}
+  image: {fileID: 7316441140493761623}
 --- !u!1 &3274045032790494199
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,8 +3117,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2900,9 +3196,108 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10178be53e444d049b9de48ed59d0a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6543749511385718803}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3335288080176945403}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: selectWeigth
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3335288080176945403}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3335288080176945403}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 3280495855602608909}
   XLabel: weight
   YLabel: size
-  car_param: 2
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3879376212582314097
 GameObject:
   m_ObjectHideFlags: 0
@@ -2913,7 +3308,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5213866433426540880}
   - component: {fileID: 703829393699301533}
-  - component: {fileID: 6199533341075192284}
+  - component: {fileID: 4882201854505852795}
+  - component: {fileID: 8012296986673671202}
   m_Layer: 5
   m_Name: Curve
   m_TagString: Untagged
@@ -2948,7 +3344,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3879376212582314097}
   m_CullTransparentMesh: 1
---- !u!114 &6199533341075192284
+--- !u!114 &4882201854505852795
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2957,22 +3353,61 @@ MonoBehaviour:
   m_GameObject: {fileID: 3879376212582314097}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43c31005254910d4fb81f8a593e55917, type: 3}
+  m_Script: {fileID: 11500000, guid: ee00c8c3718bacb46826ec0a9da916c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.56078434, g: 0.8901961, b: 0.53333336, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  gridSize: {x: 12, y: 5}
-  points:
-  - {x: 0, y: 0}
-  - {x: 3, y: 2}
-  - {x: 8, y: 4}
-  unitWidth: 31.593332
-  unitHeight: 58.572
-  thickness: 10
-  gridRenderer: {fileID: 9181911340861869630}
+  view: {fileID: 8012296986673671202}
+--- !u!114 &8012296986673671202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3879376212582314097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b4d05410892c4a4cadc8b49b47709a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  displayBounds:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 0
+    height: 0
+  axisBounds:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  gridSize: {x: 0.1, y: 0.1}
+  curve:
+    color: {r: 0.3445621, g: 0.8207547, b: 0.45212138, a: 1}
+    thickness: 0.002
+  points: []
+  yMul: 1
+  x:
+    line:
+      color: {r: 1, g: 0.927191, b: 0, a: 1}
+      thickness: 0.002
+    label: {fileID: 2486683860899602924}
+  xGrid:
+    color: {r: 1, g: 0, b: 0, a: 1}
+    thickness: 0.002
+  y:
+    line:
+      color: {r: 0.9290123, g: 0, b: 1, a: 1}
+      thickness: 0.002
+    label: {fileID: 7631450244352683097}
+  yGrid:
+    color: {r: 0, g: 0.92939377, b: 1, a: 1}
+    thickness: 0.002
+  inds: 
 --- !u!1 &4056149810369530885
 GameObject:
   m_ObjectHideFlags: 0
@@ -2984,7 +3419,6 @@ GameObject:
   - component: {fileID: 7114677442639303156}
   - component: {fileID: 3897488316755616282}
   - component: {fileID: 7890923429838258936}
-  - component: {fileID: 5389822605364066719}
   - component: {fileID: 6888885025829288005}
   - component: {fileID: 5432996867724469781}
   m_Layer: 5
@@ -3052,18 +3486,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5389822605364066719
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4056149810369530885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df818bbc91742d04380f17930a3e55bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &6888885025829288005
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3173,10 +3595,81 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b966241f47acd444adf7da7fe50c7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6424697484543094091}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6424697484543094091}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6424697484543094091}
+        m_TargetAssemblyTypeName: UIGarageTestingPanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6424697484543094091}
+        m_TargetAssemblyTypeName: UIGarageTestingPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 3250941839584153397}
+  copyColorFromParent: 1
+  Tabs:
+  - {fileID: 3714210338715463683}
+  - {fileID: 6022244455988058313}
+  selected: 0
+  CurrentMode: 1
+  isActivated: 0
   inputHelper: {fileID: 0}
-  displayPanel: {fileID: 8995408892651789365}
-  parentUI: {fileID: 0}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &4240128228174379075
 GameObject:
@@ -3240,6 +3733,81 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 1
+--- !u!1 &4374979245277501136
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2240761890748608077}
+  - component: {fileID: 5196581337711212212}
+  - component: {fileID: 8194988859162137934}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2240761890748608077
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4374979245277501136}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8875827923381340554}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 30, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &5196581337711212212
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4374979245277501136}
+  m_CullTransparentMesh: 1
+--- !u!114 &8194988859162137934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4374979245277501136}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 0
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &4430040959247939651
 GameObject:
   m_ObjectHideFlags: 0
@@ -3251,7 +3819,7 @@ GameObject:
   - component: {fileID: 7335445480998143135}
   - component: {fileID: 4352483086186705633}
   - component: {fileID: 8333641250060660487}
-  - component: {fileID: 1697312136222742417}
+  - component: {fileID: 8338176663936506305}
   m_Layer: 5
   m_Name: CONFIRM
   m_TagString: Untagged
@@ -3377,7 +3945,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &1697312136222742417
+--- !u!114 &8338176663936506305
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3386,9 +3954,91 @@ MonoBehaviour:
   m_GameObject: {fileID: 4430040959247939651}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe6251202aa55d34b9cbb33370314cbe, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b6ad6931aeb74b4cabc75a112717811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2404907657628586622}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8338176663936506305}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8338176663936506305}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8338176663936506305}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageActionConfirmPanel, Assembly-CSharp
+        m_MethodName: doAction
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 8333641250060660487}
 --- !u!1 &4616960696448292433
 GameObject:
   m_ObjectHideFlags: 0
@@ -3400,7 +4050,7 @@ GameObject:
   - component: {fileID: 9196178362197220557}
   - component: {fileID: 7803346542634799760}
   - component: {fileID: 2955778439749855565}
-  - component: {fileID: 1529171648880278533}
+  - component: {fileID: 5389733762841108001}
   m_Layer: 5
   m_Name: CANCEL
   m_TagString: Untagged
@@ -3526,7 +4176,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &1529171648880278533
+--- !u!114 &5389733762841108001
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3535,9 +4185,67 @@ MonoBehaviour:
   m_GameObject: {fileID: 4616960696448292433}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe6251202aa55d34b9cbb33370314cbe, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b6ad6931aeb74b4cabc75a112717811, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5389733762841108001}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5389733762841108001}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 2955778439749855565}
 --- !u!1 &4922480060227342915
 GameObject:
   m_ObjectHideFlags: 0
@@ -3685,140 +4393,6 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!1 &5119043081970489764
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6022870023900284296}
-  - component: {fileID: 6486930436471164545}
-  - component: {fileID: 2531528733916502673}
-  m_Layer: 5
-  m_Name: HELP_TXT
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6022870023900284296
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5119043081970489764}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2489854959330405969}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6486930436471164545
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5119043081970489764}
-  m_CullTransparentMesh: 1
---- !u!114 &2531528733916502673
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5119043081970489764}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_text: HELP!
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4291019715
-  m_fontColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 1
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5242431628927372303
 GameObject:
   m_ObjectHideFlags: 0
@@ -3831,8 +4405,8 @@ GameObject:
   - component: {fileID: 6277146881698071628}
   - component: {fileID: 2740092149599930279}
   - component: {fileID: 426244162063122652}
-  - component: {fileID: 6383858923865438187}
   - component: {fileID: 5250537069818970035}
+  - component: {fileID: 5719580709169169867}
   m_Layer: 5
   m_Name: RPanel
   m_TagString: Untagged
@@ -3852,6 +4426,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1836271944319396641}
+  - {fileID: 3582783738940547968}
   m_Father: {fileID: 1235621433387674101}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3913,18 +4488,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0.20784314, g: 0.44705883, b: 0.4, a: 1}
   m_EffectDistance: {x: 5, y: 5}
   m_UseGraphicAlpha: 1
---- !u!114 &6383858923865438187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5242431628927372303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97c6af5539f1cd045bdfa3b043661d0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!95 &5250537069818970035
 Animator:
   serializedVersion: 3
@@ -3944,6 +4507,96 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &5719580709169169867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5242431628927372303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c08b768c59e753449b65534e3de3553, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Parent: {fileID: 0}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: hideCursor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0.2
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  Tabs: []
+  selected: 0
+  CurrentMode: 0
+  isActivated: 0
+  inputHelper: {fileID: 0}
+  graphRenderer: {fileID: 4882201854505852795}
+  UIGraphPoint_Ref: {fileID: 6500212415915309880}
+  UIGraphCursor_Ref: {fileID: 5626642429807060134}
+  UIGraphRange_Ref: {fileID: 6875247732798612565}
+  speedInGraphUnit: 0.01
 --- !u!1 &5339288306730999949
 GameObject:
   m_ObjectHideFlags: 0
@@ -4062,11 +4715,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 815c01ad48fe4ac4ea37b85a96cc791f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 0}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  selected_color: {r: 0.8784314, g: 0.9372549, b: 0.85490197, a: 1}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls: []
+  deselected_color: {r: 0.654902, g: 0.6, b: 0.7176471, a: 1}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2443288426316825119}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0.6862745, g: 0.105882354, b: 0.24705882, a: 1}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2443288426316825119}
+        m_TargetAssemblyTypeName: UIGarage, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 0}
+  copyColorFromParent: 0
+  Tabs:
+  - {fileID: 2482382197152134356}
+  - {fileID: 2959613121479996623}
+  - {fileID: 3250941839584153397}
+  - {fileID: 7803251183000712775}
+  - {fileID: 3818145219182664534}
+  selected: 0
+  CurrentMode: 0
+  isActivated: 0
   inputHelper: {fileID: 4167855567282101335}
-  enabled_category: {r: 0.8784314, g: 0.9372549, b: 0.85490197, a: 1}
-  disabled_category: {r: 0.654902, g: 0.6, b: 0.7176471, a: 1}
-  entered_category: {r: 0.6862745, g: 0.105882354, b: 0.24705882, a: 1}
 --- !u!1 &5422157297186737766
 GameObject:
   m_ObjectHideFlags: 0
@@ -4134,8 +4836,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: TIME
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4272,8 +4974,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4351,6 +5053,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a0276b2adad5e8489e4091f657af752, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6424697484543094091}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6022244455988058313}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6022244455988058313}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: setModeReplay
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6022244455988058313}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6022244455988058313}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 4287985981074926559}
   test_data: {fileID: 2983450686861990788, guid: 7168a77ed142af34eaede7a4246fdab4, type: 3}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &5641627212575322506
@@ -4543,10 +5315,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8becf553f4aca354fa4764c420629ec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4281059883812146146}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4281059883812146146}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4281059883812146146}
+        m_TargetAssemblyTypeName: UIGarageProfilePanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4281059883812146146}
+        m_TargetAssemblyTypeName: UIGarageProfilePanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 7803251183000712775}
+  copyColorFromParent: 1
+  Tabs:
+  - {fileID: 6297958832454215664}
+  - {fileID: 144805964691702639}
+  selected: 0
+  CurrentMode: 1
+  isActivated: 0
   inputHelper: {fileID: 0}
-  displayPanel: {fileID: 5874234552537717632}
-  parentUI: {fileID: 0}
+  profile: {fileID: 7908385237774879934}
   confirmPanel: {fileID: 2404907657628586622}
 --- !u!114 &7908385237774879934
 MonoBehaviour:
@@ -4572,6 +5416,202 @@ MonoBehaviour:
       - 1
       - 1
       - 1
+--- !u!1 &5854842186279529790
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3582783738940547968}
+  - component: {fileID: 6274146648887535779}
+  - component: {fileID: 6214237657337955741}
+  - component: {fileID: 6500212415915309880}
+  m_Layer: 5
+  m_Name: Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &3582783738940547968
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854842186279529790}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 791861115038233020}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 10, y: 10}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &6274146648887535779
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854842186279529790}
+  m_CullTransparentMesh: 1
+--- !u!114 &6214237657337955741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854842186279529790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 0.023584902, b: 0.023584902, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6500212415915309880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5854842186279529790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e0a152958384df4d94eb29483797ebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Parent: {fileID: 5719580709169169867}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6500212415915309880}
+        m_TargetAssemblyTypeName: UIGraphPoint, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 1, b: 0.075618744, a: 1}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6500212415915309880}
+        m_TargetAssemblyTypeName: UIGraphPoint, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: hideCursor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 1, g: 0, b: 0, a: 1}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6500212415915309880}
+        m_TargetAssemblyTypeName: UIGraphPoint, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: showCursor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 1, g: 0.84843576, b: 0, a: 1}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6500212415915309880}
+        m_TargetAssemblyTypeName: UIGraphPoint, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: hideCursor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0.2
+  activator: {fileID: 0}
+  copyColorFromParent: 0
+  toActivate: {fileID: 0}
+  isActivated: 0
+  image: {fileID: 6214237657337955741}
+  index: 0
 --- !u!1 &5863464902962700954
 GameObject:
   m_ObjectHideFlags: 0
@@ -4815,8 +5855,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4894,6 +5934,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7e48464ce1a754faf0bcaaf28271f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 4281059883812146146}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6297958832454215664}
+        m_TargetAssemblyTypeName: UIGaragePickableProfile, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6297958832454215664}
+        m_TargetAssemblyTypeName: UIGaragePickableProfile, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6297958832454215664}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 2879241069384239638}
   profile_name: BASE
 --- !u!1 &6581142276248291313
 GameObject:
@@ -5094,7 +6192,7 @@ GameObject:
   - component: {fileID: 7414895208384445490}
   - component: {fileID: 4651174525618319714}
   - component: {fileID: 7227261918119162962}
-  - component: {fileID: 3587501982082938377}
+  - component: {fileID: 2482382197152134356}
   m_Layer: 5
   m_Name: IC_STATS
   m_TagString: Untagged
@@ -5180,7 +6278,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &3587501982082938377
+--- !u!114 &2482382197152134356
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5189,10 +6287,154 @@ MonoBehaviour:
   m_GameObject: {fileID: 6712253683636363688}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b008162b109cded489606b5969909d34, type: 3}
+  m_Script: {fileID: 11500000, guid: 99eb1fe05877c1549ac3cc743effcc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToLoad: {fileID: 9039456112896979722}
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2482382197152134356}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2482382197152134356}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2482382197152134356}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2482382197152134356}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 2443288426316825119}
+  copyColorFromParent: 1
+  toActivate: {fileID: 6543749511385718803}
+  image: {fileID: 4651174525618319714}
+--- !u!1 &6715596563129892311
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8620757827543015486}
+  - component: {fileID: 909259335607508109}
+  - component: {fileID: 3816596119276243971}
+  m_Layer: 5
+  m_Name: Image
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8620757827543015486
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715596563129892311}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2094517428109815428}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 30, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &909259335607508109
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715596563129892311}
+  m_CullTransparentMesh: 1
+--- !u!114 &3816596119276243971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6715596563129892311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 0
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6989877015359882588
 GameObject:
   m_ObjectHideFlags: 0
@@ -5205,7 +6447,7 @@ GameObject:
   - component: {fileID: 5145850881038801608}
   - component: {fileID: 1876928691077571410}
   - component: {fileID: 3920719513458055424}
-  - component: {fileID: 3357400799431744025}
+  - component: {fileID: 3818145219182664534}
   m_Layer: 5
   m_Name: IC_EXIT
   m_TagString: Untagged
@@ -5291,7 +6533,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &3357400799431744025
+--- !u!114 &3818145219182664534
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5300,143 +6542,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 6989877015359882588}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 911828c2922e70e4abfec8f008a332b7, type: 3}
+  m_Script: {fileID: 11500000, guid: 99eb1fe05877c1549ac3cc743effcc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &7078743654196077163
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2307792757195667307}
-  - component: {fileID: 1484007264487740284}
-  - component: {fileID: 333205815400141243}
-  m_Layer: 5
-  m_Name: HELP_TXT
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2307792757195667307
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7078743654196077163}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 722519520026348601}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &1484007264487740284
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7078743654196077163}
-  m_CullTransparentMesh: 1
---- !u!114 &333205815400141243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7078743654196077163}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3818145219182664534}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3818145219182664534}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3818145219182664534}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2443288426316825119}
+        m_TargetAssemblyTypeName: UIGarage, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HELP!
-  m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
-  m_fontMaterial: {fileID: 0}
-  m_fontMaterials: []
-  m_fontColor32:
-    serializedVersion: 2
-    rgba: 4291019715
-  m_fontColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
-  m_enableVertexGradient: 0
-  m_colorMode: 3
-  m_fontColorGradient:
-    topLeft: {r: 1, g: 1, b: 1, a: 1}
-    topRight: {r: 1, g: 1, b: 1, a: 1}
-    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    bottomRight: {r: 1, g: 1, b: 1, a: 1}
-  m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 0}
-  m_tintAllSprites: 0
-  m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
-  m_overrideHtmlColors: 0
-  m_faceColor:
-    serializedVersion: 2
-    rgba: 4294967295
-  m_fontSize: 25
-  m_fontSizeBase: 25
-  m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
-  m_textAlignment: 65535
-  m_characterSpacing: 0
-  m_wordSpacing: 0
-  m_lineSpacing: 0
-  m_lineSpacingMax: 0
-  m_paragraphSpacing: 0
-  m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 0
-  m_wordWrappingRatios: 0.4
-  m_overflowMode: 0
-  m_linkedTextComponent: {fileID: 0}
-  parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 1
-  m_enableExtraPadding: 0
-  checkPaddingRequired: 0
-  m_isRichText: 1
-  m_parseCtrlCharacters: 1
-  m_isOrthographic: 1
-  m_isCullingEnabled: 0
-  m_horizontalMapping: 0
-  m_verticalMapping: 0
-  m_uvLineOffset: 0
-  m_geometrySortingOrder: 0
-  m_IsTextObjectScaleStatic: 0
-  m_VertexBufferAutoSizeReduction: 0
-  m_useMaxVisibleDescender: 1
-  m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
-  m_isUsingLegacyAnimationComponent: 0
-  m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
-  m_baseMaterial: {fileID: 0}
-  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 2443288426316825119}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  image: {fileID: 1876928691077571410}
 --- !u!1 &7133008044153180184
 GameObject:
   m_ObjectHideFlags: 0
@@ -5454,7 +6632,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1685047504736698687
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5471,10 +6649,10 @@ RectTransform:
   m_Father: {fileID: 5438781966158276265}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 75, y: -25}
+  m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &30377417293934186
 MonoBehaviour:
@@ -5664,10 +6842,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b682ee7c5594ef4489fc89e4d30136c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6656177162620764295}
+        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
+        m_MethodName: open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6656177162620764295}
+        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
+        m_MethodName: close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6656177162620764295}
+        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
+        m_MethodName: activated
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6656177162620764295}
+        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
+        m_MethodName: deactivated
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 2959613121479996623}
+  copyColorFromParent: 1
+  Tabs:
+  - {fileID: 4134988146671346502}
+  - {fileID: 1981256098317724075}
+  - {fileID: 4029564812103378864}
+  selected: 0
+  CurrentMode: 0
+  isActivated: 0
   inputHelper: {fileID: 0}
-  displayPanel: {fileID: 5389822605364066719}
-  parentUI: {fileID: 0}
 --- !u!1 &7567396576495828129
 GameObject:
   m_ObjectHideFlags: 0
@@ -5739,8 +6989,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5818,6 +7068,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7e48464ce1a754faf0bcaaf28271f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 4281059883812146146}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 144805964691702639}
+        m_TargetAssemblyTypeName: UIGaragePickableProfile, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 144805964691702639}
+        m_TargetAssemblyTypeName: UIGaragePickableProfile, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 144805964691702639}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 1695229548409214758}
   profile_name: CUSTO 1
 --- !u!1 &7680377091271300411
 GameObject:
@@ -5890,8 +7198,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5969,9 +7277,108 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10178be53e444d049b9de48ed59d0a38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 6543749511385718803}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7476521093388406559}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: selectTorque
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: show
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7476521093388406559}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7476521093388406559}
+        m_TargetAssemblyTypeName: UIGaragePickableStat, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5719580709169169867}
+        m_TargetAssemblyTypeName: UIGraphPanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  toActivate: {fileID: 0}
+  text: {fileID: 4088854281836735329}
   XLabel: time
   YLabel: speed
-  car_param: 1
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7812475649513896257
 GameObject:
   m_ObjectHideFlags: 0
@@ -6079,10 +7486,79 @@ MonoBehaviour:
   m_GameObject: {fileID: 7812475649513896257}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b008162b109cded489606b5969909d34, type: 3}
+  m_Script: {fileID: 11500000, guid: 99eb1fe05877c1549ac3cc743effcc9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panelToLoad: {fileID: 5686945756679155918}
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7803251183000712775}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7803251183000712775}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7803251183000712775}
+        m_TargetAssemblyTypeName: UIGarageCategory, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7803251183000712775}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
+  selector_latch: 0
+  activator: {fileID: 2443288426316825119}
+  copyColorFromParent: 1
+  toActivate: {fileID: 4281059883812146146}
+  image: {fileID: 1326756144827646463}
 --- !u!1 &7904362109441940592
 GameObject:
   m_ObjectHideFlags: 0
@@ -6241,7 +7717,6 @@ GameObject:
   - component: {fileID: 3306080445339050240}
   - component: {fileID: 58330990738333672}
   - component: {fileID: 4937651374188028459}
-  - component: {fileID: 8650745998506798173}
   m_Layer: 5
   m_Name: COLORS
   m_TagString: Untagged
@@ -6299,8 +7774,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: COLORS
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6366,20 +7841,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &8650745998506798173
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8207956174564707845}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8741e1adaadf13d4ba4546d5b8058d03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIGarageColorPicker_Ref: {fileID: 6622702109185523865, guid: aefa3c21a9aea8446aa4a00c4adaa967, type: 3}
-  selector_latch: 0.2
 --- !u!1 &8301032665097460976
 GameObject:
   m_ObjectHideFlags: 0
@@ -6578,156 +8039,6 @@ MonoBehaviour:
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 1
---- !u!1 &8474082283699476190
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9019697672210452522}
-  - component: {fileID: 3441172423991890774}
-  - component: {fileID: 8710978876863305428}
-  m_Layer: 5
-  m_Name: HELP_IMG
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &9019697672210452522
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8474082283699476190}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 722519520026348601}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &3441172423991890774
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8474082283699476190}
-  m_CullTransparentMesh: 1
---- !u!114 &8710978876863305428
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8474082283699476190}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3c8074ea583a6a24ea026fb6f23db254, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!1 &8485219907528263991
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6131210847537959514}
-  - component: {fileID: 8883853191608464647}
-  - component: {fileID: 6630606732940671785}
-  m_Layer: 5
-  m_Name: HELP_IMG
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6131210847537959514
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8485219907528263991}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2489854959330405969}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8883853191608464647
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8485219907528263991}
-  m_CullTransparentMesh: 1
---- !u!114 &6630606732940671785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8485219907528263991}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3c8074ea583a6a24ea026fb6f23db254, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8618760599772827830
 GameObject:
   m_ObjectHideFlags: 0
@@ -6803,83 +8114,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &8692263539482493987
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 722519520026348601}
-  - component: {fileID: 1610181290871112622}
-  - component: {fileID: 7484125849194199304}
-  m_Layer: 5
-  m_Name: HELP2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &722519520026348601
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8692263539482493987}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 9019697672210452522}
-  - {fileID: 2307792757195667307}
-  m_Father: {fileID: 5438781966158276265}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1610181290871112622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8692263539482493987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 10
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 3
-  m_StartCorner: 0
-  m_StartAxis: 1
-  m_CellSize: {x: 70, y: 45}
-  m_Spacing: {x: -10, y: 0}
-  m_Constraint: 0
-  m_ConstraintCount: 2
---- !u!114 &7484125849194199304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8692263539482493987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fa043214e131ad42b043a9fdc858ffe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  img_elem: {fileID: 8710978876863305428}
-  txt_elem: {fileID: 333205815400141243}
 --- !u!1 &8945104903936040759
 GameObject:
   m_ObjectHideFlags: 0
@@ -7087,10 +8321,10 @@ RectTransform:
   m_Father: {fileID: 1685047504736698687}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 45, y: -25}
+  m_SizeDelta: {x: 70, y: 45}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2169237555783122253
 CanvasRenderer:
@@ -7140,7 +8374,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1836271944319396641}
   - component: {fileID: 4759824591705953044}
-  - component: {fileID: 5335798096937987136}
   m_Layer: 5
   m_Name: CURVES
   m_TagString: Untagged
@@ -7179,117 +8412,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8990907831236242588}
   m_CullTransparentMesh: 1
---- !u!114 &5335798096937987136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8990907831236242588}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7921ec0eada3bd4db948616107edd8f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  torque_curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0.89745456
-      outSlope: 0.89745456
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1.0490417
-      value: 0.9414673
-      inSlope: 2.4997518
-      outSlope: 2.4997518
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1.4465289
-      value: 2.571979
-      inSlope: 1.9301684
-      outSlope: 1.9301684
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.32392433
-      outWeight: 0.061419927
-    - serializedVersion: 3
-      time: 2.5013616
-      value: 2.9925323
-      inSlope: -0.042444304
-      outSlope: -0.042444304
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.9132767
-      outWeight: 0.10794542
-    - serializedVersion: 3
-      time: 7.0006547
-      value: 2.9883134
-      inSlope: Infinity
-      outSlope: Infinity
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 9.023029
-      value: 2.9857416
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  weight_curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1.501648
-      inSlope: 0.053104784
-      outSlope: 0.053104784
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 9.501485
-      value: 2.0062222
-      inSlope: 0.036985606
-      outSlope: 0.036985606
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 10.495062
-      value: 2.0269547
-      inSlope: 0.020866428
-      outSlope: 0.020866428
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  selected_parm: 0
-  lineRenderer: {fileID: 6199533341075192284}
-  XLabelRef: {fileID: 2486683860899602924}
-  YLabelRef: {fileID: 7631450244352683097}
-  maxbound_nomerge: 0
-  minbound_nomerge: 0
 --- !u!1 &9039456112896979722
 GameObject:
   m_ObjectHideFlags: 0
@@ -7365,9 +8487,303 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37588b1591ffa704bb2c0a2ca6d11bb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Parent: {fileID: 2443288426316825119}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCancelablePanel, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  elapsed_time: 0
   selector_latch: 0.2
+  activator: {fileID: 2482382197152134356}
+  copyColorFromParent: 1
+  Tabs:
+  - {fileID: 7476521093388406559}
+  - {fileID: 3335288080176945403}
+  selected: 0
+  CurrentMode: 1
+  isActivated: 0
   inputHelper: {fileID: 0}
-  displayPanel: {fileID: 6383858923865438187}
-  parentUI: {fileID: 0}
   UIGarageCurvePicker_Ref: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
   UICurveMotionRange_Ref: {fileID: 1956306207434592806, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+  graphPanel: {fileID: 5719580709169169867}
+--- !u!1001 &3427154824337466953
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2445213077518631621}
+    m_Modifications:
+    - target: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_Name
+      value: UICurveSelector
+      objectReference: {fileID: 0}
+    - target: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 227.7136
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+--- !u!1 &5626642429807060134 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+  m_PrefabInstance: {fileID: 3427154824337466953}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &6257568696331481474 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8743996739122862027, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
+  m_PrefabInstance: {fileID: 3427154824337466953}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &4922429185575794291
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 2445213077518631621}
+    m_Modifications:
+    - target: {fileID: 1956306207434592806, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_Name
+      value: MotionRange
+      objectReference: {fileID: 0}
+    - target: {fileID: 1956306207434592806, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 379.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+--- !u!224 &7992185376283308779 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3073153703179617432, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+  m_PrefabInstance: {fileID: 4922429185575794291}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6875247732798612565 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1956306207434592806, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
+  m_PrefabInstance: {fileID: 4922429185575794291}
+  m_PrefabAsset: {fileID: 0}

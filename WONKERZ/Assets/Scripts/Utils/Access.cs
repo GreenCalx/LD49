@@ -93,11 +93,6 @@ public class Access
         return cache.getObject<InputManager>(Constants.GO_MANAGERS, false);
     }
 
-    public static ResolutionManager ResolutionManager()
-    {
-        return cache.getObject<ResolutionManager>(Constants.GO_MANAGERS, false);
-    }
-    
     public static CameraManager CameraManager()
     {
         return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);    

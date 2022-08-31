@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IControllable
 {
-    void ProcessInputs(InputManager.InputData Entry);
+    public void ProcessInputs(InputManager.InputData Entry);
 }
 
 public enum Joystick
@@ -107,13 +107,13 @@ public class InputManager : MonoBehaviour
                 {
                     if (s.Contains("X"))
                     {
-                        I.AxisValue = ((_LastMousePosition.x - Input.mousePosition.x) / Screen.width) *InputSettings.MouseMultiplier;
+                        I.AxisValue = ((_LastMousePosition.x - Input.mousePosition.x) / Screen.width) * InputSettings.MouseMultiplier;
                     }
                     else
                     {
-                        I.AxisValue = ((_LastMousePosition.y - Input.mousePosition.y) / Screen.height) *InputSettings.MouseMultiplier;
+                        I.AxisValue = ((_LastMousePosition.y - Input.mousePosition.y) / Screen.height) * InputSettings.MouseMultiplier;
                     }
-                    I.AxisValue += Input.GetAxisRaw( "Joy" + ((Joystick)Mapping.Positive[0]).ToString() );
+                    I.AxisValue += Input.GetAxisRaw("Joy" + ((Joystick)Mapping.Positive[0]).ToString());
                 }
                 else
                 {
@@ -157,77 +157,63 @@ public class InputManager : MonoBehaviour
         }
     }
 
-    private List<IControllable> _Controllees = new List<IControllable>();
     private float _LastDpadAxisHorizontal = 0;
     private float _LastDpadAxisVertical = 0;
     private static Vector2 _LastMousePosition;
 
-    public enum Mode {  PLAYER, // default mode to control stuff
-                        DEACTIVATED, 
-                        RECORD, // Like Player but records inputs until stopRecord() is called
-                        AUTOPILOT // Pushes recordedInputs into Entry instead of real inputs
-                        };
+    public enum Mode
+    {
+        PLAYER, // default mode to control stuff
+        DEACTIVATED,
+        RECORD, // Like Player but records inputs until stopRecord() is called
+        AUTOPILOT // Pushes recordedInputs into Entry instead of real inputs
+    };
     public Mode CurrentMode = Mode.DEACTIVATED;
 
     private bool _Lock = false;
     private List<IControllable> _DeferRemove = new List<IControllable>();
     public bool _Activated = true;
 
-    private Stack<IControllable> _PriorityList = new Stack<IControllable>();
+    private Stack<List<IControllable>> _Controllees = new Stack<List<IControllable>>(
+       new List<IControllable>[] { new List<IControllable>() }
+    );
 
     public Queue<InputData> recordedInputs = new Queue<InputData>();
 
     private bool frameLock; // for replay consistency
     private int nLockedFrames;
 
-
     public void Activate() { _Activated = true; }
     public void DeActivate() { _Activated = false; }
 
     public void Attach(IControllable iControllable)
     {
-        if (!_Controllees.Contains(iControllable))
+        if (!_Controllees.Peek().Contains(iControllable))
         {
-            _Controllees.Add(iControllable);
+            _Controllees.Peek().Add(iControllable);
         }
     }
 
     public void Detach(IControllable iControllable)
     {
-        if (!_Lock)
-            _Controllees.Remove(iControllable);
-        else
-            _DeferRemove.Add(iControllable);
-
+        _Controllees.Peek().Remove(iControllable);
     }
 
     public void DetachAll()
     {
-        if (!_Lock)
-            _Controllees.Clear();
-        else
-        {
-            foreach(IControllable controllable in _Controllees)
-            {
-                _DeferRemove.Add(controllable);
-            }
-        }
+        _Controllees.Peek().Clear();
     }
 
     public void SetUnique(IControllable iControllable)
     {
-        _PriorityList.Push(iControllable);
+        var L = new List<IControllable>();
+        L.Add(iControllable);
+        _Controllees.Push(L);
     }
 
-    public void UnsetUnique(IControllable iControllable)
+    public void UnsetUnique()
     {
-        if (iControllable != _PriorityList.Peek())
-        {
-            Debug.LogError("Trying to unstack while not the first item");
-            return;
-        }
-
-        _PriorityList.Pop();
+        _Controllees.Pop();
     }
 
     private void Lock()
@@ -238,11 +224,6 @@ public class InputManager : MonoBehaviour
     private void UnLock()
     {
         _Lock = false;
-        foreach (IControllable C in _DeferRemove)
-        {
-            Detach(C);
-        }
-        _DeferRemove.Clear();
     }
 
     public void startRecord()
@@ -271,9 +252,9 @@ public class InputManager : MonoBehaviour
     }
     public void stopAutoPilot()
     {
-        if (recordedInputs.Count == 0 )
-        { Debug.Log("All recorded inputs have been processed.");}
-        else { Debug.Log( recordedInputs.Count +" Inputs unplayed."); }
+        if (recordedInputs.Count == 0)
+        { Debug.Log("All recorded inputs have been processed."); }
+        else { Debug.Log(recordedInputs.Count + " Inputs unplayed."); }
         CurrentMode = Mode.PLAYER;
         Debug.Log("Number of frames locked by physics : " + nLockedFrames);
         nLockedFrames = 0;
@@ -292,9 +273,9 @@ public class InputManager : MonoBehaviour
         // NOTE(toffa): Saver stuff test
         InputData Entry = new InputData();
 
-        if (CurrentMode == Mode.AUTOPILOT )
+        if (CurrentMode == Mode.AUTOPILOT)
         {
-            if (recordedInputs.Count > 0 )
+            if (recordedInputs.Count > 0)
             {
                 Entry = recordedInputs.Dequeue();
                 if (Constants.DBG_REPLAYDUMP)
@@ -303,7 +284,9 @@ public class InputManager : MonoBehaviour
                 { nLockedFrames++; return; }
                 frameLock = true;
             }
-        } else {
+        }
+        else
+        {
             foreach (string K in InputSettings.Mapping.Keys)
             {
                 Entry.Add(K);
@@ -327,17 +310,14 @@ public class InputManager : MonoBehaviour
         // of newly attached object in this frame and not the next one
         var EndIdx = _Controllees.Count;
         Lock();
-        if (_PriorityList.Count != 0)
+
+        List<IControllable> TempControllees = new List<IControllable>(_Controllees.Peek());
+
+        for (int i = 0; i < TempControllees.Count; ++i)
         {
-            _PriorityList.Peek().ProcessInputs(Entry);
+            TempControllees[i].ProcessInputs(Entry);
         }
-        else
-        {
-            for (int i = 0; i < _Controllees.Count; ++i)
-            {
-                _Controllees[i].ProcessInputs(Entry);
-            }
-        }
+
         UnLock();
 
         _LastMousePosition = Input.mousePosition;

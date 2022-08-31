@@ -1,4 +1,3 @@
-using System.Collections.Generic; // KeyValuePair
 using UnityEngine;
 
 public class CarController : MonoBehaviour, IControllable
@@ -160,41 +159,6 @@ public class CarController : MonoBehaviour, IControllable
 
     /// =============== Cache ===============
     private Rigidbody RB;
-
-    /// ================ Curves ================
-
-    public KeyValuePair<AnimationCurve, int> getCurveKVP(UIGarageCurve.CAR_PARAM iParm)
-    {
-        switch (iParm)
-        {
-            case UIGarageCurve.CAR_PARAM.UNDEFINED:
-                break;
-            case UIGarageCurve.CAR_PARAM.TORQUE:
-                return new KeyValuePair<AnimationCurve, int>(TORQUE, torque_movable_keyframe);
-            case UIGarageCurve.CAR_PARAM.WEIGHT:
-                return new KeyValuePair<AnimationCurve, int>(WEIGHT, weight_movable_keyframe);
-            default:
-                break;
-        }
-        return new KeyValuePair<AnimationCurve, int>();
-    }
-
-    public void setCurve(AnimationCurve iAC, UIGarageCurve.CAR_PARAM iParm)
-    {
-        switch (iParm)
-        {
-            case UIGarageCurve.CAR_PARAM.UNDEFINED:
-                break;
-            case UIGarageCurve.CAR_PARAM.TORQUE:
-                TORQUE = iAC;
-                break;
-            case UIGarageCurve.CAR_PARAM.WEIGHT:
-                WEIGHT = iAC;
-                break;
-            default:
-                break;
-        }
-    }
 
     /// =================== Updates =================
 

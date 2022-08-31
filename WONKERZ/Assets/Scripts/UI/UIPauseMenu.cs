@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 //using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
@@ -16,6 +15,15 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     /// These Buttons MUST have an outline component as well.
     public Button exitButton;
     public Button optionsButton;
+#if DEBUG
+    public Button debugButton;
+    [System.Serializable]
+    public struct DebugOptions
+    {
+        public bool DisplayPhysX;
+    }
+    public DebugOptions DO;
+#endif
     public Text   tracknameText;
     public Button toggleButton;
     public Toggle cameraToggle;
@@ -29,12 +37,6 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     private bool menuIsOpened = false;
     private List<Button> selectables;
     private int index;
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     void Awake()
     {
@@ -53,10 +55,13 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         selectables.Add(toggleButton);
         selectables.Add(optionsButton);
         selectables.Add(exitButton);
+#if DEBUG
+        selectables.Add(debugButton);
+#endif
 
         index = 0;
         elapsed_time = 0f;
-        
+
         deactivateAll();
     }
 
@@ -69,10 +74,10 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry) 
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         if (menuIsOpened)
         {
@@ -85,7 +90,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                     selectNext();
                     elapsed_time = 0f;
                 }
-                else if ( Y > 0.2f )
+                else if (Y > 0.2f)
                 {
                     selectPrevious();
                     elapsed_time = 0f;
@@ -106,27 +111,29 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                 deactivateAll();
                 pauseGame(false);
                 Access.Player().isFrozen = false;
-            } else {
+            }
+            else
+            {
                 tracknameText.text = SceneManager.GetActiveScene().name;
                 activateAll();
                 pauseGame(true);
                 Access.Player().isFrozen = true;
             }
-        } 
+        }
     }
 
     private void selectNext()
     {
         index++;
-        if (index>=selectables.Count) 
+        if (index >= selectables.Count)
             index = 0;
         refreshButtons();
     }
     private void selectPrevious()
     {
         index--;
-        if ( index < 0 ) 
-            index = selectables.Count-1;
+        if (index < 0)
+            index = selectables.Count - 1;
         refreshButtons();
     }
 
@@ -138,15 +145,15 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     private void refreshButtons()
     {
-        for (int i=0; i < selectables.Count; i++)
+        for (int i = 0; i < selectables.Count; i++)
         {
             Outline outline = selectables[i].GetComponent<Outline>();
-            if (outline==null)
+            if (outline == null)
             { Debug.LogWarning("Missing Outline component on a UIPauseMenu button : " + selectables[i].gameObject.name); continue; }
-            if (i==index)
+            if (i == index)
             {
                 outline.enabled = true;
-                outline.effectColor = outlineSelectedBtn; 
+                outline.effectColor = outlineSelectedBtn;
             }
             else
             {
@@ -170,7 +177,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     private void deactivateAll()
     {
-        foreach( Transform child in transform )
+        foreach (Transform child in transform)
         {
             child.gameObject.SetActive(false);
         }
@@ -179,7 +186,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     private void activateAll()
     {
-        foreach( Transform child in transform )
+        foreach (Transform child in transform)
         {
             child.gameObject.SetActive(true);
         }
@@ -194,7 +201,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         string sceneToLoad = "";
         switch (sceneToLoadOnExit)
         {
-            case EXITABLE_SCENES.SN_TITLE :
+            case EXITABLE_SCENES.SN_TITLE:
                 sceneToLoad = Constants.SN_TITLE;
                 break;
             case EXITABLE_SCENES.SN_HUB:
@@ -204,7 +211,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                 sceneToLoad = Constants.SN_TITLE;
                 break;
         }
-        SceneManager.LoadScene( sceneToLoad, LoadSceneMode.Single);
+        SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
     }
 
     private void OnCameraToggleButton()

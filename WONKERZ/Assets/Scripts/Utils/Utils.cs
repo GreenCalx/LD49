@@ -27,6 +27,20 @@ public struct Utils
         
             return (F, HasWrongNumber);
         }
+
+        // this is a correction of lamguage implementation of mod
+        // in our test the official impl is wrong :  0.5 % 0.1 returns 0.1!!!
+        public static int Mod(int a, int b) {
+            return ( a - ((int) (a/b)) * b );
+        }
+
+        public static float Mod(float a, float b) {
+            return a - Mathf.FloorToInt(a/b)*b;
+        }
+
+        public static double Mod(double a, double b) {
+            return ( a - (double)Mathf.FloorToInt( (float) (a/b)) * b );
+        }
     }
     
     public static GameObject getPlayerRef()
@@ -42,11 +56,11 @@ public struct Utils
         else
             Debug.LogWarning("InputManager is null. Failed to detach.");
     }
-    public static void detachUniqueControllable<T>(T toDetach)
+    public static void detachUniqueControllable()
     {
         InputManager IM = Access.InputManager();
         if (!!IM)
-            IM.UnsetUnique(toDetach as IControllable);
+            IM.UnsetUnique();
         else
             Debug.LogWarning("InputManager is null. Failed to detach unique.");
     }

@@ -28,11 +28,6 @@ public class GarageEntry : MonoBehaviour,IControllable
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     void OnTriggerEnter(Collider iCol)
     {
         playerCC = iCol.GetComponent<CarController>();
@@ -73,10 +68,9 @@ public class GarageEntry : MonoBehaviour,IControllable
 
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
+        uig.onActivate.Invoke();
         garageOpened = true;
 
-        Utils.attachUniqueControllable<UIGarage>(uig);
-        //Utils.detachControllable<CarController>(playerCC);
         playerCC.isFrozen = true;
     }
 
@@ -84,8 +78,6 @@ public class GarageEntry : MonoBehaviour,IControllable
     {
         if (!garageOpened)
             return;
-
-        Utils.detachUniqueControllable<UIGarage>(Access.UIGarage());
 
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);
