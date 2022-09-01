@@ -17,6 +17,8 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public Button exitButton;
     public Button optionsButton;
     public Text   tracknameText;
+    public Button toggleButton;
+    public Toggle cameraToggle;
 
     [Header("Tweaks")]
     public float selector_latch = 0.2f;
@@ -27,6 +29,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     private bool menuIsOpened = false;
     private List<Button> selectables;
     private int index;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -42,9 +45,12 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     private void init()
     {
         exitButton.onClick.AddListener(OnExitButton);
+        toggleButton.onClick.AddListener(OnCameraToggleButton);
+        cameraToggle.onValueChanged.AddListener ( delegate {OnCameraToggleChange(cameraToggle);} );
 
         selectables = new List<Button>();
         
+        selectables.Add(toggleButton);
         selectables.Add(optionsButton);
         selectables.Add(exitButton);
 
@@ -75,12 +81,13 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                 float Y = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
                 if (Y < -0.2f)
                 {
-                    selectPrevious();
+                    
+                    selectNext();
                     elapsed_time = 0f;
                 }
                 else if ( Y > 0.2f )
                 {
-                    selectNext();
+                    selectPrevious();
                     elapsed_time = 0f;
                 }
             }
@@ -148,6 +155,14 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         }
     }
 
+    private void refreshCameraState()
+    {
+        cameraToggle.isOn = Access.CameraManager().active_camera ? 
+            (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.HUB) :
+            false
+            ;
+    }
+
     private void pauseGame(bool isPaused)
     {
         Time.timeScale = (isPaused ? 0 : 1);
@@ -170,6 +185,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         }
         menuIsOpened = true;
         refreshButtons();
+        refreshCameraState();
     }
 
     private void OnExitButton()
@@ -189,5 +205,20 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                 break;
         }
         SceneManager.LoadScene( sceneToLoad, LoadSceneMode.Single);
+    }
+
+    private void OnCameraToggleButton()
+    {
+        cameraToggle.isOn = !cameraToggle.isOn;
+    }
+
+    private void OnCameraToggleChange(Toggle iToggle)
+    {
+        if (iToggle.isOn)
+        {
+            Access.CameraManager().changeCamera( GameCamera.CAM_TYPE.HUB );
+        } else {
+            Access.CameraManager().changeCamera( GameCamera.CAM_TYPE.TRACK );
+        }
     }
 }
