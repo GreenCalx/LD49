@@ -4,14 +4,16 @@ using UnityEngine;
 
 /// STARTING POINT FOR HUB
 // > ACTIVATES TRICKS AUTO
-public class StartPortal : MonoBehaviour
+public class StartPortal : AbstractCameraPoint
 {
     [Header("Behaviour")]
     public bool enable_tricks = false;
     public GameCamera.CAM_TYPE camera_type;
 
     [Header("Optionals")]
-    public GameObject playerRef;
+    public Transform facingPoint;
+
+    private GameObject playerRef;
 
     // Start is called before the first frame updatezd
     void Start()
@@ -34,11 +36,14 @@ public class StartPortal : MonoBehaviour
         
     }
 
-    private void relocatePlayer()
+    public void relocatePlayer()
     {
-        playerRef.transform.position = transform.position;   
-        playerRef.transform.rotation = Quaternion.identity;  
-
+        playerRef.transform.position = transform.position;
+        playerRef.transform.rotation = Quaternion.identity;
+        if (facingPoint!=null)
+        {
+            playerRef.transform.LookAt(facingPoint.transform);
+        }
         Rigidbody rb2d = playerRef.GetComponentInChildren<Rigidbody>();
         if (!!rb2d)
         {

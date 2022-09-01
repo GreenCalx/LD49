@@ -31,6 +31,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
         refreshCameras();
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
+        if (last_camerapoint==null)
+            last_camerapoint = race_start.GetComponent<StartPortal>();
 
         Utils.attachControllable<CheckPointManager>(this);
     }
@@ -111,21 +113,28 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public void loadLastCP()
     {
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
-        last_camerapoint = as_cp;
-        if (as_cp == null)
-            Debug.Log("not a cp");
-
-        GameObject respawn = as_cp.getSpawn();
-
-        Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
-        if (!!rb2d)
+        if (as_cp != null)
         {
-            rb2d.velocity = Vector3.zero;
-            rb2d.angularVelocity = Vector3.zero;
+            last_camerapoint = as_cp;
+            GameObject respawn = as_cp.getSpawn();
 
+            Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
+            if (!!rb2d)
+            {
+                rb2d.velocity = Vector3.zero;
+                rb2d.angularVelocity = Vector3.zero;
+
+            }
+            player.transform.position = respawn.transform.position;
+            player.transform.rotation = respawn.transform.rotation;
+        } else {
+            StartPortal as_sp = last_checkpoint.GetComponent<StartPortal>();
+            if (as_sp!=null)
+            {
+                last_camerapoint = as_sp;
+            }
+            as_sp.relocatePlayer();
         }
-        player.transform.position = respawn.transform.position;
-        player.transform.rotation = respawn.transform.rotation;
 
         // Update caemra too !
         var Direction = Cam.transform.position - player.transform.position;
