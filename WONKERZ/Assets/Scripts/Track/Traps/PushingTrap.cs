@@ -95,6 +95,6 @@ public class PushingTrap : Trap
     public override void OnRest(float iCooldownPercent)
     {
         selfHintMatRef.SetColor("_EmissionColor", getCurrentEmissiveColor(iCooldownPercent, true));
-        pushingAction.stopKick();
+        //pushingAction.stopKick();
     }
 }

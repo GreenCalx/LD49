@@ -187,6 +187,9 @@ MonoBehaviour:
   worker: {fileID: 8586516723777556430}
   workstation: {fileID: 2177329106924108724}
   linkedTrap: {fileID: 421795200}
+  startTimeOffset: 0
+  timeToLoadTrap: 1
+  restTimeBetweenActivations: 1
   isWheeling: 0
 --- !u!1001 &410919695018571059
 PrefabInstance:
@@ -406,10 +409,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pushingAction: {fileID: 421795202}
+  loadingHintRendererCarrier: {fileID: 0}
+  loadingHintMatRef: {fileID: 0}
   endPos: {fileID: 3784657671795920496}
   timeBeforeReset: 2
   trapSpeed: 100
   smoothTimeOnReset: 0.5
+  emissiveRangeLowPoint: 0
+  emissiveRangeHighPoint: 0
   isTriggered: 0
 --- !u!65 &421795205
 BoxCollider:
@@ -422,8 +429,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.4636626, y: 0.02794128, z: 0.21366252}
-  m_Center: {x: -0.000000349335, y: -0.16891424, z: -0.12500027}
+  m_Size: {x: 0.4636626, y: 0.08389427, z: 0.22832094}
+  m_Center: {x: -0.00000035008452, y: -0.14093792, z: -0.12764351}
 --- !u!114 &421795202
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,7 +448,7 @@ MonoBehaviour:
   kickStrength: 1
   Y_Slope: 0
   massMultiplier: 1
-  autoColliderDisable: 0
+  autoColliderDisable: 1
   kicking: 0
 --- !u!1001 &6104354737295286384
 PrefabInstance:
@@ -542,5 +549,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5617680292418415428}
-  timeToLoadTrap: 5
-  restTimeBetweenActivations: 5

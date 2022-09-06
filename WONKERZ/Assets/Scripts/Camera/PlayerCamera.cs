@@ -11,6 +11,7 @@ public class PlayerCamera : GameCamera
     public float FOVEffect_speedThreshold;
     [Range(0.01f,1.00f)]
     public float FOVEffect_LerpStep;
+    public float FOV_UpperLimit = 100f;
     public GameObject playerRef;
     
     // Start is called before the first frame update
@@ -33,6 +34,7 @@ public class PlayerCamera : GameCamera
         double apply_factor = (iSpeed-FOVEffect_speedThreshold)/100;
         apply_factor = (apply_factor<0)? 0:apply_factor; // remove neg vals
         float newFOV = initial_FOV + ((initial_FOV*(float)apply_factor)*FOVEffect_damp);
+        newFOV = (newFOV > FOV_UpperLimit) ? FOV_UpperLimit : newFOV;
         cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newFOV, FOVEffect_LerpStep);
     }
 
