@@ -2,20 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DynamicTrackElem : MonoBehaviour
+/// Now unused
+// Its goal is to represent every dynamic elem on a track
+// such as traps, moving platforms, etc.. to work on synchronicity
+public abstract class DynamicTrackElem : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public virtual void trigger()
-    {}
+    public virtual void start() {}
 }
