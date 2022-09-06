@@ -13,6 +13,7 @@ public class KickAction : MonoBehaviour
     public float kickStrength = 5.0f;
     public float Y_Slope;
     public float massMultiplier = 10f;
+    public bool autoColliderDisable = false;
 
 
     [HideInInspector]
@@ -23,7 +24,8 @@ public class KickAction : MonoBehaviour
     {
         kickCollider = GetComponent<BoxCollider>();
         kicking = false;
-        kickCollider.enabled = false;
+        if (autoColliderDisable)
+            kickCollider.enabled = false;
 
     }
 
@@ -42,13 +44,15 @@ public class KickAction : MonoBehaviour
     public void kick()
     {
         kicking = true;
-        kickCollider.enabled = true;
+        if (autoColliderDisable)
+            kickCollider.enabled = true;
     }
 
     public void stopKick()
     {
         kicking = false;
-        kickCollider.enabled = false;
+        if (autoColliderDisable)
+            kickCollider.enabled = false;
     }
 
     Vector3 computeKickDirection()
