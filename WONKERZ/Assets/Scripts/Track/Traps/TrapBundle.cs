@@ -13,10 +13,12 @@ public class TrapBundle : MonoBehaviour
     public float startTimeOffset            = 0f;
     public float timeToLoadTrap             = 1f;
     public float restTimeBetweenActivations = 1f;
+    public bool isAlwaysInCharge = false;
 
     protected float trapLoadElapsedTime;
     protected float trapRestElapsedTime;
     protected float trapStartElapsedTime;
+
 
     // Start is called before the first frame update
     void Start()

@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WheeledPowerTrap : TrapBundle
 {   
-    [Header("ANIM PARM")]
     public readonly string AnimIsWheeling = "isWheeling";
     public bool isWheeling = false;
 
@@ -24,6 +23,17 @@ public class WheeledPowerTrap : TrapBundle
     {
         if ((startTimeOffset >= trapStartElapsedTime)&&(startTimeOffset>=0.1f))
         { trapStartElapsedTime+=Time.deltaTime; return; }
+
+        if (isAlwaysInCharge)
+        {
+            if (!isWheeling)
+            {
+                isWheeling = true;
+                updateAnimations();
+            }
+            linkedTrap.OnCharge();
+            return;
+        }
 
         if (isWheeling)
             trapLoadElapsedTime += Time.deltaTime;
