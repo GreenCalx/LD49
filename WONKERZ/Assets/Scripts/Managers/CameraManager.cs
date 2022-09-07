@@ -61,7 +61,7 @@ public class CameraManager : MonoBehaviour
     {
         // refresh cameras and disable active_camera
         active_camera = null;
-        //cameras.Clear();
+        cameras.Clear();
     }
 
     // Find Camera from its type within current scene
