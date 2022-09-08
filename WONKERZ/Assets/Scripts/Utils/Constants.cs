@@ -18,6 +18,7 @@ public struct Constants
     public const string SN_MAINGAME="main";
     public const string SN_FINISH="finishscene";
     public const string SN_HUB="HUB";
+    public const string SN_LOADING="LoadingScene";
 
 
     // -- Global GameObjects --

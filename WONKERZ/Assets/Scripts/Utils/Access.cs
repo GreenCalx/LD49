@@ -132,4 +132,9 @@ public class Access
     {
         return cache.getObject<SoundManager>(Constants.GO_SOUNDMANAGER, false);
     }
+
+    public static SceneLoader SceneLoader()
+    {
+        return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
+    }
 }

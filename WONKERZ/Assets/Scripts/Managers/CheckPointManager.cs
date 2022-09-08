@@ -63,7 +63,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     {   
         if (Cam == null)
         {
-            Cam = CameraManager.Instance.active_camera.gameObject;
+            Cam = Access.CameraManager().active_camera.gameObject;
             Debug.LogWarning("Camera Ref refreshed in CheckPointManager.");
             foreach(GameObject cp in checkpoints)
             {

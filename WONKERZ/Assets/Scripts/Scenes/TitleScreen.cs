@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+/// TODO : We need to have the Manager GO asap for input manager, scene loader etc...
+// Add it here or in the stack by manual instantiation ?
 public class TitleScreen : MonoBehaviour, IControllable
 {
     public float CLICK_TIME = 0.8f;
@@ -34,7 +37,7 @@ public class TitleScreen : MonoBehaviour, IControllable
         }
         else if (Entry.Inputs["Jump"].IsDown && (time_offset>=CLICK_TIME) )
         {
-            SceneManager.LoadScene(Constants.SN_HUB, LoadSceneMode.Single);
+            Access.SceneLoader().loadScene(Constants.SN_HUB);
         }
     }
 }
