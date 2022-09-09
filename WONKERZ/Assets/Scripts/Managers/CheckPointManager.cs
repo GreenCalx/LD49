@@ -40,7 +40,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void Awake()
     {
-        refreshCameras();
     }
 
     void OnDestroy()
@@ -108,6 +107,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
         else
             Debug.LogWarning("CheckPointManager: Input GO is not a checkpoint.");
+    }
+
+    void OnDisable()
+    {
+        Debug.Log(UnityEngine.StackTraceUtility.ExtractStackTrace());
     }
 
     public void loadLastCP()
