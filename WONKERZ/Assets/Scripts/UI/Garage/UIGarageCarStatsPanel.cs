@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIGarageCarStatsPanel : UIGarageCancelablePanel
+public class UIGarageCarStatsPanel : UIGaragePanel
 {
     public GameObject UIGarageCurvePicker_Ref;
     private GameObject UIGarageCurvePicker_Inst;
@@ -43,27 +43,32 @@ public class UIGarageCarStatsPanel : UIGarageCancelablePanel
     }
 
 
-    public void updatePlayerCurve()
+    public void updatePlayerTorqueCurve()
     {
         GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
-        //cc.setCurve(curve.getSelectedCurve(), curve.selected_parm);
+        for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
+            var v = graphPanel.graphRenderer.view.points[i];
+            var k = cc.TORQUE[i];
+            k.time = v.x;
+            k.value = v.y;
+            cc.TORQUE.MoveKey(i, k);
+        }
         Debug.Log("player curve updated");
     }
 
-    public void open()
+    public void updatePlayerWeightCurve()
     {
-        gameObject.SetActive(true);
-        animateIn();
-        foreach(UITab t in Tabs) {
-            t.onDeselect?.Invoke();
+        GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
+        CarController cc = player.GetComponent<CarController>();
+
+        for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
+            var v = graphPanel.graphRenderer.view.points[i];
+            var k = cc.WEIGHT[i];
+            k.time = v.x;
+            k.value = v.y;
+            cc.WEIGHT.MoveKey(i, k);
         }
+        Debug.Log("player curve updated");
     }
-
-    public void close()
-    {
-        animateOut();
-        gameObject.SetActive(false);
-    }
-
 }

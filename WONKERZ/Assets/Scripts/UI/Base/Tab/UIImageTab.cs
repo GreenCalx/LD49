@@ -13,13 +13,3 @@ public class UIImageTab : UITab
         image.color = C;
     }
 }
-
-public class UIGarageCancelableImageTab : UIGarageCancelableTab
-{
-    public Image image;
-
-    public override void setColor(Color C)
-    {
-        image.color = C;
-    }
-}

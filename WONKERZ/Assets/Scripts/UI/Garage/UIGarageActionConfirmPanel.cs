@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIGarageActionConfirmPanel : UIGarageCancelablePanel
+public class UIGarageActionConfirmPanel : UIGaragePanel
 {
 
     public string action_name;
@@ -16,15 +16,23 @@ public class UIGarageActionConfirmPanel : UIGarageCancelablePanel
         onConfirm = methodOnConfirm;
     }
 
+    public void confirm(){
+        onConfirm.Invoke();
+    }
+
     public void setTextBoxField(string iStr)
     {
         actionTextField.text = iStr;
     }
 
+    public override void activate(){
+        gameObject.SetActive(true);
+        base.activate();
+    }
+
     public override void deactivate()
     {
         base.deactivate();
-        onConfirm.Invoke();
-        gameObject.SetActive(isActivated);
+        gameObject.SetActive(false);
     }
 }

@@ -1,6 +1,3 @@
-using System.Security.AccessControl;
-using System;
-using System.Collections.Generic;
 using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -16,7 +13,7 @@ interface ISaveLoad
 public class EntityData
 {
     public string ResourcesPath;
-    public virtual void OnLoad(GameObject gameObject){}
+    public virtual void OnLoad(GameObject gameObject) { }
 }
 
 
@@ -27,48 +24,45 @@ public static class SaveAndLoad
     [HideInInspector]
     public static ArrayList datas = new ArrayList();
 
-    private static void updateFileName(string iFileName)
+    private static void updateFileName(ref string iFileName)
     {
         // CreateDirectory by default is readonly
         // But i can't manage to call the right using somehow...
         // TODO : Make the savefiles folder happen
 
-        fileName = /*Constants.FD_SAVEFILES +*/ iFileName;
-        /*
-        if (!Directory.Exists(Constants.FD_SAVEFILES))
-        {
-            DirectorySecurity securityRules = new DirectorySecurity();
-            securityRules.AddAccessRule(new FileSystemAccessRule("Users", FileSystemRights.FullControl, AccessControlType.Allow));
-            Directory.CreateDirectory(Constants.FD_SAVEFILES);
-        }
-        */
+        fileName = Application.persistentDataPath + "/" + /*Constants.FD_SAVEFILES +*/ iFileName;
     }
 
     public static bool save(string iFileName)
     {
-        updateFileName(iFileName);
+        updateFileName(ref iFileName);
 
         if (File.Exists(fileName))
         { File.Delete(fileName); }
         FileStream fs = new FileStream(fileName, FileMode.Create);
         BinaryFormatter formatter = new BinaryFormatter();
-        
+
         ArrayList save_datas = new ArrayList();
         foreach (object o in datas)
         {
-            ISaveLoad saveable_o = (ISaveLoad) o;
+            ISaveLoad saveable_o = (ISaveLoad)o;
             save_datas.Add(saveable_o.GetData());
         }
 
-        try{
+        try
+        {
             formatter.Serialize(fs, save_datas);
-        } catch ( System.Runtime.Serialization.SerializationException e){
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
             Debug.LogError("Failed to serialize : " + e.Message);
             return false;
-        } finally {
+        }
+        finally
+        {
             fs.Close();
         }
-        
+
         save_datas.Clear();
         save_datas = null;
         formatter = null;
@@ -79,29 +73,34 @@ public static class SaveAndLoad
 
     public static bool load(string iFileName)
     {
-        updateFileName(iFileName);
+        updateFileName(ref iFileName);
 
         if (!File.Exists(fileName))
         { return false; }
 
         FileStream fs = new FileStream(fileName, FileMode.Open);
         ArrayList load_datas;
-        
-        try {
+
+        try
+        {
             BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList) formatter.Deserialize(fs);
+            load_datas = (ArrayList)formatter.Deserialize(fs);
             formatter = null;
-        } catch ( System.Runtime.Serialization.SerializationException e){
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
             Debug.LogError("Failed to deserialize profile : " + e.Message);
             return false;
-        } finally {
+        }
+        finally
+        {
             fs.Close();
         }
 
         datas.Clear();
-        foreach ( object o in load_datas )
+        foreach (object o in load_datas)
         {
-            EntityData ed = (EntityData) o;
+            EntityData ed = (EntityData)o;
             ed.OnLoad(UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>(ed.ResourcesPath)));
         }
 
@@ -115,29 +114,34 @@ public static class SaveAndLoad
     // TODO : Make me Generic
     public static bool loadGarageProfile(string iFileName, UIGarageProfile target)
     {
-        updateFileName(iFileName);
+        updateFileName(ref iFileName);
 
         if (!File.Exists(fileName))
         { return false; }
 
         FileStream fs = new FileStream(fileName, FileMode.Open);
         ArrayList load_datas;
-        
-        try {
+
+        try
+        {
             BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList) formatter.Deserialize(fs);
+            load_datas = (ArrayList)formatter.Deserialize(fs);
             formatter = null;
-        } catch ( System.Runtime.Serialization.SerializationException e){
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
             Debug.LogError("Failed to deserialize profile : " + e.Message);
             return false;
-        } finally {
+        }
+        finally
+        {
             fs.Close();
         }
 
         datas.Clear();
-        foreach ( object o in load_datas )
+        foreach (object o in load_datas)
         {
-            EntityData ed = (EntityData) o;
+            EntityData ed = (EntityData)o;
             ed.OnLoad(target.gameObject);
         }
 
@@ -150,29 +154,34 @@ public static class SaveAndLoad
 
     public static bool loadGarageTest(string iFileName, UIGarageTestData target)
     {
-        updateFileName(iFileName);
+        updateFileName(ref iFileName);
 
         if (!File.Exists(fileName))
         { return false; }
 
         FileStream fs = new FileStream(fileName, FileMode.Open);
         ArrayList load_datas;
-        
-        try {
+
+        try
+        {
             BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList) formatter.Deserialize(fs);
+            load_datas = (ArrayList)formatter.Deserialize(fs);
             formatter = null;
-        } catch ( System.Runtime.Serialization.SerializationException e){
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
             Debug.LogError("Failed to deserialize profile : " + e.Message);
             return false;
-        } finally {
+        }
+        finally
+        {
             fs.Close();
         }
 
         datas.Clear();
-        foreach ( object o in load_datas )
+        foreach (object o in load_datas)
         {
-            EntityData ed = (EntityData) o;
+            EntityData ed = (EntityData)o;
             ed.OnLoad(target.gameObject);
         }
 

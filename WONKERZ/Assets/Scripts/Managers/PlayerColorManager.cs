@@ -82,7 +82,7 @@ public class PlayerColorManager : MonoBehaviour
                 if (matname.Length==0)
                     matname = "CarColor"; // default
 
-                string matPath = "Materials/"+matname;
+                string matPath = matname;
                 Material newmat = Resources.Load(matPath, typeof(Material)) as Material;
                 foreach( GameObject p in playerRefs )
                 {

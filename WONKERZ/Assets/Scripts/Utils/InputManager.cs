@@ -284,6 +284,9 @@ public class InputManager : MonoBehaviour
                 { nLockedFrames++; return; }
                 frameLock = true;
             }
+            else {
+                Access.TestManager().endTest(false);
+            }
         }
         else
         {

@@ -3,7 +3,7 @@ public struct Constants
 {
 
   // -- Debug vars --
-  public const bool DBG_REPLAYDUMP = true;
+  public const bool DBG_REPLAYDUMP = false;
 
   // -- Paths -- 
   public const string FD_SAVEFILES = "./savefiles/";

@@ -1,12 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
-public class UITab : UISelectableElement, IControllable
-{
-    public UISelectableElement toActivate;
+public class UIButton : UISelectableElement, IControllable {
+    // TODO : make activating input generic
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
@@ -19,28 +16,13 @@ public class UITab : UISelectableElement, IControllable
             onActivate?.Invoke();
     }
 
-     virtual public void select(){
+     override public void select(){
          base.select();
-
-         toActivate?.onSelect?.Invoke();
-
          Utils.attachControllable(this);
     }
 
-    virtual public void deselect(){
+    override public void deselect(){
          base.deselect();
-
-         toActivate?.onDeselect?.Invoke();
          Utils.detachControllable(this);
-    }
-
-    virtual public void activate(){
-         base.activate();
-
-         toActivate?.onActivate?.Invoke();
-    }
-
-    virtual public void deactivate(){
-        
     }
 }

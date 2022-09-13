@@ -77,7 +77,6 @@ public class UIGaragePickableTest : UITextTab
 
         if (!last_launch_failed) // dont display load error if test launch was a success
             txt_load_status.gameObject.SetActive(false);
-        uigtm.quitTest();
         SaveAndLoad.datas.Remove(test_data);
     }
 

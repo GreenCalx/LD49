@@ -14,12 +14,3 @@ public class UITextTab : UITab
         text.color = C;
     }
 }
-
-public class UIGarageCancelableTextTab : UIGarageCancelableTab {
-    public TextMeshProUGUI text;
-
-    public override void setColor(Color C)
-    {
-        text.color = C;
-    }   
-}

@@ -8,7 +8,6 @@ public class UIGaragePickableStat : UITextTab
 {
     public string XLabel;
     public string YLabel;
-    public AnimationCurve curve;
 
     override public void select()
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UIGraphPanel : UIGarageCancelablePanel
+public class UIGraphPanel : UIGaragePanel
 {
     public UIGraphRenderer graphRenderer;
     public UIGraphPoint UIGraphPoint_Ref;
@@ -14,34 +14,31 @@ public class UIGraphPanel : UIGarageCancelablePanel
         graphRenderer.SetVerticesDirty();
     }
 
-    public void activate()
+    override public void activate()
     {
-        Utils.attachUniqueControllable<UIGraphPanel>(this);
-        isActivated = true;
-
         int idx = 0;
         foreach (var pt in graphRenderer.view.points)
         {
             var uiPt = GameObject.Instantiate(UIGraphPoint_Ref, graphRenderer.gameObject.transform);
             uiPt.gameObject.SetActive(true);
             uiPt.transform.localPosition = graphRenderer.view.GraphUnitToDrawUnit(pt);
-            Tabs.Add(uiPt);
+            tabs.Add(uiPt);
             uiPt.index = idx++;
         }
-        Tabs[0].onSelect?.Invoke();
+
+        // base after tabs creation
+        base.activate();
+
     }
 
-    public void deactivate() {
-        foreach (UITab t in Tabs)
+    override public void deactivate() {
+        base.deactivate();
+
+        foreach (UITab t in tabs)
         {
-            t.onDeselect?.Invoke();
             GameObject.Destroy(t.gameObject);
         }
-        Tabs.Clear();
-        Utils.detachUniqueControllable();
-        isActivated = false;
-
-        activator.onSelect?.Invoke();
+        tabs.Clear();
     }
 
     public void hideCursor(){
@@ -64,7 +61,7 @@ public class UIGraphPanel : UIGarageCancelablePanel
             middleX = graphRenderer.view.axisBounds.xMin + middleSizeX / 2;
 
         }
-        else if (CurrentTab() == Tabs.Count - 1)
+        else if (CurrentTab() == tabs.Count - 1)
         {
             middleSizeX = (graphRenderer.view.GraphUnitToDrawUnit(graphRenderer.view.points[CurrentTab() - 1]).x - graphRenderer.view.axisBounds.xMax);
             middleX = graphRenderer.view.axisBounds.xMax + middleSizeX / 2;
@@ -86,7 +83,7 @@ public class UIGraphPanel : UIGarageCancelablePanel
     public void moveKey(int idx, float X, float Y)
     {
         var vec = new Vector2(X, Y) * speedInGraphUnit;
-        Tabs[idx].transform.localPosition += graphRenderer.view.GraphUnitToDrawUnitAbsolute(vec);
+        tabs[idx].transform.localPosition += graphRenderer.view.GraphUnitToDrawUnitAbsolute(vec);
         graphRenderer.view.points[idx] += vec;
         show();
         showCursor();

@@ -171,6 +171,8 @@ public class UIGarageTestManager : MonoBehaviour
             Utils.detachUniqueControllable();
             Destroy(testCC.gameObject);
         }
+
+        activeTest.onDeactivate?.Invoke();
         activeTest = null;
     }
 

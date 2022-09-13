@@ -21,9 +21,6 @@ public abstract class UISelectableElement : UIElement
     public Color activated_color;
     public UnityEvent onDeactivate;
 
-    public float elapsed_time;
-    public float selector_latch;
-
     public UISelectableElement activator;
 
     public bool copyColorFromParent = false;
@@ -36,7 +33,8 @@ public abstract class UISelectableElement : UIElement
         }
     }
 
-    virtual public void setColor(Color C) {}
+    virtual public void setColor(Color C) {
+    }
     virtual public void select(){
         setColor(selected_color);
     }
@@ -50,101 +48,61 @@ public abstract class UISelectableElement : UIElement
     }
 
     virtual public void deactivate(){
-
+        setColor(selected_color);
     }
 }
+
 
 public class UIPanel : UISelectableElement
 {
-    public void animateIn()
+    protected bool isActivated;
+
+    public override void activate()
     {
-        var animators = new List<Animator>(GetComponentsInChildren<Animator>());
-        if (animators != null)
-        {
-            foreach (Animator a in animators)
-            {
-                a.enabled = true;
-                a.updateMode = AnimatorUpdateMode.UnscaledTime; // as we pause game by putting deltaTime to 0
-                //a.SetTrigger("animatePanel");
-                a.Play("Base Layer.GaragePanelIn", -1, 0);
-            }
-        }
+        base.activate();
+
+        isActivated = true;
     }
 
-    public void animateOut()
+    public override void deactivate()
     {
-        var animators = new List<Animator>(GetComponentsInChildren<Animator>());
-        if (animators != null)
-        {
-            foreach (Animator a in animators)
-            {
-                a.enabled = true;
-                a.updateMode = AnimatorUpdateMode.UnscaledTime; // as we pause game by putting deltaTime to 0
-                //a.SetTrigger("animatePanel");
-                a.Play("Base Layer.GaragePanelOut", -1, 0);
-            }
-        }
+        base.deactivate();
+
+        isActivated = true;
     }
+
 }
 
-public class UITabbedPanel : UIPanel, IControllable
-{
-    public List<UITab> Tabs;
-    public int selected;
-
-    public enum Mode { Horizontal, Vertical };
-    public Mode CurrentMode;
+public class UIPanelControlable : UIPanel, IControllable {
+    // avoid too many inputs : we use axis they can be true for a long time
+    protected float elapsed_time = 0f;
+    public float selector_latch = 0f;
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         ProcessInputs(Entry);
     }
 
-    virtual protected void ProcessInputs(InputManager.InputData Entry){
-        if (elapsed_time > selector_latch)
-        {
-            float X = 0;
-            if (CurrentMode == Mode.Horizontal)
-            {
-                X = Entry.Inputs[Constants.INPUT_TURN].AxisValue;
-            }
-            else if (CurrentMode == Mode.Vertical)
-            {
-                X = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
-            }
-            if (X < -0.2f)
-            {
-                SelectTab(PreviousTab());
-                elapsed_time = 0f;
-            }
-            else if (X > 0.2f)
-            {
-                SelectTab(NextTab());
-                elapsed_time = 0f;
-            }
-
-        }
-        elapsed_time += Time.unscaledDeltaTime;
-    }
-
-    public int NextTab() { if (Tabs.Count == 0) return 0; return (selected + 1) % Tabs.Count; }
-    public int PreviousTab() { if (Tabs.Count == 0) return 0; return (selected - 1 + Tabs.Count) % Tabs.Count; }
-    public int CurrentTab() { return selected; }
-
-    public void SelectTab(int index)
+    virtual protected void ProcessInputs(InputManager.InputData Entry)
     {
-        if (Tabs.Count == 0) return;
-
-        GetTab(CurrentTab()).onDeselect?.Invoke();
-        selected = index;
-        GetTab(CurrentTab()).onSelect?.Invoke();
+        if (Entry.Inputs["Cancel"].IsDown && isActivated)
+            onDeactivate?.Invoke();
     }
-    public UITab GetTab(int index) { if (Tabs.Count == 0) return null; return Tabs[selected]; }
 
-    // Increment => SelectTab(NextTab());
-    // Decrement => SelectTab(PreviousTab())
+    public override void activate()
+    {
+        base.activate();
+
+        Utils.attachUniqueControllable(this);
+    }
+
+    public override void deactivate()
+    {
+        base.deactivate();
+
+        Utils.detachUniqueControllable();
+    }
 }
-
 
 public abstract class Graph : MonoBehaviour
 {

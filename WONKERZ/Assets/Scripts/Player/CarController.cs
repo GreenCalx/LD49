@@ -152,6 +152,8 @@ public class CarController : MonoBehaviour, IControllable
     // or we would potentially slam the car into the ground again by substracting the velocity.
     public int PhysicsSubSteps;
 
+    public UIGraphView debugTorque;
+
     [Header("Mecanics")]
     public bool IsHooked;
     // TODO toffa : remove this hardcoded object
@@ -699,7 +701,13 @@ public class CarController : MonoBehaviour, IControllable
         var Speed = Vector3.Dot(transform.forward, RB.velocity);
         var MaxSpeed = 100f;
         var RollingResistance = .2f;
-        var GripX = TORQUE.Evaluate(Mathf.Clamp01(Mathf.Abs(Speed) / MaxSpeed));
+
+        var torque = Mathf.Clamp01(Mathf.Abs(Speed) / MaxSpeed);
+        var GripX = TORQUE.Evaluate(torque);
+
+        debugTorque.currentValue = torque;
+
+
         var Force = -WheelVelocityY * GripY;
         Force += WheelForward * GripX * CarMotor.CurrentRPM;
         Force -= Speed > 1 ? WheelForward * RollingResistance * Mathf.Clamp01(1f - CarMotor.CurrentRPM) : Vector3.zero;
@@ -1023,6 +1031,7 @@ public class CarController : MonoBehaviour, IControllable
         var partmain = particules.main;
         partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
 
+        debugTorque.SetCurve(TORQUE);
 
     }
 

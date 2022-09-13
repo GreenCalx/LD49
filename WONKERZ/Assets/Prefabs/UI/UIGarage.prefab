@@ -384,10 +384,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 0
+  isActivated: 0
   toActivate: {fileID: 0}
   image: {fileID: 3816596119276243971}
 --- !u!1 &647257153022793412
@@ -974,10 +973,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 2443288426316825119}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 6424697484543094091}
   image: {fileID: 7239165918485019417}
 --- !u!1 &1642648890401069512
@@ -1234,10 +1232,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 0
+  isActivated: 0
   toActivate: {fileID: 0}
   image: {fileID: 8194988859162137934}
 --- !u!1 &1700609364803097961
@@ -1411,17 +1408,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 0}
   copyColorFromParent: 1
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 8338176663936506305}
   - {fileID: 5389733762841108001}
-  selected: 0
-  CurrentMode: 1
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  navigationMode: 1
+  inputHelper: {fileID: 4167855567282101335}
   action_name: 
   actionTextField: {fileID: 2746199270137007873}
 --- !u!95 &5680739719456409320
@@ -1751,10 +1745,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 2443288426316825119}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 6656177162620764295}
   image: {fileID: 5219276021167130987}
 --- !u!1 &1986580998970946200
@@ -2555,11 +2548,22 @@ MonoBehaviour:
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
+      m_Calls:
+      - m_Target: {fileID: 3714210338715463683}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 761604148781363453}
   test_data: {fileID: -4702677820390092140, guid: 299979c8ffda30d43926f4e83b3de2f8, type: 3}
@@ -2717,10 +2721,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 0}
   copyColorFromParent: 0
+  isActivated: 0
   toActivate: {fileID: 0}
   image: {fileID: 7316441140493761623}
 --- !u!1 &3274045032790494199
@@ -3283,21 +3286,38 @@ MonoBehaviour:
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
+      m_Calls:
+      - m_Target: {fileID: 3335288080176945403}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: updatePlayerWeightCurve
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 3280495855602608909}
   XLabel: weight
   YLabel: size
-  curve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &3879376212582314097
 GameObject:
   m_ObjectHideFlags: 0
@@ -3408,6 +3428,7 @@ MonoBehaviour:
     color: {r: 0, g: 0.92939377, b: 1, a: 1}
     thickness: 0.002
   inds: 
+  currentValue: 0
 --- !u!1 &4056149810369530885
 GameObject:
   m_ObjectHideFlags: 0
@@ -3659,17 +3680,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 3250941839584153397}
   copyColorFromParent: 1
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 3714210338715463683}
   - {fileID: 6022244455988058313}
-  selected: 0
-  CurrentMode: 1
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  navigationMode: 1
+  inputHelper: {fileID: 4167855567282101335}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &4240128228174379075
 GameObject:
@@ -4007,7 +4025,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2404907657628586622}
         m_TargetAssemblyTypeName: UIGarageActionConfirmPanel, Assembly-CSharp
-        m_MethodName: doAction
+        m_MethodName: confirm
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4033,10 +4051,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 8333641250060660487}
 --- !u!1 &4616960696448292433
@@ -4240,10 +4257,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 2955778439749855565}
 --- !u!1 &4922480060227342915
@@ -4519,7 +4535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c08b768c59e753449b65534e3de3553, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  Parent: {fileID: 6543749511385718803}
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -4583,15 +4599,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 0}
   copyColorFromParent: 1
-  Tabs: []
-  selected: 0
-  CurrentMode: 0
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  selector_latch: 0.2
+  tabs: []
+  navigationMode: 0
+  inputHelper: {fileID: 4167855567282101335}
   graphRenderer: {fileID: 4882201854505852795}
   UIGraphPoint_Ref: {fileID: 6500212415915309880}
   UIGraphCursor_Ref: {fileID: 5626642429807060134}
@@ -4755,19 +4768,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 0}
   copyColorFromParent: 0
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 2482382197152134356}
   - {fileID: 2959613121479996623}
   - {fileID: 3250941839584153397}
   - {fileID: 7803251183000712775}
   - {fileID: 3818145219182664534}
-  selected: 0
-  CurrentMode: 0
-  isActivated: 0
+  navigationMode: 0
   inputHelper: {fileID: 4167855567282101335}
 --- !u!1 &5422157297186737766
 GameObject:
@@ -5116,11 +5126,22 @@ MonoBehaviour:
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
+      m_Calls:
+      - m_Target: {fileID: 6022244455988058313}
+        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 4287985981074926559}
   test_data: {fileID: 2983450686861990788, guid: 7168a77ed142af34eaede7a4246fdab4, type: 3}
@@ -5379,17 +5400,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 7803251183000712775}
   copyColorFromParent: 1
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 6297958832454215664}
   - {fileID: 144805964691702639}
-  selected: 0
-  CurrentMode: 1
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  navigationMode: 1
+  inputHelper: {fileID: 4167855567282101335}
   profile: {fileID: 7908385237774879934}
   confirmPanel: {fileID: 2404907657628586622}
 --- !u!114 &7908385237774879934
@@ -5604,13 +5622,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 0}
   copyColorFromParent: 0
-  toActivate: {fileID: 0}
   isActivated: 0
+  toActivate: {fileID: 0}
   image: {fileID: 6214237657337955741}
+  selector_latch: 0.2
   index: 0
 --- !u!1 &5863464902962700954
 GameObject:
@@ -5986,10 +6003,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 2879241069384239638}
   profile_name: BASE
@@ -6354,10 +6370,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 2443288426316825119}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 6543749511385718803}
   image: {fileID: 4651174525618319714}
 --- !u!1 &6715596563129892311
@@ -6609,10 +6624,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 2443288426316825119}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   image: {fileID: 1876928691077571410}
 --- !u!1 &7133008044153180184
@@ -6839,7 +6853,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7485342201075873857}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b682ee7c5594ef4489fc89e4d30136c3, type: 3}
+  m_Script: {fileID: 11500000, guid: eb0df23b5ff9920498acabb1c5eadcf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 2443288426316825119}
@@ -6847,8 +6861,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6656177162620764295}
-        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
-        m_MethodName: open
+        m_TargetAssemblyTypeName: UIGaragePanel, Assembly-CSharp
+        m_MethodName: select
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6863,8 +6877,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6656177162620764295}
-        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
-        m_MethodName: close
+        m_TargetAssemblyTypeName: UIGaragePanel, Assembly-CSharp
+        m_MethodName: deselect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6879,8 +6893,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6656177162620764295}
-        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
-        m_MethodName: activated
+        m_TargetAssemblyTypeName: UIGaragePanel, Assembly-CSharp
+        m_MethodName: activate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6895,8 +6909,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6656177162620764295}
-        m_TargetAssemblyTypeName: UIGarageCosmeticsPanel, Assembly-CSharp
-        m_MethodName: deactivated
+        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6906,18 +6920,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 2959613121479996623}
   copyColorFromParent: 1
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 4134988146671346502}
   - {fileID: 1981256098317724075}
   - {fileID: 4029564812103378864}
-  selected: 0
-  CurrentMode: 0
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  navigationMode: 0
+  inputHelper: {fileID: 4167855567282101335}
 --- !u!1 &7567396576495828129
 GameObject:
   m_ObjectHideFlags: 0
@@ -7120,10 +7131,9 @@ MonoBehaviour:
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 1695229548409214758}
   profile_name: CUSTO 1
@@ -7364,21 +7374,38 @@ MonoBehaviour:
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
-  elapsed_time: 0
-  selector_latch: 0
+      m_Calls:
+      - m_Target: {fileID: 7476521093388406559}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6543749511385718803}
+        m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: updatePlayerTorqueCurve
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 4088854281836735329}
   XLabel: time
   YLabel: speed
-  curve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &7812475649513896257
 GameObject:
   m_ObjectHideFlags: 0
@@ -7553,10 +7580,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0
   activator: {fileID: 2443288426316825119}
   copyColorFromParent: 1
+  isActivated: 0
   toActivate: {fileID: 4281059883812146146}
   image: {fileID: 1326756144827646463}
 --- !u!1 &7904362109441940592
@@ -8551,17 +8577,14 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  elapsed_time: 0
-  selector_latch: 0.2
   activator: {fileID: 2482382197152134356}
   copyColorFromParent: 1
-  Tabs:
+  selector_latch: 0.2
+  tabs:
   - {fileID: 7476521093388406559}
   - {fileID: 3335288080176945403}
-  selected: 0
-  CurrentMode: 1
-  isActivated: 0
-  inputHelper: {fileID: 0}
+  navigationMode: 1
+  inputHelper: {fileID: 4167855567282101335}
   UIGarageCurvePicker_Ref: {fileID: 7033050716498084591, guid: 31cf197b8ecdc7e468752b6b5f104a15, type: 3}
   UICurveMotionRange_Ref: {fileID: 1956306207434592806, guid: a6ee084d50f890f48bc77b3702b318bc, type: 3}
   graphPanel: {fileID: 5719580709169169867}

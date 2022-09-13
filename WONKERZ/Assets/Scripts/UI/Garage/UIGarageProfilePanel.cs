@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UIGarageProfilePanel : UIGarageCancelablePanel
+public class UIGarageProfilePanel : UIGaragePanel
 {
     //public int n_slots = 5;    
     [Header("MAND")]
@@ -20,7 +20,6 @@ public class UIGarageProfilePanel : UIGarageCancelablePanel
 
         if (!!confirmPanel)
         {
-            confirmPanel.gameObject.SetActive(true);
             confirmPanel.Parent = this;
             confirmPanel.setTextBoxField("SAVE ?");
             confirmPanel.setConfirmAction(() => SaveAndLoad.save(profile_name));
@@ -45,7 +44,6 @@ public class UIGarageProfilePanel : UIGarageCancelablePanel
         SaveAndLoad.datas.Add(profile);
         if (!!confirmPanel)
         {
-            confirmPanel.gameObject.SetActive(true);
             confirmPanel.Parent = this;
             confirmPanel.setTextBoxField("LOAD ?");
             confirmPanel.setConfirmAction(() => updatePlayerFromProfile(profile_name) );

@@ -8,6 +8,7 @@ public class UIGraphView : Graph
     [HideInInspector]
     public List<int> inds = new List<int>();
 
+    public float currentValue;
     void Update()
     {
         RectTransform rectTransform = GetComponent<RectTransform>();
@@ -65,10 +66,6 @@ public class UIGraphView : Graph
         Vector2 crossDir = Vector2.Perpendicular(dir) * thickness;
         Vector2 p1temp = p1 + crossDir;
         float offset = 0;
-        // if (dir.x != 0f)
-        // {
-        //     offset = (p1.x - p1temp.x) / dir.x;
-        // }
         Vector2 crossDirReflected = offset * dir;
 
         Vector2 v1 = p1 + crossDir + crossDirReflected;
