@@ -77,7 +77,7 @@ public class CheckPoint : AbstractCameraPoint
             if (!!particles_blend)
                 particles_blend.Stop();
 
-            Cam = Access.CameraManager().active_camera.GetComponent<Camera>();
+            Cam = Access.CameraManager().active_camera?.GetComponent<Camera>();
             StartCameraAnimation();
         }
     }
