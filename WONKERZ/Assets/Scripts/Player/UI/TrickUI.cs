@@ -10,34 +10,50 @@ public class TrickUI : MonoBehaviour
     public TMPro.TextMeshProUGUI TRICKLINE_SCORE;
     public TMPro.TextMeshProUGUI TRICKLINE_TRICKS;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void recordingTrick()
     {
-        if (!!TRICKNAME)
+        if (!!TRICKNAME){
             TRICKNAME.color = Color.white;
+            var spring = TRICKNAME.GetComponent<Spring>();
+            if (spring) {
+                spring.rest = 0;
+            }
+        }
+
     }
 
     public void validateTrick()
     {
-        if (!!TRICKNAME)
+        if (!!TRICKNAME) {
             TRICKNAME.color = Color.green;
+
+            var spring = TRICKNAME.GetComponent<Spring>();
+            if (spring) {
+                spring.rest = 1;
+            }
+
+            var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
+            if (animation){
+                animation.mode = UIAnimateTransform.Mode.SUCCESS;
+            }
+        }
+
     }
 
     public void failTrick()
     {
-        if (!!TRICKNAME)
+        if (!!TRICKNAME) {
             TRICKNAME.color = Color.red;
+            var spring = TRICKNAME.GetComponent<Spring>();
+            if (spring) {
+                spring.rest = 1;
+            }
+
+            var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
+            if (animation){
+                animation.mode = UIAnimateTransform.Mode.FAIL;
+            }
+        }
     }
 
     public void displayTrick( string iTrick )

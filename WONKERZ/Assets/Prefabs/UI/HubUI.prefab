@@ -685,6 +685,8 @@ GameObject:
   - component: {fileID: 7815420160716270707}
   - component: {fileID: 3975470465379584589}
   - component: {fileID: 841623735836111270}
+  - component: {fileID: 1019996015}
+  - component: {fileID: 1019996019}
   m_Layer: 5
   m_Name: TRICK
   m_TagString: Untagged
@@ -699,7 +701,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2813678073511384279}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -808,6 +810,55 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1019996015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813678073511384279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11da41913ac83f04aa77c5cd8dcdd08d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rest: 0
+  max: 1
+  min: 0
+  f: 5
+  dr: 0.1
+  onValueChange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1019996019}
+        m_TargetAssemblyTypeName: UIAnimateTransform, Assembly-CSharp
+        m_MethodName: springCB_Animate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1019996019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2813678073511384279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d6e9e662ec50714d9f0dadbbf8756e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 0
+  rotateMin: 0
+  rotateMax: 10
+  scaleMin: 1
+  scaleMax: 1.1
 --- !u!1 &3753337512324346152
 GameObject:
   m_ObjectHideFlags: 0

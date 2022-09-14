@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public struct Utils
 {
-    
+
     public struct Math
     {
-        
-        public static (float, bool) ValidateFloat(float f) {
+
+        public static (float, bool) ValidateFloat(float f)
+        {
             bool IsWrongValue = float.IsNaN(f) || float.IsInfinity(f) || Mathf.Abs(f) > 10000;
             return (IsWrongValue ? 0 : f, !IsWrongValue);
         }
         /// This function return True if the Vector is good
         /// else it returns false, meaning at least one value was corrected.
-        public static (Vector3, bool) ValidateForce(Vector3 F) 
+        public static (Vector3, bool) ValidateForce(Vector3 F)
         {
             bool HasWrongNumber = true;
             bool IsGoodValue = false;
@@ -24,30 +23,33 @@ public struct Utils
             HasWrongNumber &= IsGoodValue;
             (F.z, IsGoodValue) = ValidateFloat(F.z);
             HasWrongNumber &= IsGoodValue;
-        
+
             return (F, HasWrongNumber);
         }
 
         // this is a correction of lamguage implementation of mod
         // in our test the official impl is wrong :  0.5 % 0.1 returns 0.1!!!
-        public static int Mod(int a, int b) {
-            return ( a - ((int) (a/b)) * b );
+        public static int Mod(int a, int b)
+        {
+            return (a - ((int)(a / b)) * b);
         }
 
-        public static float Mod(float a, float b) {
-            return a - Mathf.FloorToInt(a/b)*b;
+        public static float Mod(float a, float b)
+        {
+            return a - Mathf.FloorToInt(a / b) * b;
         }
 
-        public static double Mod(double a, double b) {
-            return ( a - (double)Mathf.FloorToInt( (float) (a/b)) * b );
+        public static double Mod(double a, double b)
+        {
+            return (a - (double)Mathf.FloorToInt((float)(a / b)) * b);
         }
     }
-    
+
     public static GameObject getPlayerRef()
     {
         return Access.Player().gameObject;
     }
-    
+
     public static void detachControllable<T>(T toDetach)
     {
         InputManager IM = Access.InputManager();
@@ -87,7 +89,7 @@ public struct Utils
     {
         return LayerMask.NameToLayer(iLayerName);
     }
-        
+
     public static void exitOnError(string e)
     {
         Debug.LogError(e);
