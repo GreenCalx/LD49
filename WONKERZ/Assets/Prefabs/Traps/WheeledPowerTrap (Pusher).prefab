@@ -190,6 +190,7 @@ MonoBehaviour:
   startTimeOffset: 0
   timeToLoadTrap: 1
   restTimeBetweenActivations: 1
+  isAlwaysInCharge: 0
   isWheeling: 0
 --- !u!1001 &410919695018571059
 PrefabInstance:
@@ -365,6 +366,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: -3228160327262199402, guid: c3e2ea829e335d4428845c9aad3d8bb6, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 1631547613698717351, guid: c3e2ea829e335d4428845c9aad3d8bb6, type: 3}
+    - target: {fileID: -3228160327262199402, guid: c3e2ea829e335d4428845c9aad3d8bb6, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5649dec3816550e4b8fc6ff7837128eb, type: 2}
     - target: {fileID: 919132149155446097, guid: c3e2ea829e335d4428845c9aad3d8bb6, type: 3}
       propertyPath: m_Name
       value: Pusher
@@ -410,7 +419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pushingAction: {fileID: 421795202}
   loadingHintRendererCarrier: {fileID: 0}
-  loadingHintMatRef: {fileID: 0}
+  loadingHintMatRef: {fileID: 1631547613698717351, guid: c3e2ea829e335d4428845c9aad3d8bb6, type: 3}
   endPos: {fileID: 3784657671795920496}
   timeBeforeReset: 2
   trapSpeed: 100
@@ -449,6 +458,8 @@ MonoBehaviour:
   Y_Slope: 0
   massMultiplier: 1
   autoColliderDisable: 1
+  useContactPointNormalForDirection: 0
+  drawHitPointNormals: 0
   kicking: 0
 --- !u!1001 &6104354737295286384
 PrefabInstance:
