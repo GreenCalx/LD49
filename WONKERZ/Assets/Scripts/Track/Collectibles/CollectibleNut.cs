@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CollectibleNut : MonoBehaviour
+public class CollectibleNut : AbstractCollectible
 {
     public float animTimeStep = 0.1f;
     public bool startUp;
@@ -59,5 +59,10 @@ public class CollectibleNut : MonoBehaviour
 
         transform.position = nextPos;
         elapsedTime = 0f;
+    }
+
+    protected override void OnCollect()
+    {
+        Destroy(gameObject);
     }
 }

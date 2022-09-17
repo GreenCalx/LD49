@@ -132,4 +132,9 @@ public class Access
     {
         return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
     }
+    
+    public static CollectiblesManager CollectiblesManager()
+    {
+        return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
+    }
 }

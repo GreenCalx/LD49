@@ -19,7 +19,7 @@ public struct Constants
     public const string SN_FINISH="finishscene";
     public const string SN_HUB="HUB";
     public const string SN_LOADING="LoadingScene";
-
+    public const string SN_DESERT="desert_track";
 
     // -- Global GameObjects --
     public const string GO_CPManager = "CheckpointManager";
