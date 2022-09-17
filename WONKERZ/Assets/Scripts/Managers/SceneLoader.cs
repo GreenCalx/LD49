@@ -59,8 +59,6 @@ public class SceneLoader : MonoBehaviour
 
     IEnumerator coordinator()
     {
-
-
         while(q.Count > 0)
         {
             if (runningCoroutine!=null)
