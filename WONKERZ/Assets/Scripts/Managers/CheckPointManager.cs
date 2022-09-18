@@ -28,7 +28,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             player = Utils.getPlayerRef();
         }
-        refreshCameras();
+        //refreshCameras();
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
         if (last_camerapoint==null)
