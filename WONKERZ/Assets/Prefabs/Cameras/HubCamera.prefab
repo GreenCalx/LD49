@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 384985052665168108}
   - component: {fileID: 8215968377043512466}
   - component: {fileID: 1185167716}
-  - component: {fileID: 9146344591090550490}
+  - component: {fileID: 6936423344444419166}
   m_Layer: 0
   m_Name: HubCamera
   m_TagString: Untagged
@@ -93,6 +93,7 @@ MonoBehaviour:
   FOVEffect_damp: 0.3
   FOVEffect_speedThreshold: 70
   FOVEffect_LerpStep: 0.3
+  FOV_UpperLimit: 100
   playerRef: {fileID: 0}
   focus: {fileID: 0}
   distance: 60
@@ -119,7 +120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat: {fileID: 2100000, guid: 90a19b5540cd93d41bbef412020f23cf, type: 2}
---- !u!81 &9146344591090550490
+--- !u!81 &6936423344444419166
 AudioListener:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
