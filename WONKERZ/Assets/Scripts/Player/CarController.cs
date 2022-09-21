@@ -697,7 +697,11 @@ public class CarController : MonoBehaviour, IControllable
         var f = Vector3.Cross(transform.up, W.Direction);
         var WheelVelocityY = Vector3.Project(WheelVelocity, f);
 
-        var GripY = WEIGHT.Evaluate(WheelVelocity.magnitude / WheelVelocityY.magnitude);
+        // NOTE toffa : dunno why but sometimes gives a runtime error
+        // possibly a unity bug
+        // just in case, even if i checked, we clamp
+        var v = WheelVelocityY.magnitude / WheelVelocity.magnitude;
+        var GripY = WEIGHT.Evaluate(Mathf.Clamp01(v));
         var Speed = Vector3.Dot(transform.forward, RB.velocity);
         var MaxSpeed = 100f;
         var RollingResistance = .2f;

@@ -79,7 +79,7 @@ public class Grass : MonoBehaviour
         triBuff = new ComputeBuffer(tris.Length, SOURCE_TRI_STRIDE, ComputeBufferType.Structured, ComputeBufferMode.Immutable);
         triBuff.SetData(tris);
 
-        drawBuffer = new ComputeBuffer(10 * numTriangles * maxBladeTriangles * 2, DRAW_STRIDE, ComputeBufferType.Append);
+        drawBuffer = new ComputeBuffer(100 * numTriangles * maxBladeTriangles * 2, DRAW_STRIDE, ComputeBufferType.Append);
         drawBuffer.SetCounterValue(0);
 
         argsBuffer = new ComputeBuffer(1, INDIRECT_ARGS_STRIDE, ComputeBufferType.IndirectArguments);
