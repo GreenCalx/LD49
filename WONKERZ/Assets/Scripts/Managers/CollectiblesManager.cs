@@ -59,4 +59,25 @@ public class CollectiblesManager : MonoBehaviour
             jar.collectNut(iCollectible as CollectibleNut);
         }
     }
+
+    public int getCollectedNuts(string iSceneName)
+    {
+        switch(iSceneName)
+        {
+            case Constants.SN_HUB:
+                return jar.collected_hub_nuts.Count;
+                break;
+            case Constants.SN_DESERT:
+                return jar.collected_desert_nuts.Count;
+                break;
+            default:
+            return -1;
+                break;
+        }
+    }
+
+    public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
+    {
+        return iCollectibleHandle.GetComponentsInChildren<T>(true).Length;
+    }
 }

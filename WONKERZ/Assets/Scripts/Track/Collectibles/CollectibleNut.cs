@@ -63,6 +63,7 @@ public class CollectibleNut : AbstractCollectible
 
     protected override void OnCollect()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+        //TODO : persist collected status
     }
 }

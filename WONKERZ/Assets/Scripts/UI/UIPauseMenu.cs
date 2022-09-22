@@ -14,6 +14,10 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     [Header("Mandatory")]
     public Text tracknameText;
+    public Text collectedNuts;
+
+    [Header("Track Handles")]
+    public GameObject collectiblesHandle;
 
     void Awake()
     {
@@ -30,6 +34,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         if (Entry.Inputs[Constants.INPUT_START].IsDown)
         {
             tracknameText.text = SceneManager.GetActiveScene().name;
+            updateTrackDetails();
 
             panel.onActivate.Invoke();
         }
@@ -72,5 +77,19 @@ public class UIPauseMenu : MonoBehaviour, IControllable
             (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.HUB) :
             false
             ;
+    }
+
+    public void updateTrackDetails()
+    {
+        // update collectibles
+        if (!!collectiblesHandle)
+        {
+            CollectiblesManager cm = Access.CollectiblesManager();
+            // collected nuts
+            string n_nuts = cm.getCollectedNuts(SceneManager.GetActiveScene().name).ToString();
+            string tot_nuts = cm.getCollectableCollectible<CollectibleNut>(collectiblesHandle).ToString();
+            collectedNuts.text = n_nuts + "/" + tot_nuts ; // TODO : get total nuts per track
+        }
+
     }
 }
