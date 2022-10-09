@@ -408,11 +408,12 @@ public class CarController : MonoBehaviour, IControllable
 
         var SpringDirection = -transform.up;
         var SpringAnchor = S.Spring.Anchor.transform.position;
-        // IMPORTANT toffa : the physic step might be too high and miss a collision!
-        // Therefore we detect the collision by taking into account the next velocity application in the ray
-        // as we are doing the detection by hand.
-        // NOTE toffa first we compute the real velocity that will be applied this frame to the point
-        // and we project it along the suspension.
+        // IMPORTANT toffa : the physic step might be too high and miss a
+        // collision! Therefore we detect the collision by taking into account
+        // the next velocity application in the ray as we are doing the
+        // detection by hand. NOTE toffa first we compute the real velocity that
+        // will be applied this frame to the point and we project it along the
+        // suspension.
         var WheelPosition = GetEnd(S);
         var NextWheelPosition = GetNextPointPosition(WheelPosition);
         var Epsilon = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;

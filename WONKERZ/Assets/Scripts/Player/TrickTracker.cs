@@ -113,20 +113,15 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
-        Vector3 curr_PYR = MathUtils.getPYR(player_transform.rotation);
-
-        // rad to deg simplified as integers
-        int pitch_deg   = (int)( curr_PYR.x * 180/Mathf.PI ) ;
-        int yaw_deg     = (int)( curr_PYR.y * 180/Mathf.PI );
-        int roll_deg    = (int)( curr_PYR.z * 180/Mathf.PI );
+        Vector3 curr_PYR = player_transform.rotation.eulerAngles;
 
         // add to rec values
-        if (!rec_rot_x.Contains(pitch_deg))
-            rec_rot_x.Add( pitch_deg );
-        if (!rec_rot_y.Contains(yaw_deg))
-            rec_rot_y.Add( yaw_deg );
-        if (!rec_rot_z.Contains(roll_deg))
-            rec_rot_z.Add( roll_deg );
+        if (!rec_rot_x.Contains(curr_PYR.x))
+            rec_rot_x.Add( curr_PYR.x );
+        if (!rec_rot_y.Contains(curr_PYR.y))
+            rec_rot_y.Add( curr_PYR.y);
+        if (!rec_rot_z.Contains(curr_PYR.z))
+            rec_rot_z.Add( curr_PYR.z);
 
         updateRotations();
     }

@@ -123,9 +123,9 @@ public class Access
         return cache.getObject<UIGarage>(Constants.GO_UIGARAGE, false);
     }
 
-    public static SoundManager SoundManager()
+    public static SoundManagerLoop SoundManager()
     {
-        return cache.getObject<SoundManager>(Constants.GO_SOUNDMANAGER, false);
+        return cache.getObject<SoundManagerLoop>(Constants.GO_SOUNDMANAGER, false);
     }
 
     public static SceneLoader SceneLoader()

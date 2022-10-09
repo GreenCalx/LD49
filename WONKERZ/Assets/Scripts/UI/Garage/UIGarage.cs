@@ -7,6 +7,12 @@ using TMPro;
 public class UIGarage : UIGaragePanel {
     private GarageEntry garageEntry;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        inputMgr = Access.InputManager();
+    }
+
     override public void deactivate() {
         base.deactivate();
         garageEntry.closeGarage();

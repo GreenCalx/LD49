@@ -236,7 +236,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 945230565668466959}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b6ad6931aeb74b4cabc75a112717811, type: 3}
+  m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 5480134562950895303}
@@ -299,9 +299,9 @@ MonoBehaviour:
   onActivate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1083657764902074107}
+      - m_Target: {fileID: 6347815450125897671}
         m_TargetAssemblyTypeName: UITab, Assembly-CSharp
-        m_MethodName: deactivate
+        m_MethodName: activate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -317,6 +317,9 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  inputMgr: {fileID: 0}
+  inputActivate: Jump
+  inputManager: {fileID: 0}
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 3599983271677792458}
@@ -1437,7 +1440,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5781486767123585988}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c82113ca8ac8a94a9568818acaa5c12, type: 3}
+  m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 0}
@@ -1465,7 +1468,7 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 5480134562950895303}
-        m_TargetAssemblyTypeName: UIUniqueControlCancelablePanel, Assembly-CSharp
+        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
         m_MethodName: activate
         m_Mode: 1
         m_Arguments:
@@ -1474,7 +1477,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 4247031325556475338}
         m_TargetAssemblyTypeName: UIPauseMenu, Assembly-CSharp
@@ -1530,13 +1533,16 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
+  inputMgr: {fileID: 0}
   selector_latch: 0.2
   tabs:
-  - {fileID: 6347815450125897671}
-  - {fileID: 5626644715618224164}
-  - {fileID: 1083657764902074107}
-  - {fileID: 8623105448777247096}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   navigationMode: 1
+  inputVert: UIUpDown
+  inputHori: Turn
 --- !u!1 &6209330785614270723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1650,7 +1656,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2dc21f1317225c49bd7afa3d1df453c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 5480134562950895303}
+  panel: {fileID: 0}
   sceneToLoadOnExit: 1
   tracknameText: {fileID: 1862358102752931894}
   collectedNuts: {fileID: 8849177077622078872}
@@ -1702,7 +1708,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6575214873141122699}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ced57f2d54d51404f8bbad73b79a8cc8, type: 3}
+  m_Script: {fileID: 11500000, guid: d4a83f48e9011064ab202c75aee852a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 5480134562950895303}
@@ -1710,7 +1716,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5626644715618224164}
-        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_TargetAssemblyTypeName: UICheckbox, Assembly-CSharp
         m_MethodName: select
         m_Mode: 1
         m_Arguments:
@@ -1738,7 +1744,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5626644715618224164}
-        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_TargetAssemblyTypeName: UICheckbox, Assembly-CSharp
         m_MethodName: deselect
         m_Mode: 1
         m_Arguments:
@@ -1766,7 +1772,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5626644715618224164}
-        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_TargetAssemblyTypeName: UICheckbox, Assembly-CSharp
         m_MethodName: activate
         m_Mode: 1
         m_Arguments:
@@ -1782,7 +1788,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 5626644715618224164}
-        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -1795,6 +1801,9 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  inputMgr: {fileID: 0}
+  inputActivate: Jump
+  inputManager: {fileID: 0}
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 1913803255082937322}
@@ -2007,10 +2016,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8223795856281693471}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b6ad6931aeb74b4cabc75a112717811, type: 3}
+  m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 5480134562950895303}
+  Parent: {fileID: 0}
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -2071,7 +2080,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8623105448777247096}
-        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -2100,6 +2109,9 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  inputMgr: {fileID: 0}
+  inputActivate: Jump
+  inputManager: {fileID: 0}
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 3847922503718782340}
@@ -2372,7 +2384,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8645893052262596336}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b6ad6931aeb74b4cabc75a112717811, type: 3}
+  m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 5480134562950895303}
@@ -2398,18 +2410,6 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2465,6 +2465,9 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  inputMgr: {fileID: 0}
+  inputActivate: Jump
+  inputManager: {fileID: 0}
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 2560256663659322062}

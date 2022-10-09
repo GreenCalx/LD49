@@ -14,9 +14,9 @@ public class TrickUI : MonoBehaviour
     {
         if (!!TRICKNAME){
             TRICKNAME.color = Color.white;
-            var spring = TRICKNAME.GetComponent<Spring>();
+            var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring) {
-                spring.rest = 0;
+                spring.spring.rest = 0;
             }
         }
 
@@ -27,9 +27,9 @@ public class TrickUI : MonoBehaviour
         if (!!TRICKNAME) {
             TRICKNAME.color = Color.green;
 
-            var spring = TRICKNAME.GetComponent<Spring>();
+            var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring) {
-                spring.rest = 1;
+                spring.spring.rest = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
@@ -44,9 +44,9 @@ public class TrickUI : MonoBehaviour
     {
         if (!!TRICKNAME) {
             TRICKNAME.color = Color.red;
-            var spring = TRICKNAME.GetComponent<Spring>();
+            var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring) {
-                spring.rest = 1;
+                spring.spring.rest = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();

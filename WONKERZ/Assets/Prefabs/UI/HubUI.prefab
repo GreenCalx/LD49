@@ -819,14 +819,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 2813678073511384279}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11da41913ac83f04aa77c5cd8dcdd08d, type: 3}
+  m_Script: {fileID: 11500000, guid: b39a4cdb41f13b94e948b8982ac34cf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rest: 0
-  max: 1
-  min: 0
-  f: 5
-  dr: 0.1
+  spring:
+    rest: 0
+    max: 20
+    min: -20
+    f: 1
+    dr: 0.2
   onValueChange:
     m_PersistentCalls:
       m_Calls:
