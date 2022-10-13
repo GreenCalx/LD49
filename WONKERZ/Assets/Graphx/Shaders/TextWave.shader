@@ -51,7 +51,7 @@ Shader "Custom/TextWave"
             //float sinwave_point = sin( k * (vp.y - _Speed*_Time.y ));
             //float sinwave_point = sin ( vp.y +1 );
             //vp.z = _Amplitude * sinwave_point;
-            vp.z += _Amplitude * sin( k * (vp.y- _Speed*_Time.z) );
+            vp.x += _Amplitude * sin( k * (vp.y- _Speed*_Time.z) );
             vertexData.vertex.xyz = vp.xyz;
 
             // Normal update
@@ -64,7 +64,7 @@ Shader "Custom/TextWave"
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
+            fixed4 c = tex2D (_MainTex, IN.uv_MainTex * _SinTime.x) * _Color;
             o.Albedo = c.rgb;
             o.Emission = c.rgb * tex2D(_MainTex, IN.uv_MainTex).a * _EmissionColor;
             o.Metallic = _Metallic;

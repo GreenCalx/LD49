@@ -23,6 +23,11 @@ public class CollectibleNut : AbstractCollectible
     private float travelTime;
     private float startTime;
 
+    void Awake()
+    {
+        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +40,8 @@ public class CollectibleNut : AbstractCollectible
         startTime = Time.time;
         ///
         transform.position = (startUp) ? maxPos : minPos;
+        
+        Access.CollectiblesManager().subscribe(this);
     }
 
     // Update is called once per frame
@@ -65,5 +72,6 @@ public class CollectibleNut : AbstractCollectible
     {
         gameObject.SetActive(false);
         //TODO : persist collected status
+        Access.CollectiblesManager().applyCollectEffect(this);
     }
 }

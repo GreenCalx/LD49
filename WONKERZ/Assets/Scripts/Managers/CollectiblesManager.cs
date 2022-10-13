@@ -33,11 +33,25 @@ public class CollectiblesManager : MonoBehaviour
         }
     }
 
+    public enum COLLECT_MOD { NEUTRAL=0, HEAVEN=1, HELL=2 }
+    private COLLECT_MOD collectMod;
+    public int collectModCombo;
     public CollectibleJar jar;
+    public List<AbstractCollectible> allCollectiblesInCurrStage;
+
+    [Header("Tweakables")]
+    public Material heavenModeMat;
+    public Material hellModeMat;
+
+    void Awake()
+    {
+        allCollectiblesInCurrStage = new List<AbstractCollectible>();
+    }
 
     // Start is called before the first frame update
     void Start()
     {
+        collectModCombo = 0;
         jar = new CollectibleJar();
         loadJar();
     }
@@ -79,5 +93,40 @@ public class CollectiblesManager : MonoBehaviour
     public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
     {
         return iCollectibleHandle.GetComponentsInChildren<T>(true).Length;
+    }
+
+    public void changeCollectMod( COLLECT_MOD iCollectMod )
+    {
+        if (iCollectMod != collectMod)
+        {
+            // break combo
+            collectModCombo = 0;
+            collectMod = iCollectMod;
+            
+            // update collectibles skin
+            foreach(AbstractCollectible ac in allCollectiblesInCurrStage)
+            {
+                MeshRenderer mr = ac.gameObject.GetComponent<MeshRenderer>();
+                if (iCollectMod == COLLECT_MOD.HELL)
+                    mr.material = hellModeMat;
+                else
+                    mr.material = heavenModeMat;
+            }
+
+            // update player skin
+
+        }
+        collectModCombo++;
+    }
+
+    public void applyCollectEffect(AbstractCollectible AC)
+    {
+
+    }
+
+    public void subscribe(AbstractCollectible AC)
+    {
+        if (!allCollectiblesInCurrStage.Exists(x => x.gameObject.name == AC.gameObject.name))
+            allCollectiblesInCurrStage.Add(AC);
     }
 }

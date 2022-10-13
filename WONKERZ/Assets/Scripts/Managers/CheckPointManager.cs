@@ -84,7 +84,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     public bool subscribe(GameObject iCP)
     {
-        if (iCP.GetComponent<CheckPoint>())
+        if (iCP.GetComponent<CheckPoint>() && !checkpoints.Exists(x => x.gameObject.name == iCP.gameObject.name))
         { checkpoints.Add(iCP); return true; }
         return false;
     }
