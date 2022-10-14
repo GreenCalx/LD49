@@ -50,7 +50,9 @@ public class ManualCamera : PlayerCamera, IControllable
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry) {
-        input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
+        input = Vector3.zero;
+        if (Input.GetMouseButton(0))
+            input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
     }
 
     public override void init()
@@ -70,7 +72,7 @@ public class ManualCamera : PlayerCamera, IControllable
         UpdateFocusPoint();
         Quaternion lookRotation;
         
-        if (ManualRotation() || autoRotation() )
+        if (ManualRotation()) // || autoRotation() )
         {
             constrainAngles();
             lookRotation = Quaternion.Euler(orbitAngles);

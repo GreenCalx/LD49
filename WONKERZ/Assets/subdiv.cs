@@ -62,9 +62,16 @@ public class subdiv : MonoBehaviour
                         }
                     }
 
+                    if (cell_vert.Count == 0) continue;
+
+                    int[] vert_table_copy = new int[vert_table.Length];
+                    for (int i = 0; i < vert_table.Length; ++i)
+                    {
+                        vert_table_copy[i] = vert_table[i];
+                    }
                     for (int t = 0; t < triangles.Length; t += 3)
                     {
-                        if (vert_table[triangles[t + 0]] != -1 || vert_table[triangles[t + 1]] != -1 || vert_table[triangles[t + 2]] != -1)
+                        if (vert_table_copy[triangles[t + 0]] != -1 || vert_table_copy[triangles[t + 1]] != -1 || vert_table_copy[triangles[t + 2]] != -1)
                         {
                             if (vert_table[triangles[t + 0]] != -1)
                                 cell_tri.Add(vert_table[triangles[t + 0]]);

@@ -74,7 +74,7 @@ public class CarController : MonoBehaviour, IControllable
 
     [System.Serializable]
     /// NOTE toffa : An axle is defined as having two suspension, separated by Width,
-    /// and separated from the center of mass of the car by Length.
+    /// and separated from the center of mass of the car by Length
     /// An axle can be Traction or not, meaning it will apply the motor force or not to its wheels.
     /// An axle can be Direction or not, meaning it will apply the direction or not to its wheels.
     public struct Axle
@@ -184,8 +184,9 @@ public class CarController : MonoBehaviour, IControllable
 
     void UpdateSuspensionRenderer(ref Spring S)
     {
-        S.Renderer.transform.position = S.Anchor.transform.position - transform.up * S.CurrentLength / 2;
-        S.Renderer.transform.localScale = new Vector3(1, S.CurrentLength / 2, 1);
+        S.Renderer.transform.position = S.Anchor.transform.position; // - transform.up * S.CurrentLength / 2;
+        var scale = S.Renderer.transform.localScale ;
+        S.Renderer.transform.localScale = new Vector3(scale.x, scale.y, S.CurrentLength / 20);
     }
 
     void UpdateSuspensionRenderers()
@@ -196,18 +197,28 @@ public class CarController : MonoBehaviour, IControllable
         UpdateSuspensionRenderer(ref RearAxle.Left.Spring);
     }
 
-    void UpdateWheelRenderer(Suspension S)
+    void UpdateWheelRenderer(Suspension S, bool inverseRot)
     {
         S.Wheel.Renderer.transform.position = GetEnd(S);
-        S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(0, Quaternion.FromToRotation(transform.forward, S.Wheel.Direction).eulerAngles.y, 90);
+        S.Wheel.Renderer.transform.localRotation *= Quaternion.Euler(0, 0,-CarMotor.CurrentRPM * 1 * (inverseRot?1:-1) );
+        #if false
+        var angle = Quaternion.FromToRotation(S.Wheel.Renderer.transform.InverseTransformDirection( S.Wheel.Renderer.transform.forward) ,S.Wheel.Renderer.transform.InverseTransformDirection(S.Wheel.Direction)).eulerAngles.y;
+        if(angle > 180f) angle -= 180f;
+        if(angle < -180f) angle += 360f;
+        var angles = S.Wheel.Renderer.transform.localRotation.eulerAngles;
+        angles.y += angle;
+        S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(angles);
+        #endif
+        S.Wheel.Renderer.transform.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(-90 * (inverseRot?1:-1), transform.up) * S.Wheel.Direction,S.Wheel.Renderer.transform.up);
+
     }
 
     void UpdateWheelsRenderer()
     {
-        UpdateWheelRenderer(FrontAxle.Right);
-        UpdateWheelRenderer(FrontAxle.Left);
-        UpdateWheelRenderer(RearAxle.Right);
-        UpdateWheelRenderer(RearAxle.Left);
+        UpdateWheelRenderer(FrontAxle.Right, false);
+        UpdateWheelRenderer(FrontAxle.Left, true);
+        UpdateWheelRenderer(RearAxle.Right, false );
+        UpdateWheelRenderer(RearAxle.Left, true);
     }
 
     /// ================== Draw =================
@@ -325,9 +336,13 @@ public class CarController : MonoBehaviour, IControllable
 
     void SpawnSuspensionRenderer(ref Spring S)
     {
-        S.Renderer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        //S.Renderer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        //S.Renderer.transform.parent = gameObject.transform;
+        //S.Renderer.GetComponent<CapsuleCollider>().enabled = false;
+
+        S.Renderer = Instantiate(S.Renderer);
         S.Renderer.transform.parent = gameObject.transform;
-        S.Renderer.GetComponent<CapsuleCollider>().enabled = false;
+        S.Renderer.SetActive(true);
     }
 
     void SpawnSuspensions()
@@ -340,20 +355,20 @@ public class CarController : MonoBehaviour, IControllable
         UpdateSuspensionRenderers();
     }
 
-    void SpawnWheel(ref Wheel W, Vector3 pos)
+    void SpawnWheel(ref Wheel W, Vector3 pos, float rot )
     {
-        W.Renderer = GameObject.Instantiate(W.Renderer, pos, W.Renderer.transform.rotation, transform);
+        W.Renderer = GameObject.Instantiate(W.Renderer, pos, Quaternion.Euler(0,rot,0), transform);
         W.Renderer.SetActive(true);
-        W.Renderer.transform.localScale = new Vector3(W.Radius * 2, W.Width, W.Radius * 2);
+        W.Renderer.transform.localScale = new Vector3(W.Radius, W.Radius, W.Width*2);
         W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
     }
 
     void SpawnWheels()
     {
-        SpawnWheel(ref FrontAxle.Right.Wheel, GetEnd(FrontAxle.Right));
-        SpawnWheel(ref FrontAxle.Left.Wheel, GetEnd(FrontAxle.Left));
-        SpawnWheel(ref RearAxle.Right.Wheel, GetEnd(RearAxle.Right));
-        SpawnWheel(ref RearAxle.Left.Wheel, GetEnd(RearAxle.Left));
+        SpawnWheel(ref FrontAxle.Right.Wheel, GetEnd(FrontAxle.Right), 90);
+        SpawnWheel(ref FrontAxle.Left.Wheel, GetEnd(FrontAxle.Left), -90);
+        SpawnWheel(ref RearAxle.Right.Wheel, GetEnd(RearAxle.Right), 90);
+        SpawnWheel(ref RearAxle.Left.Wheel, GetEnd(RearAxle.Left), -90);
     }
 
     void SpawnAxles()
@@ -705,7 +720,7 @@ public class CarController : MonoBehaviour, IControllable
         var GripY = WEIGHT.Evaluate(Mathf.Clamp01(v));
         var Speed = Vector3.Dot(transform.forward, RB.velocity);
         var MaxSpeed = 100f;
-        var RollingResistance = .2f;
+        var RollingResistance = .02f;
 
         var torque = Mathf.Clamp01(Mathf.Abs(Speed) / MaxSpeed);
         var GripX = TORQUE.Evaluate(torque);
@@ -715,7 +730,9 @@ public class CarController : MonoBehaviour, IControllable
 
         var Force = -WheelVelocityY * GripY;
         Force += WheelForward * GripX * CarMotor.CurrentRPM;
-        Force -= Speed > 1 ? WheelForward * RollingResistance * Mathf.Clamp01(1f - CarMotor.CurrentRPM) : Vector3.zero;
+        // rolling force is countering current movement
+        if (WheelVelocityX.magnitude >= 0.02f)
+            Force -= WheelVelocityX * RollingResistance;
 
         // var T = -WheelVelocityX * HitInfo.GroundI.Friction.x;
         // T -= WheelVelocityY * HitInfo.GroundI.Friction.y;
