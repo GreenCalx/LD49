@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Dummy : MonoBehaviour
 {
+
+    public int damageOnCollide = 2;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +16,14 @@ public class Dummy : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void OnCollisionEnter(Collision iCol)
+    {
+        CarController cc = iCol.gameObject.GetComponent<CarController>();
+        if (!!cc)
+        {
+            cc.takeDamage(damageOnCollide);
+        }
     }
 }

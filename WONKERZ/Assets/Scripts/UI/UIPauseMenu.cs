@@ -86,7 +86,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         {
             CollectiblesManager cm = Access.CollectiblesManager();
             // collected nuts
-            string n_nuts = cm.getCollectedNuts(SceneManager.GetActiveScene().name).ToString();
+            string n_nuts = cm.getCollectedNuts().ToString();
             string tot_nuts = cm.getCollectableCollectible<CollectibleNut>(collectiblesHandle).ToString();
             collectedNuts.text = n_nuts + "/" + tot_nuts ; // TODO : get total nuts per track
         }

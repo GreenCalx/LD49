@@ -31,6 +31,7 @@ public struct Constants
     public const string GO_MANAGERS = "------ MANAGERS ------";
     public const string GO_UIGARAGE = "UIGarage";
     public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
+    public const string GO_PLAYERUI = "PlayerUI";
     
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";

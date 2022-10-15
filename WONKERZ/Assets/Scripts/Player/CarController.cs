@@ -130,6 +130,9 @@ public class CarController : MonoBehaviour, IControllable
 
     [Header("Behaviours")]
     public bool isFrozen;
+    public bool isInvulnerable;
+    public float invulnerabilityTime = 1f;
+    private float invulnerabilityElapsedTime = 0f;
 
     [Header("Debug")]
     public float SpringStiffness;
@@ -953,6 +956,44 @@ public class CarController : MonoBehaviour, IControllable
         return currentSpeed;
     }
 
+    /// =============== Game Logic ==================
+    public void takeDamage(int iDamage)
+    {
+        if (isInvulnerable)
+            return;
+
+        CollectiblesManager cm = Access.CollectiblesManager();
+        int n_nuts = cm.getCollectedNuts();
+
+        if (n_nuts==0)
+        { 
+            // GAME OVER
+            Access.CheckPointManager().loadLastCP();
+        }
+
+        for (int i=0; i < n_nuts; i++)
+        {
+            GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
+            nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage();
+
+            float theta = Random.Range(0, 360f);
+            
+            float x_pos = cm.nutSpreadDistanceOnDamage * Mathf.Cos(theta);
+            float z_pos = cm.nutSpreadDistanceOnDamage * Mathf.Sin(theta);
+
+            nutFromDamage.transform.position = transform.position;
+            nutFromDamage.transform.position += new Vector3( x_pos, 0.5f, z_pos);
+        }
+        cm.loseNuts(iDamage);
+        isInvulnerable = true;
+        invulnerabilityElapsedTime = 0f;
+    }
+
+    public void useTurbo()
+    {
+
+    }
+
     /// =============== Unity ==================
 
     private void OnDestroy()
@@ -996,10 +1037,18 @@ public class CarController : MonoBehaviour, IControllable
 
     void Update()
     {
+        // Behaviours update
         if (isFrozen)
         {
             return;
         }
+        if (isInvulnerable)
+        {
+            invulnerabilityElapsedTime += Time.deltaTime;
+            isInvulnerable = (invulnerabilityElapsedTime < invulnerabilityTime);
+            // TODO : Animate player alpha ?
+        }
+        //
 
         FixedUpdateDone = false;
 

@@ -13,6 +13,7 @@ public class Access
 
         private GameObject GO_PLAYER;
         private GameObject GO_UIGARAGE;
+        private GameObject GO_UIPLAYER;
 /* IF WE WANT TO ECO GetComponent<> call..
         public InputManager         IM;
         public ResolutionManager    RM;
@@ -58,6 +59,9 @@ public class Access
             } else if (iHolder==Constants.GO_SOUNDMANAGER)
             {
                 handler = checkCacheObject(iHolder, ref GO_SOUNDMANAGER);
+            } else if ( iHolder==Constants.GO_PLAYERUI)
+            {
+                handler = checkCacheObject(iHolder, ref GO_UIPLAYER);
             }
             else
             { 
@@ -78,6 +82,7 @@ public class Access
             GO_PLAYER = null;
             GO_UIGARAGE = null;
             GO_SOUNDMANAGER = null;
+            GO_UIPLAYER = null;
         }
     }
 
@@ -136,5 +141,10 @@ public class Access
     public static CollectiblesManager CollectiblesManager()
     {
         return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
+    }
+
+    public static UITurboAndLifePool UITurboAndLifePool()
+    {
+        return cache.getObject<UITurboAndLifePool>(Constants.GO_PLAYERUI, true);
     }
 }

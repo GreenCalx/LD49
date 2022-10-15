@@ -7,6 +7,10 @@ public class CollectibleNut : AbstractCollectible
     public float animTimeStep = 0.1f;
     public bool startUp;
 
+    [Header("Mandatory")]
+    public Material matFromDamage;
+
+    [Header("Anim")]
     [Range(0f,10f)]
     public float yOscillation;
     [Range(0f,5f)]
@@ -23,9 +27,17 @@ public class CollectibleNut : AbstractCollectible
     private float travelTime;
     private float startTime;
 
+    [Header("Tweaks")]
+    public bool spawnedFromDamage = false;
+    public float timeBeforeDisappearing = 3f;
+    private float elapsedTimeAfterDamage = 0f;
+    public float blinkFreqAfterDamage = 10f;
+    [Range(0f,10f)]
+    public float blinkFreqAddFactor = 1.2f;
+
     void Awake()
     {
-        
+        elapsedTimeAfterDamage = 0f;
     }
 
     // Start is called before the first frame update
@@ -47,9 +59,24 @@ public class CollectibleNut : AbstractCollectible
     // Update is called once per frame
     void Update()
     {
-        //elapsedTime += Time.deltaTime;
-        //if (elapsedTime >= animTimeStep)
-            animate();
+        if (spawnedFromDamage)
+        {
+            elapsedTimeAfterDamage += Time.deltaTime;
+            if (elapsedTimeAfterDamage >= timeBeforeDisappearing )
+            { Destroy(gameObject); }
+            fromDamageAnimate();
+            return;
+        }
+
+        animate();
+    }
+
+    public void setSpawnedFromDamage()
+    {
+        spawnedFromDamage = true;
+        elapsedTimeAfterDamage = 0f;
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+        mr.material = matFromDamage;
     }
 
     void animate()
@@ -66,6 +93,21 @@ public class CollectibleNut : AbstractCollectible
 
         transform.position = nextPos;
         elapsedTime = 0f;
+    }
+
+    void fromDamageAnimate()
+    {
+        // alpha = (1+ cos(ft))/2, where f increases over time
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+        Material m = mr.material;
+        float alpha_val = (1 + Mathf.Cos(blinkFreqAfterDamage*elapsedTimeAfterDamage)) / 2;
+        
+        Color newCol = m.GetColor("_Color");
+        Debug.Log("ALPHA COL : " + alpha_val.ToString());
+        newCol.a = alpha_val;
+        m.SetColor("_Color", newCol);
+
+        blinkFreqAfterDamage += blinkFreqAddFactor;
     }
 
     protected override void OnCollect()

@@ -7,41 +7,96 @@ public class CollectiblesManager : MonoBehaviour
 {
     public class CollectibleJar
     {
-        // List of GO's names
-        public HashSet<string> collected_hub_nuts;
-        public HashSet<string> collected_desert_nuts;
+        public class UniqueJar<T> where T : AbstractCollectible
+        {
+            IDictionary<string,HashSet<string>> jar;
+
+            public UniqueJar()
+            {
+                jar = new Dictionary<string, HashSet<string>>(0);
+            }
+            public void addToJar(T iAC)
+            {
+                string scene_name = SceneManager.GetActiveScene().name;
+                checkJar(scene_name);
+                HashSet<string> collected;
+                jar.TryGetValue(scene_name, out collected );
+                collected.Add(iAC.gameObject.name);
+            }
+            public void removeFromJar(T iAC)
+            {
+                string scene_name = SceneManager.GetActiveScene().name;
+                checkJar(scene_name);
+                HashSet<string> collected;
+                jar.TryGetValue(scene_name, out collected );
+                if (collected.Count <= 0)
+                    return;
+                collected.Remove(iAC.gameObject.name);
+            }
+            private void checkJar(string scene_name)
+            {
+                if (!jar.ContainsKey(scene_name))
+                {
+                    jar.Add( scene_name, new HashSet<string>());
+                }
+            }
+        }
+
+        // Uniques
+        public UniqueJar<CollectibleWONKERZ> WONKERZjar;
+
+        // Infinites
+        public int collectedNuts;
 
         public CollectibleJar()
         {
-            collected_hub_nuts      = new HashSet<string>();
-            collected_desert_nuts   = new HashSet<string>();
+            collectedNuts   = 0;
+            WONKERZjar      = new UniqueJar<CollectibleWONKERZ>();
         }
 
-        public void collectNut(CollectibleNut iNut)
+        public void collect(AbstractCollectible iAC)
         {
-            Scene scene = SceneManager.GetActiveScene();
-            if (scene.name==Constants.SN_HUB)
+            if (iAC.collectibleType == AbstractCollectible.COLLECTIBLE_TYPE.UNIQUE)
             {
-                collected_hub_nuts.Add(iNut.gameObject.name);
-                Debug.Log("Nut collected in hub!");
-            } 
-            else if (scene.name==Constants.SN_DESERT)
+                if (iAC is CollectibleWONKERZ)
+                {
+                    WONKERZjar.addToJar(iAC as CollectibleWONKERZ);
+                }
+                return;
+            }
+            /// Infinites collectibles
+            if ( iAC is CollectibleNut )
             {
-                collected_desert_nuts.Add(iNut.gameObject.name);
-                Debug.Log("Nut collected in desert!");
+                collectedNuts++;
             }
         }
     }
 
-    public enum COLLECT_MOD { NEUTRAL=0, HEAVEN=1, HELL=2 }
+    public enum COLLECT_MOD { HEAVEN=0, HELL=2 }
+
+    [Header("Mandatory")]
+    public GameObject nutCollectibleRef;
+    public GameObject wonkerzCollectibleRef;
+
+    [Header("Tweakables")]
+    public Material heavenModeMat;
+    public Material hellModeMat;
+    [Range(0f,1f)]
+    public float nutTurboConvertValue = 0.2f;
+    [Range(0f,1f)]
+    public float turboValueAtStart = 0f;
+    [Range(1f,100f)]
+    public float nutSpreadDistanceOnDamage = 10f;
+
+
+    [Header("Internals")]
     private COLLECT_MOD collectMod;
     public int collectModCombo;
     public CollectibleJar jar;
     public List<AbstractCollectible> allCollectiblesInCurrStage;
 
-    [Header("Tweakables")]
-    public Material heavenModeMat;
-    public Material hellModeMat;
+    ///
+    private float currentTurbo;
 
     void Awake()
     {
@@ -54,6 +109,8 @@ public class CollectiblesManager : MonoBehaviour
         collectModCombo = 0;
         jar = new CollectibleJar();
         loadJar();
+
+        currentTurbo = turboValueAtStart;
     }
 
     private void loadJar()
@@ -66,28 +123,17 @@ public class CollectiblesManager : MonoBehaviour
         // TODO save current jar status
     }
 
-    public void addToJar(AbstractCollectible iCollectible)
+    public int getCollectedNuts()
     {
-        if (iCollectible is CollectibleNut)
-        {
-            jar.collectNut(iCollectible as CollectibleNut);
-        }
+        return jar.collectedNuts;
     }
 
-    public int getCollectedNuts(string iSceneName)
+    public void loseNuts(int remove_n)
     {
-        switch(iSceneName)
-        {
-            case Constants.SN_HUB:
-                return jar.collected_hub_nuts.Count;
-                break;
-            case Constants.SN_DESERT:
-                return jar.collected_desert_nuts.Count;
-                break;
-            default:
-            return -1;
-                break;
-        }
+        jar.collectedNuts-=remove_n;
+        if (jar.collectedNuts<0)
+            jar.collectedNuts = 0;
+        Access.UITurboAndLifePool().updateLifePool();
     }
 
     public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
@@ -121,6 +167,23 @@ public class CollectiblesManager : MonoBehaviour
 
     public void applyCollectEffect(AbstractCollectible AC)
     {
+        if (AC is CollectibleNut)
+        {
+            if ( collectMod == COLLECT_MOD.HELL )
+            {
+                currentTurbo += ( currentTurbo >= 1f ) ? 0f : nutTurboConvertValue;
+                Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
+            }
+            else
+            {
+                jar.collect(AC);
+                Access.UITurboAndLifePool().updateLifePool();
+            }
+        } 
+        else
+        {
+            jar.collect(AC);
+        }
 
     }
 
