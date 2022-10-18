@@ -344,6 +344,10 @@ public class CarController : MonoBehaviour, IControllable
         //S.Renderer.GetComponent<CapsuleCollider>().enabled = false;
 
         S.Renderer = Instantiate(S.Renderer);
+        var rb = S.Renderer.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.detectCollisions = false;
+        GetComponent<DeathController>().objects.Add(rb);
         S.Renderer.transform.parent = gameObject.transform;
         S.Renderer.SetActive(true);
     }
@@ -361,6 +365,12 @@ public class CarController : MonoBehaviour, IControllable
     void SpawnWheel(ref Wheel W, Vector3 pos, float rot )
     {
         W.Renderer = GameObject.Instantiate(W.Renderer, pos, Quaternion.Euler(0,rot,0), transform);
+
+
+        var rb = W.Renderer.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.detectCollisions = false;
+        GetComponent<DeathController>().objects.Add(rb);
         W.Renderer.SetActive(true);
         W.Renderer.transform.localScale = new Vector3(W.Radius, W.Radius, W.Width*2);
         W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
@@ -1203,6 +1213,10 @@ public class CarController : MonoBehaviour, IControllable
                 ApplyForceMultiplier = true;
             }
             ResetSpringSizeMinAndUnlock();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E)){
+            GetComponent<DeathController>().Activate();
         }
     }
 }
