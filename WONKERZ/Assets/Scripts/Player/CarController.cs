@@ -134,6 +134,12 @@ public class CarController : MonoBehaviour, IControllable
     public float invulnerabilityTime = 1f;
     private float invulnerabilityElapsedTime = 0f;
 
+    [Header("Turbo")]
+    public float turboStrength = 5f;
+    public float turboTimeInterval = 0.2f;
+    private float turboIntervalElapsedTime = 99f;
+    public float turboConsumptionPerTick = 0.02f; // turbo tank Ranges from 0f to 1f
+
     [Header("Debug")]
     public float SpringStiffness;
     public float SpringDamper;
@@ -161,6 +167,7 @@ public class CarController : MonoBehaviour, IControllable
     public bool IsHooked;
     // TODO toffa : remove this hardcoded object
     public GameObject grapin;
+
 
     /// =============== Cache ===============
     private Rigidbody RB;
@@ -995,7 +1002,7 @@ public class CarController : MonoBehaviour, IControllable
         Vector3 contactNormal = iCP.normal;
         Vector3 contactPoint = iCP.point;
         Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
-        
+
         Vector3 repulseDir = contactPoint + contactNormal;
         RB.AddForce( -repulseDir*5, ForceMode.Impulse);
 
@@ -1003,7 +1010,18 @@ public class CarController : MonoBehaviour, IControllable
 
     public void useTurbo()
     {
+        turboIntervalElapsedTime += Time.deltaTime;
+        if (turboIntervalElapsedTime < turboTimeInterval)
+            return;
 
+        if ( !Access.CollectiblesManager().tryConsumeTurbo(turboConsumptionPerTick))
+            return;
+
+        Vector3 turboDir = transform.position.normalized + transform.forward.normalized;
+        Debug.DrawRay(transform.position, turboDir, Color.yellow, 4, false);
+        RB.AddForce( turboDir * turboStrength , ForceMode.VelocityChange );
+        
+        turboIntervalElapsedTime = 0f;
     }
 
     /// =============== Unity ==================
@@ -1214,9 +1232,12 @@ public class CarController : MonoBehaviour, IControllable
             }
             ResetSpringSizeMinAndUnlock();
         }
-
         if (Input.GetKeyDown(KeyCode.E)){
             GetComponent<DeathController>().Activate();
+
+        if (Entry.Inputs["Turbo"].Down)
+        {
+            useTurbo();
         }
     }
 }

@@ -123,6 +123,29 @@ public class CollectiblesManager : MonoBehaviour
         // TODO save current jar status
     }
 
+    public bool tryConsumeTurbo(float iAmount)
+    { 
+        if (currentTurbo < iAmount)
+            return false;
+        currentTurbo -= iAmount;
+        Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
+        return true;
+    }
+
+    public bool tryConvertNutToTurbo()
+    {
+        if (jar.collectedNuts <= 0)
+            return false;
+         
+        currentTurbo = ( currentTurbo >= 1f ) ? 1f : currentTurbo+nutTurboConvertValue;
+        jar.collectedNuts--;
+
+        Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
+        Access.UITurboAndLifePool().updateLifePool();
+
+        return true;
+    }
+
     public int getCollectedNuts()
     {
         return jar.collectedNuts;
@@ -171,7 +194,7 @@ public class CollectiblesManager : MonoBehaviour
         {
             if ( collectMod == COLLECT_MOD.HELL )
             {
-                currentTurbo += ( currentTurbo >= 1f ) ? 0f : nutTurboConvertValue;
+                currentTurbo = ( currentTurbo >= 1f ) ? 1f : currentTurbo+nutTurboConvertValue;
                 Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
             }
             else

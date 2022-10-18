@@ -11,8 +11,7 @@ public abstract class AbstractCollectible : MonoBehaviour
     
     void OnTriggerEnter(Collider iCollider)
     {
-        CarController cc = iCollider.GetComponent<CarController>();
-        if (!!cc)
+        if (Utils.isPlayer(iCollider.gameObject))
         {
             OnCollect();
         }

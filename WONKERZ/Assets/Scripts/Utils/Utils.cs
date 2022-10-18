@@ -43,4 +43,17 @@ public static partial class Utils
         else
             Debug.LogWarning("InputManager is null. Failed to attach unique.");
     }
+
+    public static bool isPlayer(GameObject iGO)
+    {
+        CarController direct_cc = iGO.GetComponent<CarController>();
+        if (!!direct_cc)
+            return true;
+        // can also be wheels
+        CarController parent_cc = iGO.transform.parent.GetComponent<CarController>();
+        if ( parent_cc != null )
+            return true;
+        
+        return false;
+    }
 }
