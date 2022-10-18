@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class DeathController : MonoBehaviour
 {
@@ -8,17 +9,29 @@ public class DeathController : MonoBehaviour
     public float force;
     public float radius;
     public float upmodif;
+
+    public float timeScale;
+    public float scalingTimer;
+    private float scalingTimerCurrent = 0;
+
+    public bool isStarted = false;
+
+    public GameObject deathScreen;
+    public TMP_Text deathText;
     // Start is called before the first frame update
     void Start()
     {
-        foreach (var rb in objects){
+        foreach (var rb in objects)
+        {
             rb.isKinematic = true;
             rb.detectCollisions = false;
         }
     }
 
-    public void Activate(){
-        foreach (var rb in objects){
+    public void Activate()
+    {
+        foreach (var rb in objects)
+        {
             rb.isKinematic = false;
             rb.detectCollisions = true;
             rb.AddExplosionForce(force, transform.position, radius, upmodif);
@@ -26,5 +39,40 @@ public class DeathController : MonoBehaviour
 
         GetComponent<CarController>().isFrozen = true;
         GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
+
+        Time.timeScale = 0.5f;
+        isStarted = true;
+        scalingTimerCurrent = 0f;
+
+        deathScreen.SetActive(true);
+    }
+
+    public void Deactivate()
+    {
+        foreach (var rb in objects)
+        {
+            rb.isKinematic = true;
+            rb.detectCollisions = false;
+        }
+
+        GetComponent<CarController>().isFrozen = false;
+        Time.timeScale = 1f;
+        isStarted = false;
+
+        deathScreen.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (isStarted)
+        {
+            scalingTimerCurrent += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
+
+            var c =  deathText.color;
+            c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
+            deathText.color = c;
+
+        }
     }
 }
