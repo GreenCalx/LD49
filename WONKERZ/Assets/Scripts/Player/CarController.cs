@@ -1232,7 +1232,7 @@ public class CarController : MonoBehaviour, IControllable
             }
             ResetSpringSizeMinAndUnlock();
         }
-        if (Input.GetKeyDown(KeyCode.E)){
+        if (Input.GetKeyDown(KeyCode.E))
             GetComponent<DeathController>().Activate();
 
         if (Entry.Inputs["Turbo"].Down)
