@@ -7,8 +7,8 @@ public class CollectibleNut : AbstractCollectible
     public float animTimeStep = 0.1f;
     public bool startUp;
 
-    [Header("Mandatory")]
-    public Material matFromDamage;
+    [Header("States")]
+    public bool spawnedFromDamage;
 
     [Header("Anim")]
     [Range(0f,10f)]
@@ -27,11 +27,15 @@ public class CollectibleNut : AbstractCollectible
     private float travelTime;
     private float startTime;
 
-    [Header("Tweaks")]
-    public bool spawnedFromDamage = false;
+    [Header("OnDamageTweaks")]
+    public float yExpulsionSlope = 1.5f;
+    public float playerExpulsionForceMul = 2f;
+    public Vector3 onDamageSpawnOffset = new Vector3(0f, 2f, 0f);
+    public float uncollectableTimeAfterDamage = 0.2f;
     public float timeBeforeDisappearing = 3f;
     private float elapsedTimeAfterDamage = 0f;
     public float blinkFreqAfterDamage = 10f;
+
     [Range(0f,10f)]
     public float blinkFreqAddFactor = 1.2f;
 
@@ -43,17 +47,21 @@ public class CollectibleNut : AbstractCollectible
     // Start is called before the first frame update
     void Start()
     {
-        initRot = transform.eulerAngles;
-        minPos = transform.position - new Vector3(0f, yOscillation, 0f);
-        maxPos = transform.position + new Vector3(0f, yOscillation, 0f);
-        elapsedTime = 0f;
-        isGoingUp = !startUp;
-        travelTime = Vector3.Distance(minPos, maxPos);
-        startTime = Time.time;
-        ///
-        transform.position = (startUp) ? maxPos : minPos;
+        if (!spawnedFromDamage)
+        {
+            initRot = transform.eulerAngles;
+            initRot = transform.eulerAngles;
+            minPos = transform.position - new Vector3(0f, yOscillation, 0f);
+            maxPos = transform.position + new Vector3(0f, yOscillation, 0f);
+            elapsedTime = 0f;
+            isGoingUp = !startUp;
+            travelTime = Vector3.Distance(minPos, maxPos);
+            startTime = Time.time;
+            ///
+            transform.position = (startUp) ? maxPos : minPos;
         
-        Access.CollectiblesManager().subscribe(this);
+            Access.CollectiblesManager().subscribe(this);
+        }
     }
 
     // Update is called once per frame
@@ -71,12 +79,26 @@ public class CollectibleNut : AbstractCollectible
         animate();
     }
 
-    public void setSpawnedFromDamage()
+    public void setSpawnedFromDamage(Vector3 playerPos)
     {
-        spawnedFromDamage = true;
         elapsedTimeAfterDamage = 0f;
-        MeshRenderer mr = GetComponent<MeshRenderer>();
-        mr.material = matFromDamage;
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+
+        float theta = Random.Range(0, 360f);
+            
+        CollectiblesManager cm = Access.CollectiblesManager();
+        float x_pos = cm.nutSpreadDistanceOnDamage * Mathf.Cos(theta);
+        float z_pos = cm.nutSpreadDistanceOnDamage * Mathf.Sin(theta);
+
+        transform.position = playerPos;
+        transform.position += onDamageSpawnOffset;
+        Vector3 fDir = playerPos.normalized + new Vector3( x_pos, yExpulsionSlope, z_pos);
+        rb.AddForce( fDir*playerExpulsionForceMul, ForceMode.Impulse);
+        Debug.DrawRay(playerPos, fDir*playerExpulsionForceMul, Color.green, 3, false);
+        //transform.position += new Vector3( x_pos, 0.5f, z_pos);
+
     }
 
     void animate()
@@ -110,8 +132,23 @@ public class CollectibleNut : AbstractCollectible
         blinkFreqAfterDamage += blinkFreqAddFactor;
     }
 
+    void OnCollisionEnter(Collision iCol)
+    {
+        if ( iCol.gameObject.GetComponent<Ground>() != null )
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
+    }
+
     protected override void OnCollect()
     {
+        if (spawnedFromDamage)
+        {
+            if (uncollectableTimeAfterDamage >= elapsedTimeAfterDamage)
+                return;
+        }
+
         gameObject.SetActive(false);
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);

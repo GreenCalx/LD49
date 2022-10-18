@@ -957,11 +957,12 @@ public class CarController : MonoBehaviour, IControllable
     }
 
     /// =============== Game Logic ==================
-    public void takeDamage(int iDamage)
+    public void takeDamage(int iDamage, ContactPoint iCP)
     {
         if (isInvulnerable)
             return;
 
+        // lose nuts
         CollectiblesManager cm = Access.CollectiblesManager();
         int n_nuts = cm.getCollectedNuts();
 
@@ -974,19 +975,20 @@ public class CarController : MonoBehaviour, IControllable
         for (int i=0; i < n_nuts; i++)
         {
             GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
-            nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage();
-
-            float theta = Random.Range(0, 360f);
-            
-            float x_pos = cm.nutSpreadDistanceOnDamage * Mathf.Cos(theta);
-            float z_pos = cm.nutSpreadDistanceOnDamage * Mathf.Sin(theta);
-
-            nutFromDamage.transform.position = transform.position;
-            nutFromDamage.transform.position += new Vector3( x_pos, 0.5f, z_pos);
+            nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
         }
         cm.loseNuts(iDamage);
+
+        // damage feedback on player
         isInvulnerable = true;
         invulnerabilityElapsedTime = 0f;
+        Vector3 contactNormal = iCP.normal;
+        Vector3 contactPoint = iCP.point;
+        Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
+        
+        Vector3 repulseDir = contactPoint + contactNormal;
+        RB.AddForce( -repulseDir*5, ForceMode.Impulse);
+
     }
 
     public void useTurbo()

@@ -23,7 +23,7 @@ public class Dummy : MonoBehaviour
         CarController cc = iCol.gameObject.GetComponent<CarController>();
         if (!!cc)
         {
-            cc.takeDamage(damageOnCollide);
+            cc.takeDamage(damageOnCollide, iCol.contacts[0]);
         }
     }
 }
