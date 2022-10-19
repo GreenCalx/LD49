@@ -114,21 +114,24 @@ public class CheckPointManager : MonoBehaviour, IControllable
         Debug.Log(UnityEngine.StackTraceUtility.ExtractStackTrace());
     }
 
-    public void loadLastCP()
+    public void loadLastCP(bool iFromDeath = false)
     {
+        // reset player physx
+        Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
+        if (!!rb2d)
+        {
+            rb2d.velocity = Vector3.zero;
+            rb2d.angularVelocity = Vector3.zero;
+
+        }
+
+        // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp != null)
         {
             last_camerapoint = as_cp;
             GameObject respawn = as_cp.getSpawn();
 
-            Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
-            if (!!rb2d)
-            {
-                rb2d.velocity = Vector3.zero;
-                rb2d.angularVelocity = Vector3.zero;
-
-            }
             player.transform.position = respawn.transform.position;
             player.transform.rotation = respawn.transform.rotation;
         } else {
@@ -138,6 +141,12 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 last_camerapoint = as_sp;
             }
             as_sp.relocatePlayer();
+        }
+        if (iFromDeath)
+        {
+            Access.CameraManager().launchDeathCam();
+            Access.CollectiblesManager().reset();
+            return;
         }
 
         // Update caemra too !

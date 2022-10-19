@@ -770,7 +770,13 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   weight_movable_keyframe: 0
+  isDead: 0
   isFrozen: 0
+  isInvulnerable: 0
+  invulnerabilityTime: 1
+  turboStrength: 5
+  turboTimeInterval: 0.2
+  turboConsumptionPerTick: 0.02
   SpringStiffness: 0.05
   SpringDamper: 0.01
   SpringMax: 2
@@ -831,6 +837,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e77da5dd11cf6d4a91284fbf0927f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathUIRef: {fileID: 1922162023440365444, guid: 8034255f388a4f444beb581e10697d57, type: 3}
   objects:
   - {fileID: 4099254857906874213}
   - {fileID: 5945660880213264830}
@@ -840,6 +847,12 @@ MonoBehaviour:
   force: 5000
   radius: 5
   upmodif: 5
+  timeBeforeDeletion: 60
+  timeScale: 0
+  scalingTimer: 0
+  isStarted: 0
+  deathScreen: {fileID: 0}
+  deathText: {fileID: 0}
 --- !u!1 &3565375268887571088
 GameObject:
   m_ObjectHideFlags: 0

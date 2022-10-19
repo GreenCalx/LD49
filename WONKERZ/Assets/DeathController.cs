@@ -5,6 +5,9 @@ using TMPro;
 
 public class DeathController : MonoBehaviour
 {
+    [Header("Mandatory")]
+    public GameObject deathUIRef;
+
     public List<Rigidbody> objects;
     public float force;
     public float radius;
@@ -51,7 +54,12 @@ public class DeathController : MonoBehaviour
         isStarted = true;
         scalingTimerCurrent = 0f;
 
-        //deathScreen.SetActive(true);
+        if (deathScreen==null)
+            deathScreen = Instantiate(deathUIRef);
+        deathScreen.SetActive(true);
+        deathText = deathScreen.GetComponent<DeathUI>().deathText;
+        Destroy( deathScreen, Access.CameraManager().deathCamDuration);
+        
         Destroy(gameObject, timeBeforeDeletion);
     }
 
@@ -68,7 +76,7 @@ public class DeathController : MonoBehaviour
         Time.timeScale = 1f;
         isStarted = false;
 
-        //deathScreen.SetActive(false);
+        deathScreen.SetActive(false);
     }
 
     void Update()
@@ -78,10 +86,9 @@ public class DeathController : MonoBehaviour
             scalingTimerCurrent += Time.unscaledDeltaTime;
             Time.timeScale = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
 
-            //var c =  deathText.color;
-            //c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
-            //deathText.color = c;
-
+            var c =  deathText.color;
+            c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
+            deathText.color = c;
         }
     }
 }

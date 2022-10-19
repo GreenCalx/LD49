@@ -995,11 +995,9 @@ public class CarController : MonoBehaviour, IControllable
             nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
         }
         cm.loseNuts(iDamage);
-
-        stateMachine.ForceState(invulState);
-
         RB.AddForce( repulseForce, ForceMode.Impulse);
 
+        stateMachine.ForceState(invulState);
     }
 
     public void useTurbo()
@@ -1024,8 +1022,6 @@ public class CarController : MonoBehaviour, IControllable
         GameObject dummy_player = Instantiate(gameObject, transform.position, transform.rotation);
         dummy_player.layer = LayerIgnorePlayerCollision;
 
-        //dummy_player.GetComponent<CarController>().enabled = false;
-        
         // add dummy's suspension/ wheels to DC objects
         DeathController dc = dummy_player.GetComponent<DeathController>();
         dc.objects.Clear();
@@ -1084,6 +1080,7 @@ public class PlayerDieTransition : FSMTransition {
     public override void OnTransition(FSMBase machine, FSMState toState)
     {
         player.kill(player.repulseForce);
+        Access.CheckPointManager().loadLastCP(true);
         base.OnTransition(machine, toState);
     }
 }

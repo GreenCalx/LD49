@@ -125,7 +125,6 @@ public class CollectibleNut : AbstractCollectible
         float alpha_val = (1 + Mathf.Cos(blinkFreqAfterDamage*elapsedTimeAfterDamage)) / 2;
         
         Color newCol = m.GetColor("_Color");
-        Debug.Log("ALPHA COL : " + alpha_val.ToString());
         newCol.a = alpha_val;
         m.SetColor("_Color", newCol);
 

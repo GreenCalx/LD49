@@ -9,19 +9,26 @@ using System.Linq;
 //  ** FIX : Disable all cameras by default
 public class CameraManager : MonoBehaviour
 {
+    [Header("Mandatory")]
     public GameObject transitionCameraRef;
+    public GameObject deathCameraRef;
+    [Header("Debug")]
     public GameCamera active_camera;
     public Dictionary<GameCamera.CAM_TYPE, GameCamera> cameras = 
         new Dictionary<GameCamera.CAM_TYPE, GameCamera>();
-
-    public float transitionDuration = 2f;
     public bool inTransition = false;
+
+    [Header("Tweaks")]
+    public float transitionDuration = 2f;
+    public float deathCamDuration = 2f;
+
 
     private Transform transitionStart = null;
     private Transform transitionEnd = null;
     private GameCamera nextCamera = null;
     private float transiTime = 0f;
     private GameObject transitionCameraInst;
+    private GameObject deathCamInst;
 
     //public GameObject playerRef;
     private static CameraManager inst;
@@ -260,5 +267,21 @@ public class CameraManager : MonoBehaviour
     public void moveActiveCameraTo(Vector3 iTransform)
     {
         
+    }
+
+    public void launchDeathCam()
+    {
+        if (deathCamInst==null)
+            deathCamInst = Instantiate(deathCameraRef);
+        deathCamInst.transform.position = active_camera.transform.position;
+        deathCamInst.transform.rotation = active_camera.transform.rotation;
+
+        deathCamInst.GetComponent<CinematicCamera>().launch();
+        StartCoroutine(endDeathCam());
+    }
+    private IEnumerator endDeathCam()
+    {
+        yield return new WaitForSeconds(deathCamDuration);
+        deathCamInst.GetComponent<CinematicCamera>().end();
     }
 }

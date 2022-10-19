@@ -115,6 +115,11 @@ public class CollectiblesManager : MonoBehaviour
         currentTurbo = turboValueAtStart;
     }
 
+    public void reset()
+    {
+        jar.collectedNuts = 0;
+    }
+
     private void loadJar()
     {
         // TODO load the collected collectibles
