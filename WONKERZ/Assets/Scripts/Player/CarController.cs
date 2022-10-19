@@ -1,7 +1,7 @@
 using UnityEngine;
-
 public class CarController : MonoBehaviour, IControllable
 {
+
     /// ============ Structs =================
     //
     // A car is defined as having 4 springs attached to the body,
@@ -198,7 +198,7 @@ public class CarController : MonoBehaviour, IControllable
     void UpdateSuspensionRenderer(ref Spring S)
     {
         S.Renderer.transform.position = S.Anchor.transform.position; // - transform.up * S.CurrentLength / 2;
-        var scale = S.Renderer.transform.localScale ;
+        var scale = S.Renderer.transform.localScale;
         S.Renderer.transform.localScale = new Vector3(scale.x, scale.y, S.CurrentLength / 20);
     }
 
@@ -213,16 +213,16 @@ public class CarController : MonoBehaviour, IControllable
     void UpdateWheelRenderer(Suspension S, bool inverseRot)
     {
         S.Wheel.Renderer.transform.position = GetEnd(S);
-        S.Wheel.Renderer.transform.localRotation *= Quaternion.Euler(0, 0,-CarMotor.CurrentRPM * 1 * (inverseRot?1:-1) );
-        #if false
+        S.Wheel.Renderer.transform.localRotation *= Quaternion.Euler(0, 0, -CarMotor.CurrentRPM * 1 * (inverseRot ? 1 : -1));
+#if false
         var angle = Quaternion.FromToRotation(S.Wheel.Renderer.transform.InverseTransformDirection( S.Wheel.Renderer.transform.forward) ,S.Wheel.Renderer.transform.InverseTransformDirection(S.Wheel.Direction)).eulerAngles.y;
         if(angle > 180f) angle -= 180f;
         if(angle < -180f) angle += 360f;
         var angles = S.Wheel.Renderer.transform.localRotation.eulerAngles;
         angles.y += angle;
         S.Wheel.Renderer.transform.localRotation = Quaternion.Euler(angles);
-        #endif
-        S.Wheel.Renderer.transform.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(-90 * (inverseRot?1:-1), transform.up) * S.Wheel.Direction,S.Wheel.Renderer.transform.up);
+#endif
+        S.Wheel.Renderer.transform.rotation = Quaternion.LookRotation(Quaternion.AngleAxis(-90 * (inverseRot ? 1 : -1), transform.up) * S.Wheel.Direction, S.Wheel.Renderer.transform.up);
 
     }
 
@@ -230,7 +230,7 @@ public class CarController : MonoBehaviour, IControllable
     {
         UpdateWheelRenderer(FrontAxle.Right, false);
         UpdateWheelRenderer(FrontAxle.Left, true);
-        UpdateWheelRenderer(RearAxle.Right, false );
+        UpdateWheelRenderer(RearAxle.Right, false);
         UpdateWheelRenderer(RearAxle.Left, true);
     }
 
@@ -372,9 +372,9 @@ public class CarController : MonoBehaviour, IControllable
         UpdateSuspensionRenderers();
     }
 
-    void SpawnWheel(ref Wheel W, Vector3 pos, float rot )
+    void SpawnWheel(ref Wheel W, Vector3 pos, float rot)
     {
-        W.Renderer = GameObject.Instantiate(W.Renderer, pos, Quaternion.Euler(0,rot,0), transform);
+        W.Renderer = GameObject.Instantiate(W.Renderer, pos, Quaternion.Euler(0, rot, 0), transform);
 
 
         var rb = W.Renderer.GetComponent<Rigidbody>();
@@ -382,7 +382,7 @@ public class CarController : MonoBehaviour, IControllable
         rb.detectCollisions = false;
         GetComponent<DeathController>().objects.Add(rb);
         W.Renderer.SetActive(true);
-        W.Renderer.transform.localScale = new Vector3(W.Radius, W.Radius, W.Width*2);
+        W.Renderer.transform.localScale = new Vector3(W.Radius, W.Radius, W.Width * 2);
         W.Trails = GameObject.Instantiate(W.Trails, pos, W.Trails.transform.rotation, transform);
     }
 
@@ -892,22 +892,24 @@ public class CarController : MonoBehaviour, IControllable
         if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
     }
 
-    public class PlayerGroudState : FSMState {
+    public class PlayerGroudState : FSMState
+    {
         public CarController player;
         public override void OnEnter(FSMBase machine)
         {
             base.OnEnter(machine);
-           player.FrontAxle.IsTraction = false;
-           player.FrontAxle.IsDirection = true;
-           player.FrontAxle.IsReversedDirection = false;
+            player.FrontAxle.IsTraction = false;
+            player.FrontAxle.IsDirection = true;
+            player.FrontAxle.IsReversedDirection = false;
 
-           player.RearAxle.IsDirection = false;
-           player.RearAxle.IsTraction = true;
-           player.RearAxle.IsReversedDirection = false;
+            player.RearAxle.IsDirection = false;
+            player.RearAxle.IsTraction = true;
+            player.RearAxle.IsReversedDirection = true;
         }
     }
 
-    public class PlayerBoatState : FSMState {
+    public class PlayerBoatState : FSMState
+    {
         public CarController player;
         public override void OnEnter(FSMBase machine)
         {
@@ -922,7 +924,8 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
-    public class PlayerAircraftState : FSMState {
+    public class PlayerAircraftState : FSMState
+    {
         public CarController player;
         public override void OnEnter(FSMBase machine)
         {
@@ -937,7 +940,8 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
-    public class PlayerAircraftCondition : FSMCondition {
+    public class PlayerAircraftCondition : FSMCondition
+    {
         public CarController player;
         public override bool Check(FSMBase machine)
         {
@@ -945,7 +949,8 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
-    public class PlayerCarCondition : FSMCondition {
+    public class PlayerCarCondition : FSMCondition
+    {
         public CarController player;
         public override bool Check(FSMBase machine)
         {
@@ -953,7 +958,8 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
-    public class PlayerBoatCondition : FSMCondition {
+    public class PlayerBoatCondition : FSMCondition
+    {
         public CarController player;
         public override bool Check(FSMBase machine)
         {
@@ -1011,7 +1017,7 @@ public class CarController : MonoBehaviour, IControllable
     public Vector3 repulseForce;
     public void takeDamage(int iDamage, ContactPoint iCP)
     {
-        if (stateMachine.currentState == invulState || stateMachine.currentState == deadState)
+        if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
             return;
 
         // lose nuts
@@ -1020,18 +1026,18 @@ public class CarController : MonoBehaviour, IControllable
 
         Vector3 contactNormal = iCP.normal;
         Vector3 contactPoint = iCP.point;
-        Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
+        Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
 
         Vector3 repulseDir = contactPoint + contactNormal;
-        repulseForce = -repulseDir*5;
+        repulseForce = -repulseDir * 5;
 
-        for (int i=0; i < n_nuts; i++)
+        for (int i = 0; i < n_nuts; i++)
         {
             GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
             nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
         }
         cm.loseNuts(iDamage);
-        RB.AddForce( repulseForce, ForceMode.Impulse);
+        RB.AddForce(repulseForce, ForceMode.Impulse);
 
         stateMachine.ForceState(invulState);
     }
@@ -1042,26 +1048,29 @@ public class CarController : MonoBehaviour, IControllable
         if (turboIntervalElapsedTime < turboTimeInterval)
             return;
 
-        if ( !Access.CollectiblesManager().tryConsumeTurbo(turboConsumptionPerTick))
+        if (!Access.CollectiblesManager().tryConsumeTurbo(turboConsumptionPerTick))
             return;
 
         Vector3 turboDir = transform.position.normalized + transform.forward.normalized;
         Debug.DrawRay(transform.position, turboDir, Color.yellow, 4, false);
-        RB.AddForce( turboDir * turboStrength , ForceMode.VelocityChange );
-        
+        RB.AddForce(turboDir * turboStrength, ForceMode.VelocityChange);
+
         turboIntervalElapsedTime = 0f;
     }
 
     public void kill(Vector3 iSteer = default(Vector3))
-    { 
+    {
         int LayerIgnorePlayerCollision = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
         GameObject dummy_player = Instantiate(gameObject, transform.position, transform.rotation);
         dummy_player.layer = LayerIgnorePlayerCollision;
 
+        dummy_player.GetComponent<CarController>().stateMachine.currentState = deadState;
+        dummy_player.GetComponent<CarController>().enabled = false;
+
         // add dummy's suspension/ wheels to DC objects
         DeathController dc = dummy_player.GetComponent<DeathController>();
         dc.objects.Clear();
-        foreach(Transform child in dummy_player.transform)
+        foreach (Transform child in dummy_player.transform)
         {
             Rigidbody rb = child.GetComponent<Rigidbody>();
             if (!!rb)
@@ -1077,52 +1086,55 @@ public class CarController : MonoBehaviour, IControllable
     {
         Utils.detachControllable<CarController>(this);
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-    }
     // Start is called before the first frame update
 
-public class PlayerFSM : FSMBase {
-}
-
-public class PrintStateName : FSMAction {
-    public override void Execute(FSMBase machine)
+    public class PlayerFSM : FSMBase
     {
-        base.Execute(machine);
-        // player alive logic
-        Debug.Log(machine.currentState.name);
     }
-}
 
-public class PlayerDeadAction : FSMAction {
-    public override void Execute(FSMBase machine)
+    public class PrintStateName : FSMAction
     {
-        base.Execute(machine);
-        // player alive logic
-        Debug.Log("dead");
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+            // player alive logic
+            Debug.Log(machine.currentState.name);
+        }
     }
-}
-public class PlayerIsAlive : FSMCondition {
-    public override bool Check(FSMBase machine) {
-        CollectiblesManager cm = Access.CollectiblesManager();
-        int n_nuts = cm.getCollectedNuts();
-        return (n_nuts >= 0);
-    }
-}
 
-public class PlayerDieTransition : FSMTransition {
-    public CarController player;
-    public override void OnTransition(FSMBase machine, FSMState toState)
+    public class PlayerDeadAction : FSMAction
     {
-        Debug.Log("die");
-        player.kill(player.repulseForce);
-        Access.CheckPointManager().loadLastCP(true);
-        base.OnTransition(machine, toState);
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+            // player alive logic
+            Debug.Log("dead");
+        }
     }
-}
+    public class PlayerIsAlive : FSMCondition
+    {
+        public override bool Check(FSMBase machine)
+        {
+            CollectiblesManager cm = Access.CollectiblesManager();
+            int n_nuts = cm.getCollectedNuts();
+            return (n_nuts >= 0);
+        }
+    }
 
-    public class PlayerUpdateRenderer : FSMAction {
+    public class PlayerDieTransition : FSMTransition
+    {
+        public CarController player;
+        public override void OnTransition(FSMBase machine, FSMState toState)
+        {
+            Debug.Log("die");
+            player.kill(player.repulseForce);
+            Access.CheckPointManager().loadLastCP(true);
+            base.OnTransition(machine, toState);
+        }
+    }
+
+    public class PlayerUpdateRenderer : FSMAction
+    {
         public CarController player;
         public override void Execute(FSMBase machine)
         {
@@ -1133,63 +1145,65 @@ public class PlayerDieTransition : FSMTransition {
         }
     }
 
-    public class PlayerSpeedEffect : FSMAction {
+    public class PlayerSpeedEffect : FSMAction
+    {
         public CarController player;
         public override void Execute(FSMBase machine)
         {
             base.Execute(machine);
-                  // Speed effect on camera
-        if (player.updateCurrentSpeed() > 5f)
-        {
-            // update camera FOV/DIST if a PlayerCamera
-            CameraManager CamMgr = Access.CameraManager();
-            if (CamMgr.active_camera is PlayerCamera)
+            // Speed effect on camera
+            if (player.updateCurrentSpeed() > 5f)
             {
-                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
-                pc.applySpeedEffect(player.currentSpeed);
+                // update camera FOV/DIST if a PlayerCamera
+                CameraManager CamMgr = Access.CameraManager();
+                if (CamMgr.active_camera is PlayerCamera)
+                {
+                    PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                    pc.applySpeedEffect(player.currentSpeed);
+                }
             }
-        }
 
-        var SpeedDirection = player.RB.velocity;
-        var particules = player.SpeedParticles.GetComponent<ParticleSystem>();
-        if (SpeedDirection.magnitude > 20)
-        {
-            var e = particules.emission;
-            e.enabled = true;
-        }
-        else
-        {
-            var e = particules.emission;
-            e.enabled = false;
-        }
-        player.SpeedParticles.GetComponent<ParticleSystem>().transform.LookAt(player.transform.position + SpeedDirection);
-        var lifemin = 0.2f;
-        var lifemax = 0.6f;
-        var speedmin = 20f;
-        var speedmax = 100f;
-        var partmain = particules.main;
-        partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
+            var SpeedDirection = player.RB.velocity;
+            var particules = player.SpeedParticles.GetComponent<ParticleSystem>();
+            if (SpeedDirection.magnitude > 20)
+            {
+                var e = particules.emission;
+                e.enabled = true;
+            }
+            else
+            {
+                var e = particules.emission;
+                e.enabled = false;
+            }
+            player.SpeedParticles.GetComponent<ParticleSystem>().transform.LookAt(player.transform.position + SpeedDirection);
+            var lifemin = 0.2f;
+            var lifemax = 0.6f;
+            var speedmin = 20f;
+            var speedmax = 100f;
+            var partmain = particules.main;
+            partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
 
 
         }
     }
 
-    public class PlayerUpdatePhysics : FSMAction {
+    public class PlayerUpdatePhysics : FSMAction
+    {
         public CarController player;
         public override void Execute(FSMBase machine)
         {
             base.Execute(machine);
 
-            player. UpdateSprings();
+            player.UpdateSprings();
 
-        player.ResolveAxle(ref player.FrontAxle);
-        player.ResolveAxle(ref player.RearAxle);
+            player.ResolveAxle(ref player.FrontAxle);
+            player.ResolveAxle(ref player.RearAxle);
         }
     }
 
     void Awake()
     {
-        if(stateMachine.currentState == deadState)
+        if (stateMachine.currentState == deadState)
             return;
 
         // FSM Condition

@@ -46,8 +46,6 @@ public class DeathController : MonoBehaviour
             rb.AddForce(iSteer/3, ForceMode.Acceleration);
         }
 
-        var player = GetComponent<CarController>();
-        player.stateMachine.ForceState(player.frozenState);
         GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
 
         Time.timeScale = 0.5f;
@@ -72,7 +70,6 @@ public class DeathController : MonoBehaviour
         }
 
          var player = GetComponent<CarController>();
-        player.stateMachine.ForceState(player.aliveState);
         Time.timeScale = 1f;
         isStarted = false;
 
