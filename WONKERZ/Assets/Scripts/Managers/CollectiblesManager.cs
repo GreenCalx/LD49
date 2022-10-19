@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CollectiblesManager : MonoBehaviour
 {
+    [Serializable]
     public class CollectibleJar
     {
         public class UniqueJar<T> where T : AbstractCollectible
@@ -153,9 +155,13 @@ public class CollectiblesManager : MonoBehaviour
 
     public void loseNuts(int remove_n)
     {
+        var clamp = jar.collectedNuts > 0;
+
         jar.collectedNuts-=remove_n;
-        if (jar.collectedNuts<0)
-            jar.collectedNuts = 0;
+
+        if (clamp)
+            jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
+
         Access.UITurboAndLifePool().updateLifePool();
     }
 

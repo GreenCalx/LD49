@@ -77,7 +77,7 @@ public class UIGarageTestManager : MonoBehaviour
         UIGarageTestStart uigts = startTest.GetComponent<UIGarageTestStart>();
 
         CarController cc = testCC.GetComponent<CarController>();
-        cc.isFrozen = false;
+        cc.stateMachine.ForceState(cc.aliveState);
 
         testCC.transform.position = uigts.respawnPoint.position;
         testCC.transform.rotation = uigts.respawnPoint.rotation;

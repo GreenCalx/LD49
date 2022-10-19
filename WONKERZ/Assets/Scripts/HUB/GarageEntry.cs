@@ -71,7 +71,7 @@ public class GarageEntry : MonoBehaviour,IControllable
         uig.onActivate.Invoke();
         garageOpened = true;
 
-        playerCC.isFrozen = true;
+        playerCC.stateMachine.ForceState(playerCC.frozenState);
     }
 
     public void closeGarage()
@@ -84,9 +84,11 @@ public class GarageEntry : MonoBehaviour,IControllable
 
         //Utils.attachControllable<CarController>(playerCC);
         if (!!playerCC)
-            playerCC.isFrozen = false;
-        else
-            Utils.getPlayerRef().GetComponent<CarController>().isFrozen = false;
+            playerCC.stateMachine.ForceState(playerCC.aliveState);
+        else{
+            var player = Utils.getPlayerRef().GetComponent<CarController>();
+            player.stateMachine.ForceState(player.aliveState);
+        }
         garageOpened = false;
     }
 }

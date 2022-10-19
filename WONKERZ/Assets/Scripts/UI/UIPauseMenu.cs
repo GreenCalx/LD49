@@ -43,7 +43,8 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public void pauseGame(bool isPaused)
     {
         Time.timeScale = (isPaused ? 0 : 1);
-        Access.Player().isFrozen = isPaused;
+        var player = Access.Player();
+        player.stateMachine.ForceState(player.frozenState);
     }
 
     public void OnExitButton()

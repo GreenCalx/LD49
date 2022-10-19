@@ -128,13 +128,6 @@ public class CarController : MonoBehaviour, IControllable
     public AnimationCurve WEIGHT;
     public int weight_movable_keyframe;
 
-    [Header("Behaviours")]
-    public bool isDead = false;
-    public bool isFrozen;
-    public bool isInvulnerable;
-    public float invulnerabilityTime = 1f;
-    private float invulnerabilityElapsedTime = 0f;
-
     [Header("Turbo")]
     public float turboStrength = 5f;
     public float turboTimeInterval = 0.2f;
@@ -169,7 +162,11 @@ public class CarController : MonoBehaviour, IControllable
     // TODO toffa : remove this hardcoded object
     public GameObject grapin;
 
-
+    public PlayerFSM stateMachine = new PlayerFSM();
+   public FSMState aliveState = new FSMState();
+   public FSMState deadState = new FSMState();
+   public FSMState frozenState = new FSMState();
+   public FSMState invulState = new FSMState();
     /// =============== Cache ===============
     private Rigidbody RB;
 
@@ -975,9 +972,10 @@ public class CarController : MonoBehaviour, IControllable
     }
 
     /// =============== Game Logic ==================
+    public Vector3 repulseForce;
     public void takeDamage(int iDamage, ContactPoint iCP)
     {
-        if (isInvulnerable || isDead)
+        if (stateMachine.currentState == invulState || stateMachine.currentState == deadState)
             return;
 
         // lose nuts
@@ -989,17 +987,7 @@ public class CarController : MonoBehaviour, IControllable
         Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
 
         Vector3 repulseDir = contactPoint + contactNormal;
-        Vector3 repulseForce = -repulseDir*5;
-
-        if (n_nuts==0)
-        { 
-            // GAME OVER
-            isDead = true;
-            kill(repulseForce);
-            Access.CheckPointManager().loadLastCP();
-            isDead = false;
-            return;
-        }
+        repulseForce = -repulseDir*5;
 
         for (int i=0; i < n_nuts; i++)
         {
@@ -1008,9 +996,7 @@ public class CarController : MonoBehaviour, IControllable
         }
         cm.loseNuts(iDamage);
 
-        // damage feedback on player
-        isInvulnerable = true;
-        invulnerabilityElapsedTime = 0f;
+        stateMachine.ForceState(invulState);
 
         RB.AddForce( repulseForce, ForceMode.Impulse);
 
@@ -1064,10 +1050,159 @@ public class CarController : MonoBehaviour, IControllable
     {
     }
     // Start is called before the first frame update
+
+public class PlayerFSM : FSMBase {
+}
+
+public class PlayerAliveAction : FSMAction {
+    public override void Execute(FSMBase machine)
+    {
+        base.Execute(machine);
+        // player alive logic
+        Debug.Log("alive");
+    }
+}
+
+public class PlayerDeadAction : FSMAction {
+    public override void Execute(FSMBase machine)
+    {
+        base.Execute(machine);
+        // player alive logic
+        Debug.Log("dead");
+    }
+}
+public class PlayerIsAlive : FSMCondition {
+    public override bool Check(FSMBase machine) {
+        CollectiblesManager cm = Access.CollectiblesManager();
+        int n_nuts = cm.getCollectedNuts();
+        return (n_nuts >= 0);
+    }
+}
+
+public class PlayerDieTransition : FSMTransition {
+    public CarController player;
+    public override void OnTransition(FSMBase machine, FSMState toState)
+    {
+        player.kill(player.repulseForce);
+        base.OnTransition(machine, toState);
+    }
+}
+
+    public class PlayerUpdateRenderer : FSMAction {
+        public CarController player;
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+
+            player.UpdateWheelsRenderer();
+            player.UpdateSuspensionRenderers();
+        }
+    }
+
+    public class PlayerSpeedEffect : FSMAction {
+        public CarController player;
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+                  // Speed effect on camera
+        if (player.updateCurrentSpeed() > 5f)
+        {
+            // update camera FOV/DIST if a PlayerCamera
+            CameraManager CamMgr = Access.CameraManager();
+            if (CamMgr.active_camera is PlayerCamera)
+            {
+                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                pc.applySpeedEffect(player.currentSpeed);
+            }
+        }
+
+        var SpeedDirection = player.RB.velocity;
+        var particules = player.SpeedParticles.GetComponent<ParticleSystem>();
+        if (SpeedDirection.magnitude > 20)
+        {
+            var e = particules.emission;
+            e.enabled = true;
+        }
+        else
+        {
+            var e = particules.emission;
+            e.enabled = false;
+        }
+        player.SpeedParticles.GetComponent<ParticleSystem>().transform.LookAt(player.transform.position + SpeedDirection);
+        var lifemin = 0.2f;
+        var lifemax = 0.6f;
+        var speedmin = 20f;
+        var speedmax = 100f;
+        var partmain = particules.main;
+        partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
+
+
+        }
+    }
+
+    public class PlayerUpdatePhysics : FSMAction {
+        public CarController player;
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+
+            player. UpdateSprings();
+
+        player.ResolveAxle(ref player.FrontAxle);
+        player.ResolveAxle(ref player.RearAxle);
+        }
+    }
+
     void Awake()
     {
-        if (isDead)
+        if(stateMachine.currentState == deadState)
             return;
+
+        PlayerDieTransition aliveToDead = new PlayerDieTransition();
+        aliveToDead.player = this;
+
+        FSMCondition playerIsAlive = new PlayerIsAlive();
+
+        PlayerUpdateRenderer updateRendererAction = new PlayerUpdateRenderer();
+        updateRendererAction.player = this;
+
+        PlayerSpeedEffect speedEffectAction = new PlayerSpeedEffect();
+        speedEffectAction.player = this;
+
+        PlayerUpdatePhysics updatePhysicsAction = new PlayerUpdatePhysics();
+        updatePhysicsAction.player = this;
+
+        aliveToDead.condition = playerIsAlive;
+        aliveToDead.trueState = aliveState;
+        aliveToDead.falseState = deadState;
+
+        aliveState.name = "alive";
+        aliveState.actions.Add(new PlayerAliveAction());
+        aliveState.actions.Add(updateRendererAction);
+        aliveState.actions.Add(speedEffectAction);
+
+        aliveState.fixedActions.Add(updatePhysicsAction);
+
+        aliveState.transitions.Add(aliveToDead);
+
+        deadState.name = "dead";
+        deadState.actions.Add(new PlayerDeadAction());
+        deadState.transitions.Add(aliveToDead);
+
+        frozenState.name = "frozen";
+
+        invulState.name = "invul";
+        invulState.actions = aliveState.actions;
+        invulState.fixedActions = aliveState.fixedActions;
+        FSMTimedCondition invulTime = new FSMTimedCondition();
+        invulTime.time = 1f;
+        FSMTransition invulTrans = new FSMTransition();
+        invulTrans.condition = invulTime;
+        invulTrans.falseState = invulState;
+        invulTrans.trueState = aliveState;
+        invulState.transitions.Add(invulTrans);
+
+        stateMachine.currentState = aliveState;
 
         // Avoid instantiating again wheels and such
         // when the Player is duplicated for garage tests
@@ -1094,31 +1229,15 @@ public class CarController : MonoBehaviour, IControllable
         SetMode(CurrentMode);
 
         Utils.attachControllable<CarController>(this);
-        isFrozen = false;
     }
 
     void Update()
     {
-        // Behaviours update
-        if (isFrozen || isDead)
-        {
-            return;
-        }
-        if (isInvulnerable)
-        {
-            invulnerabilityElapsedTime += Time.deltaTime;
-            isInvulnerable = (invulnerabilityElapsedTime < invulnerabilityTime);
-            // TODO : Animate player alpha ?
-        }
-        //
-
+        stateMachine.Update();
         FixedUpdateDone = false;
 
-
-        DrawDebugAxles(Color.blue, Color.red);
-        DrawDebugWheels(Color.yellow);
-        UpdateWheelsRenderer();
-        UpdateSuspensionRenderers();
+        // DrawDebugAxles(Color.blue, Color.red);
+        // DrawDebugWheels(Color.yellow);
 
         if (IsAircraft)
         {
@@ -1132,53 +1251,12 @@ public class CarController : MonoBehaviour, IControllable
             CarMotor.CurrentRPM = CarMotor.MaxTorque;
         }
 
-        // Speed effect on camera
-        if (updateCurrentSpeed() > 5f)
-        {
-            // update camera FOV/DIST if a PlayerCamera
-            CameraManager CamMgr = Access.CameraManager();
-            if (CamMgr.active_camera is PlayerCamera)
-            {
-                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
-                pc.applySpeedEffect(currentSpeed);
-            }
-        }
-
-        var SpeedDirection = RB.velocity;
-        var particules = SpeedParticles.GetComponent<ParticleSystem>();
-        if (SpeedDirection.magnitude > 20)
-        {
-            var e = particules.emission;
-            e.enabled = true;
-        }
-        else
-        {
-            var e = particules.emission;
-            e.enabled = false;
-        }
-        SpeedParticles.GetComponent<ParticleSystem>().transform.LookAt(transform.position + SpeedDirection);
-        var lifemin = 0.2f;
-        var lifemax = 0.6f;
-        var speedmin = 20f;
-        var speedmax = 100f;
-        var partmain = particules.main;
-        partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
-
         debugTorque.SetCurve(TORQUE);
-
     }
 
     void FixedUpdate()
     {
-        if (isFrozen || isDead)
-        {
-            return;
-        }
-
-        UpdateSprings();
-
-        ResolveAxle(ref FrontAxle);
-        ResolveAxle(ref RearAxle);
+        stateMachine.FixedUpdate();
 
         if (IsAircraft)
         {
@@ -1208,7 +1286,7 @@ public class CarController : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (isDead)
+        if (stateMachine.currentState == deadState)
             return;
 
         var Turn = Entry.Inputs["Turn"].AxisValue;
