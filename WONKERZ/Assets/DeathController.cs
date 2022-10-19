@@ -10,6 +10,8 @@ public class DeathController : MonoBehaviour
     public float radius;
     public float upmodif;
 
+    public float timeBeforeDeletion = 60f;
+
     public float timeScale;
     public float scalingTimer;
     private float scalingTimerCurrent = 0;
@@ -21,6 +23,9 @@ public class DeathController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (isStarted)
+            return;
+
         foreach (var rb in objects)
         {
             rb.isKinematic = true;
@@ -44,7 +49,8 @@ public class DeathController : MonoBehaviour
         isStarted = true;
         scalingTimerCurrent = 0f;
 
-        deathScreen.SetActive(true);
+        //deathScreen.SetActive(true);
+        Destroy(gameObject, timeBeforeDeletion);
     }
 
     public void Deactivate()
@@ -59,7 +65,7 @@ public class DeathController : MonoBehaviour
         Time.timeScale = 1f;
         isStarted = false;
 
-        deathScreen.SetActive(false);
+        //deathScreen.SetActive(false);
     }
 
     void Update()
@@ -69,9 +75,9 @@ public class DeathController : MonoBehaviour
             scalingTimerCurrent += Time.unscaledDeltaTime;
             Time.timeScale = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
 
-            var c =  deathText.color;
-            c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
-            deathText.color = c;
+            //var c =  deathText.color;
+            //c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
+            //deathText.color = c;
 
         }
     }

@@ -50,6 +50,9 @@ public static partial class Utils
         if (!!direct_cc)
             return true;
         // can also be wheels
+        if (iGO.transform.parent==null)
+            return false;
+
         CarController parent_cc = iGO.transform.parent.GetComponent<CarController>();
         if ( parent_cc != null )
             return true;

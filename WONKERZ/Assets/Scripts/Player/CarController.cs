@@ -129,6 +129,7 @@ public class CarController : MonoBehaviour, IControllable
     public int weight_movable_keyframe;
 
     [Header("Behaviours")]
+    public bool isDead = false;
     public bool isFrozen;
     public bool isInvulnerable;
     public float invulnerabilityTime = 1f;
@@ -976,7 +977,7 @@ public class CarController : MonoBehaviour, IControllable
     /// =============== Game Logic ==================
     public void takeDamage(int iDamage, ContactPoint iCP)
     {
-        if (isInvulnerable)
+        if (isInvulnerable || isDead)
             return;
 
         // lose nuts
@@ -986,7 +987,11 @@ public class CarController : MonoBehaviour, IControllable
         if (n_nuts==0)
         { 
             // GAME OVER
+            isDead = true;
+            kill();
             Access.CheckPointManager().loadLastCP();
+            isDead = false;
+            return;
         }
 
         for (int i=0; i < n_nuts; i++)
@@ -1024,6 +1029,27 @@ public class CarController : MonoBehaviour, IControllable
         turboIntervalElapsedTime = 0f;
     }
 
+    public void kill()
+    { 
+        int LayerIgnorePlayerCollision = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
+        GameObject dummy_player = Instantiate(gameObject, transform.position, transform.rotation);
+        dummy_player.layer = LayerIgnorePlayerCollision;
+
+        //dummy_player.GetComponent<CarController>().enabled = false;
+        
+        // add dummy's suspension/ wheels to DC objects
+        DeathController dc = dummy_player.GetComponent<DeathController>();
+        dc.objects.Clear();
+        foreach(Transform child in dummy_player.transform)
+        {
+            Rigidbody rb = child.GetComponent<Rigidbody>();
+            if (!!rb)
+                dc.objects.Add(rb);
+        }
+
+        dc.Activate();
+    }
+
     /// =============== Unity ==================
 
     private void OnDestroy()
@@ -1037,6 +1063,9 @@ public class CarController : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Awake()
     {
+        if (isDead)
+            return;
+
         // Avoid instantiating again wheels and such
         // when the Player is duplicated for garage tests
         // > We could also just remove certain awake calls
@@ -1068,7 +1097,7 @@ public class CarController : MonoBehaviour, IControllable
     void Update()
     {
         // Behaviours update
-        if (isFrozen)
+        if (isFrozen || isDead)
         {
             return;
         }
@@ -1138,7 +1167,7 @@ public class CarController : MonoBehaviour, IControllable
 
     void FixedUpdate()
     {
-        if (isFrozen)
+        if (isFrozen || isDead)
         {
             return;
         }
@@ -1176,6 +1205,9 @@ public class CarController : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
+        if (isDead)
+            return;
+            
         var Turn = Entry.Inputs["Turn"].AxisValue;
         var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
         // CarMotor.CurrentRPM = 0;
