@@ -163,10 +163,15 @@ public class CarController : MonoBehaviour, IControllable
     public GameObject grapin;
 
     public PlayerFSM stateMachine = new PlayerFSM();
-   public FSMState aliveState = new FSMState();
-   public FSMState deadState = new FSMState();
-   public FSMState frozenState = new FSMState();
-   public FSMState invulState = new FSMState();
+
+    public FSMState aliveState = new FSMState();
+    public FSMState deadState = new FSMState();
+    public FSMState frozenState = new FSMState();
+    public FSMState invulState = new FSMState();
+    public PlayerBoatState boatState = new PlayerBoatState();
+    public PlayerGroudState groundState = new PlayerGroudState();
+    public PlayerAircraftState aircraftState = new PlayerAircraftState();
+
     /// =============== Cache ===============
     private Rigidbody RB;
 
@@ -887,49 +892,80 @@ public class CarController : MonoBehaviour, IControllable
         if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
     }
 
+    public class PlayerGroudState : FSMState {
+        public CarController player;
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+           player.FrontAxle.IsTraction = false;
+           player.FrontAxle.IsDirection = true;
+           player.FrontAxle.IsReversedDirection = false;
+
+           player.RearAxle.IsDirection = false;
+           player.RearAxle.IsTraction = true;
+           player.RearAxle.IsReversedDirection = false;
+        }
+    }
+
+    public class PlayerBoatState : FSMState {
+        public CarController player;
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+            player.FrontAxle.IsTraction = false;
+            player.FrontAxle.IsDirection = false;
+            player.FrontAxle.IsReversedDirection = false;
+
+            player.RearAxle.IsDirection = true;
+            player.RearAxle.IsTraction = true;
+            player.RearAxle.IsReversedDirection = true;
+        }
+    }
+
+    public class PlayerAircraftState : FSMState {
+        public CarController player;
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+            player.FrontAxle.IsTraction = true;
+            player.FrontAxle.IsDirection = true;
+            player.FrontAxle.IsReversedDirection = false;
+
+            player.RearAxle.IsDirection = true;
+            player.RearAxle.IsTraction = true;
+            player.RearAxle.IsReversedDirection = true;
+        }
+    }
+
+    public class PlayerAircraftCondition : FSMCondition {
+        public CarController player;
+        public override bool Check(FSMBase machine)
+        {
+            return player.CurrentMode == CarMode.DELTA;
+        }
+    }
+
+    public class PlayerCarCondition : FSMCondition {
+        public CarController player;
+        public override bool Check(FSMBase machine)
+        {
+            return player.CurrentMode == CarMode.GROUND || player.CurrentMode == CarMode.NONE;
+        }
+    }
+
+    public class PlayerBoatCondition : FSMCondition {
+        public CarController player;
+        public override bool Check(FSMBase machine)
+        {
+            return player.CurrentMode == CarMode.WATER;
+        }
+    }
+
     public CarMode CurrentMode = CarMode.NONE;
     public void SetMode(CarMode Mode)
     {
         if (Mode == CurrentMode) return;
         CurrentMode = Mode;
-
-        IsAircraft = false;
-        RearAxle.IsTraction = true;
-        switch (Mode)
-        {
-            case CarMode.GROUND:
-                {
-                    FrontAxle.IsTraction = false;
-                    FrontAxle.IsDirection = true;
-                    FrontAxle.IsReversedDirection = false;
-
-                    RearAxle.IsDirection = false;
-                    RearAxle.IsReversedDirection = false;
-                }
-                break;
-            case CarMode.WATER:
-                {
-                    FrontAxle.IsTraction = false;
-                    FrontAxle.IsDirection = false;
-                    FrontAxle.IsReversedDirection = false;
-
-                    RearAxle.IsDirection = true;
-                    RearAxle.IsReversedDirection = true;
-                }
-                break;
-            case CarMode.DELTA:
-                {
-                    FrontAxle.IsTraction = true;
-                    FrontAxle.IsDirection = true;
-                    FrontAxle.IsReversedDirection = false;
-
-                    RearAxle.IsDirection = true;
-                    RearAxle.IsReversedDirection = true;
-
-                    IsAircraft = true;
-                }
-                break;
-        }
     }
 
     private void SetBodyColor(Color C)
@@ -1050,12 +1086,12 @@ public class CarController : MonoBehaviour, IControllable
 public class PlayerFSM : FSMBase {
 }
 
-public class PlayerAliveAction : FSMAction {
+public class PrintStateName : FSMAction {
     public override void Execute(FSMBase machine)
     {
         base.Execute(machine);
         // player alive logic
-        Debug.Log("alive");
+        Debug.Log(machine.currentState.name);
     }
 }
 
@@ -1079,6 +1115,7 @@ public class PlayerDieTransition : FSMTransition {
     public CarController player;
     public override void OnTransition(FSMBase machine, FSMState toState)
     {
+        Debug.Log("die");
         player.kill(player.repulseForce);
         Access.CheckPointManager().loadLastCP(true);
         base.OnTransition(machine, toState);
@@ -1155,11 +1192,37 @@ public class PlayerDieTransition : FSMTransition {
         if(stateMachine.currentState == deadState)
             return;
 
-        PlayerDieTransition aliveToDead = new PlayerDieTransition();
-        aliveToDead.player = this;
+        // FSM Condition
 
         FSMCondition playerIsAlive = new PlayerIsAlive();
+        PlayerAircraftCondition playerIsAircraft = new PlayerAircraftCondition();
+        playerIsAircraft.player = this;
+        PlayerBoatCondition playerIsBoat = new PlayerBoatCondition();
+        playerIsBoat.player = this;
+        PlayerCarCondition playerIsCar = new PlayerCarCondition();
+        playerIsCar.player = this;
 
+        // FSM Transition
+        //
+        FSMTransition aircraftTrans = new FSMTransition();
+        aircraftTrans.condition = playerIsAircraft;
+        aircraftTrans.trueState = aircraftState;
+
+        FSMTransition waterTrans = new FSMTransition();
+        waterTrans.condition = playerIsBoat;
+        waterTrans.trueState = boatState;
+
+        FSMTransition groundTrans = new FSMTransition();
+        groundTrans.condition = playerIsCar;
+        groundTrans.trueState = groundState;
+
+        PlayerDieTransition aliveToDead = new PlayerDieTransition();
+        aliveToDead.player = this;
+        aliveToDead.condition = playerIsAlive;
+        aliveToDead.falseState = deadState;
+
+        // FSM Actions
+        //
         PlayerUpdateRenderer updateRendererAction = new PlayerUpdateRenderer();
         updateRendererAction.player = this;
 
@@ -1169,23 +1232,40 @@ public class PlayerDieTransition : FSMTransition {
         PlayerUpdatePhysics updatePhysicsAction = new PlayerUpdatePhysics();
         updatePhysicsAction.player = this;
 
-        aliveToDead.condition = playerIsAlive;
-        aliveToDead.trueState = aliveState;
-        aliveToDead.falseState = deadState;
+        // FSM Define graph
 
         aliveState.name = "alive";
-        aliveState.actions.Add(new PlayerAliveAction());
+        aliveState.actions.Add(new PrintStateName());
         aliveState.actions.Add(updateRendererAction);
         aliveState.actions.Add(speedEffectAction);
 
         aliveState.fixedActions.Add(updatePhysicsAction);
 
         aliveState.transitions.Add(aliveToDead);
+        aliveState.transitions.Add(aircraftTrans);
+        aliveState.transitions.Add(groundTrans);
+        aliveState.transitions.Add(waterTrans);
+
+        groundState.name = "ground";
+        groundState.transitions = aliveState.transitions;
+        groundState.actions = aliveState.actions;
+        groundState.fixedActions = aliveState.fixedActions;
+
+        boatState.name = "boat";
+        boatState.transitions = aliveState.transitions;
+        boatState.actions = aliveState.actions;
+        boatState.fixedActions = aliveState.fixedActions;
+
+        aircraftState.name = "aircraft";
+        aircraftState.transitions = aliveState.transitions;
+        aircraftState.actions = aliveState.actions;
+        aircraftState.fixedActions = aliveState.fixedActions;
 
         deadState.name = "dead";
-        deadState.actions.Add(new PlayerDeadAction());
+        deadState.actions.Add(new PrintStateName());
         deadState.transitions.Add(aliveToDead);
 
+        // only force this state
         frozenState.name = "frozen";
 
         invulState.name = "invul";
