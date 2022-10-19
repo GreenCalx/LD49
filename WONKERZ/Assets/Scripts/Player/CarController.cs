@@ -984,11 +984,18 @@ public class CarController : MonoBehaviour, IControllable
         CollectiblesManager cm = Access.CollectiblesManager();
         int n_nuts = cm.getCollectedNuts();
 
+        Vector3 contactNormal = iCP.normal;
+        Vector3 contactPoint = iCP.point;
+        Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
+
+        Vector3 repulseDir = contactPoint + contactNormal;
+        Vector3 repulseForce = -repulseDir*5;
+
         if (n_nuts==0)
         { 
             // GAME OVER
             isDead = true;
-            kill();
+            kill(repulseForce);
             Access.CheckPointManager().loadLastCP();
             isDead = false;
             return;
@@ -1004,12 +1011,8 @@ public class CarController : MonoBehaviour, IControllable
         // damage feedback on player
         isInvulnerable = true;
         invulnerabilityElapsedTime = 0f;
-        Vector3 contactNormal = iCP.normal;
-        Vector3 contactPoint = iCP.point;
-        Debug.DrawRay(contactPoint, contactNormal*5, Color.red, 5, false);
 
-        Vector3 repulseDir = contactPoint + contactNormal;
-        RB.AddForce( -repulseDir*5, ForceMode.Impulse);
+        RB.AddForce( repulseForce, ForceMode.Impulse);
 
     }
 
@@ -1029,7 +1032,7 @@ public class CarController : MonoBehaviour, IControllable
         turboIntervalElapsedTime = 0f;
     }
 
-    public void kill()
+    public void kill(Vector3 iSteer = default(Vector3))
     { 
         int LayerIgnorePlayerCollision = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
         GameObject dummy_player = Instantiate(gameObject, transform.position, transform.rotation);
@@ -1047,7 +1050,7 @@ public class CarController : MonoBehaviour, IControllable
                 dc.objects.Add(rb);
         }
 
-        dc.Activate();
+        dc.Activate(iSteer);
     }
 
     /// =============== Unity ==================
@@ -1207,7 +1210,7 @@ public class CarController : MonoBehaviour, IControllable
     {
         if (isDead)
             return;
-            
+
         var Turn = Entry.Inputs["Turn"].AxisValue;
         var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
         // CarMotor.CurrentRPM = 0;

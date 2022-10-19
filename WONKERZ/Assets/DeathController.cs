@@ -33,13 +33,14 @@ public class DeathController : MonoBehaviour
         }
     }
 
-    public void Activate()
+    public void Activate( Vector3 iSteer = default(Vector3) )
     {
         foreach (var rb in objects)
         {
             rb.isKinematic = false;
             rb.detectCollisions = true;
             rb.AddExplosionForce(force, transform.position, radius, upmodif);
+            rb.AddForce(iSteer/3, ForceMode.Acceleration);
         }
 
         GetComponent<CarController>().isFrozen = true;
