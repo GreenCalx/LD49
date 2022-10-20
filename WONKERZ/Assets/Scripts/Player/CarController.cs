@@ -102,6 +102,8 @@ public class CarController : MonoBehaviour, IControllable
 
     /// ================== Variables ===================
     public GameObject SpeedParticles;
+    [Header("Prefab Refs(MAND)")]
+    public GameObject OnDeathClone;
 
     [Header("Car PhysX")]
     /// A car is for now 2 axles (4 wheels)
@@ -1060,12 +1062,8 @@ public class CarController : MonoBehaviour, IControllable
 
     public void kill(Vector3 iSteer = default(Vector3))
     {
-        int LayerIgnorePlayerCollision = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
-        GameObject dummy_player = Instantiate(gameObject, transform.position, transform.rotation);
-        dummy_player.layer = LayerIgnorePlayerCollision;
-
-        dummy_player.GetComponent<CarController>().stateMachine.currentState = deadState;
-        dummy_player.GetComponent<CarController>().enabled = false;
+        GameObject dummy_player = Instantiate(OnDeathClone, transform.position, transform.rotation);
+        Destroy(dummy_player.GetComponent<CarController>());
 
         // add dummy's suspension/ wheels to DC objects
         DeathController dc = dummy_player.GetComponent<DeathController>();
@@ -1299,7 +1297,7 @@ public class CarController : MonoBehaviour, IControllable
         // when the Player is duplicated for garage tests
         // > We could also just remove certain awake calls
         // but i want to check that wit u toff
-        if (transform.parent.GetComponent<UIGarageTestManager>())
+        if ( !!transform.parent && transform.parent.GetComponent<UIGarageTestManager>())
         { clonedForTestInit(); return; }
 
         if (UseRefs)
