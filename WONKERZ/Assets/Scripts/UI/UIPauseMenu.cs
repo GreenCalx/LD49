@@ -36,6 +36,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
             tracknameText.text = SceneManager.GetActiveScene().name;
             updateTrackDetails();
 
+            panel.inputMgr = Access.InputManager();
             panel.onActivate.Invoke();
         }
     }
@@ -44,7 +45,10 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     {
         Time.timeScale = (isPaused ? 0 : 1);
         var player = Access.Player();
-        player.stateMachine.ForceState(player.frozenState);
+        if (isPaused)
+            player.stateMachine.ForceState(player.frozenState);
+        else
+            player.stateMachine.ForceState(player.aliveState);
     }
 
     public void OnExitButton()

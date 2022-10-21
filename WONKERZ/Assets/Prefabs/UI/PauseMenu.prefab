@@ -317,9 +317,13 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: Jump
-  inputManager: {fileID: 0}
+  inputVert: 
+  inputHori: 
+  inputCancel: 
+  inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 3599983271677792458}
@@ -483,10 +487,10 @@ RectTransform:
   m_Father: {fileID: 8033300765036576096}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 141.25, y: -25}
-  m_SizeDelta: {x: 117.5, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6050392024482150702
 CanvasRenderer:
@@ -564,10 +568,10 @@ RectTransform:
   m_Father: {fileID: 7585680005398499317}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1266, y: 668}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1142786558636863163
 CanvasRenderer:
@@ -606,7 +610,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 100
 --- !u!1 &3173722121778077518
 GameObject:
   m_ObjectHideFlags: 0
@@ -648,7 +652,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 640, y: 480}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2661047008564776987
 CanvasRenderer:
@@ -1350,10 +1354,10 @@ RectTransform:
   m_Father: {fileID: 8033300765036576096}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 41.25, y: -25}
-  m_SizeDelta: {x: 82.5, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6460259857574199713
 CanvasRenderer:
@@ -1426,10 +1430,10 @@ RectTransform:
   m_Father: {fileID: 7635061214696372529}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: -1820, y: -980}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5480134562950895303
 MonoBehaviour:
@@ -1533,16 +1537,20 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
+  copyInputsFromParent: 0
   inputMgr: {fileID: 0}
-  selector_latch: 0.2
-  tabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  navigationMode: 1
+  inputActivate: 
   inputVert: UIUpDown
   inputHori: Turn
+  inputCancel: 
+  inheritsInputMgr: 0
+  selector_latch: 0.2
+  tabs:
+  - {fileID: 6347815450125897671}
+  - {fileID: 5626644715618224164}
+  - {fileID: 1083657764902074107}
+  - {fileID: 8623105448777247096}
+  navigationMode: 1
 --- !u!1 &6209330785614270723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1616,12 +1624,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -1656,7 +1664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2dc21f1317225c49bd7afa3d1df453c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panel: {fileID: 0}
+  panel: {fileID: 5480134562950895303}
   sceneToLoadOnExit: 1
   tracknameText: {fileID: 1862358102752931894}
   collectedNuts: {fileID: 8849177077622078872}
@@ -1801,9 +1809,13 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
+  copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: Jump
-  inputManager: {fileID: 0}
+  inputVert: 
+  inputHori: 
+  inputCancel: 
+  inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 1913803255082937322}
@@ -2019,7 +2031,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  Parent: {fileID: 5480134562950895303}
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -2109,9 +2121,13 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: Jump
-  inputManager: {fileID: 0}
+  inputVert: 
+  inputHori: 
+  inputCancel: 
+  inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 3847922503718782340}
@@ -2465,9 +2481,13 @@ MonoBehaviour:
       m_Calls: []
   activator: {fileID: 0}
   copyColorFromParent: 1
+  copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: Jump
-  inputManager: {fileID: 0}
+  inputVert: 
+  inputHori: 
+  inputCancel: 
+  inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
   text: {fileID: 2560256663659322062}
