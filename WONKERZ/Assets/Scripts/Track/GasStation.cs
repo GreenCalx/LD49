@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class GasStation : MonoBehaviour
 {
+    public Animator animator;
+
     public float nutConversionInterval = 0.2f;
     private float nutConversionElapsed = 99f;
+
+    private bool IsPumpingGas = false;
+    private string animatorParm = "IsPumping";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,9 +31,30 @@ public class GasStation : MonoBehaviour
             nutConversionElapsed += Time.deltaTime;
             if (nutConversionElapsed > nutConversionInterval)
             {
-                Access.CollectiblesManager().tryConvertNutToTurbo();
+                bool convertSuccess = Access.CollectiblesManager().tryConvertNutToTurbo();
                 nutConversionElapsed = 0f;
+                if ( convertSuccess && !IsPumpingGas)
+                {
+                    animator.SetBool(animatorParm, true);
+                    IsPumpingGas = true;
+                } else if ( !convertSuccess && IsPumpingGas ) {
+                    animator.SetBool(animatorParm, false);
+                    IsPumpingGas = false;
+                }
             }
+        }
+    }
+
+    void OnTriggerExit(Collider iCollider)
+    {
+        if (Utils.isPlayer(iCollider.gameObject))
+        {
+            if (IsPumpingGas)
+            {
+                IsPumpingGas = false;
+                animator.SetBool(animatorParm, false);
+            }
+                
         }
     }
 }
