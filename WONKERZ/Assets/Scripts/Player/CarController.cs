@@ -1259,16 +1259,19 @@ public class CarController : MonoBehaviour, IControllable
         aliveState.transitions.Add(waterTrans);
 
         groundState.name = "ground";
+        groundState.player = this;
         groundState.transitions = aliveState.transitions;
         groundState.actions = aliveState.actions;
         groundState.fixedActions = aliveState.fixedActions;
 
         boatState.name = "boat";
+        boatState.player = this;
         boatState.transitions = aliveState.transitions;
         boatState.actions = aliveState.actions;
         boatState.fixedActions = aliveState.fixedActions;
 
         aircraftState.name = "aircraft";
+        aircraftState.player = this;
         aircraftState.transitions = aliveState.transitions;
         aircraftState.actions = aliveState.actions;
         aircraftState.fixedActions = aliveState.fixedActions;

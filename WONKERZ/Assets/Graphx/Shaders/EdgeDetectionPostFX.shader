@@ -48,6 +48,7 @@ Shader "Hidden/EdgeDetectionPostFX"
 
             sampler2D _CameraDepthNormalsTexture;
             sampler2D _CameraDepthTexture;
+            float4 _CameraDepthTexture_TexelSize;
             sampler2D _MainTex;
             sampler2D _CameraGBufferTexture0;
             sampler2D _CameraGBufferTexture1;
@@ -195,7 +196,13 @@ Shader "Hidden/EdgeDetectionPostFX"
                 float Result;
                 float ResultDepth;
 
+                float2 texSize = (_CameraDepthTexture_TexelSize.x,_CameraDepthTexture_TexelSize.y);
+
+                for (int j=0; j<9; ++j)
+                    SobleNeighborsSamples[j] *= texSize;
+
                 float ThicknessFallOff = (1-Linear01Depth(D));
+                ThicknessFallOff = 1;
 
                 ComputeSobelAtPoint(i.uv, _Thickness* ThicknessFallOff, ResultDepth);
                 if (ResultDepth > _SobelThreshold) {
