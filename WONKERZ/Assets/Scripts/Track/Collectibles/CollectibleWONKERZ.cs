@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class CollectibleWONKERZ : AbstractCollectible
 {
+    public enum LETTERS { W, O, N, K, E, R, Z}
 
+    public LETTERS currLetter;
+    
     // Start is called before the first frame update
     void Start()
     {

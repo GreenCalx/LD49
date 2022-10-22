@@ -35,6 +35,23 @@ public class CollectiblesManager : MonoBehaviour
                     return;
                 collected.Remove(iAC.gameObject.name);
             }
+
+            public bool IsInJar(T iAC, string iSceneName)
+            {
+                HashSet<string> collected;
+                jar.TryGetValue(iSceneName, out collected );
+                if (collected.Count <= 0)
+                    return false;
+                return collected.Contains(iAC.gameObject.name);
+            }
+
+            public HashSet<string> GetValues(string iSceneName)
+            {
+                HashSet<string> collected;
+                jar.TryGetValue(iSceneName, out collected );
+                return collected;
+            }
+
             private void checkJar(string scene_name)
             {
                 if (!jar.ContainsKey(scene_name))
@@ -225,5 +242,24 @@ public class CollectiblesManager : MonoBehaviour
     {
         if (!allCollectiblesInCurrStage.Exists(x => x.gameObject.name == AC.gameObject.name))
             allCollectiblesInCurrStage.Add(AC);
+    }
+
+    public bool hasWONKERZLetter(CollectibleWONKERZ.LETTERS iLetter, string iScene="")
+    {
+        string sceneName = (iScene=="") ? SceneManager.GetActiveScene().name : iScene;
+        
+        string letterAsStr = Enum.GetName(typeof(CollectibleWONKERZ.LETTERS), iLetter);
+        
+        HashSet<string> collected = jar.WONKERZjar.GetValues(sceneName);
+        if ((collected==null) || (collected.Count <= 0))
+            return false;
+
+        foreach ( string e in jar.WONKERZjar.GetValues(sceneName) )
+        {
+            if ( letterAsStr == e )
+                return true;
+        }
+
+        return false;
     }
 }

@@ -2,6 +2,7 @@ using UnityEngine;
 //using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
@@ -15,6 +16,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     [Header("Mandatory")]
     public Text tracknameText;
     public Text collectedNuts;
+    public UIWonkerzBar wonkerzBar;
 
     [Header("Track Handles")]
     public GameObject collectiblesHandle;
@@ -90,10 +92,13 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         if (!!collectiblesHandle)
         {
             CollectiblesManager cm = Access.CollectiblesManager();
-            // collected nuts
-            string n_nuts = cm.getCollectedNuts().ToString();
-            string tot_nuts = cm.getCollectableCollectible<CollectibleNut>(collectiblesHandle).ToString();
-            collectedNuts.text = n_nuts + "/" + tot_nuts ; // TODO : get total nuts per track
+
+            //collected wonkerz
+            foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+            {
+                wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
+            }
+
         }
 
     }
