@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class CarController : MonoBehaviour, IControllable
 {
@@ -175,7 +176,7 @@ public class CarController : MonoBehaviour, IControllable
     public PlayerAircraftState aircraftState = new PlayerAircraftState();
 
     /// =============== Cache ===============
-    private Rigidbody RB;
+    public Rigidbody RB;
 
     /// =================== Updates =================
 
@@ -264,9 +265,9 @@ public class CarController : MonoBehaviour, IControllable
 
     void DrawDebugWheel(ref Suspension S, Color C)
     {
-        DebugDrawCircle(S.Wheel.Radius, GetEnd(S), transform.right, 10, C);
-        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) + transform.right * S.Wheel.Width, transform.right, 10, C);
-        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) - transform.right * S.Wheel.Width, transform.right, 10, C);
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S), transform.right, 10, S.Wheel.IsGrounded ? Color.magenta : C);
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) + transform.right * S.Wheel.Width, transform.right, 10, S.Wheel.IsGrounded ? Color.magenta : C);
+        DebugDrawCircle(S.Wheel.Radius, GetEnd(S) - transform.right * S.Wheel.Width, transform.right, 10, S.Wheel.IsGrounded ? Color.magenta : C);
 
         //var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         //go.transform.parent = transform;
@@ -444,203 +445,92 @@ public class CarController : MonoBehaviour, IControllable
 
     WheelHitInfo GetWheelHitInfo(Suspension S)
     {
+
         WheelHitInfo Result = new WheelHitInfo();
+        Result.Distance = float.PositiveInfinity;
+        Result.Hit = false;
+        Result.Collider = null;
+        Result.Normal = Vector3.zero;
+        Result.PenetrationCorrectionDirection = Vector3.zero;
+        Result.PenetrationCorrectionDistance = 0f;
+        Result.Point = Vector3.zero;
 
         var SpringDirection = -transform.up;
         var SpringAnchor = S.Spring.Anchor.transform.position;
-        // IMPORTANT toffa : the physic step might be too high and miss a
-        // collision! Therefore we detect the collision by taking into account
-        // the next velocity application in the ray as we are doing the
-        // detection by hand. NOTE toffa first we compute the real velocity that
-        // will be applied this frame to the point and we project it along the
-        // suspension.
         var WheelPosition = GetEnd(S);
+        var WheelDiameter = S.Wheel.Radius * 2f;
         var NextWheelPosition = GetNextPointPosition(WheelPosition);
-        var Epsilon = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
-        // trying to use 3 capsule colliders to have predictable collisions
-        Vector3 CapsuleUpVector = SpringDirection * S.Wheel.Radius;
-        Vector3 CapsuleCenter = SpringAnchor;
-        // Cast a capsule in the middle of the wheel
-        //
-        //       + +
-        //     +  |  +
-        //     +  |  +
-        //       + +
-        RaycastHit Hit90;
-        bool ResultHit90 = Physics.CapsuleCast(CapsuleCenter - CapsuleUpVector,
-                                               CapsuleCenter + CapsuleUpVector,
-                                              S.Wheel.Width,
-                                              SpringDirection,
-                                              out Hit90,
-                                              Epsilon,
-                                              ~(1 << LayerMask.NameToLayer("No Player Collision")));
+        // overlap a capsule cast with a box cast to make a wheel colider
 
-        //bool A = Physics.BoxCast(CapsuleCenter, transform.up * S.Wheel.Radius + transform.right * S.Wheel.Width + transform.forward * S.Wheel.Width, SpringDirection, out Hit90, Quaternion.identity, Epsilon, ~(1<< LayerMask.NameToLayer("No Player Collision")));
+        float MaxDistance = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
 
-        if (!ResultHit90) Hit90.distance = float.PositiveInfinity;
+        var TestSweep = S.Spring.Anchor.GetComponentInChildren<Rigidbody>().SweepTestAll(SpringDirection, MaxDistance);
+        Array.Sort(TestSweep, (a, b) => a.distance < b.distance ? -1 : 1);
 
-        Result.Normal = Hit90.normal;
-        Result.Collider = Hit90.collider?.gameObject;
-        Result.Distance = Hit90.distance;
-        Result.Point = Hit90.point;
-
-        // Cast a capsule at +45deg angle
-        //
-        //       + +
-        //     + \   +
-        //     +  \  +
-        //       + +
-        CapsuleUpVector = Quaternion.AngleAxis(45f, transform.right) * CapsuleUpVector;
-        RaycastHit Hit135;
-        bool ResultHit135 = Physics.CapsuleCast(CapsuleCenter - CapsuleUpVector,
-                                              CapsuleCenter + CapsuleUpVector,
-                                              S.Wheel.Width,
-                                              SpringDirection,
-                                              out Hit135,
-                                              Epsilon,
-                                             ~(1 << LayerMask.NameToLayer("No Player Collision")));
-        if (!ResultHit135) Hit135.distance = float.PositiveInfinity;
-
-        if (Hit135.distance < Result.Distance)
-        {
-            Result.Normal = Hit135.normal;
-            Result.Collider = Hit135.collider?.gameObject;
-            Result.Distance = Hit135.distance;
-            Result.Point = Hit135.point;
-        }
-        // Cast a capsule at +90deg angle
-        //
-        //       + +
-        //     +     +
-        //     +-----+
-        //     +     +
-        //       + +
-        CapsuleUpVector = Quaternion.AngleAxis(45f, transform.right) * CapsuleUpVector;
-        RaycastHit Hit0;
-        bool ResultHit0 = Physics.CapsuleCast(CapsuleCenter - CapsuleUpVector,
-                                              CapsuleCenter + CapsuleUpVector,
-                                              S.Wheel.Width,
-                                              SpringDirection,
-                                              out Hit0,
-                                              Epsilon,
-                                              ~(1 << LayerMask.NameToLayer("No Player Collision")));
-        if (!ResultHit0) Hit0.distance = float.PositiveInfinity;
-        if (Hit0.distance < Result.Distance)
-        {
-            Result.Normal = Hit0.normal;
-            Result.Collider = Hit0.collider?.gameObject;
-            Result.Distance = Hit0.distance;
-            Result.Point = Hit0.point;
-        }
-        // Cast a capsule at -45deg angle
-        //
-        //       + +
-        //     +   / +
-        //     + /   +
-        //       + +
-        CapsuleUpVector = SpringDirection * S.Wheel.Radius;
-        CapsuleUpVector = Quaternion.AngleAxis(-45f, transform.right) * CapsuleUpVector;
-        RaycastHit Hit45;
-        bool ResultHit45 = Physics.CapsuleCast(CapsuleCenter - CapsuleUpVector,
-                                              CapsuleCenter + CapsuleUpVector,
-                                              S.Wheel.Width,
-                                              SpringDirection,
-                                              out Hit45,
-                                              Epsilon,
-                                              ~(1 << LayerMask.NameToLayer("No Player Collision")));
-        if (!ResultHit45) Hit45.distance = float.PositiveInfinity;
-        if (Hit45.distance < Result.Distance)
-        {
-            Result.Normal = Hit45.normal;
-            Result.Collider = Hit45.collider?.gameObject;
-            Result.Distance = Hit45.distance;
-            Result.Point = Hit45.point;
-        }
-
-        Result.Hit = ResultHit0 || ResultHit45 || ResultHit90 || ResultHit135;
-        // SphereCast and CapsuleCast does not return the right normal so we need to get back this value
-        // from a normal raycast.
+        Result.Hit = TestSweep.Length != 0;
         if (Result.Hit)
         {
-            Ray R = new Ray(SpringAnchor, Result.Point - SpringAnchor);
-            RaycastHit Hit;
-            if (Result.Collider.GetComponent<Collider>().Raycast(R, out Hit, 100))
-                Result.Normal = Hit.normal;
-        }
+            Result.Collider = TestSweep[0].collider.gameObject;
+            Result.Distance = TestSweep[0].distance;
+            Result.Normal = TestSweep[0].normal;
+            Result.Point = TestSweep[0].point;
 
-        // In case everything says it does not hit a collider
-        // We check if there is not overlap, because unity does not send back a hit
-        // when the checker overlap the collider...
-
-        if (!Result.Hit)
-        {
-            Vector3 TempDir = Vector3.zero;
-            float TempDist = 0;
-            bool ResultHitOverlap = false;
-            CapsuleUpVector = SpringDirection * (S.Wheel.Radius - S.Wheel.Width);
-            var OverlappedColliders = Physics.OverlapCapsule(GetEnd(S) - CapsuleUpVector, GetEnd(S) + CapsuleUpVector, S.Wheel.Width, ~(1 << LayerMask.NameToLayer("No Player Collision")));
-            if (OverlappedColliders.Length > 0)
+            if (Result.Distance < S.Spring.MinLength)
             {
-                foreach (var C in OverlappedColliders)
-                {
-                    if (C.GetComponent<Ground>())
-                    {
-                        ResultHitOverlap = true;
-                        CapsuleCollider CC = gameObject.AddComponent<CapsuleCollider>();
-                        CC.center = transform.InverseTransformPoint(GetEnd(S));
-                        CC.height = S.Wheel.Radius * 2;
-                        CC.radius = S.Wheel.Width / 2;
 
-                        Physics.ComputePenetration(CC, transform.position, transform.rotation, C, C.gameObject.transform.position, C.gameObject.transform.rotation, out TempDir, out TempDist);
-
-                        Result.Hit = true;
-                        Result.Normal = Vector3.zero;
-                        Result.Collider = C.gameObject;
-                        Result.Distance = 0;
-                        Result.Point = Vector3.zero;
-
-
-                        GameObject.DestroyImmediate(CC);
-                    }
-                }
-            }
-
-            CapsuleUpVector = Quaternion.AngleAxis(90f, transform.right) * CapsuleUpVector;
-            OverlappedColliders = Physics.OverlapCapsule(GetEnd(S) - CapsuleUpVector, GetEnd(S) + CapsuleUpVector, S.Wheel.Width, ~(1 << LayerMask.NameToLayer("No Player Collision")));
-            if (OverlappedColliders.Length > 0)
-            {
-                foreach (var C in OverlappedColliders)
-                {
-                    if (C.GetComponent<Ground>())
-                    {
-                        ResultHitOverlap = true;
-                        CapsuleCollider CC = gameObject.AddComponent<CapsuleCollider>();
-                        CC.center = transform.InverseTransformPoint(GetEnd(S));
-                        CC.height = S.Wheel.Radius * 2;
-                        CC.radius = S.Wheel.Width / 2;
-                        CC.direction = 2;
-
-                        Physics.ComputePenetration(CC, transform.position, transform.rotation, C, C.transform.position, C.transform.rotation, out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance);
-                        GameObject.DestroyImmediate(CC);
-                    }
-                }
-
-            }
-            if (Result.PenetrationCorrectionDistance > TempDist)
-            {
-                Result.Hit = true;
-                Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
-                Result.Collider = OverlappedColliders[0].gameObject;
                 Result.Distance = 0;
-                Result.Point = Vector3.zero;
+                if (Physics.ComputePenetration(S.Spring.Anchor.GetComponentInChildren<MeshCollider>(),
+                                              SpringAnchor + SpringDirection * S.Spring.MinLength,
+                                              Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                                              TestSweep[0].collider,
+                                              Result.Collider.transform.position,
+                                              Result.Collider.transform.rotation,
+                                              out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                {
+                    //Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
+                    Result.Point = Vector3.zero;
+                }
+                else
+                {
+                    Debug.Log("dist < min but no penetration?");
+                }
             }
-            else
+        }
+        else
+        {
+            // check for overlap?
+            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius), Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection), ~(1 << LayerMask.NameToLayer("No Player Collision")));
+            if (overlap.Length != 0)
             {
-                Result.PenetrationCorrectionDistance = TempDist;
-                Result.PenetrationCorrectionDirection = TempDir;
-                Result.Normal = (TempDir * TempDist).normalized;
-            }
+                Result.Distance = 0;
+                Result.Hit = true;
+                // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
+                // no penetration will be found........
+                // if (Physics.ComputePenetration(S.Spring.Anchor.GetComponentInChildren<MeshCollider>(),
+                //                               WheelPosition,
+                //                               Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                //                               overlap[0],
+                //                               overlap[0].transform.position,
+                //                               overlap[0].transform.rotation,
+                //                               out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                BoxCollider bc = gameObject.AddComponent<BoxCollider>();
+                bc.center = transform.InverseTransformPoint(WheelPosition);
+                bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
+                if (Physics.ComputePenetration(bc, WheelPosition, Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                                               overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
+                                               out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                {
+                    //Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
+                    Result.Point = Vector3.zero;
+                    Debug.Log("overlap and penetration");
+                }
+                else
+                {
+                    Debug.Log("overlap but no penetration?" + "    " + overlap.Length);
+                }
+                GameObject.DestroyImmediate(bc);
 
+            }
         }
 
         if (Result.Collider && Result.Collider.GetComponent<Ground>())
@@ -651,11 +541,10 @@ public class CarController : MonoBehaviour, IControllable
         {
             Result.GroundI = new Ground.GroundInfos();
         }
-
-        Debug.DrawLine(GetEnd(S) - S.Wheel.Radius * transform.forward, GetEnd(S) - S.Wheel.Radius * transform.forward + Result.PenetrationCorrectionDistance * Result.PenetrationCorrectionDirection);
         return Result;
+
     }
-    [Range(0f, 1f)]
+    [Range(1f, 10f)]
     public float Bounciness = 1;
     Vector3 ComputeSuspensionForce(ref Suspension S, WheelHitInfo HitInfo)
     {
@@ -669,6 +558,7 @@ public class CarController : MonoBehaviour, IControllable
         var InitialSpringVelocity = GetWheelVelocity(SpringAnchor);
         var SpringVelocity = InitialSpringVelocity;
 
+        //Debug.Log(HitInfo.Hit);
         // NOTE toffa :
         // We are using su stepping, meaning we are dividing the real deltatime by chunks
         // in order to avoid problem with euler integration over time.
@@ -686,36 +576,23 @@ public class CarController : MonoBehaviour, IControllable
             if (!SuspensionLock)
                 S.Spring.CurrentLength = Mathf.Clamp(StepDistance, S.Spring.MinLength, S.Spring.MaxLength);
 
-            S.Wheel.IsGrounded = StepDistance - (S.Spring.CurrentLength) <= 0;
+            S.Wheel.IsGrounded = StepDistance < S.Spring.MaxLength;
+            //Debug.Log(S.Wheel.IsGrounded);
             if (S.Wheel.IsGrounded)
             {
                 var SpringLengthError = S.Spring.RestLength - S.Spring.CurrentLength;
                 var SpringForce = -(S.Spring.Stiffness * (ApplyForceMultiplier ? SpringMultiplier : 1) * SpringLengthError) - (S.Spring.DampValue * Vector3.Dot(SpringVelocityProjected, SpringDirection));
                 if (!SuspensionLock)
                     StepForce += SpringForce * SpringDirection;
-
-                // If suspension is fully compressed then we are hard hitting the ground
-                var IsSpringFullyCompressed = S.Spring.CurrentLength == S.Spring.MinLength;
-                // if (IsSpringFullyCompressed)
-                // {
-                //     // NOTE toffa : in this instance we reflect the force as a hard hit on collider
-                //     //var FCollider = Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, Hit.normal);
-                //     var FCollider = Vector3.Dot(SpringVelocity.normalized, HitInfo.Normal) < 0 ? Vector3.Reflect(SpringVelocity * VelocityCorrectionMultiplier, HitInfo.Normal) : SpringVelocity;
-                //     // adding multiplier to choose bounciness
-                //     FCollider *= (Bounciness);
-                //     // NOTE toffa : StepForce is actually the diff between what wehave and what we want!
-                //     // and right now this is a perfect bounce, we can probably compute bouciness factor if needed, according to mass?.
-                //     // NOTE toffa : We can probably get a sticky effect by removing anny part that is not directly linked to the SpringDirection.
-                //     StepForce += (FCollider - SpringVelocity);
-                // }
             }
 
-            TotalProcessedTime += SubStepDeltaTime;
-            var SuspensionForce = ProjectOnSuspension(StepForce + SpringVelocityProjected * SubStepDeltaTime);
+            var SuspensionForce = ProjectOnSuspension((StepForce + SpringVelocityProjected)) * SubStepDeltaTime;
             TraveledDistance += SuspensionForce.magnitude * Vector3.Dot(SuspensionForce.normalized, SpringDirection);
 
             ForceToApply += StepForce;
             SpringVelocity += StepForce;
+
+            TotalProcessedTime += SubStepDeltaTime;
         }
 
         var ValidationValue = Utils.Math.ValidateForce(ForceToApply);
@@ -772,6 +649,17 @@ public class CarController : MonoBehaviour, IControllable
         return ValidationValue.Item1;
     }
 
+    public void ApplyForceAtPosition(Rigidbody Body, Vector3 Force, Vector3 Position)
+    {
+        if (Force.sqrMagnitude < 1e-06) return;
+
+        Vector3 distance = Position - Body.worldCenterOfMass;
+        Vector3 desired_vec = (Position + Force) - Body.worldCenterOfMass;
+        Vector3 torque = Vector3.Cross(Force, distance);
+        float angle = Vector3.SignedAngle(distance, desired_vec, torque);
+        Body.MoveRotation(Body.rotation * Quaternion.AngleAxis(angle, torque));
+    }
+
     void ApplyConstraints(ref Suspension S, WheelHitInfo HitInfo)
     {
         var WheelVel = AddGravityStep(GetWheelVelocity(GetEnd(S)));
@@ -784,9 +672,8 @@ public class CarController : MonoBehaviour, IControllable
 
         if (HitInfo.Distance == 0)
         {
-            RB.AddForceAtPosition(FCollider, S.Spring.Anchor.transform.position, ForceMode.VelocityChange);
-            Debug.Log("ApplyConstraints : " + FCollider);
-            RB.position += HitInfo.PenetrationCorrectionDirection * HitInfo.PenetrationCorrectionDistance;
+            ApplyForceAtPosition(RB, HitInfo.PenetrationCorrectionDistance * HitInfo.PenetrationCorrectionDirection, GetEnd(S));
+            RB.AddForceAtPosition(FCollider * Bounciness, GetEnd(S), ForceMode.VelocityChange);
         }
     }
 
@@ -833,12 +720,9 @@ public class CarController : MonoBehaviour, IControllable
 
             ApplyConstraints(ref S, HitInfo);
 
-            if (HitInfo.Distance > 0)
-            {
-                var F = ComputeSuspensionForce(ref S, HitInfo);
-                RB.AddForceAtPosition(F, GetEnd(S), ForceMode.VelocityChange);
-                //Debug.Log("ResolveSuspension : " + F);
-            }
+            var F = ComputeSuspensionForce(ref S, HitInfo);
+            RB.AddForceAtPosition(F, GetEnd(S), ForceMode.VelocityChange);
+            //Debug.Log("ResolveSuspension : " + F);
 
             S.Wheel.Velocity = GetWheelVelocity(GetEnd(S));
             var WF = ComputeWheelForce(S.Wheel, HitInfo);
@@ -867,7 +751,9 @@ public class CarController : MonoBehaviour, IControllable
     {
         NeedCheckMaterial = true;
         ResolveSuspension(ref A.Right);
+        Physics.SyncTransforms();
         ResolveSuspension(ref A.Left);
+        Physics.SyncTransforms();
     }
 
     void ResolveWheel(ref Wheel W)
@@ -996,7 +882,6 @@ public class CarController : MonoBehaviour, IControllable
 
     private void clonedForTestInit()
     {
-        RB = GetComponent<Rigidbody>();
         RB.centerOfMass = CenterOfMass.transform.localPosition;
     }
 
@@ -1084,7 +969,6 @@ public class CarController : MonoBehaviour, IControllable
     {
         Utils.detachControllable<CarController>(this);
     }
-    // Start is called before the first frame update
 
     public class PlayerFSM : FSMBase
     {
@@ -1096,7 +980,7 @@ public class CarController : MonoBehaviour, IControllable
         {
             base.Execute(machine);
             // player alive logic
-            Debug.Log(machine.currentState.name);
+            //Debug.Log(machine.currentState.name);
         }
     }
 
@@ -1300,7 +1184,7 @@ public class CarController : MonoBehaviour, IControllable
         // when the Player is duplicated for garage tests
         // > We could also just remove certain awake calls
         // but i want to check that wit u toff
-        if ( !!transform.parent && transform.parent.GetComponent<UIGarageTestManager>())
+        if (!!transform.parent && transform.parent.GetComponent<UIGarageTestManager>())
         { clonedForTestInit(); return; }
 
         if (UseRefs)
@@ -1313,8 +1197,7 @@ public class CarController : MonoBehaviour, IControllable
             RearAxle.Length *= -1;
         }
 
-        GetComponent<Rigidbody>().centerOfMass = CenterOfMass.transform.localPosition;
-        RB = GetComponent<Rigidbody>();
+        RB.centerOfMass = CenterOfMass.transform.localPosition;
 
         SpawnAxles();
         DrawDebugWheels(Color.yellow);
@@ -1328,8 +1211,8 @@ public class CarController : MonoBehaviour, IControllable
         stateMachine.Update();
         FixedUpdateDone = false;
 
-        // DrawDebugAxles(Color.blue, Color.red);
-        // DrawDebugWheels(Color.yellow);
+        DrawDebugAxles(Color.blue, Color.red);
+        DrawDebugWheels(Color.yellow);
 
         if (IsAircraft)
         {
