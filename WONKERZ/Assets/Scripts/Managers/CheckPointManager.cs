@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CheckPointManager : MonoBehaviour, IControllable
 {
@@ -89,7 +90,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         return false;
     }
 
-    public void notifyCP(GameObject iGO)
+    public void notifyCP(GameObject iGO, bool setAsLastCPTriggered)
     {
         if (iGO.GetComponent<CheckPoint>())
         {
@@ -99,6 +100,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
 
             if (last_checkpoint == iGO)
+                return;
+
+            if (!setAsLastCPTriggered)
                 return;
 
             last_checkpoint = iGO;

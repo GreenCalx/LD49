@@ -78,7 +78,7 @@ public class CheckPoint : AbstractCameraPoint
             if (!!MCP)
                 MCP.triggered = true;
 
-            cpm.notifyCP(this.gameObject);
+            cpm.notifyCP(this.gameObject, collectMod == CollectiblesManager.COLLECT_MOD.HEAVEN);
 
             Access.CollectiblesManager().changeCollectMod(collectMod);
             

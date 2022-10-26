@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class UIWonkerzBar : MonoBehaviour
 {
@@ -18,13 +19,11 @@ public class UIWonkerzBar : MonoBehaviour
 
     private void init()
     {
-        W.color = missing;
-        O.color = missing;
-        N.color = missing;
-        K.color = missing;
-        E.color = missing;
-        R.color = missing;
-        Z.color = missing;
+        CollectiblesManager cm = Access.CollectiblesManager();
+        foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+        {
+            updateLetter(let, cm.hasWONKERZLetter(let));
+        }
     }
 
     public void updateLetter( CollectibleWONKERZ.LETTERS iLetter, bool hasLetter)
