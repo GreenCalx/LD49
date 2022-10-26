@@ -464,7 +464,7 @@ public class CarController : MonoBehaviour, IControllable
 
         float MaxDistance = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
 
-        var TestSweep = S.Spring.Anchor.GetComponentInChildren<Rigidbody>().SweepTestAll(SpringDirection, MaxDistance);
+        var TestSweep = S.Spring.Anchor.GetComponentInChildren<Rigidbody>().SweepTestAll(SpringDirection, MaxDistance, QueryTriggerInteraction.Ignore);
         Array.Sort(TestSweep, (a, b) => a.distance < b.distance ? -1 : 1);
 
         Result.Hit = TestSweep.Length != 0;
@@ -499,39 +499,47 @@ public class CarController : MonoBehaviour, IControllable
         else
         {
             // check for overlap?
-            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius), Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection), ~(1 << LayerMask.NameToLayer("No Player Collision")));
+            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius),
+                                             Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                                             ~(1 << LayerMask.NameToLayer("No Player Collision"))
+                                               , QueryTriggerInteraction.Ignore);
             if (overlap.Length != 0)
             {
                 Result.Distance = 0;
                 Result.Hit = true;
                 // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
                 // no penetration will be found........
-                // if (Physics.ComputePenetration(S.Spring.Anchor.GetComponentInChildren<MeshCollider>(),
-                //                               WheelPosition,
-                //                               Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
-                //                               overlap[0],
-                //                               overlap[0].transform.position,
-                //                               overlap[0].transform.rotation,
-                //                               out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
-                BoxCollider bc = gameObject.AddComponent<BoxCollider>();
-                bc.center = transform.InverseTransformPoint(WheelPosition);
-                bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
-                if (Physics.ComputePenetration(bc, WheelPosition, Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
-                                               overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
-                                               out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                if (Physics.ComputePenetration(S.Spring.Anchor.GetComponentInChildren<MeshCollider>(),
+                                              WheelPosition,
+                                              S.Spring.Anchor.GetComponentInChildren<MeshCollider>().transform.rotation,
+                                              overlap[0],
+                                              overlap[0].transform.position,
+                                              overlap[0].transform.rotation,
+                                              out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                //    BoxCollider bc = gameObject.AddComponent<BoxCollider>();
+                //    bc.center = transform.InverseTransformPoint(WheelPosition);
+                //    bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
+                //    Debug.DrawLine(WheelPosition, WheelPosition + transform.up * 2);
+                //    if (Physics.ComputePenetration(bc, WheelPosition, transform.rotation,
+                //                                   overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
+                //                                   out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
                 {
-                    //Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
+                    Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
                     Result.Point = Vector3.zero;
-                    Debug.Log("overlap and penetration");
+                    Debug.Log("overlap and penetration   " + Result.Normal);
+                    Debug.DrawLine(WheelPosition, WheelPosition + (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance));
                 }
                 else
                 {
+
                     Debug.Log("overlap but no penetration?" + "    " + overlap.Length);
                 }
-                GameObject.DestroyImmediate(bc);
+                //GameObject.DestroyImmediate(bc);
 
             }
         }
+
+        DrawDebugWheels(Color.yellow);
 
         if (Result.Collider && Result.Collider.GetComponent<Ground>())
         {
@@ -657,7 +665,11 @@ public class CarController : MonoBehaviour, IControllable
         Vector3 desired_vec = (Position + Force) - Body.worldCenterOfMass;
         Vector3 torque = Vector3.Cross(Force, distance);
         float angle = Vector3.SignedAngle(distance, desired_vec, torque);
-        Body.MoveRotation(Body.rotation * Quaternion.AngleAxis(angle, torque));
+        Body.MovePosition(Body.position + Force);
+        //Body.MoveRotation(Body.rotation * Quaternion.AngleAxis(angle, torque));
+        //Body.rotation *= Quaternion.AngleAxis(angle, torque);
+
+        Debug.Log("ApplyForce  " + Force + "      " + angle);
     }
 
     void ApplyConstraints(ref Suspension S, WheelHitInfo HitInfo)
@@ -672,8 +684,10 @@ public class CarController : MonoBehaviour, IControllable
 
         if (HitInfo.Distance == 0)
         {
-            ApplyForceAtPosition(RB, HitInfo.PenetrationCorrectionDistance * HitInfo.PenetrationCorrectionDirection, GetEnd(S));
-            RB.AddForceAtPosition(FCollider * Bounciness, GetEnd(S), ForceMode.VelocityChange);
+            //ApplyForceAtPosition(RB, HitInfo.PenetrationCorrectionDistance * HitInfo.PenetrationCorrectionDirection, GetEnd(S));
+            RB.AddForceAtPosition(FCollider, GetEnd(S), ForceMode.VelocityChange);
+            RB.AddForceAtPosition(HitInfo.PenetrationCorrectionDistance * HitInfo.PenetrationCorrectionDirection, GetEnd(S), ForceMode.VelocityChange);
+            Debug.Log("constraints" + FCollider + "   " + HitInfo.PenetrationCorrectionDistance * HitInfo.PenetrationCorrectionDirection);
         }
     }
 
