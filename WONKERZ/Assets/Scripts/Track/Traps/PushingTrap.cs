@@ -39,7 +39,7 @@ public class PushingTrap : Trap
         
         localInitPos    = transform.position;
         localEndPos     = endPos.position;
-        pushingObject.transform.position = localInitPos;
+        //pushingObject.transform.position = localInitPos;
 
         Material[] mats = loadingHintRendererCarrier.materials;
         string matname_as_newinst = loadingHintMatRef.name + Constants.EXT_INSTANCE;
