@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7696163385569179378}
   - component: {fileID: 5560455269099962936}
   - component: {fileID: 6551366618122133183}
+  - component: {fileID: 6370824895992762819}
   m_Layer: 0
   m_Name: Torch
   m_TagString: Untagged
@@ -99,6 +100,43 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2685813607939564924, guid: 193b178f7d1b4a94c8db64f3c4221e91, type: 3}
+--- !u!114 &6370824895992762819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6208855212158395373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271a1f7eb3a3e914b95f7f8416f5dbc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AC:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.00019836426
+      value: 0.7992859
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.2490522
+      value: 0.9988426
+      inSlope: 0.09158819
+      outSlope: 0.09158819
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 0
+    m_RotationOrder: 4
+  target_light: {fileID: 6551366618135289519}
 --- !u!1 &6551366618135289517
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6551366618135289517}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0000005143959, y: 0.0000009536743, z: 5.884002}
+  m_LocalPosition: {x: -0.3, y: 0.1, z: 12.092}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6728826753209923927}
@@ -142,8 +180,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.9339623, g: 0.7811697, b: 0.039649326, a: 1}
-  m_Intensity: 2.15
-  m_Range: 27.21
+  m_Intensity: 1.14
+  m_Range: 48.75
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -184,7 +222,7 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 11.6
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
