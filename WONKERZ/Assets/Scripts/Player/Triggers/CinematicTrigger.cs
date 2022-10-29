@@ -8,6 +8,7 @@ public class CinematicTrigger : MonoBehaviour
 {
 
     public bool triggerOnlyOnce = true;
+    public bool isLevelEntryCinematic = false;
 
     private bool triggered= false;
 
@@ -25,7 +26,38 @@ public class CinematicTrigger : MonoBehaviour
         
     }
 
-    void OnTriggerEnter(Collider iCollider)
+    public void OnCinematicEnd()
+    {
+        if (!isLevelEntryCinematic)
+            return;
+
+        LevelEntryUI leui = Access.LevelEntryUI();
+        if (!!leui)
+        {
+            leui.gameObject.SetActive(true);
+        }
+    }
+
+    // TODO : temp solution while there is no callback
+    void OnTriggerExit(Collider iCollider)
+    {
+        if (!triggered)
+            return;
+            
+        if (Utils.isPlayer(iCollider.gameObject))
+        {
+            if (isLevelEntryCinematic)
+            {
+                LevelEntryUI leui = Access.LevelEntryUI();
+                if (!!leui)
+                {
+                    leui.gameObject.SetActive(false);
+                }
+            }
+        }
+    }
+
+    void OnTriggerStay(Collider iCollider)
     {
         if (triggerOnlyOnce && triggered)
             return;
@@ -35,6 +67,16 @@ public class CinematicTrigger : MonoBehaviour
             triggered = true;
             cam.launch();
             // do cinematic stuff    
+            if (isLevelEntryCinematic)
+            {
+                // display UI
+                LevelEntryUI leui = Access.LevelEntryUI();
+                if (!!leui)
+                {
+                    // TODO : Callback to deactivate
+                    leui.gameObject.SetActive(true);
+                }
+            }
         }
         
     }

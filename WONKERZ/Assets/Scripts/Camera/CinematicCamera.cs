@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 /**
 *   A static cinematic camera
 */
 public class CinematicCamera : GameCamera
 {
+    public delegate int OnCinematicEnd();
+
     public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.HUB;
     protected bool launched = false;
     void Awake()

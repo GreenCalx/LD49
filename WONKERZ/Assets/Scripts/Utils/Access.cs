@@ -69,7 +69,7 @@ public class Access
                 handler = GameObject.Find(iHolder);
             }
             if (!!iComponentIsInChildren)
-                return !!handler ? handler.GetComponentInChildren<T>() : default(T);
+                return !!handler ? handler.GetComponentInChildren<T>(true) : default(T);
             return !!handler ? handler.GetComponent<T>() : default(T);
 
         }
@@ -146,5 +146,10 @@ public class Access
     public static UITurboAndLifePool UITurboAndLifePool()
     {
         return cache.getObject<UITurboAndLifePool>(Constants.GO_PLAYERUI, true);
+    }
+
+    public static LevelEntryUI LevelEntryUI()
+    {
+        return cache.getObject<LevelEntryUI>(Constants.GO_PLAYERUI, true);
     }
 }
