@@ -5,8 +5,8 @@ using UnityEngine;
 public class DeformingBomb : MonoBehaviour
 {
     public float explosionRange = 1f;
-    
     public int numberOfBounceBeforeExplosion=1;
+    public GameObject explosionEffect;
 
     private int n_bounces;
     private float minTimeBetweenBounces = 0.1f;
@@ -26,6 +26,11 @@ public class DeformingBomb : MonoBehaviour
 
     private void explode()
     {
+        if (!!explosionEffect)
+        {
+            GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            explosion.GetComponent<ExplosionEffect>().runEffect();
+        }
         Destroy(gameObject);
     }
 

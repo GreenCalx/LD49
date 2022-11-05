@@ -81,8 +81,7 @@ public class MeshDeform : MonoBehaviour
             {
                 modifiedVertices[i] = originalVertices[i];
             }
-
-            StartDisplacement();
+            UpdateCollider();
         }
 
     }
