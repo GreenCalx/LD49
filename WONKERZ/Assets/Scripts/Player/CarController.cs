@@ -916,7 +916,7 @@ public class CarController : MonoBehaviour, IControllable
 
     /// =============== Game Logic ==================
     public Vector3 repulseForce;
-    public void takeDamage(int iDamage, ContactPoint iCP)
+    public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
     {
         if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
             return;
@@ -925,12 +925,12 @@ public class CarController : MonoBehaviour, IControllable
         CollectiblesManager cm = Access.CollectiblesManager();
         int n_nuts = cm.getCollectedNuts();
 
-        Vector3 contactNormal = iCP.normal;
-        Vector3 contactPoint = iCP.point;
+        Vector3 contactNormal = iDamageSourceNormal;
+        Vector3 contactPoint = iDamageSourcePoint;
         Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
 
         Vector3 repulseDir = contactPoint + contactNormal;
-        repulseForce = -repulseDir * 5;
+        repulseForce = -repulseDir * iRepulsionForce;
 
         for (int i = 0; i < n_nuts; i++)
         {

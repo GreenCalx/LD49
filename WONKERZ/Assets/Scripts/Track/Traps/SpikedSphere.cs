@@ -19,7 +19,8 @@ public class SpikedSphere : Trap
         CarController cc = iCol.gameObject.GetComponent<CarController>();
         if (!!cc)
         {
-            cc.takeDamage(damageOnCollide, iCol.contacts[0]);
+            ContactPoint cp = iCol.contacts[0];
+            cc.takeDamage(damageOnCollide, cp.point, cp.normal );
         }
     }
 

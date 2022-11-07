@@ -7,10 +7,15 @@ public class DeformingBomb : MonoBehaviour
     public float explosionRange = 1f;
     public int numberOfBounceBeforeExplosion=1;
     public GameObject explosionEffect;
+    public float explosionForce = 10f;
+    public int explosionDamage = 5;
 
     private int n_bounces;
     private float minTimeBetweenBounces = 0.1f;
     private float elapsedTimeBetweenBounces;
+
+    public PlayerDetector playerDetector;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,11 +31,26 @@ public class DeformingBomb : MonoBehaviour
 
     private void explode()
     {
+        // GFX
         if (!!explosionEffect)
         {
             GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
             explosion.GetComponent<ExplosionEffect>().runEffect();
         }
+
+        // if player is around, do damage and push away
+        if (!!playerDetector)
+        {
+            if (playerDetector.playerInRange || playerDetector.dummyInRange)
+            {
+                CarController cc = Access.Player();
+                Vector3 pushBackDir = Vector3.zero;
+                pushBackDir = (cc.gameObject.transform.position - transform.position);
+                cc.takeDamage( explosionDamage, transform.position, pushBackDir, explosionForce );
+            }
+        }
+
+        // destroy the bomb
         Destroy(gameObject);
     }
 

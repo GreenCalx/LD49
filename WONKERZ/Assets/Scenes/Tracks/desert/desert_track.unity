@@ -291,7 +291,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 63439847}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -479, y: 550.1, z: -478}
+  m_LocalPosition: {x: -428.7, y: 544.6, z: -429.67}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 2141756285}
@@ -1301,6 +1301,9 @@ MonoBehaviour:
   explosionRange: 10
   numberOfBounceBeforeExplosion: 1
   explosionEffect: {fileID: 0}
+  explosionForce: 2
+  explosionDamage: 5
+  playerDetector: {fileID: 0}
 --- !u!54 &575301969
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3310,7 +3313,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5058003052708241275, guid: 0725594798312ea44af111904dce1b40, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 494.3
+      value: 380.5
       objectReference: {fileID: 0}
     - target: {fileID: 5058003052708241275, guid: 0725594798312ea44af111904dce1b40, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6269,6 +6272,7 @@ GameObject:
   - component: {fileID: 1626412284}
   - component: {fileID: 1626412285}
   - component: {fileID: 1626412286}
+  - component: {fileID: 1626412287}
   m_Layer: 0
   m_Name: SSR_BombDropper_Goal
   m_TagString: Untagged
@@ -6284,7 +6288,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626412283}
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -370, y: 346.2, z: -418.95453}
+  m_LocalPosition: {x: -370, y: 346.2, z: -408.8}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 2141756285}
@@ -6315,6 +6319,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5386f4c80ea4ceb409e72f6094b274cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!191 &1626412287
+OffMeshLink:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626412283}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_AreaIndex: 2
+  m_AgentTypeID: 0
+  m_Start: {fileID: 1626412284}
+  m_End: {fileID: 63439848}
+  m_CostOverride: -1
+  m_BiDirectional: 0
+  m_Activated: 1
+  m_AutoUpdatePositions: 0
 --- !u!1001 &1639981325
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6687,6 +6708,9 @@ MonoBehaviour:
   explosionRange: 10
   numberOfBounceBeforeExplosion: 1
   explosionEffect: {fileID: 0}
+  explosionForce: 2
+  explosionDamage: 5
+  playerDetector: {fileID: 0}
 --- !u!54 &1824013442
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8005,10 +8029,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2141756285}
     m_Modifications:
-    - target: {fileID: 313680605730508516, guid: 2f8c98816673bd4419d6052899076406, type: 3}
-      propertyPath: m_AngularSpeed
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 313680605730508523, guid: 2f8c98816673bd4419d6052899076406, type: 3}
       propertyPath: fleeGoal
       value: 
@@ -8018,8 +8038,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 63439848}
     - target: {fileID: 313680605730508523, guid: 2f8c98816673bd4419d6052899076406, type: 3}
-      propertyPath: fleeTotDistanceStep
-      value: 150
+      propertyPath: jumpExitTotDistanceStep
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3104299314394197387, guid: 2f8c98816673bd4419d6052899076406, type: 3}
       propertyPath: m_Name
@@ -9791,6 +9811,18 @@ PrefabInstance:
     - target: {fileID: 5857040168889544084, guid: 0afdc63b8efcebf4d958128b8943ec15, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: -11.633
+      objectReference: {fileID: 0}
+    - target: {fileID: 6136519620207189737, guid: 0afdc63b8efcebf4d958128b8943ec15, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1124
+      objectReference: {fileID: 0}
+    - target: {fileID: 6136519620207189737, guid: 0afdc63b8efcebf4d958128b8943ec15, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 160.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6136519620207189737, guid: 0afdc63b8efcebf4d958128b8943ec15, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -615.1
       objectReference: {fileID: 0}
     - target: {fileID: 6592344206763691774, guid: 0afdc63b8efcebf4d958128b8943ec15, type: 3}
       propertyPath: m_LocalPosition.x

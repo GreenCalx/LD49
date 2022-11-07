@@ -30,6 +30,8 @@ public class NPC_SQR : MonoBehaviour
     public Transform exitJumpPoint;
     [Range(20f,200f)]
     public float fleeTotDistanceStep = 50f;
+    [Range(1f,200f)]
+    public float jumpExitTotDistanceStep = 50f;
 
     [HideInInspector]
     public bool exitReached = false;
@@ -42,6 +44,7 @@ public class NPC_SQR : MonoBehaviour
     ///
     private NavMeshAgent    navmesh;
     private NavMeshPath     path;
+    private bool deactivate_sqr;
 
     [Header("Global Tweaks")]
     public  Animator    animator;
@@ -49,6 +52,8 @@ public class NPC_SQR : MonoBehaviour
     private const string    kick_anim_parm = "KICK";
     private const string    runback_anim_parm = "RUN_BACKWARD";
     private const string    dropbomb_anim_parm = "DROP_BOMB";
+    private const string    jump_anim_parm = "JUMP";
+    private const string    crowpose_anim_parm = "CROW_POSE";
     private float           delayAnimElapsed = 0f;
 
     public PlayerDetector   detector;
@@ -70,6 +75,7 @@ public class NPC_SQR : MonoBehaviour
         delayAnimElapsed = 0f;
         exitReached = false;
         launchBombDrop = false;
+        deactivate_sqr = false;
 
         if (behaviour==SQR_BEHAVIOURS.KICKER)
             navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
@@ -78,6 +84,9 @@ public class NPC_SQR : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (deactivate_sqr)
+            return;
+
         if ( behaviour == SQR_BEHAVIOURS.KICKER)
             kickerUpdate();
         else if ( behaviour == SQR_BEHAVIOURS.BOMB_DROPPER )
@@ -102,7 +111,10 @@ public class NPC_SQR : MonoBehaviour
         if (exitReached && !!exitJumpPoint)
         {
             // jump to exitPoint
-            navmesh.SetDestination(exitJumpPoint.position);
+            //navmesh.SetDestination(exitJumpPoint.position);
+            navmesh.enabled = false;
+            exitToCrowPose();
+            return;
         }
 
         // RunBackward if player is too close
@@ -126,6 +138,22 @@ public class NPC_SQR : MonoBehaviour
         } 
 
         
+    }
+
+    private void exitToCrowPose()
+    {
+        animator.SetBool( dropbomb_anim_parm, false);
+        animator.SetBool( jump_anim_parm, true);
+        shouldDropBomb = false;
+
+        Vector3 nextPoint = Vector3.MoveTowards(transform.position, exitJumpPoint.position, jumpExitTotDistanceStep);
+        if ( transform.position == exitJumpPoint.position )
+        {
+            animator.SetBool( crowpose_anim_parm, true);
+            deactivate_sqr = true;
+            return;
+        }
+        transform.position = nextPoint;
     }
 
     private void fleeBackwardToPoint(Vector3 iGoal)

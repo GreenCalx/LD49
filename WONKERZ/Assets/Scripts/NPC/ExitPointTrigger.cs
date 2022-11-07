@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ExitPointTrigger : MonoBehaviour
 {
-    void OnTriggerEnter(Collider iCollider)
+    void OnTriggerStay(Collider iCollider)
     {
         NPC_SQR sqr = iCollider.GetComponent<NPC_SQR>();
         if (!!sqr)
