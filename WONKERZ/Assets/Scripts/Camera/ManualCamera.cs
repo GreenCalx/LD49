@@ -72,7 +72,7 @@ public class ManualCamera : PlayerCamera, IControllable
         UpdateFocusPoint();
         Quaternion lookRotation;
         
-        if (ManualRotation()) // || autoRotation() )
+        if (ManualRotation()  /*|| autoRotation()*/ )
         {
             constrainAngles();
             lookRotation = Quaternion.Euler(orbitAngles);

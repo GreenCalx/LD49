@@ -26,12 +26,11 @@ public class NPC_SQR : MonoBehaviour
     public GameObject bombRef;
     public float BombDropForce = 1f;
     public float delayBombAnimStart = 0.5f;
-    public Transform fleeGoal;
-    public Transform exitJumpPoint;
-    [Range(20f,200f)]
-    public float fleeTotDistanceStep = 50f;
-    [Range(1f,200f)]
-    public float jumpExitTotDistanceStep = 50f;
+
+    [Range(0f,1f)]
+    public float shootAngleVariationDelta = 5f;
+    [Range(1f,10f)]
+    public float shootingForceVariationDelta = 2f;
 
     [HideInInspector]
     public bool exitReached = false;
@@ -55,10 +54,17 @@ public class NPC_SQR : MonoBehaviour
     private const string    jump_anim_parm = "JUMP";
     private const string    crowpose_anim_parm = "CROW_POSE";
     private float           delayAnimElapsed = 0f;
+    
 
     public PlayerDetector   detector;
     public PlayerDetector   attackRangeDetector;
 
+    public Transform fleeGoal;
+    public Transform exitJumpPoint;
+    [Range(20f,200f)]
+    public float fleeTotDistanceStep = 50f;
+    [Range(1f,20f)]
+    public float jumpExitTotDistanceStep = 50f;
 
     // Start is called before the first frame update
     void Start()
@@ -181,7 +187,19 @@ public class NPC_SQR : MonoBehaviour
         Vector3 spawn_pos = (bombDropSpot != null) ? bombDropSpot.position : transform.position;
         GameObject bomb = Instantiate(bombRef, spawn_pos, Quaternion.identity);
         Rigidbody bombRB = bomb.GetComponent<Rigidbody>();
-        bombRB.AddForce( transform.forward * BombDropForce, ForceMode.VelocityChange);
+
+        Vector3 shootDir = transform.forward;
+
+        // Vary angle
+        float angleVal = Random.Range(-shootAngleVariationDelta, shootAngleVariationDelta);
+        shootDir.x = transform.forward.x * Mathf.Cos(angleVal) - transform.forward.z * Mathf.Sin(angleVal);
+        shootDir.z = transform.forward.x * Mathf.Sin(angleVal) + transform.forward.z * Mathf.Cos(angleVal);
+        
+        // vary force
+        float forceVariation = Random.Range(1f, shootingForceVariationDelta);
+
+        // apply
+        bombRB.AddForce( shootDir * BombDropForce * forceVariation, ForceMode.VelocityChange);
         
         shouldDropBomb = false;
         timeOfLastBombDrop = 0f;
