@@ -5,12 +5,26 @@ using UnityEngine;
 public class SpikedSphere : Trap
 {
     public int damageOnCollide = 2;
+    public float lifetime = 60f;
+    
     public bool trigger = false;
+    
+    
     private Rigidbody rb;
+    private float elapsed;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        elapsed = 0f;
+    }
+
+    void Update()
+    {
+        elapsed += Time.deltaTime;
+        if (elapsed > lifetime)
+            Destroy(gameObject);
     }
 
 
