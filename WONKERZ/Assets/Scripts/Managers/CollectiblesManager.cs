@@ -109,7 +109,7 @@ public class CollectiblesManager : MonoBehaviour
 
 
     [Header("Internals")]
-    private COLLECT_MOD collectMod;
+    public COLLECT_MOD collectMod;
     public int collectModCombo;
     public CollectibleJar jar;
     public List<AbstractCollectible> allCollectiblesInCurrStage;
@@ -230,6 +230,7 @@ public class CollectiblesManager : MonoBehaviour
                 jar.collect(AC);
                 Access.UITurboAndLifePool().updateLifePool();
             }
+            allCollectiblesInCurrStage.Remove(AC);
         } 
         else
         {

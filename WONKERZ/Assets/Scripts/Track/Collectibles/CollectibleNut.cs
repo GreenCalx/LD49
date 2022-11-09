@@ -11,6 +11,8 @@ public class CollectibleNut : AbstractCollectible
     public bool spawnedFromDamage;
 
     [Header("Anim")]
+    public ParticleSystem onCollectPSRef_Heaven;
+    public ParticleSystem onCollectPSRef_Hell;
     [Range(0f,10f)]
     public float yOscillation;
     [Range(0f,5f)]
@@ -103,6 +105,9 @@ public class CollectibleNut : AbstractCollectible
 
     void animate()
     {
+        if ((yOscillation==0)||(oscillationSpeed==0))
+            return;
+
         transform.Rotate( new Vector3(0,yRotationSpeed,0), Space.World);
         ///
         float distCovered = (Time.time - startTime) * oscillationSpeed;
@@ -148,8 +153,29 @@ public class CollectibleNut : AbstractCollectible
                 return;
         }
 
-        gameObject.SetActive(false);
+        // Effect on collect
+        if ( Access.CollectiblesManager().collectMod == CollectiblesManager.COLLECT_MOD.HELL)
+        {
+            if (!!onCollectPSRef_Hell)
+            {
+                ParticleSystem collectPS = Instantiate(onCollectPSRef_Hell) as ParticleSystem;
+                collectPS.transform.position = transform.position;
+                collectPS.Play();
+                Destroy( collectPS.gameObject, collectPS.duration);
+            }
+        } else {
+            if (!!onCollectPSRef_Heaven)
+            {
+                ParticleSystem collectPS = Instantiate(onCollectPSRef_Heaven) as ParticleSystem;
+                collectPS.transform.position = transform.position;
+                collectPS.Play();
+                Destroy( collectPS.gameObject, collectPS.duration);
+            }     
+        }
+
+        //gameObject.SetActive(false);
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
+        Destroy(gameObject);
     }
 }
