@@ -44,15 +44,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
       propertyPath: m_LocalScale.x
-      value: 10.280375
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
       propertyPath: m_LocalScale.y
-      value: 10.280375
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
       propertyPath: m_LocalScale.z
-      value: 10.280375
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
       propertyPath: m_LocalPosition.x
@@ -100,8 +100,46 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
+--- !u!1 &1655477635234043673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
+  m_PrefabInstance: {fileID: 1889288573970524744}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2139949312334548387 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0a31cbdff0c45bd45b25f98a0df3a160, type: 3}
   m_PrefabInstance: {fileID: 1889288573970524744}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &5617680292418415428
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1655477635234043673}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b74b2211aeea6fd42bd9baa562f9cd6a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8586516723777556430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1655477635234043673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f3e360e4f5c35418fea59b41817a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 5617680292418415428}
+  isCheerLeader: 0

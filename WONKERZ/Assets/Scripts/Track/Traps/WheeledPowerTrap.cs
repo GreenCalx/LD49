@@ -5,6 +5,7 @@ using UnityEngine;
 public class WheeledPowerTrap : TrapBundle
 {   
     public readonly string AnimIsWheeling = "isWheeling";
+
     public bool isWheeling = false;
 
     // Start is called before the first frame update
