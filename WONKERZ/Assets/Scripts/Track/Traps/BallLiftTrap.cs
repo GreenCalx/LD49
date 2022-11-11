@@ -37,6 +37,6 @@ public class BallLiftTrap : Trap
 
     public override void OnRest(float iCooldownPercent)
     {
-        millTransform.RotateAround( millTransform.position, new Vector3(-1,0,0), Time.deltaTime * 90);
+        millTransform.RotateAround( millTransform.position, transform.forward, Time.deltaTime * 90);
     }
 }
