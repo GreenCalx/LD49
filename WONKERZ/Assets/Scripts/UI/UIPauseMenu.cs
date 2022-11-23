@@ -9,6 +9,7 @@ using System;
 public class UIPauseMenu : MonoBehaviour, IControllable
 {
     public UISelectableElement panel;
+    public UISelectableElement debugPanel;
 
     public enum EXITABLE_SCENES { SN_TITLE, SN_HUB };
     public EXITABLE_SCENES sceneToLoadOnExit = EXITABLE_SCENES.SN_TITLE;
@@ -101,5 +102,12 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
         }
 
+    }
+
+    public void displayDebugPanel()
+    {
+        //panel.onDeactivate.Invoke();
+        debugPanel.onActivate.Invoke();
+        
     }
 }

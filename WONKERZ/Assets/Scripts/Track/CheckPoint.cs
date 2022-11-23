@@ -3,6 +3,7 @@ using UnityEngine;
 public class CheckPoint : AbstractCameraPoint
 {
     [Header("Tweaks")]
+    public string checkpoint_name = "";
     public CollectiblesManager.COLLECT_MOD collectMod;
     public Camera Cam;
 
@@ -37,6 +38,9 @@ public class CheckPoint : AbstractCameraPoint
         if (animator==null)
             animator?.SetBool("TRIGGERED", false);
         MCP = GetComponentInParent<MultiCheckPoint>();
+
+        if (checkpoint_name=="")
+            checkpoint_name = gameObject.name;
     }
 
 

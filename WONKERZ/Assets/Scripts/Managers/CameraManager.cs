@@ -254,6 +254,13 @@ public class CameraManager : MonoBehaviour
     // Returns true when transition is done, false otherwise
     public bool transition( Transform iStart, Transform iEnd)
     {
+        if ((iStart==null) || (iEnd==null))
+        {
+            Debug.LogWarning("CameraManager::Tried to transition from/to null Transform. Forcing transition quit.");
+            endTransition();
+            return true;
+        }
+
         if (!interpolatePosition(iStart, iEnd))
         {
             active_camera.transform.position = iEnd.position;

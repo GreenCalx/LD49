@@ -74,12 +74,24 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     private void findCheckpoints()
     {
-        CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
-        checkpoints = new List<GameObject>(CPs.Length);
-        for (int i=0;i<CPs.Length;i++)
+        // CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
+        // checkpoints = new List<GameObject>(CPs.Length);
+        // for (int i=0;i<CPs.Length;i++)
+        // {
+        //     CPs[i].subscribeToManager(this);
+        //     checkpoints.Add( CPs[i].gameObject );
+        // }
+
+        MultiCheckPoint[] mcps = transform.parent.GetComponentsInChildren<MultiCheckPoint>();
+        checkpoints = new List<GameObject>();
+        foreach ( MultiCheckPoint mcp in mcps)
         {
-            CPs[i].subscribeToManager(this);
-            checkpoints.Add( CPs[i].gameObject );
+            CheckPoint[] cps = mcp.GetComponentsInChildren<CheckPoint>();
+            foreach(CheckPoint cp in cps)
+            {
+                cp.subscribeToManager(this);
+                checkpoints.Add(cp.gameObject);
+            }
         }
     }
 
