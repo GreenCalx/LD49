@@ -63,6 +63,7 @@ public class CollectiblesManager : MonoBehaviour
 
         // Uniques
         public UniqueJar<CollectibleWONKERZ> WONKERZjar;
+        public UniqueJar<CageKeyCollectible> CageKeyjar;
 
         // Infinites
         public int collectedNuts;
@@ -71,6 +72,7 @@ public class CollectiblesManager : MonoBehaviour
         {
             collectedNuts   = 0;
             WONKERZjar      = new UniqueJar<CollectibleWONKERZ>();
+            CageKeyjar      = new UniqueJar<CageKeyCollectible>();
         }
 
         public void collect(AbstractCollectible iAC)
@@ -80,6 +82,10 @@ public class CollectiblesManager : MonoBehaviour
                 if (iAC is CollectibleWONKERZ)
                 {
                     WONKERZjar.addToJar(iAC as CollectibleWONKERZ);
+                }
+                else if (iAC is CageKeyCollectible)
+                {
+                    CageKeyjar.addToJar(iAC as CageKeyCollectible);
                 }
                 return;
             }
@@ -263,4 +269,21 @@ public class CollectiblesManager : MonoBehaviour
 
         return false;
     }
+    
+    public bool hasCageKey(string iKeyName)
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        HashSet<string> collected = jar.CageKeyjar.GetValues(sceneName);
+        if ((collected==null) || (collected.Count <= 0))
+            return false;
+
+        foreach(string kn in collected)
+        {
+            if (kn == iKeyName)
+                return true;
+        }
+        return false;
+    }
+
 }
