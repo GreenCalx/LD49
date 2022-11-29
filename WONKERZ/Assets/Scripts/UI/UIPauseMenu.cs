@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
@@ -18,9 +19,8 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public Text tracknameText;
     public Text collectedNuts;
     public UIWonkerzBar wonkerzBar;
-
-    [Header("Track Handles")]
-    public GameObject collectiblesHandle;
+    public TextMeshProUGUI TMP_keyObtained;
+    public TextMeshProUGUI TMP_cageOpened;
 
     void Awake()
     {
@@ -90,24 +90,23 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public void updateTrackDetails()
     {
         // update collectibles
-        if (!!collectiblesHandle)
+        CollectiblesManager cm = Access.CollectiblesManager();
+
+        //collected wonkerz
+        foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
         {
-            CollectiblesManager cm = Access.CollectiblesManager();
-
-            //collected wonkerz
-            foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
-            {
-                wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
-            }
-
+            wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
         }
-
+            
+        // key + cage status
+        string sceneName = SceneManager.GetActiveScene().name;
+        TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? Color.green : Color.red;
+        TMP_cageOpened.color  = (cm.hasGaragist(sceneName)) ? Color.green : Color.red;
     }
 
     public void displayDebugPanel()
     {
         //panel.onDeactivate.Invoke();
         debugPanel.onActivate.Invoke();
-        
     }
 }

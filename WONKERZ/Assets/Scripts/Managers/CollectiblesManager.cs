@@ -36,6 +36,17 @@ public class CollectiblesManager : MonoBehaviour
                 collected.Remove(iAC.gameObject.name);
             }
 
+            public void removeFromJar(string iGameObjectName)
+            {
+                string scene_name = SceneManager.GetActiveScene().name;
+                checkJar(scene_name);
+                HashSet<string> collected;
+                jar.TryGetValue(scene_name, out collected );
+                if (collected.Count <= 0)
+                    return;
+                collected.Remove(iGameObjectName);
+            }
+
             public bool IsInJar(T iAC, string iSceneName)
             {
                 HashSet<string> collected;
@@ -64,6 +75,7 @@ public class CollectiblesManager : MonoBehaviour
         // Uniques
         public UniqueJar<CollectibleWONKERZ> WONKERZjar;
         public UniqueJar<CageKeyCollectible> CageKeyjar;
+        public UniqueJar<GaragistCollectible> Garagistjar;
 
         // Infinites
         public int collectedNuts;
@@ -73,6 +85,7 @@ public class CollectiblesManager : MonoBehaviour
             collectedNuts   = 0;
             WONKERZjar      = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar      = new UniqueJar<CageKeyCollectible>();
+            Garagistjar     = new UniqueJar<GaragistCollectible>();
         }
 
         public void collect(AbstractCollectible iAC)
@@ -86,6 +99,10 @@ public class CollectiblesManager : MonoBehaviour
                 else if (iAC is CageKeyCollectible)
                 {
                     CageKeyjar.addToJar(iAC as CageKeyCollectible);
+                }
+                else if ( iAC is GaragistCollectible)
+                {
+                    Garagistjar.addToJar(iAC as GaragistCollectible);
                 }
                 return;
             }
@@ -270,20 +287,22 @@ public class CollectiblesManager : MonoBehaviour
         return false;
     }
     
-    public bool hasCageKey(string iKeyName)
+    public bool hasCageKey(string iSceneName)
     {
-        string sceneName = SceneManager.GetActiveScene().name;
-
-        HashSet<string> collected = jar.CageKeyjar.GetValues(sceneName);
+        HashSet<string> collected = jar.CageKeyjar.GetValues(iSceneName);
         if ((collected==null) || (collected.Count <= 0))
             return false;
 
-        foreach(string kn in collected)
-        {
-            if (kn == iKeyName)
-                return true;
-        }
-        return false;
+        return (collected.Count >= 1); // only one can be collected in a scene
+    }
+
+    public bool hasGaragist(string iSceneName)
+    {
+        HashSet<string> collected = jar.Garagistjar.GetValues(iSceneName);
+        if ((collected==null) || (collected.Count <= 0))
+            return false;
+
+        return (collected.Count >= 1); // only one can be collected in a scene
     }
 
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GaragistCage : MonoBehaviour
 {
@@ -9,14 +10,18 @@ public class GaragistCage : MonoBehaviour
     public Animator cageAnim;
     private string openCageAnimParm = "unlock";
 
+    public GaragistCollectible garagist;
+
     void OnTriggerEnter(Collider iCollider)
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            if (Access.CollectiblesManager().hasCageKey(openingKeyName))
+            string scene_name = SceneManager.GetActiveScene().name;
+            if (Access.CollectiblesManager().hasCageKey(scene_name))
             {
                 // open cage
                 cageAnim.SetBool( openCageAnimParm, true);
+                garagist.ForceCollect();
             }
         }
     }

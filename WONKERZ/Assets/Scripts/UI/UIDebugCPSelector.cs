@@ -82,8 +82,9 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
                 {
                     cpm.last_checkpoint = cp.gameObject;
                     cpm.loadLastCP();
-                    UIPauseMenu uipm = GetComponentInParent<UIPauseMenu>();
-                    uipm.panel.onDeactivate.Invoke();
+                    deactivate();
+                    //UIPauseMenu uipm = GetComponentInParent<UIPauseMenu>();
+                    //uipm.panel.onDeactivate.Invoke();
                 }
             }
         }

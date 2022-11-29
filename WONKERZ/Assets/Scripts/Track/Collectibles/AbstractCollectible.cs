@@ -16,4 +16,9 @@ public abstract class AbstractCollectible : MonoBehaviour
             OnCollect();
         }
     }
+
+    public void ForceCollect()
+    {
+        OnCollect();
+    }
 }
