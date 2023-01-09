@@ -138,7 +138,8 @@ public class CollectiblesManager : MonoBehaviour
     public List<AbstractCollectible> allCollectiblesInCurrStage;
 
     ///
-    private float currentTurbo;
+    [HideInInspector]
+    public float currentTurbo;
 
     void Awake()
     {

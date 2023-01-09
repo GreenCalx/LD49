@@ -138,7 +138,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
-
         }
 
         // relocate player

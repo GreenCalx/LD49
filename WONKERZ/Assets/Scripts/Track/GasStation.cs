@@ -12,6 +12,8 @@ public class GasStation : MonoBehaviour
     private bool IsPumpingGas = false;
     private string animatorParm = "IsPumping";
 
+    public bool bypassNutsCost = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,12 @@ public class GasStation : MonoBehaviour
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
+            if (bypassNutsCost)
+            {
+                Access.CollectiblesManager().currentTurbo = 1f;
+                Access.UITurboAndLifePool().updateTurboBar(Access.CollectiblesManager().currentTurbo);
+                return;
+            }
             nutConversionElapsed += Time.deltaTime;
             if (nutConversionElapsed > nutConversionInterval)
             {
