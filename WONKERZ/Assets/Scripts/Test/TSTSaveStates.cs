@@ -8,6 +8,7 @@ public class TSTSaveStates : MonoBehaviour
     private Quaternion ss_rot = Quaternion.identity;
     private bool hasSS;
     
+    public Transform startPortal;
     public KeyCode load;
     public KeyCode save;
 
@@ -24,8 +25,10 @@ public class TSTSaveStates : MonoBehaviour
         {
             if (!hasSS)
             {
-                Debug.LogError("No save state to load");
-                return;
+                Debug.LogError("No save state to load. Loading start portal.");
+                ss_pos = startPortal.position;
+                ss_rot = Quaternion.identity;
+                hasSS = true;
             }
             Rigidbody rb2d = Access.Player().gameObject.GetComponentInChildren<Rigidbody>();
             if (!!rb2d)
