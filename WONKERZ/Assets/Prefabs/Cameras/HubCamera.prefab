@@ -91,11 +91,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camType: 1
-  FOVEffect_damp: 0.3
-  FOVEffect_speedThreshold: 70
+  FOVEffect_damp: 0.313
+  FOVEffect_speedThreshold: 20
   FOVEffect_LerpStep: 0.3
   FOV_UpperLimit: 100
   playerRef: {fileID: 0}
+  autoAlign: 0
   focus: {fileID: 0}
   distance: 18
   focusRadius: 2
@@ -108,6 +109,9 @@ MonoBehaviour:
   obstructionMask:
     serializedVersion: 2
     m_Bits: 36599
+  jumpDelay: 0
+  jumpMaxFocusRadius: 12
+  jumpFocusRadiusStep: 1.5
 --- !u!114 &1185167716
 MonoBehaviour:
   m_ObjectHideFlags: 0

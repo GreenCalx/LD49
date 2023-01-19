@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 public class CarController : MonoBehaviour, IControllable
 {
@@ -149,6 +150,8 @@ public class CarController : MonoBehaviour, IControllable
     public bool FixedUpdateDone = false;
     public bool ApplyForceMultiplier = false;
 
+    private bool IsInJumpStart = false;
+    private bool IsInJump = false;
     public bool IsAircraft = false;
     public float SteeringAngle;
     // NOTE toffa : as we are using velocity to quickly correct boundary penetration
@@ -977,6 +980,42 @@ public class CarController : MonoBehaviour, IControllable
         dc.Activate(iSteer);
     }
 
+    public bool GetAndUpdateIsInJump()
+    {
+        // Jump Start over when 4wheels touching ground
+        if ( IsInJumpStart )
+        {
+            List<Axle> axles = new List<Axle>(){ FrontAxle, RearAxle};
+            foreach( Axle a in axles)
+            {
+                if ( a.Left.Wheel.IsGrounded && a.Right.Wheel.IsGrounded)
+                {
+                    Debug.Log("Still starting to jump");
+                    return false; // early return
+                }
+            }
+            // no more wheels grounded
+            IsInJumpStart   = false;
+            IsInJump        = true;
+            return false;
+        } else if (IsInJump) { // In actual Jump airtime
+            List<Axle> axles = new List<Axle>(){ FrontAxle, RearAxle};
+            foreach( Axle a in axles)
+            {
+                if (a.Left.Wheel.IsGrounded || a.Right.Wheel.IsGrounded)
+                {
+                    Debug.Log("IsInJump over : " + a);
+                    IsInJump = false;
+                    return false;
+                }
+            }
+            return true;
+        }
+        IsInJumpStart   = false;
+        IsInJump        = false;
+        return false;
+    }
+
     /// =============== Unity ==================
 
     private void OnDestroy()
@@ -1331,6 +1370,7 @@ public class CarController : MonoBehaviour, IControllable
             if (Entry.Inputs["Jump"].IsUp)
             {
                 ApplyForceMultiplier = true;
+                IsInJumpStart = true;
             }
             ResetSpringSizeMinAndUnlock();
         }

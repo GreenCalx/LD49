@@ -5,6 +5,7 @@ public class ManualCamera : PlayerCamera, IControllable
 {
     [Header("ManualCamera")]
     /// TWEAKS
+    [SerializeField] public bool autoAlign = false;
     [SerializeField] public Transform focus = default;
     [SerializeField, Range(1f,80f)] public float distance = 5f;
     [SerializeField, Min(0f)] public float focusRadius = 1f;
@@ -14,11 +15,16 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Min(0f)] float alignDelay = 5f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     [SerializeField] LayerMask obstructionMask = -1;
-   
+    [Header("Jump")]
+    [SerializeField, Min(0f)] float jumpDelay = 5f;
+    [SerializeField, Min(0f)] float jumpMaxFocusRadius = 15f;
+    [SerializeField, Min(0f)] float jumpFocusRadiusStep = 1f;
    /// Internals
     private Vector3 focusPoint, previousFocusPoint;
     private Vector2 orbitAngles = new Vector2(45f, 0f);
     private float lastManualRotationTime;
+    private float jumpStartTime;
+    private float baseFocusRadius;
     private Camera cam;
     private Vector3 CameraHalfExtends {
 		get {
@@ -38,6 +44,8 @@ public class ManualCamera : PlayerCamera, IControllable
         cam = GetComponent<Camera>();
         Utils.attachControllable<ManualCamera>(this);
         initial_FOV = cam.fieldOfView;
+        jumpStartTime = 0f;
+        baseFocusRadius = focusRadius;
     }
     private void Start()
     {
@@ -65,14 +73,31 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void Update()
     {
+
     }
 
     void LateUpdate()
     {
-        UpdateFocusPoint();
+        CarController cc = Access.Player();
+        if (!!cc)
+        {
+            if (cc.GetAndUpdateIsInJump())
+            {
+                if (jumpStartTime<=0f)
+                    jumpStartTime = Time.unscaledTime;
+                UpdateFocusPointInJump();
+            }
+            else
+            {
+                jumpStartTime = 0f;
+                UpdateFocusPoint();
+            }
+        }
+
+        //UpdateFocusPoint();
         Quaternion lookRotation;
         
-        if (ManualRotation()  /*|| autoRotation()*/ )
+        if (ManualRotation()  || (autoAlign&&autoRotation()) )
         {
             constrainAngles();
             lookRotation = Quaternion.Euler(orbitAngles);
@@ -106,6 +131,37 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         previousFocusPoint = focusPoint;
         Vector3 targetPoint = focus.position;
+
+        if (focusRadius > baseFocusRadius)
+            focusRadius = ((focusRadius - jumpFocusRadiusStep)>baseFocusRadius)? focusRadius-jumpFocusRadiusStep : baseFocusRadius;
+
+        if ( focusRadius > 0f)
+        {
+            float distance = Vector3.Distance(targetPoint, focusPoint);
+            float t = 1f;
+            if (distance > 0.01f && focusCentering > 0f)
+            { t = Mathf.Pow(1f-focusCentering, Time.unscaledDeltaTime); }
+            if (distance > focusRadius)
+            {
+                t = Mathf.Min(t, focusRadius / distance );
+            }
+            focusPoint = Vector3.Lerp(targetPoint, focusPoint, t);
+        } else {
+            focusPoint = targetPoint;
+        }
+    }
+
+    void UpdateFocusPointInJump()
+    {
+        if (Time.unscaledTime - jumpStartTime < jumpDelay )
+            return;
+
+        previousFocusPoint = focusPoint;
+        Vector3 targetPoint = focus.position;
+
+        if (focusRadius < jumpMaxFocusRadius)
+            focusRadius += jumpFocusRadiusStep;
+
         if ( focusRadius > 0f)
         {
             float distance = Vector3.Distance(targetPoint, focusPoint);
