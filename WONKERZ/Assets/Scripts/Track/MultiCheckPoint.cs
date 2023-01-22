@@ -8,6 +8,8 @@ public class MultiCheckPoint : MonoBehaviour
     public bool triggered;
     public string checkPointName = "";
 
+    public List<Resetable> resetables = new List<Resetable>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -25,5 +27,10 @@ public class MultiCheckPoint : MonoBehaviour
         
     }
 
+    // expected to be called by Resetables themselves
+    public void addResetable(Resetable iR)
+    {
+        resetables.Add(iR);
+    }
 
 }

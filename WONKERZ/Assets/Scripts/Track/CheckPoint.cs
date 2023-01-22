@@ -23,7 +23,8 @@ public class CheckPoint : AbstractCameraPoint
     public ParticleSystemForceField base_pff;
 
     // Multi checkpoint
-    private MultiCheckPoint MCP;
+    [HideInInspector]
+    public MultiCheckPoint MCP;
 
 
     // Start is called before the first frame update
