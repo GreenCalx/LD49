@@ -479,7 +479,7 @@ public class CarController : MonoBehaviour, IControllable
         float MaxDistance = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
         //MaxDistance = S.Spring.MinLength + PhysicsBias;
         var MinDistance = S.Spring.MinLength;
-        S.Spring.CurrentLength = S.Spring.MinLength;
+        //S.Spring.CurrentLength = S.Spring.MinLength;
 
         var TestSweep = S.Spring.Anchor.GetComponentInChildren<Rigidbody>().SweepTestAll(SpringDirection, MaxDistance, QueryTriggerInteraction.Ignore);
         Array.Sort(TestSweep, (a, b) => a.distance < b.distance ? -1 : 1);
@@ -491,6 +491,54 @@ public class CarController : MonoBehaviour, IControllable
             Result.Distance = TestSweep[0].distance;
             Result.Normal = TestSweep[0].normal;
             Result.Point = TestSweep[0].point;
+              // check for overlap?
+            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius),
+                                             Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                                             ~(1 << LayerMask.NameToLayer("No Player Collision"))
+                                               , QueryTriggerInteraction.Ignore);
+            if (overlap.Length != 0)
+            {
+                for (int x=0;x<overlap.Length;++x){
+                    if (overlap[x].gameObject == Result.Collider) continue;
+                    var wheelCollider = S.Spring.Anchor.GetComponentInChildren<MeshCollider>();
+                    // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
+                    // no penetration will be found........
+                    float Pene = 0;
+                    Vector3 PeneDir = Vector3.zero;
+                    if (Physics.ComputePenetration(wheelCollider,
+                                                WheelPosition,
+                                                wheelCollider.transform.rotation,
+                                                overlap[x],
+                                                overlap[x].transform.position,
+                                                overlap[x].transform.rotation,
+                                                out PeneDir, out Pene))
+                    //    BoxCollider bc = gameObject.AddComponent<BoxCollider>();
+                    //    bc.center = transform.InverseTransformPoint(WheelPosition);
+                    //    bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
+                    //    Debug.DrawLine(WheelPosition, WheelPosition + transform.up * 2);
+                    //    if (Physics.ComputePenetration(bc, WheelPosition, transform.rotation,
+                    //                                   overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
+                    //                                   out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                    {
+                        if (Pene > Result.PenetrationCorrectionDistance) {
+                            Result.Hit = true;
+                            Result.PenetrationCorrectionDirection = PeneDir;
+                            Result.PenetrationCorrectionDistance = Pene;
+                            Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
+                            Result.Collider = overlap[x].gameObject;
+                            Result.Distance = S.Spring.CurrentLength;
+                            Result.Point = WheelPosition - (S.Wheel.Radius*Result.PenetrationCorrectionDirection) - (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance);
+                            Debug.Log("overlap and penetration   " + Result.Normal + "  " + Result.PenetrationCorrectionDistance);
+                        }
+                    }
+                    else
+                    {
+
+                        Debug.Log("overlap but no penetration?" + "    " + overlap.Length);
+                    }
+                }
+            }
+
 
             var diff = Result.Distance - MinDistance;
             if (diff < 0)

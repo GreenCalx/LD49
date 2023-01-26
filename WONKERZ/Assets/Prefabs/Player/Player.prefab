@@ -1315,6 +1315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9c01ab3ffe1834f975bded80a423d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  suspensions: []
   SpeedParticles: {fileID: 8016672391433947143}
   OnDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
   CarMotor:
@@ -1432,7 +1433,7 @@ MonoBehaviour:
       Renderer: {fileID: 2736272701116307749}
     Wheel:
       Width: 0.5
-      Radius: 1
+      Radius: 1.2
       Grip: 0
       Renderer: {fileID: 4050836837063030202}
       Trails: {fileID: 8016672390417225573}
@@ -1441,8 +1442,8 @@ MonoBehaviour:
       Velocity: {x: 0, y: 0, z: 0}
   SuspensionRef: {fileID: 8016672389962757492}
   RefAxle:
-    Width: 2.5
-    Length: 1.5
+    Width: 4
+    Length: 2.5
     Right:
       Spring:
         RestLength: 0
@@ -1591,7 +1592,7 @@ MonoBehaviour:
   turboConsumptionPerTick: 0.02
   SpringStiffness: 0.035
   SpringDamper: 0.01
-  SpringMax: 3
+  SpringMax: 2
   SpringMultiplier: 40
   SpringMin: 1
   SpringRestPercent: 0.5
@@ -1605,6 +1606,7 @@ MonoBehaviour:
   IsHooked: 0
   grapin: {fileID: 0}
   RB: {fileID: 2966540010634319497}
+  PhysicsBias: 0.1
   Bounciness: 1
   CurrentMode: 5
   MouseLastPosition: {x: 0, y: 0}
