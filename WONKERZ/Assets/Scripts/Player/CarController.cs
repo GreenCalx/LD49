@@ -170,16 +170,21 @@ public class CarController : MonoBehaviour, IControllable
 
     public PlayerFSM stateMachine = new PlayerFSM();
 
+
     public FSMState aliveState = new FSMState();
     public FSMState deadState = new FSMState();
     public FSMState frozenState = new FSMState();
     public FSMState invulState = new FSMState();
+
     public PlayerBoatState boatState = new PlayerBoatState();
     public PlayerGroudState groundState = new PlayerGroudState();
     public PlayerAircraftState aircraftState = new PlayerAircraftState();
+    public PlayerBallState ballState = new PlayerBallState();
+    public PlayerSpiderState spiderState = new PlayerSpiderState();
 
     /// =============== Cache ===============
     public Rigidbody RB;
+    private bool modifierCalled = false;
 
     /// =================== Updates =================
 
@@ -787,14 +792,18 @@ public class CarController : MonoBehaviour, IControllable
         GROUND,
         WATER,
         DELTA,
+        BALL,
+        SPIDER,
         NONE
     };
 
     public void SetModeFromGround(Ground.EType Mode)
     {
-        if (Mode == Ground.EType.NONE) return;
-        SetMode(CarMode.GROUND);
-        if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
+        // Manual toggle through wheel powers , obsolete?
+
+        //if (Mode == Ground.EType.NONE) return;
+        //SetMode(CarMode.GROUND);
+        //if (Mode == Ground.EType.WATER) SetMode(CarMode.WATER);
     }
 
     public class PlayerGroudState : FSMState
@@ -803,6 +812,7 @@ public class CarController : MonoBehaviour, IControllable
         public override void OnEnter(FSMBase machine)
         {
             base.OnEnter(machine);
+            Debug.Log("GroundState");
             player.FrontAxle.IsTraction = false;
             player.FrontAxle.IsDirection = true;
             player.FrontAxle.IsReversedDirection = false;
@@ -845,6 +855,39 @@ public class CarController : MonoBehaviour, IControllable
         }
     }
 
+    public class PlayerBallState : FSMState
+    {
+        public CarController player;
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+            Debug.Log("BallState");
+            player.FrontAxle.IsTraction = false;
+            player.FrontAxle.IsDirection = false;
+            player.FrontAxle.IsReversedDirection = false;
+
+            player.RearAxle.IsDirection = false;
+            player.RearAxle.IsTraction = false;
+            player.RearAxle.IsReversedDirection = false;
+        }
+    }
+
+    public class PlayerSpiderState : FSMState
+    {
+        public CarController player;
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+            player.FrontAxle.IsTraction = false;
+            player.FrontAxle.IsDirection = false;
+            player.FrontAxle.IsReversedDirection = false;
+
+            player.RearAxle.IsDirection = false;
+            player.RearAxle.IsTraction = false;
+            player.RearAxle.IsReversedDirection = false;
+        }
+    }
+
     public class PlayerAircraftCondition : FSMCondition
     {
         public CarController player;
@@ -869,6 +912,24 @@ public class CarController : MonoBehaviour, IControllable
         public override bool Check(FSMBase machine)
         {
             return player.CurrentMode == CarMode.WATER;
+        }
+    }
+
+    public class PlayerBallCondition : FSMCondition
+    {
+        public CarController player;
+        public override bool Check(FSMBase machine)
+        {
+            return player.CurrentMode == CarMode.BALL;
+        }
+    }
+
+    public class PlayerSpiderCondition : FSMCondition
+    {
+        public CarController player;
+        public override bool Check(FSMBase machine)
+        {
+            return player.CurrentMode == CarMode.SPIDER;
         }
     }
 
@@ -1150,6 +1211,10 @@ public class CarController : MonoBehaviour, IControllable
         playerIsBoat.player = this;
         PlayerCarCondition playerIsCar = new PlayerCarCondition();
         playerIsCar.player = this;
+        PlayerBallCondition playerIsBall = new PlayerBallCondition();
+        playerIsBall.player = this;
+        PlayerSpiderCondition playerIsSpider = new PlayerSpiderCondition();
+        playerIsSpider.player = this;
 
         // FSM Transition
         //
@@ -1164,6 +1229,14 @@ public class CarController : MonoBehaviour, IControllable
         FSMTransition groundTrans = new FSMTransition();
         groundTrans.condition = playerIsCar;
         groundTrans.trueState = groundState;
+
+        FSMTransition ballTrans = new FSMTransition();
+        ballTrans.condition = playerIsBall;
+        ballTrans.trueState = ballState;
+
+        FSMTransition spiderTrans = new FSMTransition();
+        spiderTrans.condition = playerIsSpider;
+        spiderTrans.trueState = spiderState;
 
         PlayerDieTransition aliveToDead = new PlayerDieTransition();
         aliveToDead.player = this;
@@ -1194,12 +1267,15 @@ public class CarController : MonoBehaviour, IControllable
         aliveState.transitions.Add(aircraftTrans);
         aliveState.transitions.Add(groundTrans);
         aliveState.transitions.Add(waterTrans);
+        aliveState.transitions.Add(ballTrans);
+        aliveState.transitions.Add(spiderTrans);
 
         groundState.name = "ground";
         groundState.player = this;
         groundState.transitions = aliveState.transitions;
         groundState.actions = aliveState.actions;
         groundState.fixedActions = aliveState.fixedActions;
+
 
         boatState.name = "boat";
         boatState.player = this;
@@ -1212,6 +1288,18 @@ public class CarController : MonoBehaviour, IControllable
         aircraftState.transitions = aliveState.transitions;
         aircraftState.actions = aliveState.actions;
         aircraftState.fixedActions = aliveState.fixedActions;
+
+        ballState.name = "ball";
+        ballState.player = this;
+        ballState.transitions   = aliveState.transitions;
+        ballState.actions       = aliveState.actions;
+        ballState.fixedActions  = aliveState.fixedActions;
+
+        spiderState.name = "spider";
+        spiderState.player = this;
+        spiderState.transitions   = aliveState.transitions;
+        spiderState.actions       = aliveState.actions;
+        spiderState.fixedActions  = aliveState.fixedActions;
 
         deadState.name = "dead";
         deadState.actions.Add(new PrintStateName());
@@ -1321,6 +1409,43 @@ public class CarController : MonoBehaviour, IControllable
         var Acceleration = Entry.Inputs["Accelerator"].AxisValue;
         // CarMotor.CurrentRPM = 0;
         CarMotor.CurrentRPM = Acceleration;
+
+        // power controller update
+        PowerController pc = GetComponent<PowerController>();
+        if (!!pc)
+        {
+            // modifier inputs
+            if (Entry.Inputs["Modifier"].Down)
+            {
+                pc.showUI(true);
+                if (Entry.Inputs["Power1"].Down) {
+                    pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
+                    pc.setNextPower(1);
+                } else if (Entry.Inputs["Power2"].Down) {
+                    pc.setNextPower(2);
+                    pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
+                } else if (Entry.Inputs["Power3"].Down) {
+                    pc.showIndicator(PowerController.PowerWheelPlacement.UP);
+                    pc.setNextPower(3);
+                } else if (Entry.Inputs["Power4"].Down) {
+                    pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
+                    pc.setNextPower(4);
+                } else {
+                    pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
+                    pc.setNextPower(0);
+                }
+                modifierCalled = true;
+            } else if (modifierCalled && !Entry.Inputs["Modifier"].Down) {
+                pc.hideIndicators();
+                pc.showUI(false);
+                
+                pc.tryTriggerPower();
+                modifierCalled = false;
+            }
+
+            pc.applyPowerEffectInInputs(Entry,this);
+        }
+
 
         // Accelration
         if (!IsAircraft)

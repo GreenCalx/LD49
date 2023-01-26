@@ -153,4 +153,8 @@ public class Access
     {
         return cache.getObject<LevelEntryUI>(Constants.GO_PLAYERUI, true);
     }
+    public static UIPowerWheel UIPowerWheel()
+    {
+        return cache.getObject<UIPowerWheel>(Constants.GO_PLAYERUI, true);
+    }
 }
