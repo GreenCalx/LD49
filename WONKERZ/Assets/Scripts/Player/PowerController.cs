@@ -6,20 +6,28 @@ public class PowerController : MonoBehaviour
 {
     public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT}
 
-    public List<ICarPower> powers = new List<ICarPower>()
-    {
-        new NeutralCarPower(),
-        new BallCarPower(),
-        new WaterCarPower(),
-        new PlaneCarPower(),
-        new SpiderCarPower()
-    };
+    public GameObject ballPowerObject;
+
+    public List<ICarPower> powers;
     public Dictionary<ICarPower,bool> unlockedPowers = new Dictionary<ICarPower,bool>();
     public ICarPower currentPower;
     public ICarPower nextPower;
 
     // Private cache
     private UIPowerWheel uiPowerWheel;
+
+    void Awake()
+    {
+        powers = new List<ICarPower>()
+        {
+            new NeutralCarPower(),
+            new BallCarPower(ballPowerObject),
+            new WaterCarPower(),
+            new PlaneCarPower(),
+            new SpiderCarPower()
+        };
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -41,6 +49,12 @@ public class PowerController : MonoBehaviour
             nextPower = powers[0];
             tryTriggerPower();
         }
+    }
+
+    public void refreshPower()
+    {
+        if (currentPower!=null)
+            currentPower.onRefresh();
     }
 
     public void tryTriggerPower()

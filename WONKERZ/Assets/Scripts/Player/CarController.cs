@@ -1673,11 +1673,30 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         {
             base.Execute(machine);
 
+            // Ball Power UC : no physx simulation from car
+            if (player.CurrentMode==CarController.CarMode.BALL)
+            {
+                Debug.LogWarning("Player is ball : no physx update");
+                return;
+            }
+
             Debug.Log("PlyerUpdatePhysics START : " + player.RB.velocity + "   " + player.RB.angularVelocity );
             player.UpdateSprings();
             Debug.Log("PlyerUpdatePhysics Post UpdatSprings : " + player.RB.velocity + "   " + player.RB.angularVelocity );
             player.ApplyAllWheelConstraints();
             Debug.Log("PlyerUpdatePhysics Post ApplyAllWheelConstraints : " + player.RB.velocity + "   " + player.RB.angularVelocity );
+        }
+    }
+
+    public class PlayerInPowerMode : FSMAction
+    {
+        public CarController player;
+        public override void Execute(FSMBase machine)
+        {
+            base.Execute(machine);
+            PowerController pc = player.gameObject.GetComponent<PowerController>();
+            if (!!pc)
+            { pc.refreshPower(); }
         }
     }
 
@@ -1738,6 +1757,9 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         PlayerUpdatePhysics updatePhysicsAction = new PlayerUpdatePhysics();
         updatePhysicsAction.player = this;
 
+        PlayerInPowerMode playerInPowerModeAction = new PlayerInPowerMode();
+        playerInPowerModeAction.player = this;
+
         // FSM Define graph
 
         aliveState.name = "alive";
@@ -1766,24 +1788,28 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         boatState.transitions = aliveState.transitions;
         boatState.actions = aliveState.actions;
         boatState.fixedActions = aliveState.fixedActions;
+        boatState.fixedActions.Add(playerInPowerModeAction);
 
         aircraftState.name = "aircraft";
         aircraftState.player = this;
         aircraftState.transitions = aliveState.transitions;
         aircraftState.actions = aliveState.actions;
         aircraftState.fixedActions = aliveState.fixedActions;
+        aircraftState.fixedActions.Add(playerInPowerModeAction);
 
         ballState.name = "ball";
         ballState.player = this;
         ballState.transitions   = aliveState.transitions;
         ballState.actions       = aliveState.actions;
         ballState.fixedActions  = aliveState.fixedActions;
+        ballState.fixedActions.Add(playerInPowerModeAction);
 
         spiderState.name = "spider";
         spiderState.player = this;
         spiderState.transitions   = aliveState.transitions;
         spiderState.actions       = aliveState.actions;
         spiderState.fixedActions  = aliveState.fixedActions;
+        spiderState.fixedActions.Add(playerInPowerModeAction);
 
         deadState.name = "dead";
         deadState.actions.Add(new PrintStateName());
@@ -1902,16 +1928,16 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
             if (Entry.Inputs["Modifier"].Down)
             {
                 pc.showUI(true);
-                if (Entry.Inputs["Power1"].Down) {
+                if (Entry.Inputs["Power1"].Down) { // BallPower
                     pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
                     pc.setNextPower(1);
-                } else if (Entry.Inputs["Power2"].Down) {
+                } else if (Entry.Inputs["Power2"].Down) { // WaterPower
                     pc.setNextPower(2);
                     pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
-                } else if (Entry.Inputs["Power3"].Down) {
+                } else if (Entry.Inputs["Power3"].Down) { // PlanePower
                     pc.showIndicator(PowerController.PowerWheelPlacement.UP);
                     pc.setNextPower(3);
-                } else if (Entry.Inputs["Power4"].Down) {
+                } else if (Entry.Inputs["Power4"].Down) { // SpiderPower
                     pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
                     pc.setNextPower(4);
                 } else {
