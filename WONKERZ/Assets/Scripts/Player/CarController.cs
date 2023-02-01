@@ -1526,6 +1526,14 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
 
     public bool GetAndUpdateIsInJump()
     {
+        PowerController PC = GetComponent<PowerController>();
+        if (!!PC && PC.isInNeutralPowerMode())
+        {
+            IsInJumpStart   = false;
+            IsInJump        = false;
+            return false;
+        }
+
         // Jump Start over when 4wheels touching ground
         if ( IsInJumpStart )
         {

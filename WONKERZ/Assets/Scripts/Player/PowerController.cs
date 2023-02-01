@@ -51,6 +51,11 @@ public class PowerController : MonoBehaviour
         }
     }
 
+    public bool isInNeutralPowerMode()
+    {
+        return (currentPower!=powers[0]); // neutral power
+    }
+
     public void refreshPower()
     {
         if (currentPower!=null)

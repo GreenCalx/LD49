@@ -78,9 +78,25 @@ public class BallCarPower : ICarPower
         CarController cc = Access.Player();
         cc.transform.position = modelObjectInst.transform.position;
         cc.transform.rotation = modelObjectInst.transform.rotation;
+
+        Rigidbody player_rb = cc.GetComponent<Rigidbody>();
+        Rigidbody model_rb  = modelObjectInst.GetComponent<Rigidbody>();
+        if (model_rb && player_rb)
+        {
+            //model_rb.velocity = player_rb.velocity;
+            player_rb.velocity = model_rb.velocity;
+        }
     }
     public void onDisableEffect()
     {
+        CarController cc = Access.Player();
+        Rigidbody player_rb = cc.GetComponent<Rigidbody>();
+        Rigidbody model_rb  = modelObjectInst.GetComponent<Rigidbody>();
+        if (model_rb && player_rb)
+        {
+            //model_rb.velocity = player_rb.velocity;
+            player_rb.velocity = model_rb.velocity;
+        }
         GameObject.Destroy(modelObjectInst);
     }
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
