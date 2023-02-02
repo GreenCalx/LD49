@@ -27,7 +27,7 @@ public class CarController : MonoBehaviour, IControllable
         public bool IsGrounded;
         public Vector3 Velocity;
 
-        public WheelHitInfo HitInfo;
+        public List<ContactInfo> HitInfo;
     }
 
     public List<Suspension> suspensions;
@@ -311,7 +311,7 @@ public class CarController : MonoBehaviour, IControllable
         DrawDebugWheel(FrontAxle.Right, C);
         DrawDebugWheel(FrontAxle.Left, C);
         DrawDebugWheel(RearAxle.Right, C);
-        DrawDebugWheel( RearAxle.Left, C);
+        DrawDebugWheel(RearAxle.Left, C);
     }
 
     /// =================== Spawn ==================
@@ -438,235 +438,360 @@ public class CarController : MonoBehaviour, IControllable
 
     private bool NeedCheckMaterial = true;
 
-    public struct WheelHitInfo
+    public class ContactInfo
     {
-        public Ground.GroundInfos GroundI;
-        public float Distance;
-        public Vector3 Normal;
+        public Ground.GroundInfos ContactGround;
+        public float ContactDistance;
+        public Vector3 ContactNormal;
         public bool Hit;
-        public Vector3 Point;
-        public Vector3 PenetrationCorrectionDirection;
-        public float PenetrationCorrectionDistance;
-        public GameObject Collider;
+        public Vector3 ContactPoint;
+        public Vector3 PenetrationDirection;
+        public float PenetrationDistance;
+
+        public GameObject ColliderA;
+        public GameObject ColliderB;
 
         public Matrix4x4 ContactToWorld;
-        public Vector3 LocalVelocity;
+        public Vector3 ContactVelocity;
 
         public Vector3 RelativeContactPosition;
         public Vector3 RelativeContactVelocity;
         public float DesiredDeltaVelocity;
+
     }
+
+    public class ContactResolver
+    {
+        public List<ContactInfo> contacts = new List<ContactInfo>();
+
+        private void UpdateContactPoints(Vector3 velocityChange, Vector3 angularChange)
+        {
+            // update other contacts that could be impacted by the change
+            for (int j = 0; j < contacts.Count; ++j)
+            {
+                var body_b = contacts[j];
+                var deltaPos = velocityChange + Vector3.Cross(angularChange, body_b.RelativeContactPosition);
+                var new_pene = body_b.PenetrationDistance - ScalarProduct(deltaPos, body_b.ContactNormal);
+                body_b.PenetrationDistance = new_pene;
+            }
+        }
+
+        private void ApplyDepen(ContactInfo body, out Vector3 linearChange, out Vector3 angularChange)
+        {
+            var RB = body.ColliderA.GetComponent<Rigidbody>();
+            // Get current inertia ob the objects aat the contact point
+            var InverseInertiaTensorWorld = GetInverseInertiaTensorWorld(RB);
+
+            Vector3 angularInertiaWorld = Vector3.Cross(body.RelativeContactPosition, body.ContactNormal);
+            angularInertiaWorld = InverseInertiaTensorWorld * angularInertiaWorld;
+            angularInertiaWorld = Vector3.Cross(angularInertiaWorld, body.RelativeContactPosition);
+            var angularInertia = ScalarProduct(angularInertiaWorld, body.ContactNormal);
+
+            var linearInertia = 1 / RB.mass;
+
+            var totalInertia = linearInertia + angularInertia;
+
+            // The linear and angular movements required are in proportion to
+            // the two inverse inertias.
+            var angularMove = body.PenetrationDistance * (angularInertia / totalInertia);
+            var linearMove = body.PenetrationDistance * (linearInertia / totalInertia);
+
+            // To avoid angular projections that are too great (when mass is large
+            // but inertia tensor is small) limit the angular move.
+            Vector3 projection = body.RelativeContactPosition;
+            projection += body.ContactNormal * ScalarProduct(-body.RelativeContactPosition, body.ContactNormal);
+
+            // Use the small angle approximation for the sine of the angle (i.e.
+            // the magnitude would be sine(angularLimit) * projection.magnitude
+            // but we approximate sine(angularLimit) to angularLimit).
+            var angularLimit = 0.2f;
+            var maxMagnitude = angularLimit * projection.magnitude;
+
+            if (angularMove < -maxMagnitude)
+            {
+                float totalMove = angularMove + linearMove;
+                angularMove = -maxMagnitude;
+                linearMove = totalMove - angularMove;
+            }
+            else if (angularMove > maxMagnitude)
+            {
+                float totalMove = angularMove + linearMove;
+                angularMove = maxMagnitude;
+                linearMove = totalMove - angularMove;
+            }
+
+            // We have the linear amount of movement required by turning
+            // the rigid body (in angularMove). We now need to
+            // calculate the desired rotation to achieve that.
+            angularChange = Vector3.zero;
+            if (angularMove != 0)
+            {
+                // Work out the direction we'd like to rotate in.
+                Vector3 targetAngularDirection = Vector3.Cross(body.RelativeContactPosition, body.ContactNormal);
+                // Work out the direction we'd need to rotate to achieve that
+                angularChange = InverseInertiaTensorWorld * targetAngularDirection * (angularMove / angularInertia);
+            }
+
+            // Velocity change is easier - it is just the linear movement
+            // along the contact normal.
+            linearChange = body.ContactNormal * linearMove;
+
+            // Now we can start to apply the values we've calculated.
+            // Apply the linear movement
+            RB.position += linearChange;
+            // And the change in orientation
+            RB.rotation = QuatAddVec(RB.rotation, angularChange);
+        }
+
+        public void SolvePenetrations(int maxIter)
+        {
+            if (contacts.Count == 0) return;
+            // See at least once each contact point to avoid missing collisions
+            for (int i = 0; i < contacts.Count; ++i)
+            {
+                Vector3 linearChange = Vector3.zero;
+                Vector3 angularChange = Vector3.zero;
+                ApplyDepen(contacts[i], out linearChange, out angularChange);
+                //UpdateContactPoints(linearChange, angularChange);
+            }
+            // Now do the iterative algo trying to take care of biggest pene first if any still there
+            for (int i = 0; i < maxIter; ++i)
+            {
+                // sort according to biggest penetration
+                contacts.Sort((a, b) => (a.PenetrationDistance > b.PenetrationDistance) ? -1 : 1);
+                // always look at first object
+                var body_a = contacts[0];
+
+                Vector3 linearChange = Vector3.zero;
+                Vector3 angularChange = Vector3.zero;
+                ApplyDepen(body_a, out linearChange, out angularChange);
+                UpdateContactPoints(linearChange, angularChange);
+            }
+        }
+
+
+
+
+        Vector3 CalculateFrictionlessImpulse(ContactInfo W, Matrix4x4 inverseInertiaTensor)
+        {
+            Vector3 impulseContact;
+
+            // Build a vector that shows the change in velocity in
+            // world space for a unit impulse in the direction of the contact
+            // normal.
+            Vector3 deltaVelWorld = Vector3.Cross(W.RelativeContactPosition, W.ContactNormal);
+            deltaVelWorld = inverseInertiaTensor * deltaVelWorld;
+            deltaVelWorld = Vector3.Cross(deltaVelWorld, W.RelativeContactPosition);
+
+            // Work out the change in velocity in contact coordinates.
+            float deltaVelocity = ScalarProduct(deltaVelWorld, W.ContactNormal);
+
+            // Add the linear component of velocity change
+            var RB = W.ColliderA.GetComponent<Rigidbody>();
+            deltaVelocity += 1 / RB.mass;
+
+            // Calculate the required size of the impulse
+            impulseContact.x = W.DesiredDeltaVelocity / deltaVelocity;
+            impulseContact.y = 0;
+            impulseContact.z = 0;
+            return impulseContact;
+        }
+
+
+        public void SolveCollisions(int maxIter)
+        {
+            if (contacts.Count == 0) return;
+
+            var CurrentDepenForceVel = Vector3.zero;
+            var CurrentDepenForceAngVel = Vector3.zero;
+            for (int i = 0; i < maxIter; ++i)
+            {
+                // sort according to biggest update to do by delta velocity
+                contacts.Sort((a, b) => (a.DesiredDeltaVelocity > b.DesiredDeltaVelocity) ? -1 : 1);
+
+                var body_a = contacts[0];
+                var RB = body_a.ColliderA.GetComponent<Rigidbody>();
+
+                // compute forces to depenetrate
+                Vector3 Impulse = CalculateFrictionlessImpulse(body_a, GetInverseInertiaTensor(RB));
+                Impulse = body_a.ContactToWorld * Impulse;
+
+                // Split in the impulse into linear and rotational components
+                Vector3 ImpulsiveTorque = Vector3.Cross(body_a.RelativeContactPosition, Impulse);
+                Vector3 rotationChange = GetInverseInertiaTensor(RB) * ImpulsiveTorque;
+                var velocityChange = Impulse * (1 / RB.mass);
+
+                // Apply the changes
+                RB.velocity += velocityChange;
+                RB.angularVelocity += rotationChange;
+
+                // update other contacts that could be impacted by the change
+                for (int j = 0; j < contacts.Count; ++j)
+                {
+                    var body_b = contacts[j];
+                    var deltaVel = velocityChange + Vector3.Cross(rotationChange, body_b.RelativeContactPosition);
+
+                    Vector3 v = body_b.ContactToWorld.transpose * (deltaVel);
+                    body_b.ContactVelocity += v;
+                    body_b.DesiredDeltaVelocity = ComputeDesiredVelocity(body_b);
+                }
+            }
+        }
+    }
+    ContactResolver wheelContactsResolver = new ContactResolver();
 
     public float PhysicsBias = .1f;
     void GetWheelHitInfo(Suspension S)
     {
-        WheelHitInfo Result = new WheelHitInfo();
-        Result.Distance = float.PositiveInfinity;
-        Result.Hit = false;
-        Result.Collider = null;
-        Result.Normal = Vector3.zero;
-        Result.PenetrationCorrectionDirection = Vector3.zero;
-        Result.PenetrationCorrectionDistance = 0f;
-        Result.Point = Vector3.zero;
-
         var SpringDirection = -transform.up;
         var SpringAnchor = S.Spring.Anchor.transform.position;
         var WheelPosition = GetEnd(S);
         var WheelDiameter = S.Wheel.Radius * 2f;
+        S.Wheel.Velocity = GetWheelVelocity(WheelPosition);
+        // we need the next position of the wheel if free floating
+        // this way we can make the suspension work in advance and avoid big penetration
+        // by having the cast distance set to next position.
         var NextWheelPosition = GetNextPointPosition(WheelPosition);
-        // overlap a capsule cast with a box cast to make a wheel colider
-
-        float MaxDistance = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
-        //MaxDistance = S.Spring.MinLength + PhysicsBias;
-        var MinDistance = S.Spring.MinLength;
-        //S.Spring.CurrentLength = S.Spring.MinLength;
-
-        var TestSweep = S.Spring.Anchor.GetComponentInChildren<Rigidbody>().SweepTestAll(SpringDirection, MaxDistance, QueryTriggerInteraction.Ignore);
+        float MaxCastDistance = S.Spring.MaxLength + ProjectOnSuspension(WheelPosition - NextWheelPosition).magnitude;
+        // get back all colliders by sweeping down.
+        // IMPORTANT: it will not return a collision if it starts inside the collider. This is why we need to test for overlaps too.
+        // first get the rigidbody acting as a proxy wheel collider.
+        var wheelColliderBody = S.Spring.Anchor.GetComponentInChildren<Rigidbody>();
+        var wheelCollider = S.Spring.Anchor.GetComponentInChildren<MeshCollider>();
+        var TestSweep = wheelColliderBody.SweepTestAll(SpringDirection, MaxCastDistance, QueryTriggerInteraction.Ignore);
+        // sort according to distance
+        // TODO toffa : really necessary?
         Array.Sort(TestSweep, (a, b) => a.distance < b.distance ? -1 : 1);
-
-        Result.Hit = TestSweep.Length != 0;
-        if (Result.Hit)
+        // check for overlaps that might have been missed by the sweep due to raycast limitations.
+        // Overlaps can only be done with simple shapes so we first test a bounding box as the wheel.
+        var overlaps = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius),
+                                          Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
+                                          ~(1 << LayerMask.NameToLayer("No Player Collision"))
+                                          , QueryTriggerInteraction.Ignore);
+        if (overlaps.Length != 0)
         {
-            Result.Collider = TestSweep[0].collider.gameObject;
-            Result.Distance = TestSweep[0].distance;
-            Result.Normal = TestSweep[0].normal;
-            Result.Point = TestSweep[0].point;
-              // check for overlap?
-            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius),
-                                             Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
-                                             ~(1 << LayerMask.NameToLayer("No Player Collision"))
-                                               , QueryTriggerInteraction.Ignore);
-            if (overlap.Length != 0)
+            // filter out collider already found result by sweep.
+            var filteredOverlaps = new List<GameObject>();
+            foreach (var col in overlaps)
             {
-                for (int x=0;x<overlap.Length;++x){
-                    if (overlap[x].gameObject == Result.Collider) continue;
-                    var wheelCollider = S.Spring.Anchor.GetComponentInChildren<MeshCollider>();
-                    // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
-                    // no penetration will be found........
-                    float Pene = 0;
-                    Vector3 PeneDir = Vector3.zero;
-                    if (Physics.ComputePenetration(wheelCollider,
-                                                WheelPosition,
-                                                wheelCollider.transform.rotation,
-                                                overlap[x],
-                                                overlap[x].transform.position,
-                                                overlap[x].transform.rotation,
-                                                out PeneDir, out Pene))
-                    //    BoxCollider bc = gameObject.AddComponent<BoxCollider>();
-                    //    bc.center = transform.InverseTransformPoint(WheelPosition);
-                    //    bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
-                    //    Debug.DrawLine(WheelPosition, WheelPosition + transform.up * 2);
-                    //    if (Physics.ComputePenetration(bc, WheelPosition, transform.rotation,
-                    //                                   overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
-                    //                                   out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                bool existInSweep = false;
+                foreach (var col2 in TestSweep)
+                {
+                    if (col == col2.collider)
                     {
-                        if (Pene > Result.PenetrationCorrectionDistance) {
-                            Result.Hit = true;
-                            Result.PenetrationCorrectionDirection = PeneDir;
-                            Result.PenetrationCorrectionDistance = Pene;
-                            Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
-                            Result.Collider = overlap[x].gameObject;
-                            Result.Distance = S.Spring.CurrentLength;
-                            Result.Point = WheelPosition - (S.Wheel.Radius*Result.PenetrationCorrectionDirection) - (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance);
-                            Debug.Log("overlap and penetration   " + Result.Normal + "  " + Result.PenetrationCorrectionDistance);
-                        }
-                    }
-                    else
-                    {
-
-                        Debug.Log("overlap but no penetration?" + "    " + overlap.Length);
+                        existInSweep = true;
+                        break;
                     }
                 }
+                if (!existInSweep)
+                    filteredOverlaps.Add(col.gameObject);
             }
 
-
-            var diff = Result.Distance - MinDistance;
-            if (diff < 0)
+            for (int x = 0; x < filteredOverlaps.Count; ++x)
             {
-                Result.Distance = 0;
-                var wheelCollider = S.Spring.Anchor.GetComponentInChildren<MeshCollider>();
+                // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
+                // no penetration will be found........
+                float thisPene = 0;
+                Vector3 thisPeneDir = Vector3.zero;
+                if (Physics.ComputePenetration(wheelCollider,
+                                               WheelPosition,
+                                               wheelCollider.transform.rotation,
+                                               filteredOverlaps[x].GetComponent<Collider>(),
+                                               filteredOverlaps[x].transform.position,
+                                               filteredOverlaps[x].transform.rotation,
+                                               out thisPeneDir, out thisPene))
+                {
+                    ContactInfo contact = new ContactInfo();
+                    contact.Hit = true;
+                    contact.ColliderA = RB.gameObject;
+                    contact.ColliderB = filteredOverlaps[x];
+                    contact.ContactDistance = S.Spring.CurrentLength;
+                    contact.ContactPoint = WheelPosition - (S.Wheel.Radius * thisPeneDir) - (thisPene * thisPeneDir);
+                    contact.ContactGround = (contact.ColliderB && contact.ColliderB.GetComponent<Ground>()) ? contact.ColliderB.GetComponent<Ground>().GetGroundInfos(contact.ContactPoint) : new Ground.GroundInfos();
+                    contact.ContactNormal = (thisPeneDir.normalized);
+                    contact.ContactToWorld = ComputeContactBasis(contact);
+                    contact.ContactVelocity = contact.ContactToWorld.transpose * S.Wheel.Velocity;
+                    contact.DesiredDeltaVelocity = ComputeDesiredVelocity(contact);
+                    contact.RelativeContactPosition = contact.ContactPoint - RB.position;
+                    contact.PenetrationDirection = thisPeneDir;
+                    contact.PenetrationDistance = thisPene;
+
+                    wheelContactsResolver.contacts.Add(contact);
+                    S.Wheel.HitInfo.Add(contact);
+                }
+            }
+        } // overlaps
+
+        // only take the first hit of the sweep for now
+        if (TestSweep.Length != 0)
+        {
+            var thisContact = TestSweep[0];
+            ContactInfo contact = new ContactInfo();
+
+            contact.ContactDistance = thisContact.distance;
+
+            var distDiff = thisContact.distance - S.Spring.MinLength;
+            if (distDiff < 0)
+            {
+                contact.ContactDistance = S.Spring.MinLength;
                 if (Physics.ComputePenetration(wheelCollider,
                                               SpringAnchor + SpringDirection * S.Spring.MinLength,
                                               wheelCollider.transform.rotation,
-                                              TestSweep[0].collider,
-                                              Result.Collider.transform.position,
-                                              Result.Collider.transform.rotation,
-                                              out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
+                                              thisContact.collider,
+                                              thisContact.transform.position,
+                                              thisContact.transform.rotation,
+                                              out contact.PenetrationDirection, out contact.PenetrationDistance))
                 {
-                    Debug.Log("penetration found" + Result.Normal + "   " + Result.PenetrationCorrectionDistance);
+                    Debug.Log("penetration found" + contact.PenetrationDirection + "   " + contact.PenetrationDistance);
                 }
                 else
                 {
                     Debug.Log("dist < min but no penetration?");
                 }
             }
-            else
-            {
-                Debug.Log("Hit");
-            }
-        }
-        else
-        {
-            // check for overlap?
-            var overlap = Physics.OverlapBox(WheelPosition, new Vector3(S.Wheel.Width, S.Wheel.Radius, S.Wheel.Radius),
-                                             Quaternion.LookRotation(S.Wheel.Direction, -SpringDirection),
-                                             ~(1 << LayerMask.NameToLayer("No Player Collision"))
-                                               , QueryTriggerInteraction.Ignore);
-            if (overlap.Length != 0)
-            {
-                Result.Distance = 0;
-                var wheelCollider = S.Spring.Anchor.GetComponentInChildren<MeshCollider>();
-                // IMPORTANT : Physx treat mesh collider as hollow surface : if center of overlap is under, triangle will be culled and
-                // no penetration will be found........
-                if (Physics.ComputePenetration(wheelCollider,
-                                              WheelPosition,
-                                              wheelCollider.transform.rotation,
-                                              overlap[0],
-                                              overlap[0].transform.position,
-                                              overlap[0].transform.rotation,
-                                              out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
-                //    BoxCollider bc = gameObject.AddComponent<BoxCollider>();
-                //    bc.center = transform.InverseTransformPoint(WheelPosition);
-                //    bc.size = new Vector3(S.Wheel.Width * 2, S.Wheel.Radius * 2, S.Wheel.Radius * 2);
-                //    Debug.DrawLine(WheelPosition, WheelPosition + transform.up * 2);
-                //    if (Physics.ComputePenetration(bc, WheelPosition, transform.rotation,
-                //                                   overlap[0], overlap[0].transform.position, overlap[0].transform.rotation,
-                //                                   out Result.PenetrationCorrectionDirection, out Result.PenetrationCorrectionDistance))
-                {
-                    Result.Hit = true;
-                    Result.Normal = (Result.PenetrationCorrectionDirection * Result.PenetrationCorrectionDistance).normalized;
-                    Debug.Log("overlap and penetration   " + Result.Normal + "  " + Result.PenetrationCorrectionDistance);
-                    Result.PenetrationCorrectionDistance = Result.PenetrationCorrectionDistance;
-                }
-                else
-                {
 
-                    Debug.Log("overlap but no penetration?" + "    " + overlap.Length);
-                }
-                //GameObject.DestroyImmediate(bc);
+            contact.Hit = true;
+            contact.ColliderA = RB.gameObject;
+            contact.ColliderB = thisContact.collider.gameObject;
+            contact.ContactPoint = thisContact.point;
+            contact.ContactGround = (contact.ColliderB && contact.ColliderB.GetComponent<Ground>()) ? contact.ColliderB.GetComponent<Ground>().GetGroundInfos(contact.ContactPoint) : new Ground.GroundInfos();
+            contact.ContactNormal = thisContact.normal;
+            contact.ContactToWorld = ComputeContactBasis(contact);
+            contact.ContactVelocity = contact.ContactToWorld.transpose * S.Wheel.Velocity;
+            contact.DesiredDeltaVelocity = ComputeDesiredVelocity(contact);
+            contact.RelativeContactPosition = contact.ContactPoint - RB.position;
 
-            }
-        }
-
-        //DrawDebugWheels(Color.yellow);
-
-        if (Result.Collider && Result.Collider.GetComponent<Ground>())
-        {
-            Result.GroundI = Result.Collider.GetComponent<Ground>().GetGroundInfos(Result.Point);
-        }
-        else
-        {
-            Result.GroundI = new Ground.GroundInfos();
-        }
-
-        S.Wheel.Velocity = GetWheelVelocity(GetEnd(S));
-        S.Wheel.HitInfo = Result;
-
-        ComputeContactBasis(ref S.Wheel);
-        
-        Vector3 contactVelocity = S.Wheel.HitInfo.ContactToWorld.transpose * S.Wheel.Velocity;
-        Vector3 accVelocity = LastVelocity;
-        accVelocity = S.Wheel.HitInfo.ContactToWorld.transpose * accVelocity;
-        accVelocity.x = 0;
-        contactVelocity += accVelocity;
-
-        S.Wheel.HitInfo.LocalVelocity = S.Wheel.Velocity;
-        S.Wheel.HitInfo.LocalVelocity = contactVelocity;
-
-        if (S.Wheel.HitInfo.Point == Vector3.zero) {
-            S.Wheel.HitInfo.Point = S.Spring.Anchor.transform.position;
-        }
-
-        S.Wheel.HitInfo.RelativeContactPosition = S.Wheel.HitInfo.Point - RB.position;
-
-        ComputeDesiredVelocity(ref S.Wheel);
+            wheelContactsResolver.contacts.Add(contact);
+            S.Wheel.HitInfo.Add(contact);
+        } // testSweep
     }
 
-    float ScalarProduct(Vector3 a, Vector3 b) {
+    static float ScalarProduct(Vector3 a, Vector3 b)
+    {
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    void ComputeDesiredVelocity(ref Wheel W) {
-       var velocityLimit = 0.25f;
+    static float ComputeDesiredVelocity(ContactInfo contact)
+    {
+        var velocityLimit = 0.25f;
 
         // Calculate the acceleration induced velocity accumulated this frame
         float velocityFromAcc = 0;
-	    velocityFromAcc += ScalarProduct(LastVelocity, W.HitInfo.Normal) * Time.fixedDeltaTime;
-    
+        velocityFromAcc += ScalarProduct(LastVelocity, contact.ContactNormal) * Time.fixedDeltaTime;
+
         float thisRestitution = Bounciness;
-        if (Mathf.Abs(W.HitInfo.LocalVelocity.x) < velocityLimit)
+        if (Mathf.Abs(contact.ContactVelocity.x) < velocityLimit)
         {
             thisRestitution = 0.0f;
         }
-
         // Combine the bounce velocity with the removed
         // acceleration velocity.
-        W.HitInfo.DesiredDeltaVelocity = -W.HitInfo.LocalVelocity.x - thisRestitution * (W.HitInfo.LocalVelocity.x - velocityFromAcc);
+        return -contact.ContactVelocity.x - thisRestitution * (contact.ContactVelocity.x - velocityFromAcc);
     }
 
-    void ComputeContactBasis(ref Wheel w)
+    Matrix4x4 ComputeContactBasis(ContactInfo contact)
     {
-        var Normal = w.HitInfo.Normal;
+        var Normal = contact.ContactNormal;
         var Tangent = Vector3.zero;
         var BiTangent = Vector3.zero;
 
@@ -689,15 +814,15 @@ public class CarController : MonoBehaviour, IControllable
                                      Normal.x * Tangent.y);
         }
 
-        w.HitInfo.ContactToWorld = new Matrix4x4(   new Vector4(Normal.x,    Normal.y,    Normal.z),
-                                                    new Vector4(Tangent.x,   Tangent.y,   Tangent.z),
+        return new Matrix4x4(new Vector4(Normal.x, Normal.y, Normal.z),
+                                                    new Vector4(Tangent.x, Tangent.y, Tangent.z),
                                                     new Vector4(BiTangent.x, BiTangent.y, BiTangent.z),
                                                     Vector4.zero);
     }
 
     [Range(0f, 1f)]
-    public float Bounciness = 0;
-    Vector3 ComputeSuspensionForce(Suspension S, WheelHitInfo HitInfo)
+    public static float Bounciness = 0;
+    Vector3 ComputeSuspensionForce(Suspension S, ContactInfo HitInfo)
     {
         var SpringAnchor = S.Spring.Anchor.transform.position;
         var SpringDirection = -transform.up;
@@ -723,7 +848,7 @@ public class CarController : MonoBehaviour, IControllable
             var StepForce = Vector3.zero;
 
             // Compute what is the current distance to hit point now
-            var StepDistance = HitInfo.Distance + HitInfo.GroundI.DepthPerturbation.y - TraveledDistance;
+            var StepDistance = HitInfo.ContactDistance + HitInfo.ContactGround.DepthPerturbation.y - TraveledDistance;
             if (!SuspensionLock)
                 S.Spring.CurrentLength = Mathf.Clamp(StepDistance, S.Spring.MinLength, S.Spring.MaxLength);
 
@@ -752,7 +877,7 @@ public class CarController : MonoBehaviour, IControllable
         return ValidationValue.Item1;
     }
 
-    Vector3 LastVelocity = Vector3.zero;
+    static Vector3 LastVelocity = Vector3.zero;
     float ComputeWheelLoad(bool front)
     {
         //for now lets split by 2 in front and rear
@@ -792,24 +917,24 @@ public class CarController : MonoBehaviour, IControllable
         return front_left;
     }
 
-    Vector3 ComputeWheelForce(Wheel W, WheelHitInfo HitInfo)
+    Vector3 ComputeWheelForce(Wheel W, ContactInfo HitInfo)
     {
         var WheelVelocity = W.Velocity;
         // Compute according to the ground normal where the forward direction would be
         // it means the ground normal act as if it was the up vector of the car.
 
         // NOTE toffa : we forst do everything as if we were touching the ground from above at 90 angle.
-        var WheelForward = Quaternion.FromToRotation(transform.up, HitInfo.Normal) * W.Direction;
-        var ForceDirection = Quaternion.FromToRotation(transform.up, HitInfo.Normal) * W.Direction;
+        var WheelForward = Quaternion.FromToRotation(transform.up, HitInfo.ContactNormal) * W.Direction;
+        var ForceDirection = Quaternion.FromToRotation(transform.up, HitInfo.ContactNormal) * W.Direction;
         // note toffa : trying to apply contact point information
         // for now acting as if we only have one
         //var ForceDirection = Quaternion.AngleAxis(
-        //    Vector3.SignedAngle(transform.up, HitInfo.Normal, W.Renderer.transform.right),
+        //    Vector3.SignedAngle(transform.up, HitInfo.ContactNormal, W.Renderer.transform.right),
         //    W.Renderer.transform.right) * WheelForward;
 
-        //var ForceDirection = Vector3.ProjectOnPlane(WheelForward, HitInfo.Normal);
-        //var ForceDirection = Vector3.ProjectOnPlane(WheelForward, HitInfo.Normal);
-        //var ForceDirection = -Vector3.Cross(HitInfo.Normal, Vector3.Cross(HitInfo.Normal, WheelForward));
+        //var ForceDirection = Vector3.ProjectOnPlane(WheelForward, HitInfo.ContactNormal);
+        //var ForceDirection = Vector3.ProjectOnPlane(WheelForward, HitInfo.ContactNormal);
+        //var ForceDirection = -Vector3.Cross(HitInfo.ContactNormal, Vector3.Cross(HitInfo.ContactNormal, WheelForward));
         Debug.DrawLine(W.Renderer.transform.position, W.Renderer.transform.position + ForceDirection);
 
         var WheelVelocityX = Vector3.Project(WheelVelocity, WheelForward);
@@ -837,13 +962,13 @@ public class CarController : MonoBehaviour, IControllable
         var deltaForceX = WheelVelocityX - ForceX;
         if (deltaForceX.magnitude - RollingResistance < 0)
             ForceX = Vector3.zero;
-        else 
+        else
             ForceX -= WheelVelocityX.normalized * RollingResistance;
         Force += ForceX;
-        // var T = -WheelVelocityX * HitInfo.GroundI.Friction.x;
-        // T -= WheelVelocityY * HitInfo.GroundI.Friction.y;
+        // var T = -WheelVelocityX * HitInfo.ContactGround.Friction.x;
+        // T -= WheelVelocityY * HitInfo.ContactGround.Friction.y;
         // T += MotorVelocity;
-        // T *= Mathf.Pow(Mathf.Clamp01(Vector3.Dot(HitInfo.Normal, Vector3.up)), 3);
+        // T *= Mathf.Pow(Mathf.Clamp01(Vector3.Dot(HitInfo.ContactNormal, Vector3.up)), 3);
 
         var ValidationValue = Utils.Math.ValidateForce(Force);
         if (!ValidationValue.Item2)
@@ -865,51 +990,10 @@ public class CarController : MonoBehaviour, IControllable
 
     public void AddForceAtPos(Vector3 force, Vector3 position, bool useMass = false)
     {
-        AddForce (force                                             , useMass);
+        AddForce(force, useMass);
         AddTorque(Vector3.Cross((position - RB.centerOfMass), force), useMass);
     }
 
-    void ApplyWheelDepen(Wheel w)
-    {
-        if (w.HitInfo.PenetrationCorrectionDistance > 0)
-        {
-            // we are hitting the ground
-            // apply at COM the depenetration velocity : depen force do 0 work
-            var depenForce = w.HitInfo.PenetrationCorrectionDistance * w.HitInfo.PenetrationCorrectionDirection;
-            var depenForceClamped = (depenForce.magnitude > Physics.defaultMaxDepenetrationVelocity ? depenForce.normalized * Physics.defaultMaxDepenetrationVelocity : depenForce);
-            CurrentDepenAcc.x = Mathf.Sign(depenForceClamped.x) != Mathf.Sign(CurrentDepenAcc.x) ?
-                CurrentDepenAcc.x + depenForceClamped.x :
-                Mathf.Max(depenForceClamped.x, CurrentDepenAcc.x);
-            CurrentDepenAcc.y = Mathf.Sign(depenForceClamped.y) != Mathf.Sign(CurrentDepenAcc.y) ?
-                                           CurrentDepenAcc.y + depenForceClamped.y :
-                                           Mathf.Max(depenForceClamped.y, CurrentDepenAcc.y);
-            CurrentDepenAcc.z = Mathf.Sign(depenForceClamped.z) != Mathf.Sign(CurrentDepenAcc.z) ?
-                                           CurrentDepenAcc.z + depenForceClamped.z :
-                                           Mathf.Max(depenForceClamped.z, CurrentDepenAcc.z);
-        }
-    }
-
-    void ApplyWheelConstraints(Wheel w)
-    {
-        var wheelPosition = w.Renderer.transform.position;
-        var currentAngVelocity = w.Velocity - CurrentRBVelocity;
-        var currentVelocity = CurrentRBVelocity;
-
-        if (w.HitInfo.Hit)
-        {
-            var N = w.HitInfo.Normal;
-            Bounciness = 0;
-            var V = -(1 + Bounciness) * Vector3.Dot(currentVelocity, N);
-            var R = (wheelPosition - RB.worldCenterOfMass);
-            var AV = Vector3.Cross(Vector3.Cross(R, N), R);
-            var ang = Vector3.Dot(AV, N);
-
-            var impulse = N * (V / ang);
-
-            NextRBAngVelocity += Vel2AngularVel(impulse, RB.worldCenterOfMass, wheelPosition);
-            NextRBVelocity += impulse;
-        }
-    }
 
     Vector3 AngularVel2Vel(Vector3 angVel, Vector3 rotOrigin, Vector3 pt)
     {
@@ -927,19 +1011,6 @@ public class CarController : MonoBehaviour, IControllable
         return M.transpose;
     }
 
-    void UpdateContactPoints(Vector3 velocityChange, Vector3 angularChange) {
-            // update other contacts that could be impacted by the change
-            for (int j = 0; j < suspensions.Count; ++j)
-            {
-                if (suspensions[j].Wheel.HitInfo.Hit)
-                {
-                    ref var body_b = ref suspensions[j].Wheel.HitInfo;
-                    var deltaPos = velocityChange + Vector3.Cross(angularChange, body_b.RelativeContactPosition);
-                    var new_pene = body_b.PenetrationCorrectionDistance - ScalarProduct(deltaPos, body_b.Normal);
-                    body_b.PenetrationCorrectionDistance = new_pene;
-                }
-            }
-    }
 
     // Inertia Tensor Matrix can be decomposed in M = transpose(R)*D*R
     // M is the original matrix
@@ -954,7 +1025,8 @@ public class CarController : MonoBehaviour, IControllable
         return R * S * R.transpose; // R is orthogonal, so R.transpose == R.inverse
     }
 
-    Quaternion QuatAddVec(Quaternion Q, Vector3 V) {
+    static Quaternion QuatAddVec(Quaternion Q, Vector3 V)
+    {
         Quaternion q = new Quaternion(V.x, V.y, V.z, 0);
         q *= Q;
 
@@ -967,178 +1039,46 @@ public class CarController : MonoBehaviour, IControllable
     }
 
 
-    void ApplyDepen(ref WheelHitInfo body, out Vector3 linearChange, out Vector3 angularChange) {
-        // Get current inertia ob the objects aat the contact point
-        var InverseInertiaTensorWorld = GetInverseInertiaTensorWorld();
-        
-        Vector3 angularInertiaWorld = Vector3.Cross(body.RelativeContactPosition, body.Normal);
-        angularInertiaWorld = InverseInertiaTensorWorld * angularInertiaWorld;
-        angularInertiaWorld = Vector3.Cross(angularInertiaWorld, body.RelativeContactPosition);
-        var angularInertia = ScalarProduct(angularInertiaWorld, body.Normal);
 
-        var linearInertia = 1/RB.mass;
 
-        var totalInertia = linearInertia + angularInertia;
-
-        // The linear and angular movements required are in proportion to
-        // the two inverse inertias.
-        var angularMove = body.PenetrationCorrectionDistance * (angularInertia / totalInertia);
-        var linearMove =  body.PenetrationCorrectionDistance * (linearInertia / totalInertia);
-
-        // To avoid angular projections that are too great (when mass is large
-        // but inertia tensor is small) limit the angular move.
-        Vector3 projection = body.RelativeContactPosition;
-        projection += body.Normal * ScalarProduct(-body.RelativeContactPosition, body.Normal);
-
-        // Use the small angle approximation for the sine of the angle (i.e.
-        // the magnitude would be sine(angularLimit) * projection.magnitude
-        // but we approximate sine(angularLimit) to angularLimit).
-        var angularLimit = 0.2f;
-        var maxMagnitude = angularLimit * projection.magnitude;
-
-        if (angularMove < -maxMagnitude)
-        {
-            float totalMove = angularMove + linearMove;
-            angularMove = -maxMagnitude;
-            linearMove = totalMove - angularMove;
-        }
-        else if (angularMove > maxMagnitude)
-        {
-            float totalMove = angularMove + linearMove;
-            angularMove = maxMagnitude;
-            linearMove = totalMove - angularMove;
-        }
-
-        // We have the linear amount of movement required by turning
-        // the rigid body (in angularMove). We now need to
-        // calculate the desired rotation to achieve that.
-        angularChange = Vector3.zero;
-        if (angularMove != 0)
-        {
-            // Work out the direction we'd like to rotate in.
-            Vector3 targetAngularDirection = Vector3.Cross(body.RelativeContactPosition, body.Normal);  
-            // Work out the direction we'd need to rotate to achieve that
-            angularChange = InverseInertiaTensorWorld * targetAngularDirection * (angularMove / angularInertia);
-        }
-
-        // Velocity change is easier - it is just the linear movement
-        // along the contact normal.
-        linearChange = body.Normal * linearMove;
-
-        // Now we can start to apply the values we've calculated.
-        // Apply the linear movement
-        RB.position += linearChange;
-        // And the change in orientation
-        RB.rotation = QuatAddVec(RB.rotation, angularChange);
-    }
-
-    void DepenWheels(int maxIter)
+    static Matrix4x4 GetInverseInertiaTensor(Rigidbody body)
     {
-        // See at least once each contact point to avoid missing collisions
-        for (int i = 0; i < suspensions.Count; ++i)
-        {
-            var body_a = suspensions[i].Wheel.HitInfo;
-            if (!body_a.Hit) continue;
-
-            Vector3 linearChange = Vector3.zero;
-            Vector3 angularChange = Vector3.zero;
-            ApplyDepen(ref body_a, out linearChange, out angularChange);
-            //UpdateContactPoints(linearChange, angularChange);
-        }
-        // Now do the iterative algo trying to take care of biggest pene first if any still there
-        for (int i = 0; i < maxIter; ++i)
-        {
-            // sort according to biggest penetration
-            suspensions.Sort((a, b) => (a.Wheel.HitInfo.PenetrationCorrectionDistance > b.Wheel.HitInfo.PenetrationCorrectionDistance) ? -1 : 1);
-            // always look at first object
-            var body_a = suspensions[0].Wheel.HitInfo;
-            if (!body_a.Hit) break;
-
-            Vector3 linearChange = Vector3.zero;
-            Vector3 angularChange = Vector3.zero;
-            ApplyDepen(ref body_a, out linearChange, out angularChange);
-            UpdateContactPoints(linearChange, angularChange );
-        }
-    }
-
-    Matrix4x4 GetInverseInertiaTensor() {
-        var M = CalculateInertiaTensorMatrix(RB.inertiaTensor, RB.inertiaTensorRotation);
+        var M = CalculateInertiaTensorMatrix(body.inertiaTensor, body.inertiaTensorRotation);
         return M.inverse;
     }
 
-    Matrix4x4 GetInverseInertiaTensorWorld() {
-        var InertiaTensor = CalculateInertiaTensorMatrix(RB.inertiaTensor, RB.inertiaTensorRotation);
-        Matrix4x4 rotationMatrix = Matrix4x4.Rotate(RB.transform.rotation);
+    static Matrix4x4 GetInverseInertiaTensorWorld(Rigidbody body)
+    {
+        var InertiaTensor = CalculateInertiaTensorMatrix(body.inertiaTensor, body.inertiaTensorRotation);
+        Matrix4x4 rotationMatrix = Matrix4x4.Rotate(body.transform.rotation);
         Matrix4x4 InertiaTensorWorld = rotationMatrix * InertiaTensor * rotationMatrix.transpose;
         return InertiaTensorWorld.inverse;
     }
 
-    void ApplyCollisions(int maxIter)
+
+    Vector3 CalculateFrictionlessImpulse(ContactInfo W, Matrix4x4 inverseInertiaTensor)
     {
-        var CurrentDepenForceVel = Vector3.zero;
-        var CurrentDepenForceAngVel = Vector3.zero;
-        for (int i = 0; i < maxIter; ++i)
-        {
-            // sort according to biggest update to do by delta velocity
-            suspensions.Sort((a, b) => ( a.Wheel.HitInfo.DesiredDeltaVelocity > b.Wheel.HitInfo.DesiredDeltaVelocity) ? -1 : 1);
+        Vector3 impulseContact;
 
-            ref var body_a = ref suspensions[0].Wheel.HitInfo;
+        // Build a vector that shows the change in velocity in
+        // world space for a unit impulse in the direction of the contact
+        // normal.
+        Vector3 deltaVelWorld = Vector3.Cross(W.RelativeContactPosition, W.ContactNormal);
+        deltaVelWorld = inverseInertiaTensor * deltaVelWorld;
+        deltaVelWorld = Vector3.Cross(deltaVelWorld, W.RelativeContactPosition);
 
-            if (body_a.Hit && body_a.Distance < suspensions[0].Spring.MinLength)
-            {
-                // compute forces to depenetrate
-                Vector3 Impulse = CalculateFrictionlessImpulse(body_a, GetInverseInertiaTensor());
-                Impulse = body_a.ContactToWorld * Impulse;
+        // Work out the change in velocity in contact coordinates.
+        float deltaVelocity = ScalarProduct(deltaVelWorld, W.ContactNormal);
 
-                 // Split in the impulse into linear and rotational components
-                Vector3 ImpulsiveTorque = Vector3.Cross(body_a.RelativeContactPosition, Impulse);
-                Vector3 rotationChange = GetInverseInertiaTensor() * ImpulsiveTorque;
-                var velocityChange = Impulse * (1/RB.mass);
+        // Add the linear component of velocity change
+        deltaVelocity += 1 / RB.mass;
 
-                // Apply the changes
-                RB.velocity += velocityChange;
-                RB.angularVelocity += rotationChange;
-
-                // update other contacts that could be impacted by the change
-                for (int j = 0; j < suspensions.Count; ++j)
-                {
-                    if (suspensions[j].Wheel.HitInfo.Hit)
-                    {
-                        ref var body_b = ref suspensions[j].Wheel.HitInfo;
-                        var deltaVel = velocityChange + Vector3.Cross(rotationChange, body_b.RelativeContactPosition);
-
-                        Vector3 v = body_b.ContactToWorld.transpose * (deltaVel);
-                        body_b.LocalVelocity += v;
-                        ComputeDesiredVelocity(ref suspensions[j].Wheel);
-                    }
-                }
-            }
-        }
+        // Calculate the required size of the impulse
+        impulseContact.x = W.DesiredDeltaVelocity / deltaVelocity;
+        impulseContact.y = 0;
+        impulseContact.z = 0;
+        return impulseContact;
     }
-
-Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTensor)
-{
-    Vector3 impulseContact;
-
-    // Build a vector that shows the change in velocity in
-    // world space for a unit impulse in the direction of the contact
-    // normal.
-    Vector3 deltaVelWorld = Vector3.Cross(W.RelativeContactPosition, W.Normal);
-    deltaVelWorld = inverseInertiaTensor * deltaVelWorld;
-    deltaVelWorld = Vector3.Cross(deltaVelWorld, W.RelativeContactPosition);
-
-    // Work out the change in velocity in contact coordinates.
-    float deltaVelocity = ScalarProduct(deltaVelWorld, W.Normal);
-
-    // Add the linear component of velocity change
-    deltaVelocity += 1 / RB.mass;
-
-    // Calculate the required size of the impulse
-    impulseContact.x = W.DesiredDeltaVelocity / deltaVelocity;
-    impulseContact.y = 0;
-    impulseContact.z = 0;
-    return impulseContact;
-}
 
     Vector3 CurrentRBVelocity = Vector3.zero;
     Vector3 NextRBVelocity = Vector3.zero;
@@ -1148,21 +1088,24 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
     void ApplyAllWheelConstraints()
     {
         Debug.Log("ApplyAllWheelConstraints START : vel : " + RB.velocity + "   angVel : " + RB.angularVelocity + "   pos : " + RB.position + "   rot: " + RB.rotation);
-        
+
         // first compute everything that we might need to resolve collisions
+        wheelContactsResolver.contacts.Clear();
         foreach (var s in suspensions)
         {
+            if (s.Wheel.HitInfo == null)
+                s.Wheel.HitInfo = new List<ContactInfo>();
+            else
+                s.Wheel.HitInfo.Clear();
+
             GetWheelHitInfo(s);
         }
-        // apply position and rotation changes to avoid penetration
-        // this will not do work from forces!
-        DepenWheels(4);
-        Debug.Log("ApplyAllWheelConstraints DepenWheels : vel : " + RB.velocity + "   angVel : " + RB.angularVelocity + "   pos : " + RB.position + "   rot: " + RB.rotation);
-        // really compute an answer to the collisions : remove velocity, add torque, according to contact point
-        ApplyCollisions(4);
+
+        wheelContactsResolver.SolvePenetrations(4);
+        wheelContactsResolver.SolveCollisions(4);
         //Debug.Log("ApplyAllWheelConstraints ApplyCollisions : vel : " + RB.velocity + "   angVel : " + RB.angularVelocity + "   pos : " + RB.position + "   rot: " + RB.rotation);
         // after everything is sorted out about depenetration and hard hits, we apply suspension force
-        for(int i=0; i < suspensions.Count; ++i)
+        for (int i = 0; i < suspensions.Count; ++i)
         {
             Debug.Log("Resoleve Suspension : " + i);
             ResolveSuspension(suspensions[i]);
@@ -1171,29 +1114,29 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         Debug.Log("CurrentDepenAcc   " + CurrentDepenAcc + "   LastVel   " + CurrentRBVelocity + "  " + CurrentRBAngVelocity + "    NewVel   " + NextRBVelocity + "   " + NextRBAngVelocity + "    Final    " + RB.velocity + "    " + RB.angularVelocity);
     }
 
-    void ApplyConstraints(Suspension S, WheelHitInfo HitInfo)
+    void ApplyConstraints(Suspension S, ContactInfo HitInfo)
     {
         ApplyAllWheelConstraints();
     }
 
-    void ApplyGroundForces(Suspension S, WheelHitInfo HitInfo)
+    void ApplyGroundForces(Suspension S, ContactInfo HitInfo)
     {
 
         // NOTE toffa : This is a test to apply physics to the ground object if a rigid body existst
         var SpringAnchor = S.Spring.Anchor.transform.position;
-        var Collider = HitInfo.Collider?.GetComponent<Rigidbody>();
+        var Collider = HitInfo.ColliderB?.GetComponent<Rigidbody>();
         if (Collider != null)
         {
             var VelocityGravity = Vector3.Project(GetWheelVelocity(SpringAnchor), Vector3.up);
             VelocityGravity.y += Physics.gravity.y;
             if (VelocityGravity.y < 0)
-                Collider.AddForceAtPosition(VelocityGravity * RB.mass, HitInfo.Point, ForceMode.Force);
+                Collider.AddForceAtPosition(VelocityGravity * RB.mass, HitInfo.ContactPoint, ForceMode.Force);
         }
 
         // NOTE toffa :
         // Add current ground velocity to the RB to be able to sit still on moving plateform for instance.
-        var RBVelProjected = Vector3.Project(RB.velocity, HitInfo.GroundI.Velocity);
-        var VelDiff = Vector3.Scale((HitInfo.GroundI.Velocity - RBVelProjected), new Vector3(1, 0, 1));
+        var RBVelProjected = Vector3.Project(RB.velocity, HitInfo.ContactGround.Velocity);
+        var VelDiff = Vector3.Scale((HitInfo.ContactGround.Velocity - RBVelProjected), new Vector3(1, 0, 1));
         var ValidationValue = Utils.Math.ValidateForce(VelDiff);
         if (!ValidationValue.Item2)
         {
@@ -1205,12 +1148,7 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
 
     void ResolveSuspension(Suspension S)
     {
-        //GetWheelHitInfo(S);
-        var HitInfo = S.Wheel.HitInfo;
-        Debug.Log(HitInfo);
-
-        S.Wheel.IsGrounded = HitInfo.Hit;
-
+        S.Wheel.IsGrounded = S.Wheel.HitInfo.Count != 0;
         var SpringAnchor = S.Spring.Anchor.transform.position;
         var SpringDirection = -transform.up;
 
@@ -1219,10 +1157,12 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
 
         if (S.Wheel.IsGrounded || IsAircraft)
         {
-            SetModeFromGround(HitInfo.GroundI.Type);
+            S.Wheel.HitInfo.Sort((a, b) => a.ContactDistance < b.ContactDistance ? 1 : -1);
+            var HitInfo = S.Wheel.HitInfo[0];
+            SetModeFromGround(HitInfo.ContactGround.Type);
 
-            //ApplyConstraints(S, HitInfo) 
-            if (HitInfo.Distance != 0f)
+            //ApplyConstraints(S, HitInfo)
+            if (HitInfo.ContactDistance != 0f)
             {
                 var F = ComputeSuspensionForce(S, HitInfo);
                 RB.AddForceAtPosition(F, GetEnd(S), ForceMode.VelocityChange);
@@ -1238,7 +1178,7 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
             }
             else
             {
-                if (HitInfo.GroundI.Type == Ground.EType.DESERT)
+                if (HitInfo.ContactGround.Type == Ground.EType.DESERT)
                     S.Wheel.Trails.GetComponent<ParticleSystem>().Play();
 
                 RB.AddForceAtPosition(WF, GetEnd(S), ForceMode.VelocityChange);
@@ -1257,7 +1197,7 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         NeedCheckMaterial = true;
         ResolveSuspension(A.Right);
         //Physics.SyncTransforms();
-        ResolveSuspension( A.Left);
+        ResolveSuspension(A.Left);
         //Physics.SyncTransforms();
     }
 
@@ -1535,24 +1475,26 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         }
 
         // Jump Start over when 4wheels touching ground
-        if ( IsInJumpStart )
+        if (IsInJumpStart)
         {
-            List<Axle> axles = new List<Axle>(){ FrontAxle, RearAxle};
-            foreach( Axle a in axles)
+            List<Axle> axles = new List<Axle>() { FrontAxle, RearAxle };
+            foreach (Axle a in axles)
             {
-                if ( a.Left.Wheel.IsGrounded && a.Right.Wheel.IsGrounded)
+                if (a.Left.Wheel.IsGrounded && a.Right.Wheel.IsGrounded)
                 {
                     Debug.Log("Still starting to jump");
                     return false; // early return
                 }
             }
             // no more wheels grounded
-            IsInJumpStart   = false;
-            IsInJump        = true;
+            IsInJumpStart = false;
+            IsInJump = true;
             return false;
-        } else if (IsInJump) { // In actual Jump airtime
-            List<Axle> axles = new List<Axle>(){ FrontAxle, RearAxle};
-            foreach( Axle a in axles)
+        }
+        else if (IsInJump)
+        { // In actual Jump airtime
+            List<Axle> axles = new List<Axle>() { FrontAxle, RearAxle };
+            foreach (Axle a in axles)
             {
                 if (a.Left.Wheel.IsGrounded || a.Right.Wheel.IsGrounded)
                 {
@@ -1563,8 +1505,8 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
             }
             return true;
         }
-        IsInJumpStart   = false;
-        IsInJump        = false;
+        IsInJumpStart = false;
+        IsInJump = false;
         return false;
     }
 
@@ -1681,6 +1623,7 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
         {
             base.Execute(machine);
 
+            Debug.Log("PlyerUpdatePhysics START : " + player.RB.velocity + "   " + player.RB.angularVelocity);
             // Ball Power UC : no physx simulation from car
             if (player.CurrentMode==CarController.CarMode.BALL)
             {
@@ -1690,9 +1633,9 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
 
             Debug.Log("PlyerUpdatePhysics START : " + player.RB.velocity + "   " + player.RB.angularVelocity );
             player.UpdateSprings();
-            Debug.Log("PlyerUpdatePhysics Post UpdatSprings : " + player.RB.velocity + "   " + player.RB.angularVelocity );
+            Debug.Log("PlyerUpdatePhysics Post UpdatSprings : " + player.RB.velocity + "   " + player.RB.angularVelocity);
             player.ApplyAllWheelConstraints();
-            Debug.Log("PlyerUpdatePhysics Post ApplyAllWheelConstraints : " + player.RB.velocity + "   " + player.RB.angularVelocity );
+            Debug.Log("PlyerUpdatePhysics Post ApplyAllWheelConstraints : " + player.RB.velocity + "   " + player.RB.angularVelocity);
         }
     }
 
@@ -1948,20 +1891,24 @@ Vector3 CalculateFrictionlessImpulse(WheelHitInfo W, Matrix4x4 inverseInertiaTen
                 } else if (Entry.Inputs["Power4"].Down) { // SpiderPower
                     pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
                     pc.setNextPower(4);
-                } else {
+                }
+                else
+                {
                     pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
                     pc.setNextPower(0);
                 }
                 modifierCalled = true;
-            } else if (modifierCalled && !Entry.Inputs["Modifier"].Down) {
+            }
+            else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
+            {
                 pc.hideIndicators();
                 pc.showUI(false);
-                
+
                 pc.tryTriggerPower();
                 modifierCalled = false;
             }
 
-            pc.applyPowerEffectInInputs(Entry,this);
+            pc.applyPowerEffectInInputs(Entry, this);
         }
 
 
