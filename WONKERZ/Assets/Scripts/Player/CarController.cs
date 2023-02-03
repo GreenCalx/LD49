@@ -1878,17 +1878,18 @@ public class CarController : MonoBehaviour, IControllable
             // modifier inputs
             if (Entry.Inputs["Modifier"].Down)
             {
+                Vector2 mouse_mod = new Vector2(Entry.Inputs["Power_MouseX"].AxisValue, Entry.Inputs["Power_MouseY"].AxisValue);
                 pc.showUI(true);
-                if (Entry.Inputs["Power1"].Down) { // BallPower
+                if (Entry.Inputs["Power1"].Down || (mouse_mod.x>0 )) { // BallPower
                     pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
                     pc.setNextPower(1);
-                } else if (Entry.Inputs["Power2"].Down) { // WaterPower
+                } else if (Entry.Inputs["Power2"].Down || (mouse_mod.y>0 )) { // WaterPower
                     pc.setNextPower(2);
                     pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
-                } else if (Entry.Inputs["Power3"].Down) { // PlanePower
+                } else if (Entry.Inputs["Power3"].Down|| (mouse_mod.y<0 )) { // PlanePower
                     pc.showIndicator(PowerController.PowerWheelPlacement.UP);
                     pc.setNextPower(3);
-                } else if (Entry.Inputs["Power4"].Down) { // SpiderPower
+                } else if (Entry.Inputs["Power4"].Down || (mouse_mod.x<0 )) { // SpiderPower
                     pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
                     pc.setNextPower(4);
                 }
