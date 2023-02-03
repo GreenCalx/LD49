@@ -39,6 +39,8 @@ public class PinBlockade : PIDController
     public float    life_lust_factor    = 25;
     public float    life_lust_duration  = 10f;
 
+    public float ballPowerForceMultiplier = 10f;
+
     public override PID GetController() 
     {
         return controller;
@@ -123,7 +125,14 @@ public class PinBlockade : PIDController
         if (freshOfCollision)
         {
             if (!iCol.gameObject.GetComponent<Ground>())
-            { 
+            {
+                BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
+                if (!!bpo)
+                {
+                    rb.AddForce(bpo.rb.velocity*ballPowerForceMultiplier, ForceMode.VelocityChange);
+                    rb.AddTorque(bpo.rb.velocity*ballPowerForceMultiplier);
+                    life_lust = false;
+                }
                 if (life_lust)
                 {
                     power *= life_lust_factor;

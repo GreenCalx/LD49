@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallPowerObject : MonoBehaviour
 {
-    private Rigidbody rb;
+    public Rigidbody rb;
     private Vector3 prevVel;
     private Vector3 prevAngVel;
     private Vector3 prevPos;
