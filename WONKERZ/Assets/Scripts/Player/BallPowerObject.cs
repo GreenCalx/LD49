@@ -29,4 +29,18 @@ public class BallPowerObject : MonoBehaviour
         rb.angularVelocity  = prevAngVel;
         transform.position  = prevPos + rb.velocity * Time.deltaTime;
     }
+
+    void OnCollisionStay(Collision iCol)
+    {
+        Ground gnd = iCol.collider.GetComponent<Ground>();
+        if (!!gnd)
+        {
+            if (gnd.GI.Type == Ground.EType.WATER)
+            {
+                PowerController PC = Access.Player().gameObject.GetComponent<PowerController>();
+                PC.setNextPower(0);
+                PC.tryTriggerPower();
+            }
+        }
+    }
 }
