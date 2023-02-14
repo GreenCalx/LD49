@@ -5,6 +5,9 @@ using System;
 
 public class TSTSaveStates : MonoBehaviour
 {
+    public  GameObject saveStateMarkerRef;
+    private GameObject saveStateMarkerInst;
+
     private Vector3 ss_pos = Vector3.zero;
     private Quaternion ss_rot = Quaternion.identity;
     private bool hasSS;
@@ -38,7 +41,16 @@ public class TSTSaveStates : MonoBehaviour
             ss_pos = Access.Player().gameObject.transform.position;
             ss_rot = Access.Player().gameObject.transform.rotation;
             hasSS = true;
-            Debug.Log("Savestate updated");
+
+            if (!!saveStateMarkerRef)
+            {
+
+                if (!!saveStateMarkerInst)
+                    Destroy(saveStateMarkerInst);
+                saveStateMarkerInst = Instantiate(saveStateMarkerRef);
+                saveStateMarkerInst.transform.position = ss_pos;
+                saveStateMarkerInst.transform.rotation = ss_rot;
+            }
         }
     }
 
@@ -82,6 +94,5 @@ public class TSTSaveStates : MonoBehaviour
         }
         Access.Player().gameObject.transform.position = ss_pos;
         Access.Player().gameObject.transform.rotation = ss_rot;
-        Debug.Log("Savestate loaded");
     }
 }
