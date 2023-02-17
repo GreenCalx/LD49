@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1188177121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1188177122}
+  m_Layer: 0
+  m_Name: CP_SPAWN
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1188177122
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1188177121}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.879318, y: 3.7924805, z: -1.6367301}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6788487132516729715}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1805357264
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,6 +433,7 @@ GameObject:
   - component: {fileID: 6788487130726195119}
   - component: {fileID: 6788487130726195118}
   - component: {fileID: 7273664139740023045}
+  - component: {fileID: 1356599418}
   m_Layer: 0
   m_Name: StationEntry
   m_TagString: Untagged
@@ -435,8 +466,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8.31958, y: 13.009888, z: 7.29895}
-  m_Center: {x: 0.030883789, y: 0.46722412, z: 0.06489563}
+  m_Size: {x: 10.61557, y: 17.239632, z: 20.355007}
+  m_Center: {x: -1.1171113, y: 2.582096, z: -1.0760355}
 --- !u!114 &7273664139740023045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,6 +482,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 921531826}
   nutConversionInterval: 1
+  bypassNutsCost: 0
+--- !u!114 &1356599418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6788487130726195116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea6f7b32091bf540b8d55ac670a6185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextPoint: {fileID: 0}
+  prevPoint: {fileID: 0}
+  CamDescEnd:
+    position: {x: 0, y: 0, z: 0}
+    mode: 0
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  CamDescStart:
+    position: {x: 0, y: 0, z: 0}
+    mode: 0
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  respawn_location: {fileID: 1188177122}
+  checkpoint_name: floor 1
+  collectMod: 0
+  Cam: {fileID: 0}
+  CameraAnimationLength: 0
+  animator: {fileID: 0}
+  particles_blend: {fileID: 0}
+  particles_add: {fileID: 0}
+  cpm: {fileID: 0}
+  activation_pff: {fileID: 0}
+  base_pff: {fileID: 0}
+  MCP: {fileID: 0}
 --- !u!1 &6788487132516729712
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,6 +551,7 @@ Transform:
   - {fileID: 7166658865818817107}
   - {fileID: 1805357265}
   - {fileID: 1972000421}
+  - {fileID: 1188177122}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

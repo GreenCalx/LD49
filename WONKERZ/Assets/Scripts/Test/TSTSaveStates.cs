@@ -16,6 +16,9 @@ public class TSTSaveStates : MonoBehaviour
     public KeyCode load;
     public KeyCode save;
 
+    private int nPanelUsed;
+    private int nPanelRespawn;
+
     [Serializable]
     public struct ESS
     {
@@ -28,6 +31,8 @@ public class TSTSaveStates : MonoBehaviour
     void Start()
     {
         hasSS = false;
+        nPanelUsed      = 0;
+        nPanelRespawn   = 0;
     }
 
     // Update is called once per frame
@@ -36,15 +41,16 @@ public class TSTSaveStates : MonoBehaviour
         if (Input.GetKeyDown(load) || pollExtraSaveStates()) // load
         {
             loadState();
+            
         } else if (Input.GetKeyDown(save))
         {
             ss_pos = Access.Player().gameObject.transform.position;
             ss_rot = Access.Player().gameObject.transform.rotation;
             hasSS = true;
-
+            nPanelUsed+=1;
+            Access.UITurboAndLifePool().updatePanelUsed(nPanelUsed);
             if (!!saveStateMarkerRef)
             {
-
                 if (!!saveStateMarkerInst)
                     Destroy(saveStateMarkerInst);
                 saveStateMarkerInst = Instantiate(saveStateMarkerRef);
@@ -94,5 +100,7 @@ public class TSTSaveStates : MonoBehaviour
         }
         Access.Player().gameObject.transform.position = ss_pos;
         Access.Player().gameObject.transform.rotation = ss_rot;
+        nPanelRespawn+=1;
+        Access.UITurboAndLifePool().updatePanelRespawn(nPanelRespawn);
     }
 }

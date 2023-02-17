@@ -2,17 +2,20 @@ using UnityEngine;
 
 public class CheckPoint : AbstractCameraPoint
 {
+    [Header("MAND")]
+    public Transform respawn_location;
+
     [Header("Tweaks")]
-    public string checkpoint_name = "";
+    public string checkpoint_name;
     public CollectiblesManager.COLLECT_MOD collectMod;
     public Camera Cam;
 
     public float CameraAnimationLength;
     private float CurrentAnimationLength;
     private bool IsAnimating = false;
+    private bool alreadyTriggered = false;
 
-    [Header("MAND")]
-    public Transform respawn_location;
+    [Header("ANIM")]
     public Animator animator;
     public ParticleSystem particles_blend;
     public ParticleSystem particles_add;
@@ -77,11 +80,15 @@ public class CheckPoint : AbstractCameraPoint
     void OnTriggerEnter(Collider iCol)
     {
         CarController player = iCol.GetComponent<CarController>();
-        bool alreadyTriggered = (MCP!=null) ? MCP.triggered : false;
+        if (!player)
+            return;
+
+        alreadyTriggered = (MCP!=null) ? MCP.triggered : alreadyTriggered;
         if (!!player && !alreadyTriggered)
         {
-            if (!!MCP)
-                MCP.triggered = true;
+            if (MCP!=null)
+            { MCP.triggered = true; }
+            alreadyTriggered = true;
 
             cpm.notifyCP(this.gameObject, collectMod == CollectiblesManager.COLLECT_MOD.HEAVEN);
 

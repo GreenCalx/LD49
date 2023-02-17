@@ -12,6 +12,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public GameObject player;
     public GameObject Cam;
 
+    public int MAX_PANELS = 2;
+    private int currPanels;
+
     [HideInInspector]
     public GameObject last_checkpoint;
 
@@ -20,6 +23,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void Start()
     {
+        currPanels = MAX_PANELS;
+
         if (checkpoints.Count <= 0)
         {
             Debug.LogWarning("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
@@ -72,16 +77,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
     }
 
-    private void findCheckpoints()
+    private void findMultiCheckpoints()
     {
-        // CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
-        // checkpoints = new List<GameObject>(CPs.Length);
-        // for (int i=0;i<CPs.Length;i++)
-        // {
-        //     CPs[i].subscribeToManager(this);
-        //     checkpoints.Add( CPs[i].gameObject );
-        // }
-
         MultiCheckPoint[] mcps = transform.parent.GetComponentsInChildren<MultiCheckPoint>();
         checkpoints = new List<GameObject>();
         foreach ( MultiCheckPoint mcp in mcps)
@@ -92,6 +89,17 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 cp.subscribeToManager(this);
                 checkpoints.Add(cp.gameObject);
             }
+        }
+    }
+
+    private void findCheckpoints()
+    {
+        CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
+        checkpoints = new List<GameObject>(CPs.Length);
+        for (int i=0;i<CPs.Length;i++)
+        {
+            CPs[i].subscribeToManager(this);
+            //checkpoints.Add( CPs[i].gameObject );
         }
     }
 
@@ -125,9 +133,14 @@ public class CheckPointManager : MonoBehaviour, IControllable
             Debug.LogWarning("CheckPointManager: Input GO is not a checkpoint.");
     }
 
+    public void notifyGasStation(GasStation iGasStation)
+    {
+        currPanels = MAX_PANELS;
+    }
+
     void OnDisable()
     {
-        Debug.Log(UnityEngine.StackTraceUtility.ExtractStackTrace());
+        
     }
 
     public void loadLastCP(bool iFromDeath = false)

@@ -26,6 +26,14 @@ public class GasStation : MonoBehaviour
         
     }
 
+    void OnTriggerEnter(Collider iCollider)
+    {
+        if (Utils.isPlayer(iCollider.gameObject))
+        {
+            Access.CheckPointManager().notifyGasStation(this);
+        }
+    }
+
     void OnTriggerStay(Collider iCollider)
     {
         if (Utils.isPlayer(iCollider.gameObject))
