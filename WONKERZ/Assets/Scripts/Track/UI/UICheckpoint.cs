@@ -8,6 +8,8 @@ public class UICheckpoint : MonoBehaviour
     public TMPro.TextMeshProUGUI cp_text    ;
     public TMPro.TextMeshProUGUI cp_name_textval;
     public TMPro.TextMeshProUGUI cp_time_textval;
+    public Image pompistImage;
+
     public float PANEL_DURATION = 3f;
     public float CP_INFO_DURATION = 1.5f;
 
@@ -25,6 +27,7 @@ public class UICheckpoint : MonoBehaviour
         cp_text.gameObject.SetActive(false);
         cp_name_textval.gameObject.SetActive(false);
         cp_time_textval.gameObject.SetActive(false);
+        pompistImage.gameObject.SetActive(false);
         is_enabled = false;
     }
 
@@ -33,12 +36,14 @@ public class UICheckpoint : MonoBehaviour
         cp_text.gameObject.SetActive(true);
         cp_name_textval.gameObject.SetActive(true);
         cp_time_textval.gameObject.SetActive(true);
+        pompistImage.gameObject.SetActive(true);
         is_enabled = true;
     }
 
     public void disable_cpinfo()
     {
         cp_text.gameObject.SetActive(false);
+        pompistImage.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
