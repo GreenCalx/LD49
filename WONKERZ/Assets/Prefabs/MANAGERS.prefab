@@ -78,7 +78,9 @@ MonoBehaviour:
   deathCameraRef: {fileID: 4429306836066185765, guid: ef8e796da4e26f14dbea0789ea0e57ed, type: 3}
   active_camera: {fileID: 0}
   inTransition: 0
-  transitionDuration: 2
+  transitionDuration: 0.5
+  deathCamDuration: 2
+  cameraRotationOrder: 0100000006000000
 --- !u!114 &1586922570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,8 +127,12 @@ MonoBehaviour:
   nutTurboConvertValue: 0.2
   turboValueAtStart: 0
   nutSpreadDistanceOnDamage: 10
+  collectMod: 0
   collectModCombo: 0
+  jar:
+    collectedNuts: 0
   allCollectiblesInCurrStage: []
+  currentTurbo: 0
 --- !u!114 &1575618223
 MonoBehaviour:
   m_ObjectHideFlags: 0

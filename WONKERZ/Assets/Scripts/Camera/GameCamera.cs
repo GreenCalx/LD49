@@ -15,6 +15,7 @@ using UnityEngine;
 *            \___ PlayerCamera ___ FollowPlayer(TRACK)
 *                             \___ ManualCamera(HUB)
 *                             \___ FlyCamera(FlyMode) TBD
+*                             \___ FPSCamera(FPS)
 *
 */
 public class GameCamera : MonoBehaviour
@@ -30,8 +31,9 @@ public class GameCamera : MonoBehaviour
         BOSS=3,         // TBD
         CINEMATIC=4,     // Camera used for cutscenes/dialogs
                         // Bypasses other cameras for a given duration or trigger input
-        TRANSITION=5    // Camera used to transition between 2 cameras
+        TRANSITION=5,    // Camera used to transition between 2 cameras
                         // Is automatically cleaned by CameraManager on endTransition()
+        FPS=6           // FPS Camera used for looping and such places with limited vision
     }
     [Header("GameCamera")]
     public CAM_TYPE camType = CAM_TYPE.UNDEFINED;

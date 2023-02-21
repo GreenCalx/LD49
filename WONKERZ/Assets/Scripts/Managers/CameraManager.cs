@@ -7,7 +7,7 @@ using System.Linq;
 // Known issue :
 //  * If a camera is active in a new scene, it can take the lead over the active_camera
 //  ** FIX : Disable all cameras by default
-public class CameraManager : MonoBehaviour
+public class CameraManager : MonoBehaviour, IControllable
 {
     [Header("Mandatory")]
     public GameObject transitionCameraRef;
@@ -21,6 +21,7 @@ public class CameraManager : MonoBehaviour
     [Header("Tweaks")]
     public float transitionDuration = 2f;
     public float deathCamDuration = 2f;
+    public GameCamera.CAM_TYPE[] cameraRotationOrder;
 
 
     private Transform transitionStart = null;
@@ -44,7 +45,8 @@ public class CameraManager : MonoBehaviour
     void Awake()
     {
         inTransition = false;
-        SceneManager.sceneLoaded += OnSceneLoaded; 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        Utils.attachControllable<CameraManager>(this);
     }
 
     // Update is called once per frame
@@ -59,6 +61,45 @@ public class CameraManager : MonoBehaviour
                 transitionCameraInst = null;
             }
         }
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable<CameraManager>(this);
+    }
+
+    // Switch cameras between HUB cameras
+    void IControllable.ProcessInputs(InputManager.InputData Entry) 
+    {
+        if (Entry.Inputs["CameraChange"].IsDown)
+        {
+            GameCamera.CAM_TYPE currType = active_camera.camType;
+            GameCamera.CAM_TYPE nextType = GameCamera.CAM_TYPE.UNDEFINED;
+            int rot_size = cameraRotationOrder.Length;
+            if (rot_size <= 1)
+            {
+                Debug.Log("Only 1 or less camera defined in the CameraManager for the rotation order. No cam switch can be made.");
+                return;
+            }
+            for (int i=0;i<rot_size;i++)
+            {
+                if (cameraRotationOrder[i]==currType)
+                {
+                    if ((i+1)<rot_size)
+                    {
+                        nextType = cameraRotationOrder[i+1];
+                        break;
+                    } else {
+                        nextType = cameraRotationOrder[0];
+                        break;
+                    }
+                }
+            }//! for
+            if ((currType!=nextType)&&(nextType!=GameCamera.CAM_TYPE.UNDEFINED))
+            {
+                changeCamera(nextType);
+            }
+        } 
     }
 
     // resets CameraManager status (active camera, etc..) upon new scene load
