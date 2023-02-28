@@ -11,6 +11,7 @@ public class GasStation : MonoBehaviour
 
     private bool IsPumpingGas = false;
     private string animatorParm = "IsPumping";
+    private string animatorStationActivationParm = "IsStationActivated";
 
     public bool bypassNutsCost = false;
 
@@ -31,6 +32,7 @@ public class GasStation : MonoBehaviour
         if (Utils.isPlayer(iCollider.gameObject))
         {
             Access.CheckPointManager().notifyGasStation(this);
+            animator.SetBool(animatorStationActivationParm, true);
         }
     }
 
