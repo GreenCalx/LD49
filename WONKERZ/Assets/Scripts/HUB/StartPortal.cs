@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble;
 
 /// STARTING POINT FOR HUB
 // > ACTIVATES TRICKS AUTO

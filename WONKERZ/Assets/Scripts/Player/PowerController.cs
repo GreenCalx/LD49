@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 using Schnibble;
 
 public class PowerController : MonoBehaviour
@@ -94,7 +95,7 @@ public class PowerController : MonoBehaviour
         }
     }
 
-    public void applyPowerEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyPowerEffectInInputs(InputManager.InputData iEntry, Schnibble.CarController iCC)
     {
         if (currentPower != null)
         {

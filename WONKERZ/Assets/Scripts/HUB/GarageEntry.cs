@@ -1,6 +1,7 @@
 using UnityEngine;
+using Schnibble;
 
-public class GarageEntry : MonoBehaviour,IControllable
+public class GarageEntry : MonoBehaviour, IControllable
 {
     public GameObject garageUIRef;
     private GameObject garageUI;
@@ -16,11 +17,13 @@ public class GarageEntry : MonoBehaviour,IControllable
         Utils.attachControllable<GarageEntry>(this);
     }
 
-    void OnDestroy() {
+    void OnDestroy()
+    {
         Utils.detachControllable<GarageEntry>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry){
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
         if (playerInGarage)
         {
             if (Entry.Inputs["Jump"].IsDown)
@@ -85,7 +88,8 @@ public class GarageEntry : MonoBehaviour,IControllable
         //Utils.attachControllable<CarController>(playerCC);
         if (!!playerCC)
             playerCC.stateMachine.ForceState(playerCC.aliveState);
-        else{
+        else
+        {
             var player = Utils.getPlayerRef().GetComponent<CarController>();
             player.stateMachine.ForceState(player.aliveState);
         }

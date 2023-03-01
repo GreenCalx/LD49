@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble;
 
 // Triggers only once in current scene
 // > TODO : save seen cinematics to init triggerrs accordingly

@@ -1,10 +1,3 @@
-namespace Schnibble
-{
-    public static partial class DebugVars
-    {
-        public static bool debugAxle = true;
-    }
-}
 
 public struct Constants
 {

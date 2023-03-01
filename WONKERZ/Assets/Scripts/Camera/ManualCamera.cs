@@ -1,4 +1,6 @@
 using UnityEngine;
+using Schnibble;
+
 public class ManualCamera : PlayerCamera, IControllable
 {
     [Header("ManualCamera")]

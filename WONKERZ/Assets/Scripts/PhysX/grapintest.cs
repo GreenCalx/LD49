@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble;
 
 public class grapintest : MonoBehaviour, IControllable
 {
@@ -16,7 +17,8 @@ public class grapintest : MonoBehaviour, IControllable
         Utils.detachControllable<grapintest>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
         Player.IsHooked = Entry.Inputs["Grapin"].Down;
         grapin.SetActive(Entry.Inputs["Grapin"].Down);
     }
@@ -24,7 +26,8 @@ public class grapintest : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
-        if (Player.IsHooked){
+        if (Player.IsHooked)
+        {
             D = (transform.position - Player.transform.position);
             grapin.transform.position = transform.position - D / 2;
             grapin.transform.localScale = new Vector3(1, D.magnitude / 2, 1) / 10;

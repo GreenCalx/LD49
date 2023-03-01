@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BullyablePNJ : MonoBehaviour
