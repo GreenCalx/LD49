@@ -1,14 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class UIGarageTestingPanel : UIGaragePanel
 {
     [Header("MANDATORY")]
     public TextMeshProUGUI txt_load_status;
-    
+
     private bool test_is_running = false;
     // Start is called before the first frame update
     override protected void Awake()
@@ -43,9 +40,10 @@ public class UIGarageTestingPanel : UIGaragePanel
     }
 
     override public void deactivate()
-    {    
-        if (test_is_running) {
-            test_is_running=false;
+    {
+        if (test_is_running)
+        {
+            test_is_running = false;
             return;
         }
 

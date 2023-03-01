@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ public class ClippingPlane : MonoBehaviour
     private float triggerPlaneClipping;
     public bool clipAbovePlane = true;
 
-    private Plane   plane;
+    private Plane plane;
     private Vector4 planeRepresentation;
 
     private MeshRenderer MR;
@@ -36,7 +35,7 @@ public class ClippingPlane : MonoBehaviour
         {
             mat.SetVector("_Plane", planeRepresentation);
             mat.SetFloat("_TriggerPlaneClipping", triggerPlaneClipping);
-            mat.SetFloat("_ClipAbovePlane", (clipAbovePlane?1f:0f));    
+            mat.SetFloat("_ClipAbovePlane", (clipAbovePlane ? 1f : 0f));
         }
     }
 
@@ -56,7 +55,7 @@ public class ClippingPlane : MonoBehaviour
             {
                 if (!!hub_p.activeClippingPortal)
                     return;
-                else 
+                else
                 {
                     hub_p.setActiveClippingPortal(this.gameObject);
                     triggerPlaneClipping = 1;
@@ -64,21 +63,21 @@ public class ClippingPlane : MonoBehaviour
                     refreshPortalTrigger(true);
                 }
             }
-            
+
         }
     }
 
     void OnTriggerStay(Collider iCol)
     {
         CarController cc = iCol.GetComponent<CarController>();
-        if ( !!cc && (triggerPlaneClipping > 0) )
+        if (!!cc && (triggerPlaneClipping > 0))
         {
             // refresh self ripple
-            Vector3 rippleOrig = Vector3.ProjectOnPlane( cc.transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z) );
-            selfMat.SetVector("_RippleOrigin", 
-                new Vector4( rippleOrig.x, 
-                             rippleOrig.y, 
-                             rippleOrig.z, 
+            Vector3 rippleOrig = Vector3.ProjectOnPlane(cc.transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z));
+            selfMat.SetVector("_RippleOrigin",
+                new Vector4(rippleOrig.x,
+                             rippleOrig.y,
+                             rippleOrig.z,
                              0
             ));
         }
@@ -89,13 +88,13 @@ public class ClippingPlane : MonoBehaviour
         if (!!iCol.GetComponent<CarController>())
         {
             HUBPortal hub_p = GetComponentInParent<HUBPortal>();
-            if (!!hub_p && (hub_p.activeClippingPortal==this.gameObject))
+            if (!!hub_p && (hub_p.activeClippingPortal == this.gameObject))
             {
                 hub_p.activeClippingPortal = null;
                 triggerPlaneClipping = 0;
                 refresh();
                 refreshPortalTrigger(false);
             }
-        }        
+        }
     }
 }

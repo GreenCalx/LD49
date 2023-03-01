@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,15 +10,17 @@ public class ExitToTitle : MonoBehaviour, IControllable
         Utils.attachControllable<ExitToTitle>(this);
     }
 
-    void OnDestroy() {
+    void OnDestroy()
+    {
         Utils.detachControllable<ExitToTitle>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry){
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
         if (enabler)
         {
             if (Entry.Inputs["Cancel"].IsDown)
-                SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single); 
+                SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
         }
     }
 

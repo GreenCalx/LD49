@@ -1,9 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Rope : MonoBehaviour {
+public class Rope : MonoBehaviour
+{
 
     public float RigidbodyMass = 1f;
     public float ColliderRadius = 0.1f;
@@ -18,7 +17,7 @@ public class Rope : MonoBehaviour {
 
     void Awake()
     {
-        if(RigidBodyContainer == null)
+        if (RigidBodyContainer == null)
             RigidBodyContainer = new GameObject("RopeRigidbodyContainer");
 
         CopySource = new List<Transform>();

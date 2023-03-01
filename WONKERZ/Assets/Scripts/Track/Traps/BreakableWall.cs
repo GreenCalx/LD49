@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,7 +9,7 @@ public class BreakableWall : MonoBehaviour
 
     private GameObject brokenVersionInst;
     private float elapsedTimeSinceBreak;
-    
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +32,7 @@ public class BreakableWall : MonoBehaviour
         if (!!BPO)
         {
             Physics.IgnoreCollision(GetComponent<MeshCollider>(), iCol.collider);
-            BPO.breakableObjectCollisionCorrection(); 
+            BPO.breakableObjectCollisionCorrection();
 
             breakWall(iCol.contacts[0].point);
             elapsedTimeSinceBreak = 0f;
@@ -55,10 +54,10 @@ public class BreakableWall : MonoBehaviour
             mr.enabled = false;
 
         List<Rigidbody> rbs = new List<Rigidbody>(brokenVersionInst.GetComponentsInChildren<Rigidbody>());
-        foreach(Rigidbody rb in rbs)
+        foreach (Rigidbody rb in rbs)
         {
             Vector3 forceDir = contactPoint - rb.transform.position;
-            rb.AddForce( forceDir * 30f, ForceMode.Impulse);
+            rb.AddForce(forceDir * 30f, ForceMode.Impulse);
             Debug.DrawRay(contactPoint, rb.transform.position * 10, Color.red);
         }
     }

@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Schnibble;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class UIGaragePickableTest : UITextTab
@@ -11,7 +10,7 @@ public class UIGaragePickableTest : UITextTab
     private bool last_launch_failed;
     [Header("MANDATORY")]
     public UIGarageTestData test_data;
-    
+
     // set by parent
     [HideInInspector]
     public TextMeshProUGUI txt_load_status;
@@ -19,9 +18,9 @@ public class UIGaragePickableTest : UITextTab
     // Start is called before the first frame update
     void Start()
     {
-        if (test_data==null)
+        if (test_data == null)
         {
-            Debug.LogError("No TEST DATA given to a test!!");
+            this.LogError("No TEST DATA given to a test!!");
             return;
         }
         uigtm = Access.TestManager();
@@ -48,11 +47,13 @@ public class UIGaragePickableTest : UITextTab
         }
     }
 
-    public void setModeReplay() {
+    public void setModeReplay()
+    {
         Access.TestManager().testMode = UIGarageTestManager.MODE.REPLAY;
     }
 
-    public void setModeRecord() {
+    public void setModeRecord()
+    {
         Access.TestManager().testMode = UIGarageTestManager.MODE.RECORD;
     }
 
@@ -72,7 +73,7 @@ public class UIGaragePickableTest : UITextTab
         txt_load_status.gameObject.SetActive(false);
     }
     override public void deactivate()
-    { 
+    {
         base.deactivate();
 
         if (!last_launch_failed) // dont display load error if test launch was a success

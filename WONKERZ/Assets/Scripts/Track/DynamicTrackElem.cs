@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// Now unused
@@ -7,5 +5,5 @@ using UnityEngine;
 // such as traps, moving platforms, etc.. to work on synchronicity
 public abstract class DynamicTrackElem : MonoBehaviour
 {
-    public virtual void start() {}
+    public virtual void start() { }
 }

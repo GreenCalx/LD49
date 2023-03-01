@@ -1,17 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class TrapBundle : MonoBehaviour
 {
     [Header("MANDATORY")]
-    public TrapWorker       worker;
-    public TrapWorkstation  workstation;     
-    public Trap             linkedTrap;
+    public TrapWorker worker;
+    public TrapWorkstation workstation;
+    public Trap linkedTrap;
 
     [Header("Tweaks")]
-    public float startTimeOffset            = 0f;
-    public float timeToLoadTrap             = 1f;
+    public float startTimeOffset = 0f;
+    public float timeToLoadTrap = 1f;
     public float restTimeBetweenActivations = 1f;
     public bool isAlwaysInCharge = false;
 
@@ -23,9 +22,9 @@ public class TrapBundle : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if ((worker==null)||(workstation==null)||(linkedTrap==null))
+        if ((worker == null) || (workstation == null) || (linkedTrap == null))
         {
-            Debug.LogWarning("Missing worker/workstation on " + gameObject.name);
+            this.LogWarn("Missing worker/workstation on " + gameObject.name);
             gameObject.SetActive(false);
         }
         initTimers();
@@ -41,14 +40,14 @@ public class TrapBundle : MonoBehaviour
     // Range 0f(starting to load) to 1f(trigger)
     public float getTrapLoadStatus()
     {
-        if (trapLoadElapsedTime==0f)
+        if (trapLoadElapsedTime == 0f)
             return 0f;
         return trapLoadElapsedTime / timeToLoadTrap;
     }
     // Range 0f(trigger is over) to 1f(starting to load)
     public float getTrapRestStatus()
     {
-        if (trapRestElapsedTime==0f)
+        if (trapRestElapsedTime == 0f)
             return 0f;
         return trapRestElapsedTime / restTimeBetweenActivations;
     }

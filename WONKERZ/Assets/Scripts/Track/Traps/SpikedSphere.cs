@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpikedSphere : Trap
 {
     public int damageOnCollide = 2;
     public float lifetime = 60f;
-    
+
     public bool trigger = false;
-    
-    
+
+
     private Rigidbody rb;
     private float elapsed;
 
@@ -34,7 +32,7 @@ public class SpikedSphere : Trap
         if (!!cc)
         {
             ContactPoint cp = iCol.contacts[0];
-            cc.takeDamage(damageOnCollide, cp.point, cp.normal );
+            cc.takeDamage(damageOnCollide, cp.point, cp.normal);
         }
     }
 
@@ -43,7 +41,7 @@ public class SpikedSphere : Trap
         rb.isKinematic = false;
     }
 
-    public override void OnRest(float iCooldownPercent=1f) {}
+    public override void OnRest(float iCooldownPercent = 1f) { }
 
-    public override void OnCharge(float iLoadPercent=1f) {}
+    public override void OnCharge(float iLoadPercent = 1f) { }
 }

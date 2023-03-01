@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ExplosionEffect : MonoBehaviour
@@ -13,7 +11,7 @@ public class ExplosionEffect : MonoBehaviour
     void Awake()
     {
         isPlaying = false;
-        elapsedTime = 0f;        
+        elapsedTime = 0f;
     }
 
     // Update is called once per frame
@@ -31,7 +29,7 @@ public class ExplosionEffect : MonoBehaviour
 
     public void runEffect()
     {
-        foreach( ParticleSystem ps in PS)
+        foreach (ParticleSystem ps in PS)
         {
             ps.Play();
         }

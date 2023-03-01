@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
+using Schnibble;
 
 public class MeshDeform : MonoBehaviour
 {
@@ -68,7 +67,7 @@ public class MeshDeform : MonoBehaviour
             originalVertices = clonedMesh.vertices;
             normals = clonedMesh.normals;
 
-            Debug.Log("Init & Cloned");
+            this.Log("Init & Cloned");
         }
         else
         {
@@ -97,7 +96,7 @@ public class MeshDeform : MonoBehaviour
     {
         targetVertex = iTargetVertex;
         startTime = Time.time;
-        isAnimate = true;    
+        isAnimate = true;
     }
 
     protected void FixedUpdate()
@@ -129,7 +128,7 @@ public class MeshDeform : MonoBehaviour
 
     private void UpdateCollider()
     {
-        if (meshCollider==null)
+        if (meshCollider == null)
             meshCollider = GetComponent<MeshCollider>();
         meshCollider.sharedMesh = originalMesh;
     }
@@ -142,7 +141,7 @@ public class MeshDeform : MonoBehaviour
         for (int i = 0; i < modifiedVertices.Length; i++)
         {
             currentVertexPos = modifiedVertices[i];
-            float sqrMagnitude = ((currentVertexPos - targetVertexPos)-transform.position).sqrMagnitude;
+            float sqrMagnitude = ((currentVertexPos - targetVertexPos) - transform.position).sqrMagnitude;
             if (sqrMagnitude > sqrRadius)
             {
                 continue;

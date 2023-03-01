@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +18,7 @@ public class TstHubHook : MonoBehaviour
         killMe = false;
 
         GameObject[] gos = GameObject.FindGameObjectsWithTag("TstHubHook");
-        if (gos.Length>1)
+        if (gos.Length > 1)
         { // duplicate when back to hooked scene
             Destroy(gameObject);
             return;
@@ -29,7 +28,7 @@ public class TstHubHook : MonoBehaviour
         // Keep this object alive until the end of the process
         DontDestroyOnLoad(gameObject);
         // Load hub
-        SceneManager.LoadScene( pivotScene, LoadSceneMode.Single);
+        SceneManager.LoadScene(pivotScene, LoadSceneMode.Single);
         // wait for the hub to be loaded before loading back the hook
         StartCoroutine(loadPivot());
         // kill self when hook is loaded back
@@ -37,7 +36,7 @@ public class TstHubHook : MonoBehaviour
     }
     IEnumerator loadPivot()
     {
-        while(SceneManager.GetActiveScene().name!=pivotScene)
+        while (SceneManager.GetActiveScene().name != pivotScene)
         { yield return null; }
         Access.SceneLoader().loadScene(hookedScene);
 
@@ -46,13 +45,13 @@ public class TstHubHook : MonoBehaviour
 
     IEnumerator killWhenBackToHook()
     {
-        while(!killMe)
+        while (!killMe)
         { yield return null; }
 
-        while(SceneManager.GetActiveScene().name!=hookedScene)
+        while (SceneManager.GetActiveScene().name != hookedScene)
         { yield return null; }
 
-        while(!SceneManager.GetActiveScene().isLoaded)
+        while (!SceneManager.GetActiveScene().isLoaded)
         { yield return null; }
 
         Destroy(gameObject);

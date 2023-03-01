@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,7 +10,7 @@ public class CollectiblesManager : MonoBehaviour
     {
         public class UniqueJar<T> where T : AbstractCollectible
         {
-            IDictionary<string,HashSet<string>> jar;
+            IDictionary<string, HashSet<string>> jar;
 
             public UniqueJar()
             {
@@ -22,7 +21,7 @@ public class CollectiblesManager : MonoBehaviour
                 string scene_name = SceneManager.GetActiveScene().name;
                 checkJar(scene_name);
                 HashSet<string> collected;
-                jar.TryGetValue(scene_name, out collected );
+                jar.TryGetValue(scene_name, out collected);
                 collected.Add(iAC.gameObject.name);
             }
             public void removeFromJar(T iAC)
@@ -30,7 +29,7 @@ public class CollectiblesManager : MonoBehaviour
                 string scene_name = SceneManager.GetActiveScene().name;
                 checkJar(scene_name);
                 HashSet<string> collected;
-                jar.TryGetValue(scene_name, out collected );
+                jar.TryGetValue(scene_name, out collected);
                 if (collected.Count <= 0)
                     return;
                 collected.Remove(iAC.gameObject.name);
@@ -41,7 +40,7 @@ public class CollectiblesManager : MonoBehaviour
                 string scene_name = SceneManager.GetActiveScene().name;
                 checkJar(scene_name);
                 HashSet<string> collected;
-                jar.TryGetValue(scene_name, out collected );
+                jar.TryGetValue(scene_name, out collected);
                 if (collected.Count <= 0)
                     return;
                 collected.Remove(iGameObjectName);
@@ -50,7 +49,7 @@ public class CollectiblesManager : MonoBehaviour
             public bool IsInJar(T iAC, string iSceneName)
             {
                 HashSet<string> collected;
-                jar.TryGetValue(iSceneName, out collected );
+                jar.TryGetValue(iSceneName, out collected);
                 if (collected.Count <= 0)
                     return false;
                 return collected.Contains(iAC.gameObject.name);
@@ -59,7 +58,7 @@ public class CollectiblesManager : MonoBehaviour
             public HashSet<string> GetValues(string iSceneName)
             {
                 HashSet<string> collected;
-                jar.TryGetValue(iSceneName, out collected );
+                jar.TryGetValue(iSceneName, out collected);
                 return collected;
             }
 
@@ -67,7 +66,7 @@ public class CollectiblesManager : MonoBehaviour
             {
                 if (!jar.ContainsKey(scene_name))
                 {
-                    jar.Add( scene_name, new HashSet<string>());
+                    jar.Add(scene_name, new HashSet<string>());
                 }
             }
         }
@@ -82,10 +81,10 @@ public class CollectiblesManager : MonoBehaviour
 
         public CollectibleJar()
         {
-            collectedNuts   = 0;
-            WONKERZjar      = new UniqueJar<CollectibleWONKERZ>();
-            CageKeyjar      = new UniqueJar<CageKeyCollectible>();
-            Garagistjar     = new UniqueJar<GaragistCollectible>();
+            collectedNuts = 0;
+            WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
+            CageKeyjar = new UniqueJar<CageKeyCollectible>();
+            Garagistjar = new UniqueJar<GaragistCollectible>();
         }
 
         public void collect(AbstractCollectible iAC)
@@ -100,21 +99,21 @@ public class CollectiblesManager : MonoBehaviour
                 {
                     CageKeyjar.addToJar(iAC as CageKeyCollectible);
                 }
-                else if ( iAC is GaragistCollectible)
+                else if (iAC is GaragistCollectible)
                 {
                     Garagistjar.addToJar(iAC as GaragistCollectible);
                 }
                 return;
             }
             /// Infinites collectibles
-            if ( iAC is CollectibleNut )
+            if (iAC is CollectibleNut)
             {
                 collectedNuts++;
             }
         }
     }
 
-    public enum COLLECT_MOD { HEAVEN=0, HELL=2 }
+    public enum COLLECT_MOD { HEAVEN = 0, HELL = 2 }
 
     [Header("Mandatory")]
     public GameObject nutCollectibleRef;
@@ -123,11 +122,11 @@ public class CollectiblesManager : MonoBehaviour
     [Header("Tweakables")]
     public Material heavenModeMat;
     public Material hellModeMat;
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float nutTurboConvertValue = 0.2f;
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float turboValueAtStart = 0f;
-    [Range(1f,100f)]
+    [Range(1f, 100f)]
     public float nutSpreadDistanceOnDamage = 10f;
 
 
@@ -171,21 +170,13 @@ public class CollectiblesManager : MonoBehaviour
         // TODO save current jar status
     }
 
-    public bool tryConsumeTurbo(float iAmount)
-    { 
-        if (currentTurbo < iAmount)
-            return false;
-        currentTurbo -= iAmount;
-        Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
-        return true;
-    }
-
     public bool tryConvertNutToTurbo()
     {
         if (jar.collectedNuts <= 0)
             return false;
-         
-        currentTurbo = ( currentTurbo >= 1f ) ? 1f : currentTurbo+nutTurboConvertValue;
+
+        Access.Player().turbo.current = Mathf.Clamp(0, Access.Player().turbo.max, Access.Player().turbo.current + nutTurboConvertValue);
+
         jar.collectedNuts--;
 
         Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
@@ -203,7 +194,7 @@ public class CollectiblesManager : MonoBehaviour
     {
         var clamp = jar.collectedNuts > 0;
 
-        jar.collectedNuts-=remove_n;
+        jar.collectedNuts -= remove_n;
 
         if (clamp)
             jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
@@ -216,16 +207,16 @@ public class CollectiblesManager : MonoBehaviour
         return iCollectibleHandle.GetComponentsInChildren<T>(true).Length;
     }
 
-    public void changeCollectMod( COLLECT_MOD iCollectMod )
+    public void changeCollectMod(COLLECT_MOD iCollectMod)
     {
         if (iCollectMod != collectMod)
         {
             // break combo
             collectModCombo = 0;
             collectMod = iCollectMod;
-            
+
             // update collectibles skin
-            foreach(AbstractCollectible ac in allCollectiblesInCurrStage)
+            foreach (AbstractCollectible ac in allCollectiblesInCurrStage)
             {
                 MeshRenderer mr = ac.gameObject.GetComponent<MeshRenderer>();
                 if (iCollectMod == COLLECT_MOD.HELL)
@@ -244,9 +235,9 @@ public class CollectiblesManager : MonoBehaviour
     {
         if (AC is CollectibleNut)
         {
-            if ( collectMod == COLLECT_MOD.HELL )
+            if (collectMod == COLLECT_MOD.HELL)
             {
-                currentTurbo = ( currentTurbo >= 1f ) ? 1f : currentTurbo+nutTurboConvertValue;
+                currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
                 Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
             }
             else
@@ -255,7 +246,7 @@ public class CollectiblesManager : MonoBehaviour
                 Access.UITurboAndLifePool().updateLifePool();
             }
             allCollectiblesInCurrStage.Remove(AC);
-        } 
+        }
         else
         {
             jar.collect(AC);
@@ -269,29 +260,29 @@ public class CollectiblesManager : MonoBehaviour
             allCollectiblesInCurrStage.Add(AC);
     }
 
-    public bool hasWONKERZLetter(CollectibleWONKERZ.LETTERS iLetter, string iScene="")
+    public bool hasWONKERZLetter(CollectibleWONKERZ.LETTERS iLetter, string iScene = "")
     {
-        string sceneName = (iScene=="") ? SceneManager.GetActiveScene().name : iScene;
-        
+        string sceneName = (iScene == "") ? SceneManager.GetActiveScene().name : iScene;
+
         string letterAsStr = Enum.GetName(typeof(CollectibleWONKERZ.LETTERS), iLetter);
-        
+
         HashSet<string> collected = jar.WONKERZjar.GetValues(sceneName);
-        if ((collected==null) || (collected.Count <= 0))
+        if ((collected == null) || (collected.Count <= 0))
             return false;
 
-        foreach ( string e in jar.WONKERZjar.GetValues(sceneName) )
+        foreach (string e in jar.WONKERZjar.GetValues(sceneName))
         {
-            if ( letterAsStr == e )
+            if (letterAsStr == e)
                 return true;
         }
 
         return false;
     }
-    
+
     public bool hasCageKey(string iSceneName)
     {
         HashSet<string> collected = jar.CageKeyjar.GetValues(iSceneName);
-        if ((collected==null) || (collected.Count <= 0))
+        if ((collected == null) || (collected.Count <= 0))
             return false;
 
         return (collected.Count >= 1); // only one can be collected in a scene
@@ -300,7 +291,7 @@ public class CollectiblesManager : MonoBehaviour
     public bool hasGaragist(string iSceneName)
     {
         HashSet<string> collected = jar.Garagistjar.GetValues(iSceneName);
-        if ((collected==null) || (collected.Count <= 0))
+        if ((collected == null) || (collected.Count <= 0))
             return false;
 
         return (collected.Count >= 1); // only one can be collected in a scene

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 /**
 *   Translates from start to each point of the path
@@ -12,7 +9,7 @@ using System;
 */
 public class TravellingCamera : CinematicCamera
 {
-    public enum TRAVEL_MODE 
+    public enum TRAVEL_MODE
     {
         LINEAR, // LERP
         SMOOTH, // SMOOTH STEP
@@ -20,7 +17,7 @@ public class TravellingCamera : CinematicCamera
     public Transform[] path;
     public TRAVEL_MODE mode = TRAVEL_MODE.SMOOTH;
     public float step_duration = 2f;
-    
+
 
     private float elapsedTime;
     private Transform startLocation = null;
@@ -34,9 +31,9 @@ public class TravellingCamera : CinematicCamera
     // Start is called before the first frame update
     void Start()
     {
-        elapsedTime     = 0f;
-        pathIterator    = 0;
-        if (startLocation==null)
+        elapsedTime = 0f;
+        pathIterator = 0;
+        if (startLocation == null)
         {
             startLocation = new GameObject("PATH_START").transform;
             startLocation.SetParent(transform.parent);
@@ -44,8 +41,8 @@ public class TravellingCamera : CinematicCamera
             startLocation.transform.rotation = transform.rotation;
         }
 
-        prevPathPoint   = startLocation; // copy cam location for first LERP
-        nextPathPoint   = path[pathIterator];
+        prevPathPoint = startLocation; // copy cam location for first LERP
+        nextPathPoint = path[pathIterator];
     }
 
     // Update is called once per frame
@@ -55,7 +52,7 @@ public class TravellingCamera : CinematicCamera
             return;
 
         elapsedTime += Time.deltaTime;
-        if ( step_duration <  elapsedTime )
+        if (step_duration < elapsedTime)
         {
             if (!moveNext())
                 end();
@@ -82,7 +79,7 @@ public class TravellingCamera : CinematicCamera
     {
         elapsedTime = 0f;
         pathIterator++;
-        if ( pathIterator > path.Length-1 )
+        if (pathIterator > path.Length - 1)
             return false;
         prevPathPoint = nextPathPoint;
         nextPathPoint = path[pathIterator];
@@ -94,23 +91,23 @@ public class TravellingCamera : CinematicCamera
 
     public void move()
     {
-        switch(mode)
+        switch (mode)
         {
             case TRAVEL_MODE.LINEAR:
-                transform.position = Vector3.Lerp(prevPathPoint.position, 
-                                                  nextPathPoint.position, 
-                                                  elapsedTime/step_duration);
+                transform.position = Vector3.Lerp(prevPathPoint.position,
+                                                  nextPathPoint.position,
+                                                  elapsedTime / step_duration);
                 transform.rotation = Quaternion.Lerp(prevPathPoint.rotation,
                                                     nextPathPoint.rotation,
-                                                    elapsedTime/step_duration);
+                                                    elapsedTime / step_duration);
                 break;
             case TRAVEL_MODE.SMOOTH:
-                float s = elapsedTime/step_duration;
-                s = s*s*(3f-2f*s); // smoothstep formula
-                transform.position = Vector3.Lerp( prevPathPoint.position,
+                float s = elapsedTime / step_duration;
+                s = s * s * (3f - 2f * s); // smoothstep formula
+                transform.position = Vector3.Lerp(prevPathPoint.position,
                                             nextPathPoint.position,
-                                            s );
-                transform.rotation = Quaternion.Lerp( prevPathPoint.rotation,
+                                            s);
+                transform.rotation = Quaternion.Lerp(prevPathPoint.rotation,
                                                     nextPathPoint.rotation,
                                                     s);
                 break;

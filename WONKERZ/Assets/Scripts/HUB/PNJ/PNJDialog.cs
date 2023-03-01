@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PNJDialog : MonoBehaviour, IControllable
 {
@@ -14,7 +10,7 @@ public class PNJDialog : MonoBehaviour, IControllable
     public GameObject dialogUI;
     // SFX dialog to play when talking
     public AudioClip[] voices;
-    private AudioSource __audio_source; 
+    private AudioSource __audio_source;
 
     private bool is_talkable;
     private bool dialog_ongoing;
@@ -28,8 +24,8 @@ public class PNJDialog : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        is_talkable       = false;
-        dialog_ongoing    = false;
+        is_talkable = false;
+        dialog_ongoing = false;
         dialog = DialogBank.load(dialog_id);
 
         __audio_source = GetComponent<AudioSource>();
@@ -37,12 +33,13 @@ public class PNJDialog : MonoBehaviour, IControllable
         __animator = GetComponentInChildren<Animator>();
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry){
-        if ( is_talkable && Entry.Inputs["Jump"].IsDown)
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+        if (is_talkable && Entry.Inputs["Jump"].IsDown)
         {
             talk();
         }
-        else if ( dialog_ongoing && Entry.Inputs["Cancel"].IsDown )
+        else if (dialog_ongoing && Entry.Inputs["Cancel"].IsDown)
         {
             end_dialog();
         }
@@ -58,36 +55,36 @@ public class PNJDialog : MonoBehaviour, IControllable
     {
         if (!dialog_ongoing)
         {
-            dialog_ongoing    = true;
+            dialog_ongoing = true;
             GameObject ui_go = Instantiate(dialogUI);
-            __loaded_dialog_ui  = ui_go.GetComponent<UIDialog>();
+            __loaded_dialog_ui = ui_go.GetComponent<UIDialog>();
             curr_dialog_index = 0;
             if (!!__animator)
-                __animator.SetBool( __animator_talk_parm, true);
+                __animator.SetBool(__animator_talk_parm, true);
         }
 
         if (__loaded_dialog_ui == null)
             return;
 
-        if ( !__loaded_dialog_ui.message_is_displayed() && 
-              __loaded_dialog_ui.has_a_message_to_display() )
+        if (!__loaded_dialog_ui.message_is_displayed() &&
+              __loaded_dialog_ui.has_a_message_to_display())
             __loaded_dialog_ui.force_display();
         else
         {
-            if ( __loaded_dialog_ui.overflows )
+            if (__loaded_dialog_ui.overflows)
             {
-                __loaded_dialog_ui.display( npc_name, __loaded_dialog_ui.overflowing_text );
+                __loaded_dialog_ui.display(npc_name, __loaded_dialog_ui.overflowing_text);
             }
-            else 
+            else
             {
-                if (curr_dialog_index >= dialog.Length )
+                if (curr_dialog_index >= dialog.Length)
                 {
                     end_dialog();
                     return;
                 }
-            
-                __loaded_dialog_ui.display( npc_name, dialog[curr_dialog_index] );
-                playVoice(); 
+
+                __loaded_dialog_ui.display(npc_name, dialog[curr_dialog_index]);
+                playVoice();
                 curr_dialog_index++;
             }
 
@@ -97,7 +94,7 @@ public class PNJDialog : MonoBehaviour, IControllable
 
     private void playVoice()
     {
-        if ( (voices != null) && (voices.Length > 0 ) )
+        if ((voices != null) && (voices.Length > 0))
         {
             var rand = new System.Random();
             int voice_to_play = rand.Next(0, voices.Length);
@@ -110,10 +107,10 @@ public class PNJDialog : MonoBehaviour, IControllable
     {
         dialog_ongoing = false;
         Destroy(__loaded_dialog_ui.gameObject);
-        curr_dialog_index  = 0;
+        curr_dialog_index = 0;
 
         if (!!__animator)
-            __animator.SetBool( __animator_talk_parm, false);
+            __animator.SetBool(__animator_talk_parm, false);
     }
 
 }

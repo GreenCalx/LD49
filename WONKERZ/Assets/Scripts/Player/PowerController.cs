@@ -1,15 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class PowerController : MonoBehaviour
 {
-    public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT}
+    public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
 
     public GameObject ballPowerObject;
 
     public List<ICarPower> powers;
-    public Dictionary<ICarPower,bool> unlockedPowers = new Dictionary<ICarPower,bool>();
+    public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
     public ICarPower currentPower;
     public ICarPower nextPower;
 
@@ -34,7 +34,7 @@ public class PowerController : MonoBehaviour
         showUI(false);
         // Load Unlocked powers
         // unlock everything in the meantime
-        foreach ( ICarPower cp in powers )
+        foreach (ICarPower cp in powers)
         {
             unlockedPowers.Add(cp, true);
         }
@@ -53,21 +53,21 @@ public class PowerController : MonoBehaviour
 
     public bool isInNeutralPowerMode()
     {
-        return (currentPower!=powers[0]); // neutral power
+        return (currentPower != powers[0]); // neutral power
     }
 
     public void refreshPower()
     {
-        if (currentPower!=null)
+        if (currentPower != null)
             currentPower.onRefresh();
     }
 
     public void tryTriggerPower()
     {
-        if (nextPower!=null)
+        if (nextPower != null)
         {
             //activate
-            Debug.Log("Next power :" + nextPower.name);
+            this.Log("Next power :" + nextPower.name);
             currentPower.onDisableEffect();
             currentPower = nextPower;
             currentPower.applyDirectEffect();
@@ -77,18 +77,20 @@ public class PowerController : MonoBehaviour
 
     public void setNextPower(int iPowerIndex)
     {
-        if ((iPowerIndex < 0)||(iPowerIndex>=powers.Count))
-        { nextPower = null; return;}
+        if ((iPowerIndex < 0) || (iPowerIndex >= powers.Count))
+        { nextPower = null; return; }
 
         ICarPower carpower = powers[iPowerIndex];
-        if (carpower==null)
-        { nextPower = null; return;}
+        if (carpower == null)
+        { nextPower = null; return; }
 
         if (!!unlockedPowers[carpower])
-        { 
+        {
             nextPower = carpower;
-        } else {
-            Debug.Log("Power is locked : " + carpower.name);
+        }
+        else
+        {
+            this.Log("Power is locked : " + carpower.name);
         }
     }
 
@@ -96,48 +98,54 @@ public class PowerController : MonoBehaviour
     {
         if (currentPower != null)
         {
-            currentPower.applyEffectInInputs(iEntry,iCC);
+            currentPower.applyEffectInInputs(iEntry, iCC);
         }
     }
 
     public void showUI(bool iToggle)
     {
-        if (uiPowerWheel==null)
+        if (uiPowerWheel == null)
         {
             uiPowerWheel = Access.UIPowerWheel();
         }
         if (!!uiPowerWheel)
         {
             uiPowerWheel.showWheel(iToggle);
-        } else {
-            Debug.LogWarning("Unable to find UIPowerWheel.");
+        }
+        else
+        {
+            this.LogWarn("Unable to find UIPowerWheel.");
         }
     }
 
     public void showIndicator(PowerWheelPlacement iPlacement)
     {
-        if (uiPowerWheel==null)
+        if (uiPowerWheel == null)
         {
             uiPowerWheel = Access.UIPowerWheel();
         }
         if (!!uiPowerWheel)
         {
             uiPowerWheel.showSelector(iPlacement);
-        } else {
-            Debug.LogWarning("Unable to find UIPowerWheel.");
+        }
+        else
+        {
+            this.LogWarn("Unable to find UIPowerWheel.");
         }
     }
 
     public void hideIndicators()
     {
-        if (uiPowerWheel==null)
+        if (uiPowerWheel == null)
         { uiPowerWheel = Access.UIPowerWheel(); }
 
         if (!!uiPowerWheel)
         {
             uiPowerWheel.hideAll();
-        } else {
-            Debug.LogWarning("Unable to find UIPowerWheel.");
+        }
+        else
+        {
+            this.LogWarn("Unable to find UIPowerWheel.");
         }
     }
 }

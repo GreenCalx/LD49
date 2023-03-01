@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 /**
 * Interface implemented by UI elements that needs to interact with the InputHelper panel
@@ -9,15 +7,17 @@ using UnityEngine;
 **/
 public interface IUIGarageElement
 {
-  public struct UIGarageHelperValue {
-    public string imgName;
-    public string txt;
+    public struct UIGarageHelperValue
+    {
+        public string imgName;
+        public string txt;
 
-    public UIGarageHelperValue(string imgName, string txt) {
-      this.imgName = imgName;
-      this.txt = txt;
+        public UIGarageHelperValue(string imgName, string txt)
+        {
+            this.imgName = imgName;
+            this.txt = txt;
+        }
     }
-  }
-  // Dictonary<Resources path for image, related text>
-  public List<UIGarageHelperValue> getHelperInputs();
+    // Dictonary<Resources path for image, related text>
+    public List<UIGarageHelperValue> getHelperInputs();
 }

@@ -1,14 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class FrictionJoint3D : MonoBehaviour {
+public class FrictionJoint3D : MonoBehaviour
+{
 
-    [Range(0,1)]
+    [Range(0, 1)]
     public float Friction;
 
     protected Rigidbody Rigidbody;
-    
+
     void Awake()
     {
         Rigidbody = GetComponent<Rigidbody>();

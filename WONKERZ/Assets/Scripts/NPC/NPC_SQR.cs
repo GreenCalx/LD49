@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class NPC_SQR : MonoBehaviour
 {
-    public enum SQR_BEHAVIOURS {
+    public enum SQR_BEHAVIOURS
+    {
         KICKER, BOMB_DROPPER
     }
     public SQR_BEHAVIOURS behaviour;
@@ -27,43 +26,43 @@ public class NPC_SQR : MonoBehaviour
     public float BombDropForce = 1f;
     public float delayBombAnimStart = 0.5f;
 
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float shootAngleVariationDelta = 5f;
-    [Range(1f,10f)]
+    [Range(1f, 10f)]
     public float shootingForceVariationDelta = 2f;
 
     [HideInInspector]
     public bool exitReached = false;
     [HideInInspector]
     public bool launchBombDrop = false;
-    
+
     private float timeOfLastBombDrop = 0f;
     private bool shouldDropBomb = false;
 
     ///
-    private NavMeshAgent    navmesh;
-    private NavMeshPath     path;
+    private NavMeshAgent navmesh;
+    private NavMeshPath path;
     private bool deactivate_sqr;
 
     [Header("Global Tweaks")]
-    public  Animator    animator;
-    private const string    run_anim_parm = "RUN";
-    private const string    kick_anim_parm = "KICK";
-    private const string    runback_anim_parm = "RUN_BACKWARD";
-    private const string    dropbomb_anim_parm = "DROP_BOMB";
-    private const string    jump_anim_parm = "JUMP";
-    private const string    crowpose_anim_parm = "CROW_POSE";
-    private float           delayAnimElapsed = 0f;
-    
+    public Animator animator;
+    private const string run_anim_parm = "RUN";
+    private const string kick_anim_parm = "KICK";
+    private const string runback_anim_parm = "RUN_BACKWARD";
+    private const string dropbomb_anim_parm = "DROP_BOMB";
+    private const string jump_anim_parm = "JUMP";
+    private const string crowpose_anim_parm = "CROW_POSE";
+    private float delayAnimElapsed = 0f;
 
-    public PlayerDetector   detector;
-    public PlayerDetector   attackRangeDetector;
+
+    public PlayerDetector detector;
+    public PlayerDetector attackRangeDetector;
 
     public Transform fleeGoal;
     public Transform exitJumpPoint;
-    [Range(20f,200f)]
+    [Range(20f, 200f)]
     public float fleeTotDistanceStep = 50f;
-    [Range(1f,20f)]
+    [Range(1f, 20f)]
     public float jumpExitTotDistanceStep = 50f;
 
     // Start is called before the first frame update
@@ -83,7 +82,7 @@ public class NPC_SQR : MonoBehaviour
         launchBombDrop = false;
         deactivate_sqr = false;
 
-        if (behaviour==SQR_BEHAVIOURS.KICKER)
+        if (behaviour == SQR_BEHAVIOURS.KICKER)
             navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
     }
 
@@ -93,9 +92,9 @@ public class NPC_SQR : MonoBehaviour
         if (deactivate_sqr)
             return;
 
-        if ( behaviour == SQR_BEHAVIOURS.KICKER)
+        if (behaviour == SQR_BEHAVIOURS.KICKER)
             kickerUpdate();
-        else if ( behaviour == SQR_BEHAVIOURS.BOMB_DROPPER )
+        else if (behaviour == SQR_BEHAVIOURS.BOMB_DROPPER)
             bombDropperUpdate();
     }
 
@@ -106,7 +105,9 @@ public class NPC_SQR : MonoBehaviour
             if (detector.playerInRange || detector.dummyInRange)
             {
                 launchBombDrop = true;
-            } else {
+            }
+            else
+            {
                 return;
             }
         }
@@ -128,34 +129,38 @@ public class NPC_SQR : MonoBehaviour
         {
             Vector3 nextPoint = Vector3.MoveTowards(transform.position, fleeGoal.position, fleeTotDistanceStep);
             fleeBackwardToPoint(nextPoint);
-        } else {
+        }
+        else
+        {
             chill();
         }
 
         // poll if bombdrop is needed
-        if (shouldDropBomb) {
-            if ( delayAnimElapsed >= delayBombAnimStart)
+        if (shouldDropBomb)
+        {
+            if (delayAnimElapsed >= delayBombAnimStart)
                 dropBomb();
             else
                 delayAnimElapsed += Time.deltaTime;
         }
-        if (timeOfLastBombDrop >= timeStepForBombDrop) {
+        if (timeOfLastBombDrop >= timeStepForBombDrop)
+        {
             startDropBomb();
-        } 
+        }
 
-        
+
     }
 
     private void exitToCrowPose()
     {
-        animator.SetBool( dropbomb_anim_parm, false);
-        animator.SetBool( jump_anim_parm, true);
+        animator.SetBool(dropbomb_anim_parm, false);
+        animator.SetBool(jump_anim_parm, true);
         shouldDropBomb = false;
 
         Vector3 nextPoint = Vector3.MoveTowards(transform.position, exitJumpPoint.position, jumpExitTotDistanceStep);
-        if ( transform.position == exitJumpPoint.position )
+        if (transform.position == exitJumpPoint.position)
         {
-            animator.SetBool( crowpose_anim_parm, true);
+            animator.SetBool(crowpose_anim_parm, true);
             deactivate_sqr = true;
             return;
         }
@@ -164,14 +169,14 @@ public class NPC_SQR : MonoBehaviour
 
     private void fleeBackwardToPoint(Vector3 iGoal)
     {
-        animator.SetBool( runback_anim_parm, true);
+        animator.SetBool(runback_anim_parm, true);
         navmesh.SetDestination(iGoal);
     }
 
     private void chill()
     {
-        animator.SetBool( run_anim_parm, false);
-        animator.SetBool( runback_anim_parm, false);
+        animator.SetBool(run_anim_parm, false);
+        animator.SetBool(runback_anim_parm, false);
     }
 
     private void startDropBomb()
@@ -194,13 +199,13 @@ public class NPC_SQR : MonoBehaviour
         float angleVal = Random.Range(-shootAngleVariationDelta, shootAngleVariationDelta);
         shootDir.x = transform.forward.x * Mathf.Cos(angleVal) - transform.forward.z * Mathf.Sin(angleVal);
         shootDir.z = transform.forward.x * Mathf.Sin(angleVal) + transform.forward.z * Mathf.Cos(angleVal);
-        
+
         // vary force
         float forceVariation = Random.Range(1f, shootingForceVariationDelta);
 
         // apply
-        bombRB.AddForce( shootDir * BombDropForce * forceVariation, ForceMode.VelocityChange);
-        
+        bombRB.AddForce(shootDir * BombDropForce * forceVariation, ForceMode.VelocityChange);
+
         shouldDropBomb = false;
         timeOfLastBombDrop = 0f;
         animator.SetBool(dropbomb_anim_parm, false);
@@ -213,12 +218,14 @@ public class NPC_SQR : MonoBehaviour
         {
             if (attackRangeDetector.playerInRange)
             {
-                animator.SetBool( run_anim_parm, false);
-                animator.SetBool( kick_anim_parm, true);
+                animator.SetBool(run_anim_parm, false);
+                animator.SetBool(kick_anim_parm, true);
 
-            } else {
+            }
+            else
+            {
                 navmesh.SetDestination(detector.player.position);
-                animator.SetBool( kick_anim_parm, false);
+                animator.SetBool(kick_anim_parm, false);
             }
         }
 
@@ -227,12 +234,14 @@ public class NPC_SQR : MonoBehaviour
         {
             if (attackRangeDetector.dummyInRange)
             {
-                animator.SetBool( run_anim_parm, false);
-                animator.SetBool( kick_anim_parm, true);
-            
-            } else {
+                animator.SetBool(run_anim_parm, false);
+                animator.SetBool(kick_anim_parm, true);
+
+            }
+            else
+            {
                 navmesh.SetDestination(detector.dummy.position);
-                animator.SetBool( kick_anim_parm, false);
+                animator.SetBool(kick_anim_parm, false);
             }
         }
 
@@ -243,32 +252,38 @@ public class NPC_SQR : MonoBehaviour
                 idle_elapsed_time = 0f;
             is_running = false;
 
-            if ( idle_elapsed_time > idle_duration )
+            if (idle_elapsed_time > idle_duration)
             {
                 navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
                 is_running = true;
-            } else {
+            }
+            else
+            {
                 idle_elapsed_time += Time.deltaTime;
             }
-            
-        } else {
+
+        }
+        else
+        {
             is_running = true;
         }
-        animator.SetBool( run_anim_parm, is_running);
+        animator.SetBool(run_anim_parm, is_running);
     }
 
-    private Vector3 RandomNavmeshLocation(float radius) {
-         Vector3 randomDirection = Random.insideUnitSphere * radius;
-         randomDirection += transform.position;
-         NavMeshHit hit;
-         Vector3 finalPosition = Vector3.zero;
-         if (NavMesh.SamplePosition(randomDirection, out hit, radius, 1)) {
-             finalPosition = hit.position;            
-         }
-         return finalPosition;
-     }
+    private Vector3 RandomNavmeshLocation(float radius)
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * radius;
+        randomDirection += transform.position;
+        NavMeshHit hit;
+        Vector3 finalPosition = Vector3.zero;
+        if (NavMesh.SamplePosition(randomDirection, out hit, radius, 1))
+        {
+            finalPosition = hit.position;
+        }
+        return finalPosition;
+    }
 
-    public void updateTarget( Vector3 iTarget)
+    public void updateTarget(Vector3 iTarget)
     {
         NavMesh.CalculatePath(transform.position, iTarget, NavMesh.AllAreas, path);
         navmesh.path = path;

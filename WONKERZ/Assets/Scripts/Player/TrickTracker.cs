@@ -1,15 +1,15 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
+using static Schnibble.SchPhysics;
 
 // should be in namespace or sm shit but access to tricks not working for some reason ?
-public enum WHEEL_LOCATION 
+public enum WHEEL_LOCATION
 {
-        FRONT_RIGHT = 0,
-        FRONT_LEFT = 1,
-        BACK_RIGHT = 2,
-        BACK_LEFT = 3
+    FRONT_RIGHT = 0,
+    FRONT_LEFT = 1,
+    BACK_RIGHT = 2,
+    BACK_LEFT = 3
 }
 
 public class TrickTracker : MonoBehaviour
@@ -33,7 +33,7 @@ public class TrickTracker : MonoBehaviour
 
     [HideInInspector]
     public TrickLine trick_line;
-    
+
 
     //[HideInInspector]
     public float init_rot_x, init_rot_y, init_rot_z;
@@ -41,12 +41,12 @@ public class TrickTracker : MonoBehaviour
     private List<float> rec_rot_x, rec_rot_y, rec_rot_z;
 
     public Vector3 rotations;
-    
+
     [HideInInspector]
-    public float  time_waited_after_line;
+    public float time_waited_after_line;
     [HideInInspector]
     public float recorded_time_trick;
-    private KeyValuePair<Trick,float> flat_trick_starter;
+    private KeyValuePair<Trick, float> flat_trick_starter;
 
     private CarController CC;
     public bool ready_to_rec_line;
@@ -61,12 +61,12 @@ public class TrickTracker : MonoBehaviour
         }
 
         wheels_statuses = new bool[4];
-        for (int i = 0 ; i < wheels_statuses.Length ; i ++)
+        for (int i = 0; i < wheels_statuses.Length; i++)
             wheels_statuses[i] = true;
 
         if (trickUI == null)
         {
-            Debug.LogWarning("TrickUI is missing.");
+            this.LogWarn("TrickUI is missing.");
         }
 
         trick_line = new TrickLine();
@@ -81,7 +81,7 @@ public class TrickTracker : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!activate_tricks || (trick_line==null))
+        if (!activate_tricks || (trick_line == null))
             return;
 
         updateWheelStatuses();
@@ -100,7 +100,9 @@ public class TrickTracker : MonoBehaviour
                     recordRotations();
                     time_trick_started = Time.time;
                 }
-            } else {
+            }
+            else
+            {
                 recordRotations();
                 if (tryContinueLine())
                 { /*continue line..*/ }
@@ -117,11 +119,11 @@ public class TrickTracker : MonoBehaviour
 
         // add to rec values
         if (!rec_rot_x.Contains(curr_PYR.x))
-            rec_rot_x.Add( curr_PYR.x );
+            rec_rot_x.Add(curr_PYR.x);
         if (!rec_rot_y.Contains(curr_PYR.y))
-            rec_rot_y.Add( curr_PYR.y);
+            rec_rot_y.Add(curr_PYR.y);
         if (!rec_rot_z.Contains(curr_PYR.z))
-            rec_rot_z.Add( curr_PYR.z);
+            rec_rot_z.Add(curr_PYR.z);
 
         updateRotations();
     }
@@ -130,21 +132,21 @@ public class TrickTracker : MonoBehaviour
     {
         //float ret = iCurrent - iInit;
         //return (ret+180) % 360 - 180;
-        return Mathf.DeltaAngle( iInit, iCurrent);
+        return Mathf.DeltaAngle(iInit, iCurrent);
     }
 
     public void updateRotations()
     {
         int xcount = rec_rot_x.Count;
         if (xcount > 0)
-            rotations.x = rotDiff( rec_rot_x[0], rec_rot_x[xcount-1]);
+            rotations.x = rotDiff(rec_rot_x[0], rec_rot_x[xcount - 1]);
         int ycount = rec_rot_y.Count;
         if (ycount > 0)
-            rotations.y = rotDiff( rec_rot_y[0], rec_rot_y[ycount-1]);
+            rotations.y = rotDiff(rec_rot_y[0], rec_rot_y[ycount - 1]);
         int zcount = rec_rot_z.Count;
         if (zcount > 0)
-            rotations.z = rotDiff( rec_rot_z[0], rec_rot_z[zcount-1]);
-        
+            rotations.z = rotDiff(rec_rot_z[0], rec_rot_z[zcount - 1]);
+
     }
 
     public void initRotationsRecord()
@@ -159,42 +161,46 @@ public class TrickTracker : MonoBehaviour
     }
 
     // consume rotation
-    public void updateConsumedRotations( TrickCondition tc )
+    public void updateConsumedRotations(TrickCondition tc)
     {
         //Vector3 curr_PYR = MathUtils.getPYR(player_transform.rotation);
-        if (tc.x_rot!=0)
+        if (tc.x_rot != 0)
         { rec_rot_x.Clear(); }
-        if (tc.y_rot!=0)
+        if (tc.y_rot != 0)
         { rec_rot_y.Clear(); }
-        if (tc.z_rot!=0)
+        if (tc.z_rot != 0)
         { rec_rot_z.Clear(); }
         //updateRotations();
     }
 
     public bool tryOpenLine()
     {
-        Trick opener1 = TrickDictionary.checkTricksIndexed( this, Trick.TRICK_NATURE.NEUTRAL);
-        Trick opener2 = TrickDictionary.checkTricksIndexed( this, Trick.TRICK_NATURE.FLAT);
+        Trick opener1 = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick opener2 = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
 
-        if (opener1!=null)
+        if (opener1 != null)
         {
             trick_line.open(opener1);
             return true;
-        } else if (opener2!=null) {
-            
-            if ( flat_trick_starter.Equals(default(KeyValuePair<Trick,float>)) )
+        }
+        else if (opener2 != null)
+        {
+
+            if (flat_trick_starter.Equals(default(KeyValuePair<Trick, float>)))
             { flat_trick_starter = new KeyValuePair<Trick, float>(opener2, 0f); }
 
             Trick t = flat_trick_starter.Key;
-            if ( t.name == opener2.name )
+            if (t.name == opener2.name)
             {
-                flat_trick_starter = new KeyValuePair<Trick, float>( opener2, flat_trick_starter.Value + Time.deltaTime );
-            } else {
+                flat_trick_starter = new KeyValuePair<Trick, float>(opener2, flat_trick_starter.Value + Time.deltaTime);
+            }
+            else
+            {
                 flat_trick_starter = new KeyValuePair<Trick, float>();
             }
-            
+
             if (flat_trick_starter.Value > hold_time_start_flat_trick)
-            { 
+            {
                 trick_line.open(opener2);
                 return true;
             }
@@ -211,27 +217,32 @@ public class TrickTracker : MonoBehaviour
     public bool tryContinueLine()
     {
         // NEW TRICK / continuing trick
-        Trick tbasic    = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
-        Trick tflat     = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
-        Trick tneutral  = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
-        Trick tignore   = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
+        Trick tbasic = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
+        Trick tflat = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
+        Trick tneutral = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick tignore = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
 
         double trick_duration = Time.time - time_trick_started;
-        if (tbasic!=null)
+        if (tbasic != null)
         {
             trick_line.add(tbasic, trick_duration);
-            updateConsumedRotations( tbasic.condition );
+            updateConsumedRotations(tbasic.condition);
             return true;
-        } else if (tflat!=null){
+        }
+        else if (tflat != null)
+        {
             if (trick_duration > hold_time_start_flat_trick)
             {
                 trick_line.add(tflat, trick_duration);
                 return true;
             }
-        } else if (tneutral!=null){
+        }
+        else if (tneutral != null)
+        {
             trick_line.add(tneutral, trick_duration);
             return true;
-        } else if (tignore!=null)
+        }
+        else if (tignore != null)
         {
             return true;
         }
@@ -263,19 +274,19 @@ public class TrickTracker : MonoBehaviour
         time_waited_after_line = Time.time;
     }
 
-    public async void updateUI()
+    public void updateUI()
     {
         if (trickUI == null)
         { return; }
 
-        if (!trick_line.is_opened && ready_to_rec_line )
+        if (!trick_line.is_opened && ready_to_rec_line)
         {
             trickUI.displayTrick("");
             trickUI.displayScore(0);
             return;
         }
 
-        if (trick_line.getLineScore(combo_multiplier) < MIN_SCORE_FOR_DISPLAY )
+        if (trick_line.getLineScore(combo_multiplier) < MIN_SCORE_FOR_DISPLAY)
         {
             return;
         }

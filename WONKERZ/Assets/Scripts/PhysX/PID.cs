@@ -1,10 +1,11 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class PID {
-    public enum DerivativeMeasurement {
+public class PID
+{
+    public enum DerivativeMeasurement
+    {
         Velocity,
         ErrorRateOfChange
     }
@@ -25,11 +26,13 @@ public class PID {
     public float velocity;  //only used for the info display
     public bool derivativeInitialized;
 
-    public void Reset() {
+    public void Reset()
+    {
         derivativeInitialized = false;
     }
 
-    public float Update(float dt, float currentValue, float targetValue) {
+    public float Update(float dt, float currentValue, float targetValue)
+    {
         if (dt <= 0) throw new ArgumentOutOfRangeException(nameof(dt));
 
         float error = targetValue - currentValue;
@@ -52,13 +55,19 @@ public class PID {
         //choose D term to use
         float deriveMeasure = 0;
 
-        if (derivativeInitialized) {
-            if (derivativeMeasurement == DerivativeMeasurement.Velocity) {
+        if (derivativeInitialized)
+        {
+            if (derivativeMeasurement == DerivativeMeasurement.Velocity)
+            {
                 deriveMeasure = -valueRateOfChange;
-            } else {
+            }
+            else
+            {
                 deriveMeasure = errorRateOfChange;
             }
-        } else {
+        }
+        else
+        {
             derivativeInitialized = true;
         }
 
@@ -69,11 +78,13 @@ public class PID {
         return Mathf.Clamp(result, outputMin, outputMax);
     }
 
-    float AngleDifference(float a, float b) {
+    float AngleDifference(float a, float b)
+    {
         return (a - b + 540) % 360 - 180;   //calculate modular difference, and remap to [-180, 180]
     }
 
-    public float UpdateAngle(float dt, float currentAngle, float targetAngle) {
+    public float UpdateAngle(float dt, float currentAngle, float targetAngle)
+    {
         if (dt <= 0) throw new ArgumentOutOfRangeException(nameof(dt));
         float error = AngleDifference(targetAngle, currentAngle);
         errorLast = error;
@@ -96,13 +107,19 @@ public class PID {
         //choose D term to use
         float deriveMeasure = 0;
 
-        if (derivativeInitialized) {
-            if (derivativeMeasurement == DerivativeMeasurement.Velocity) {
+        if (derivativeInitialized)
+        {
+            if (derivativeMeasurement == DerivativeMeasurement.Velocity)
+            {
                 deriveMeasure = -valueRateOfChange;
-            } else {
+            }
+            else
+            {
                 deriveMeasure = errorRateOfChange;
             }
-        } else {
+        }
+        else
+        {
             derivativeInitialized = true;
         }
 

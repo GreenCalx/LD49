@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -36,14 +35,14 @@ public class DeathController : MonoBehaviour
         }
     }
 
-    public void Activate( Vector3 iSteer = default(Vector3) )
+    public void Activate(Vector3 iSteer = default(Vector3))
     {
         foreach (var rb in objects)
         {
             rb.isKinematic = false;
             rb.detectCollisions = true;
             rb.AddExplosionForce(force, transform.position, radius, upmodif);
-            rb.AddForce(iSteer/3, ForceMode.Acceleration);
+            rb.AddForce(iSteer / 3, ForceMode.Acceleration);
         }
 
         GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
@@ -52,12 +51,12 @@ public class DeathController : MonoBehaviour
         isStarted = true;
         scalingTimerCurrent = 0f;
 
-        if (deathScreen==null)
+        if (deathScreen == null)
             deathScreen = Instantiate(deathUIRef);
         deathScreen.SetActive(true);
         deathText = deathScreen.GetComponent<DeathUI>().deathText;
-        Destroy( deathScreen, Access.CameraManager().deathCamDuration);
-        
+        Destroy(deathScreen, Access.CameraManager().deathCamDuration);
+
         Destroy(gameObject, timeBeforeDeletion);
     }
 
@@ -69,7 +68,7 @@ public class DeathController : MonoBehaviour
             rb.detectCollisions = false;
         }
 
-         var player = GetComponent<CarController>();
+        var player = GetComponent<CarController>();
         Time.timeScale = 1f;
         isStarted = false;
 
@@ -83,7 +82,7 @@ public class DeathController : MonoBehaviour
             scalingTimerCurrent += Time.unscaledDeltaTime;
             Time.timeScale = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
 
-            var c =  deathText.color;
+            var c = deathText.color;
             c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
             deathText.color = c;
         }

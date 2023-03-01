@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 public class UIGarageInputHelper : MonoBehaviour
 {
     private List<UIGarageHelperElement> availableHelperBoxes;
@@ -19,7 +17,8 @@ public class UIGarageInputHelper : MonoBehaviour
         List<IUIGarageElement.UIGarageHelperValue> newHelperText = iUIInterface.getHelperInputs();
 
         int helperIdx = 0;
-        while (helperIdx < availableHelperBoxes.Count && helperIdx < newHelperText.Count) {
+        while (helperIdx < availableHelperBoxes.Count && helperIdx < newHelperText.Count)
+        {
             // if existing helper, update it
             var el = availableHelperBoxes[helperIdx];
             var val = newHelperText[helperIdx];
@@ -28,9 +27,10 @@ public class UIGarageInputHelper : MonoBehaviour
             el.txt_elem.text = val.txt;
 
             helperIdx++;
-        } 
+        }
 
-        while(helperIdx < newHelperText.Count) {
+        while (helperIdx < newHelperText.Count)
+        {
             // create new helpers
             var el = GameObject.Instantiate(helperBox_ref, gameObject.transform);
             el.SetActive(true);
@@ -44,14 +44,16 @@ public class UIGarageInputHelper : MonoBehaviour
 
             helperIdx++;
         }
-        
-        var range = (availableHelperBoxes.Count-1) - helperIdx;
-        if (range > 0) {
-        while(helperIdx < availableHelperBoxes.Count) {
-            // remove uneeded helpers
-            GameObject.Destroy(availableHelperBoxes[helperIdx].gameObject);
-        }
-        availableHelperBoxes.RemoveRange( availableHelperBoxes.Count - range, range );
+
+        var range = (availableHelperBoxes.Count - 1) - helperIdx;
+        if (range > 0)
+        {
+            while (helperIdx < availableHelperBoxes.Count)
+            {
+                // remove uneeded helpers
+                GameObject.Destroy(availableHelperBoxes[helperIdx].gameObject);
+            }
+            availableHelperBoxes.RemoveRange(availableHelperBoxes.Count - range, range);
         }
     }
 }

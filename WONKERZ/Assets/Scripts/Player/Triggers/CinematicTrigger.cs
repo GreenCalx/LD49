@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Triggers only once in current scene
@@ -11,14 +9,14 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
 
-    private bool triggered= false;
+    private bool triggered = false;
 
     public bool freezePlayer = true;
     public CinematicCamera cam;
     // Start is called before the first frame update
     void Start()
     {
-        triggered =false;
+        triggered = false;
     }
 
     // Update is called once per frame
@@ -26,7 +24,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry) 
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         if (!isSkippable)
             return;
@@ -61,7 +59,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         triggered = true;
         cam.launch();
-        
+
         // if is a level entry cinematic, display the right UI
         if (isLevelEntryCinematic)
         {
@@ -80,7 +78,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         if (!triggered)
             return;
-            
+
         if (Utils.isPlayer(iCollider.gameObject))
         {
             EndCinematic();

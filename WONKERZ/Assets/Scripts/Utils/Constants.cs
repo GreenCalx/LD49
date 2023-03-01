@@ -1,25 +1,32 @@
+namespace Schnibble
+{
+    public static partial class DebugVars
+    {
+        public static bool debugAxle = true;
+    }
+}
 
 public struct Constants
 {
 
-  // -- Debug vars --
-  public const bool DBG_REPLAYDUMP = false;
+    // -- Debug vars --
+    public const bool DBG_REPLAYDUMP = false;
 
-  // -- Paths -- 
-  public const string FD_SAVEFILES = "./savefiles/";
-  public const string unix_FD_SAVEFILES = "";
+    // -- Paths --
+    public const string FD_SAVEFILES = "./savefiles/";
+    public const string unix_FD_SAVEFILES = "";
 
-  // -- Generic Object names extensions --
-  public const string EXT_INSTANCE = " (Instance)";
+    // -- Generic Object names extensions --
+    public const string EXT_INSTANCE = " (Instance)";
 
-  // -- Scene names --
-    public const string SN_SPLASH="SchnibbleSplash";
-    public const string SN_TITLE="titlescene";
-    public const string SN_MAINGAME="main";
-    public const string SN_FINISH="finishscene";
-    public const string SN_HUB="HUB";
-    public const string SN_LOADING="LoadingScene";
-    public const string SN_DESERT="desert_track";
+    // -- Scene names --
+    public const string SN_SPLASH = "SchnibbleSplash";
+    public const string SN_TITLE = "titlescene";
+    public const string SN_MAINGAME = "main";
+    public const string SN_FINISH = "finishscene";
+    public const string SN_HUB = "HUB";
+    public const string SN_LOADING = "LoadingScene";
+    public const string SN_DESERT = "desert_track";
     public const string SN_DESERT_TOWER = "desert_tower";
 
     // -- Global GameObjects --
@@ -33,7 +40,7 @@ public struct Constants
     public const string GO_UIGARAGE = "UIGarage";
     public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
     public const string GO_PLAYERUI = "PlayerUI";
-    
+
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
 

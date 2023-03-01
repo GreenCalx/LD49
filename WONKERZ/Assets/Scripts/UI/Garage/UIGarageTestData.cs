@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using Schnibble;
 
 [System.Serializable]
 public class SerializableInputData
 {
     public Dictionary<string, InputManager.InputState> Inputs = new Dictionary<string, InputManager.InputState>();
     public int NumberOfFramesIsSame = 1;
-    public bool isDpadDownPressed   = false;
-    public bool isDpadUpPressed     = false;
-    public bool isDpadLeftPressed   = false;
-    public bool isDpadRightPressed  = false;
+    public bool isDpadDownPressed = false;
+    public bool isDpadUpPressed = false;
+    public bool isDpadLeftPressed = false;
+    public bool isDpadRightPressed = false;
     public InputManager.InputData buildInputData()
     {
         InputManager.InputData retval = new InputManager.InputData();
@@ -25,10 +25,12 @@ public class SerializableInputData
 
     public InputManager.InputData InputData
     {
-        get {
+        get
+        {
             return buildInputData();
         }
-        set {
+        set
+        {
             Inputs = value.Inputs;
             NumberOfFramesIsSame = value.NumberOfFramesIsSame;
             isDpadDownPressed = value.isDpadDownPressed;
@@ -37,13 +39,13 @@ public class SerializableInputData
             isDpadRightPressed = value.isDpadRightPressed;
         }
     }
-    public static implicit operator InputManager.InputData( SerializableInputData inst )
+    public static implicit operator InputManager.InputData(SerializableInputData inst)
     {
         return inst.InputData;
     }
     public static implicit operator SerializableInputData(InputManager.InputData iInputData)
     {
-        return new SerializableInputData{ InputData = iInputData };
+        return new SerializableInputData { InputData = iInputData };
     }
 }
 [System.Serializable]
@@ -68,10 +70,12 @@ public class SerializableInputState
 
     public InputManager.InputState InputState
     {
-        get {
+        get
+        {
             return buildInputState();
         }
-        set {
+        set
+        {
             IsUp = value.IsUp;
             IsDown = value.IsDown;
             Down = value.Down;
@@ -79,13 +83,13 @@ public class SerializableInputState
             AxisValue = value.AxisValue;
         }
     }
-    public static implicit operator InputManager.InputState( SerializableInputState inst )
+    public static implicit operator InputManager.InputState(SerializableInputState inst)
     {
         return inst.InputState;
     }
     public static implicit operator SerializableInputState(InputManager.InputState iInputState)
     {
-        return new SerializableInputState{ InputState = iInputState };
+        return new SerializableInputState { InputState = iInputState };
     }
 }
 
@@ -100,12 +104,14 @@ public class RecordData : EntityData
         if (!!im && !!uigpt)
         {
             im.recordedInputs = new Queue<InputManager.InputData>();
-            foreach( SerializableInputData data in record)
-            { 
+            foreach (SerializableInputData data in record)
+            {
                 im.recordedInputs.Enqueue(data);
             }
-        } else {
-            Debug.LogError("Failed to retrieve InputManager in RecordData.OnLoad()");
+        }
+        else
+        {
+            this.LogError("Failed to retrieve InputManager in RecordData.OnLoad()");
         }
     }
 }
@@ -116,7 +122,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
     public string test_name;
 
     // Serizable datas
-   public RecordData recordData;
+    public RecordData recordData;
 
     UIGarageTestData()
     {
@@ -126,7 +132,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
     public bool hasData()
     {
         if (recordData.record == null)
-        { 
+        {
             // As we are loading input ino InputManager,
             // if we're loading data without recording it in the same session
             // recordData will be null even though its loaded in the IM
@@ -134,7 +140,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
             // TODO : Find a better way to broadcast data loading to every entities?
             InputManager im = Access.InputManager();
             recordData.record = new Queue<SerializableInputData>();
-            foreach( InputManager.InputData data in im.recordedInputs)
+            foreach (InputManager.InputData data in im.recordedInputs)
             {
                 recordData.record.Enqueue(data);
             }
@@ -146,7 +152,7 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
     {
         InputManager im = Access.InputManager();
         recordData.record = new Queue<SerializableInputData>();
-        foreach( InputManager.InputData data in im.recordedInputs)
+        foreach (InputManager.InputData data in im.recordedInputs)
         {
             recordData.record.Enqueue(data);
         }

@@ -1,23 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public interface ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
 
     public void applyDirectEffect();
 
     public void onRefresh();
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC);
-    
+
     public bool turnOffTriggers();
     public void onDisableEffect();
 }
 
 public class NeutralCarPower : ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
     public NeutralCarPower()
     {
         name = "NeutralPower";
@@ -46,7 +45,7 @@ public class NeutralCarPower : ICarPower
 
 public class BallCarPower : ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
     public GameObject modelObjectRef;
 
     private GameObject modelObjectInst;
@@ -60,17 +59,17 @@ public class BallCarPower : ICarPower
     {
         CarController cc = Access.Player();
         cc.SetMode(CarController.CarMode.BALL); // disables physx / control effects
-        
+
         modelObjectInst = GameObject.Instantiate(modelObjectRef);
         modelObjectInst.transform.position = cc.transform.position;
         modelObjectInst.transform.rotation = cc.transform.rotation;
 
         Rigidbody player_rb = cc.GetComponent<Rigidbody>();
-        Rigidbody model_rb  = modelObjectInst.GetComponent<Rigidbody>();
+        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
         if (model_rb && player_rb)
         {
             //model_rb.velocity = player_rb.velocity;
-            model_rb.AddForce(player_rb.velocity,ForceMode.VelocityChange);
+            model_rb.AddForce(player_rb.velocity, ForceMode.VelocityChange);
         }
     }
     public void onRefresh()
@@ -80,7 +79,7 @@ public class BallCarPower : ICarPower
         cc.transform.rotation = modelObjectInst.transform.rotation;
 
         Rigidbody player_rb = cc.GetComponent<Rigidbody>();
-        Rigidbody model_rb  = modelObjectInst.GetComponent<Rigidbody>();
+        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
         if (model_rb && player_rb)
         {
             //model_rb.velocity = player_rb.velocity;
@@ -91,7 +90,7 @@ public class BallCarPower : ICarPower
     {
         CarController cc = Access.Player();
         Rigidbody player_rb = cc.GetComponent<Rigidbody>();
-        Rigidbody model_rb  = modelObjectInst.GetComponent<Rigidbody>();
+        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
         if (model_rb && player_rb)
         {
             //model_rb.velocity = player_rb.velocity;
@@ -101,7 +100,7 @@ public class BallCarPower : ICarPower
     }
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
     {
-        //Debug.Log("Ball Input effects");
+        this.Log("Ball Input effects");
         // No motor
     }
     public bool turnOffTriggers()
@@ -114,7 +113,7 @@ public class BallCarPower : ICarPower
 
 public class WaterCarPower : ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
     public WaterCarPower()
     {
         name = "WaterPower";
@@ -125,7 +124,7 @@ public class WaterCarPower : ICarPower
     }
     public void onRefresh()
     {
-        
+
     }
     public void onDisableEffect()
     {
@@ -133,7 +132,7 @@ public class WaterCarPower : ICarPower
     }
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
     {
-        //Debug.Log("Water Input effects");
+        this.Log("Water Input effects");
     }
     public bool turnOffTriggers()
     {
@@ -145,7 +144,7 @@ public class WaterCarPower : ICarPower
 
 public class PlaneCarPower : ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
     public PlaneCarPower()
     {
         name = "PlanePower";
@@ -153,19 +152,19 @@ public class PlaneCarPower : ICarPower
     public void applyDirectEffect()
     {
         Access.Player().SetMode(CarController.CarMode.DELTA);
-        Access.Player().IsAircraft = true;
+        //Access.Player().IsAircraft = true;
     }
     public void onRefresh()
     {
-        
+
     }
     public void onDisableEffect()
     {
-        Access.Player().IsAircraft = false;
+        //Access.Player().IsAircraft = false;
     }
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
     {
-        //Debug.Log("Plane Input effects");
+        this.Log("Plane Input effects");
     }
     public bool turnOffTriggers()
     {
@@ -177,7 +176,7 @@ public class PlaneCarPower : ICarPower
 
 public class SpiderCarPower : ICarPower
 {
-    public string name {get;set;}
+    public string name { get; set; }
     public SpiderCarPower()
     {
         name = "SpiderPower";
@@ -188,7 +187,7 @@ public class SpiderCarPower : ICarPower
     }
     public void onRefresh()
     {
-        
+
     }
     public void onDisableEffect()
     {
@@ -196,7 +195,7 @@ public class SpiderCarPower : ICarPower
     }
     public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
     {
-        //Debug.Log("Spider Input effects");
+        this.Log("Spider Input effects");
     }
     public bool turnOffTriggers()
     {

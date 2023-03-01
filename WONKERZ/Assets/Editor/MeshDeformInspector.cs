@@ -1,8 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 [CustomEditor(typeof(MeshDeform))]
 public class MeshDeformInspector : Editor

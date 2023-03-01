@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CompressorBlock : MonoBehaviour
@@ -9,7 +7,7 @@ public class CompressorBlock : MonoBehaviour
 
     void Start()
     {
-        playerInBall        = false;
+        playerInBall = false;
     }
 
     void OnCollisionEnter(Collision iCollision)
@@ -27,7 +25,7 @@ public class CompressorBlock : MonoBehaviour
 
     void collisionEffect(Collision iCollision)
     {
-        CarController cc    = iCollision.collider.gameObject.GetComponent<CarController>();
+        CarController cc = iCollision.collider.gameObject.GetComponent<CarController>();
         BallPowerObject bpo = iCollision.collider.gameObject.GetComponent<BallPowerObject>();
         if (!!bpo)
             ballPowerPos = bpo.transform.position;
@@ -35,7 +33,7 @@ public class CompressorBlock : MonoBehaviour
             ballPowerPos = Access.Player().transform.position;
 
         playerInBall = !!bpo;
-        if ( !playerInBall && !!cc && !(Access.Player().CurrentMode==CarController.CarMode.BALL))
+        if (!playerInBall && !!cc && !(Access.Player().CurrentMode == CarController.CarMode.BALL))
         {
             Access.Player().kill();
         }

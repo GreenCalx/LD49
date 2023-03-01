@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class UIGarageCarStatsPanel : UIGaragePanel
 {
@@ -15,7 +15,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
         // update displayed curve
         GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
-        graphPanel.graphRenderer.view.SetCurve(cc.TORQUE);
+        graphPanel.graphRenderer.view.SetCurve(cc.torqueCurve);
 
         selectCurve();
     }
@@ -25,7 +25,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
         // update displayed curve
         GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
-        graphPanel.graphRenderer.view.SetCurve(cc.WEIGHT);
+        //       graphPanel.graphRenderer.view.SetCurve(cc.WEIGHT);
 
         selectCurve();
     }
@@ -47,18 +47,20 @@ public class UIGarageCarStatsPanel : UIGaragePanel
     {
         GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
-        for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
+        for (int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i)
+        {
             var v = graphPanel.graphRenderer.view.points[i];
-            var k = cc.TORQUE[i];
+            var k = cc.torqueCurve[i];
             k.time = v.x;
             k.value = v.y;
-            cc.TORQUE.MoveKey(i, k);
+            cc.torqueCurve.MoveKey(i, k);
         }
-        Debug.Log("player curve updated");
+        this.Log("player curve updated");
     }
 
     public void updatePlayerWeightCurve()
     {
+#if false
         GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
         CarController cc = player.GetComponent<CarController>();
 
@@ -69,6 +71,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
             k.value = v.y;
             cc.WEIGHT.MoveKey(i, k);
         }
-        Debug.Log("player curve updated");
+        this.Log("player curve updated");
+#endif
     }
 }

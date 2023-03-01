@@ -1,5 +1,8 @@
 using UnityEngine;
 
+using Schnibble;
+using static Schnibble.SchPhysics;
+
 
 public class WaterBoyancy : MonoBehaviour
 {
@@ -19,8 +22,9 @@ public class WaterBoyancy : MonoBehaviour
 
     void OnTriggerEnter(Collider c)
     {
-         var RB = c.GetComponent<Rigidbody>();
-        if(!Utils.Math.ValidateForce(RB.velocity).Item2) {
+        var RB = c.GetComponent<Rigidbody>();
+        if (!ValidateForce(RB.velocity).Item2)
+        {
             Debug.Break();
         }
         if (c.GetComponent<Rigidbody>().velocity.y > WaterSurfaceTension)
@@ -32,12 +36,13 @@ public class WaterBoyancy : MonoBehaviour
     void OnTriggerStay(Collider c)
     {
         var RB = c.GetComponent<Rigidbody>();
-        var F = -(RB.velocity + Physics.gravity * Time.deltaTime) * WaterDensity * (1-Vector3.Dot(RB.velocity.normalized, transform.up));
+        var F = -(RB.velocity + Physics.gravity * Time.deltaTime) * WaterDensity * (1 - Vector3.Dot(RB.velocity.normalized, transform.up));
         bool IsGoodValue = false;
-        (F, IsGoodValue) = Utils.Math.ValidateForce(F);
-        if (!IsGoodValue) {
+        (F, IsGoodValue) = ValidateForce(F);
+        if (!IsGoodValue)
+        {
             Debug.Break();
-            Debug.Log("VALIDATIOIN OF FORCE FAILED");
+            this.Log("VALIDATIOIN OF FORCE FAILED");
         }
 
         RB.AddForce(F, ForceMode.VelocityChange);

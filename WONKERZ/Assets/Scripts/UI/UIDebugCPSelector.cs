@@ -1,15 +1,14 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using Schnibble;
 
 public class UIDebugCPSelector : MonoBehaviour, IControllable
 {
     private CheckPointManager cpm;
     private List<string> CPs;
     private List<CheckPoint> eligibleCPs;
-    
+
     private int currSelectedCPIndex;
     private float selectorLatch = 0.2f;
     private float elapsed_time = 0f;
@@ -29,7 +28,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         cpm = Access.CheckPointManager();
         CPs = new List<string>();
         eligibleCPs = new List<CheckPoint>();
-        foreach(GameObject go in cpm.checkpoints)
+        foreach (GameObject go in cpm.checkpoints)
         {
             CheckPoint as_cp = go.GetComponent<CheckPoint>();
             if (as_cp.collectMod != CollectiblesManager.COLLECT_MOD.HEAVEN)
@@ -39,14 +38,14 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         }
         if (CPs.Count <= 0)
         {
-            Debug.LogWarning("UIDebugCPSelector::No checkpoints found");
+            this.LogWarn("UIDebugCPSelector::No checkpoints found");
             return;
         }
 
         currSelectedCPIndex = 0;
         TMP_selectedCP.text = CPs[currSelectedCPIndex];
     }
-    
+
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         if (!isActivated)
@@ -62,23 +61,23 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         X = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
         if (X < -0.2f)
         {
-                currSelectedCPIndex = ( currSelectedCPIndex <= 0) ? CPs.Count-1 : currSelectedCPIndex-1;
-                elapsed_time = 0f;
-                TMP_selectedCP.text = CPs[currSelectedCPIndex];
+            currSelectedCPIndex = (currSelectedCPIndex <= 0) ? CPs.Count - 1 : currSelectedCPIndex - 1;
+            elapsed_time = 0f;
+            TMP_selectedCP.text = CPs[currSelectedCPIndex];
         }
         else if (X > 0.2f)
         {
-                currSelectedCPIndex = ( currSelectedCPIndex >= CPs.Count-1) ? 0 : currSelectedCPIndex+1;
-                elapsed_time = 0f;
-                TMP_selectedCP.text = CPs[currSelectedCPIndex];
+            currSelectedCPIndex = (currSelectedCPIndex >= CPs.Count - 1) ? 0 : currSelectedCPIndex + 1;
+            elapsed_time = 0f;
+            TMP_selectedCP.text = CPs[currSelectedCPIndex];
         }
 
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
         {
             string selectedCP = CPs[currSelectedCPIndex];
-            foreach(CheckPoint cp in eligibleCPs)
+            foreach (CheckPoint cp in eligibleCPs)
             {
-                if ( cp.checkpoint_name ==  selectedCP)
+                if (cp.checkpoint_name == selectedCP)
                 {
                     cpm.last_checkpoint = cp.gameObject;
                     cpm.loadLastCP();

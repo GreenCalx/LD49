@@ -1,0 +1,38 @@
+(
+(nil . ((lsp-file-watch-ignored-directories . (
+                                          ".*/\.git"
+										  ".*/\.vs"
+                                          ".*/[Bb]uild"
+                                          ".*/[Ll]ibrary"
+                                          ".*/[Ll]ogs"
+										  ".*/[Oo]bj"
+										  ".*/[Pp]ackages"
+										  ".*/ProjectSettings"
+										  ".*/[Tt]emp"
+										  ".*/UserSettings"))
+			(lsp-file-watch-ignored-files . (".*\.meta"
+			                                 ".*\.prefab"
+											 ".*\.asset"
+											 ".*\.unity"
+											 ".*\.renderTexture"
+											 ".*\.jpeg"
+											 ".*\.jpg"
+											 ".*\.png"
+											 ".*\.exr"
+											 ".*\.fbx"
+											 ".*\.blender"
+											 ".*\.controller"
+											 ".*\.anim"
+											 ".*\.mat"
+											 ".*\.physicMaterial"
+											 ".*\.cubemap"
+											 ".*\.ttf"
+											 ".*\.lighting"
+											 ".*\.preset"
+											 ".*\.wav"
+											 ".*\.mp3"
+											 ".*\.mixer"
+											 ))							  
+	    )
+)
+)

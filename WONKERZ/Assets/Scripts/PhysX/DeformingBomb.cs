@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class DeformingBomb : MonoBehaviour
 {
     public float explosionRange = 1f;
-    public int numberOfBounceBeforeExplosion=1;
+    public int numberOfBounceBeforeExplosion = 1;
     public GameObject explosionEffect;
     public float explosionForce = 10f;
     public int explosionDamage = 5;
@@ -46,7 +45,7 @@ public class DeformingBomb : MonoBehaviour
                 CarController cc = Access.Player();
                 Vector3 pushBackDir = Vector3.zero;
                 pushBackDir = (cc.gameObject.transform.position - transform.position);
-                cc.takeDamage( explosionDamage, transform.position, pushBackDir, explosionForce );
+                cc.takeDamage(explosionDamage, transform.position, pushBackDir, explosionForce);
             }
         }
 
@@ -54,8 +53,9 @@ public class DeformingBomb : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnCollisionEnter(Collision other) {
-         
+    void OnCollisionEnter(Collision other)
+    {
+
         if (elapsedTimeBetweenBounces < minTimeBetweenBounces)
             return;
 
@@ -63,26 +63,30 @@ public class DeformingBomb : MonoBehaviour
         if (n_bounces < numberOfBounceBeforeExplosion)
             return;
 
-         if (other.gameObject.GetComponent<MeshDeform>() != null) {
-            Debug.Log("Collided with a DeformMesh : " + other.gameObject.name);
-             movePoints(other.gameObject, other.contacts[0].point);
-             explode();
-         }
-     }
+        if (other.gameObject.GetComponent<MeshDeform>() != null)
+        {
+            this.Log("Collided with a DeformMesh : " + other.gameObject.name);
+            movePoints(other.gameObject, other.contacts[0].point);
+            explode();
+        }
+    }
 
-    public void movePoints(GameObject other, Vector3 contactPoint) {
+    public void movePoints(GameObject other, Vector3 contactPoint)
+    {
         Vector3[] otherVerts = other.GetComponent<MeshDeform>().originalVertices;
         Vector3 localColPos = transform.InverseTransformPoint(contactPoint);
-        Debug.Log("Deformed collision point at : " + contactPoint);
-         float distance;
-         for (int i=0; i<otherVerts.Length; i++) {
-             distance = Vector3.Distance(contactPoint, other.transform.TransformPoint(otherVerts[i]));
-             if (distance <= explosionRange) {
-                  other.GetComponent<MeshDeform>().StartDisplacement(otherVerts[i]);
-                  Debug.Log("Deformed!!!  "+ i + " : " + other.transform.TransformPoint(otherVerts[i]));
-             }
-         }
+        this.Log("Deformed collision point at : " + contactPoint);
+        float distance;
+        for (int i = 0; i < otherVerts.Length; i++)
+        {
+            distance = Vector3.Distance(contactPoint, other.transform.TransformPoint(otherVerts[i]));
+            if (distance <= explosionRange)
+            {
+                other.GetComponent<MeshDeform>().StartDisplacement(otherVerts[i]);
+                this.Log("Deformed!!!  " + i + " : " + other.transform.TransformPoint(otherVerts[i]));
+            }
+        }
         //other.GetComponent<MeshDeform>().UpdateMesh(otherVerts);
-        
-     }
+
+    }
 }

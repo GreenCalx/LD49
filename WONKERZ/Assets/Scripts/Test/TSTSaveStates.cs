@@ -1,17 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Schnibble;
 
 public class TSTSaveStates : MonoBehaviour
 {
-    public  GameObject saveStateMarkerRef;
+    public GameObject saveStateMarkerRef;
     private GameObject saveStateMarkerInst;
 
     private Vector3 ss_pos = Vector3.zero;
     private Quaternion ss_rot = Quaternion.identity;
     private bool hasSS;
-    
+
     public Transform startPortal;
     public KeyCode load;
     public KeyCode save;
@@ -31,8 +31,8 @@ public class TSTSaveStates : MonoBehaviour
     void Start()
     {
         hasSS = false;
-        nPanelUsed      = 0;
-        nPanelRespawn   = 0;
+        nPanelUsed = 0;
+        nPanelRespawn = 0;
     }
 
     // Update is called once per frame
@@ -41,13 +41,13 @@ public class TSTSaveStates : MonoBehaviour
         if (Input.GetKeyDown(load) || pollExtraSaveStates()) // load
         {
             loadState();
-            
-        } else if (Input.GetKeyDown(save))
+        }
+        else if (Input.GetKeyDown(save))
         {
             ss_pos = Access.Player().gameObject.transform.position;
             ss_rot = Access.Player().gameObject.transform.rotation;
             hasSS = true;
-            nPanelUsed+=1;
+            nPanelUsed += 1;
             Access.UITurboAndLifePool().updatePanelUsed(nPanelUsed);
             if (!!saveStateMarkerRef)
             {
@@ -70,9 +70,9 @@ public class TSTSaveStates : MonoBehaviour
             if (Input.GetKeyDown(e.k))
             {
                 Transform t = e.t;
-                if (t==null)
+                if (t == null)
                 {
-                    Debug.LogError("No transform could be found for given KeyCode : " + e.k);
+                    this.LogError("No transform could be found for given KeyCode : " + e.k);
                     return false;
                 }
                 ss_pos = t.position;
@@ -87,7 +87,7 @@ public class TSTSaveStates : MonoBehaviour
     {
         if (!hasSS)
         {
-            Debug.LogError("No save state to load. Loading start portal.");
+            this.LogError("No save state to load. Loading start portal.");
             ss_pos = startPortal.position;
             ss_rot = Quaternion.identity;
             hasSS = true;
@@ -95,12 +95,12 @@ public class TSTSaveStates : MonoBehaviour
         Rigidbody rb2d = Access.Player().gameObject.GetComponentInChildren<Rigidbody>();
         if (!!rb2d)
         {
-            rb2d.velocity           = Vector3.zero;
-            rb2d.angularVelocity    = Vector3.zero;
+            rb2d.velocity = Vector3.zero;
+            rb2d.angularVelocity = Vector3.zero;
         }
         Access.Player().gameObject.transform.position = ss_pos;
         Access.Player().gameObject.transform.rotation = ss_rot;
-        nPanelRespawn+=1;
+        nPanelRespawn += 1;
         Access.UITurboAndLifePool().updatePanelRespawn(nPanelRespawn);
     }
 }

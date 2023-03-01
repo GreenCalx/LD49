@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Schnibble;
 
 public class HUBPortal : MonoBehaviour
 {
@@ -21,9 +19,9 @@ public class HUBPortal : MonoBehaviour
     public void setActiveClippingPortal(GameObject iActiveClippingPortal)
     {
         activeClippingPortal = iActiveClippingPortal;
-        Debug.Log("Active clipping plane : " + activeClippingPortal.name);
+        this.Log("Active clipping plane : " + activeClippingPortal.name);
         ClippingPlane[] cps = GetComponentsInChildren<ClippingPlane>(true);
-        for (int i=0; i < cps.Length ; i++)
+        for (int i = 0; i < cps.Length; i++)
         {
             cps[i].GetComponent<ClippingPlane>().enabled = (cps[i].name == activeClippingPortal.name);
         }

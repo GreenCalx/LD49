@@ -1,15 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIGaragePanel : UIPanelTabbed, IUIGarageElement {
+public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
+{
     public UIGarageInputHelper inputHelper;
 
-    List<IUIGarageElement.UIGarageHelperValue> IUIGarageElement.getHelperInputs() {
+    List<IUIGarageElement.UIGarageHelperValue> IUIGarageElement.getHelperInputs()
+    {
         return getHelperInputs();
     }
 
-    virtual protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs() {
+    virtual protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs()
+    {
         return new List<IUIGarageElement.UIGarageHelperValue>{
             new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_A, "OK"),
             new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_B, "CANCEL")

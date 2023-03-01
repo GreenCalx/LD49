@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerDetector : MonoBehaviour
@@ -19,7 +17,7 @@ public class PlayerDetector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     // if player is out of range

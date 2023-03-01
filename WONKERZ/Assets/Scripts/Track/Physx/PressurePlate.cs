@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PressurePlate : MonoBehaviour
@@ -30,14 +28,15 @@ public class PressurePlate : MonoBehaviour
         {
             transform.position = IsUpAnchor.position;
             rb.isKinematic = true;
-        } else if (Vector3.Distance(transform.position, IsDownAnchor.position) <= anchorCheckThreshold)
+        }
+        else if (Vector3.Distance(transform.position, IsDownAnchor.position) <= anchorCheckThreshold)
         {
             transform.position = IsDownAnchor.position;
             isTriggered = true;
         }
-        
-        rb.AddForce( Vector3.up * forceStrength, ForceMode.Force);
-        
+
+        rb.AddForce(Vector3.up * forceStrength, ForceMode.Force);
+
     }
 
     void OnCollisionEnter(Collision iCol)

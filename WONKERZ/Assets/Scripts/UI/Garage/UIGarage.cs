@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
-public class UIGarage : UIGaragePanel {
+public class UIGarage : UIGaragePanel
+{
     private GarageEntry garageEntry;
 
     protected override void Awake()
@@ -13,7 +9,8 @@ public class UIGarage : UIGaragePanel {
         inputMgr = Access.InputManager();
     }
 
-    override public void deactivate() {
+    override public void deactivate()
+    {
         base.deactivate();
         garageEntry.closeGarage();
     }

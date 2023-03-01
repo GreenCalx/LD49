@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class Access
 {
@@ -14,13 +13,13 @@ public class Access
         private GameObject GO_PLAYER;
         private GameObject GO_UIGARAGE;
         private GameObject GO_UIPLAYER;
-/* IF WE WANT TO ECO GetComponent<> call..
-        public InputManager         IM;
-        public ResolutionManager    RM;
-        public CameraManager        CM;
-        public UIGarageTestManager  UIGTM;
-        public CheckPointManager    CPM;
-*/      
+        /* IF WE WANT TO ECO GetComponent<> call..
+                public InputManager         IM;
+                public ResolutionManager    RM;
+                public CameraManager        CM;
+                public UIGarageTestManager  UIGTM;
+                public CheckPointManager    CPM;
+        */
         private static AccessCache inst;
         public static AccessCache Instance
         {
@@ -38,34 +37,37 @@ public class Access
         public T getObject<T>(string iHolder, bool iComponentIsInChildren)
         {
             GameObject handler = null;
-            if (iHolder==Constants.GO_MANAGERS)
+            if (iHolder == Constants.GO_MANAGERS)
             {
-                handler = checkCacheObject( iHolder, ref GO_MGR);
+                handler = checkCacheObject(iHolder, ref GO_MGR);
             }
-            else if (iHolder==Constants.GO_TESTMANAGER)
+            else if (iHolder == Constants.GO_TESTMANAGER)
             {
-                handler = checkCacheObject( iHolder, ref GO_TSTMGR);
-            }   
-            else if (iHolder==Constants.GO_CPManager)
-            {
-                handler = checkCacheObject( iHolder, ref GO_CPMGR);
+                handler = checkCacheObject(iHolder, ref GO_TSTMGR);
             }
-            else if (iHolder==Constants.GO_PLAYER)
+            else if (iHolder == Constants.GO_CPManager)
+            {
+                handler = checkCacheObject(iHolder, ref GO_CPMGR);
+            }
+            else if (iHolder == Constants.GO_PLAYER)
             {
                 handler = checkCacheObject(iHolder, ref GO_PLAYER);
-            } else if (iHolder==Constants.GO_UIGARAGE)
+            }
+            else if (iHolder == Constants.GO_UIGARAGE)
             {
                 handler = checkCacheObject(iHolder, ref GO_UIGARAGE);
-            } else if (iHolder==Constants.GO_SOUNDMANAGER)
+            }
+            else if (iHolder == Constants.GO_SOUNDMANAGER)
             {
                 handler = checkCacheObject(iHolder, ref GO_SOUNDMANAGER);
-            } else if ( iHolder==Constants.GO_PLAYERUI)
+            }
+            else if (iHolder == Constants.GO_PLAYERUI)
             {
                 handler = checkCacheObject(iHolder, ref GO_UIPLAYER);
             }
             else
-            { 
-                Debug.LogWarning("Trying to access : " + iHolder + " as holding object, but is absent from cache.");
+            {
+                this.LogWarn("Trying to access : " + iHolder + " as holding object, but is absent from cache.");
                 handler = GameObject.Find(iHolder);
             }
             if (!!iComponentIsInChildren)
@@ -100,22 +102,22 @@ public class Access
 
     public static CameraManager CameraManager()
     {
-        return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);    
+        return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);
     }
 
     public static PlayerColorManager PlayerColorManager()
     {
-        return cache.getObject<PlayerColorManager>(Constants.GO_MANAGERS, false);    
+        return cache.getObject<PlayerColorManager>(Constants.GO_MANAGERS, false);
     }
 
     public static UIGarageTestManager TestManager()
     {
-        return cache.getObject<UIGarageTestManager>(Constants.GO_TESTMANAGER, false);         
+        return cache.getObject<UIGarageTestManager>(Constants.GO_TESTMANAGER, false);
     }
 
     public static CheckPointManager CheckPointManager()
     {
-        return cache.getObject<CheckPointManager>(Constants.GO_CPManager, false);         
+        return cache.getObject<CheckPointManager>(Constants.GO_CPManager, false);
     }
 
     public static CarController Player()
@@ -137,8 +139,8 @@ public class Access
     {
         return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
     }
-    
-    
+
+
     public static CollectiblesManager CollectiblesManager()
     {
         return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);

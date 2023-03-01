@@ -1,22 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
- 
+using Schnibble;
+
 [RequireComponent(typeof(Camera))]
 [ExecuteInEditMode]
-public class WaterRippleCamera : MonoBehaviour {
+public class WaterRippleCamera : MonoBehaviour
+{
     private Camera cam;
     public MeshRenderer waterPlane;
- 
-    private void Awake() {
+
+    private void Awake()
+    {
         cam = GetComponent<Camera>();
         if (!waterPlane)
         {
-            Debug.LogWarning("No water plane detected for WaterRippleCamera.");
+            this.LogWarn("No water plane detected for WaterRippleCamera.");
         }
     }
- 
-    private void Update() {
+
+    private void Update()
+    {
         if (!waterPlane)
             return;
         waterPlane.sharedMaterial.SetVector("_CamPosition", transform.position);

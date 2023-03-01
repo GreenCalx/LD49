@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
 
 public class UIWonkerzBar : MonoBehaviour
 {
-    public Color collected  = Color.white;
-    public Color missing    = Color.black;
+    public Color collected = Color.white;
+    public Color missing = Color.black;
 
     public Image W;
     public Image O;
@@ -20,35 +18,35 @@ public class UIWonkerzBar : MonoBehaviour
     private void init()
     {
         CollectiblesManager cm = Access.CollectiblesManager();
-        foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+        foreach (CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
         {
             updateLetter(let, cm.hasWONKERZLetter(let));
         }
     }
 
-    public void updateLetter( CollectibleWONKERZ.LETTERS iLetter, bool hasLetter)
+    public void updateLetter(CollectibleWONKERZ.LETTERS iLetter, bool hasLetter)
     {
         switch (iLetter)
         {
-            case CollectibleWONKERZ.LETTERS.W :
+            case CollectibleWONKERZ.LETTERS.W:
                 W.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.O :
+            case CollectibleWONKERZ.LETTERS.O:
                 O.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.N :
+            case CollectibleWONKERZ.LETTERS.N:
                 N.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.K :
+            case CollectibleWONKERZ.LETTERS.K:
                 K.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.E :
+            case CollectibleWONKERZ.LETTERS.E:
                 E.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.R :
+            case CollectibleWONKERZ.LETTERS.R:
                 R.color = hasLetter ? collected : missing;
                 break;
-            case CollectibleWONKERZ.LETTERS.Z :
+            case CollectibleWONKERZ.LETTERS.Z:
                 Z.color = hasLetter ? collected : missing;
                 break;
             default:
@@ -64,6 +62,6 @@ public class UIWonkerzBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

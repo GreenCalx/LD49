@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,7 +18,7 @@ public class GaragistCage : MonoBehaviour
             if (Access.CollectiblesManager().hasCageKey(scene_name))
             {
                 // open cage
-                cageAnim.SetBool( openCageAnimParm, true);
+                cageAnim.SetBool(openCageAnimParm, true);
                 garagist.ForceCollect();
             }
         }

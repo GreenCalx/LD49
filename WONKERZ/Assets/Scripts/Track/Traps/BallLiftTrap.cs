@@ -1,16 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BallLiftTrap : Trap
 {
     [Header("Mandatory")]
-    public Transform    spawnPoint;
-    public GameObject   ballRef;
-    public Transform    millTransform;
+    public Transform spawnPoint;
+    public GameObject ballRef;
+    public Transform millTransform;
 
     [Header("Tweaks")]
-    public float rotSpeed = 5f ;
+    public float rotSpeed = 5f;
     ///
 
 
@@ -22,7 +20,7 @@ public class BallLiftTrap : Trap
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public override void OnTrigger()
@@ -39,6 +37,6 @@ public class BallLiftTrap : Trap
 
     public override void OnRest(float iCooldownPercent)
     {
-        millTransform.RotateAround( millTransform.position, transform.forward, Time.deltaTime * 90);
+        millTransform.RotateAround(millTransform.position, transform.forward, Time.deltaTime * 90);
     }
 }

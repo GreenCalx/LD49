@@ -1,21 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PushingTrap : Trap
 {
     [Header("Mandatory")]
-    public  KickAction  pushingAction;
-    
-    public  Renderer    loadingHintRendererCarrier;
-    public  Material    loadingHintMatRef; // only used to cp later with retrieved mats
+    public KickAction pushingAction;
+
+    public Renderer loadingHintRendererCarrier;
+    public Material loadingHintMatRef; // only used to cp later with retrieved mats
 
     [Header("Tweaks")]
-    public Transform  endPos;
+    public Transform endPos;
     public float timeBeforeReset = 2f;
     public float trapSpeed = 1f;
     public float smoothTimeOnReset = 0.5f;
-    
+
     [Range(0f, 1f)]
     public float emissiveRangeLowPoint;
     [Range(0f, 1f)]
@@ -36,19 +34,19 @@ public class PushingTrap : Trap
     void Start()
     {
         pushingObject = pushingAction.gameObject;
-        
-        localInitPos    = transform.position;
-        localEndPos     = endPos.position;
+
+        localInitPos = transform.position;
+        localEndPos = endPos.position;
         //pushingObject.transform.position = localInitPos;
 
         Material[] mats = loadingHintRendererCarrier.materials;
         string matname_as_newinst = loadingHintMatRef.name + Constants.EXT_INSTANCE;
-        for (int i=0; i< mats.Length; i++)
-        {    
+        for (int i = 0; i < mats.Length; i++)
+        {
             if (mats[i].name == matname_as_newinst)
             {
                 selfHintMatRef = mats[i];
-                baseEmissiveColor =selfHintMatRef.GetColor("_EmissionColor");
+                baseEmissiveColor = selfHintMatRef.GetColor("_EmissionColor");
                 break;
             }
         }
@@ -60,12 +58,13 @@ public class PushingTrap : Trap
         if (isTriggered)
         {
             pushingObject.transform.position = Vector3.MoveTowards(pushingObject.transform.position, localEndPos, trapSpeed * Time.deltaTime);
-            if ( Vector3.Distance(pushingObject.transform.position , localEndPos) < 0.1f )
+            if (Vector3.Distance(pushingObject.transform.position, localEndPos) < 0.1f)
             {
                 isTriggered = false;
             }
-        
-        } else if ( Vector3.Distance(pushingObject.transform.position, localInitPos) > 0.1f ) 
+
+        }
+        else if (Vector3.Distance(pushingObject.transform.position, localInitPos) > 0.1f)
         {
             pushingObject.transform.position = Vector3.SmoothDamp(pushingObject.transform.position, localInitPos, ref dampVelocity, smoothTimeOnReset, trapSpeed);
         }
@@ -76,8 +75,8 @@ public class PushingTrap : Trap
     private Color getCurrentEmissiveColor(float iPercent, bool reverse)
     {
         Color new_col = baseEmissiveColor;
-        new_col *= (reverse ? 1f-iPercent : iPercent );
-        return new_col*new_col;
+        new_col *= (reverse ? 1f - iPercent : iPercent);
+        return new_col * new_col;
     }
 
     public override void OnTrigger()

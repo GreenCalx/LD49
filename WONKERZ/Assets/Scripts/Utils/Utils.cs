@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
-public static partial class Utils 
+public static partial class Utils
 {
-	  public static GameObject getPlayerRef()
+    public static GameObject getPlayerRef()
     {
         return Access.Player().gameObject;
     }
@@ -15,7 +14,7 @@ public static partial class Utils
         if (!!IM)
             IM.Detach(toDetach as IControllable);
         else
-            Debug.LogWarning("InputManager is null. Failed to detach.");
+            SchLog.LogWarn("InputManager is null. Failed to detach.");
     }
     public static void detachUniqueControllable()
     {
@@ -23,7 +22,7 @@ public static partial class Utils
         if (!!IM)
             IM.UnsetUnique();
         else
-            Debug.LogWarning("InputManager is null. Failed to detach unique.");
+            SchLog.LogWarn("InputManager is null. Failed to detach unique.");
     }
 
     public static void attachControllable<T>(T toAttach)
@@ -32,7 +31,7 @@ public static partial class Utils
         if (!!IM)
             IM.Attach(toAttach as IControllable);
         else
-            Debug.LogWarning("InputManager is null. Failed to attach.");
+            SchLog.LogWarn("InputManager is null. Failed to attach.");
     }
 
     public static void attachUniqueControllable<T>(T toAttach)
@@ -41,7 +40,7 @@ public static partial class Utils
         if (!!IM)
             IM.SetUnique(toAttach as IControllable);
         else
-            Debug.LogWarning("InputManager is null. Failed to attach unique.");
+            SchLog.LogWarn("InputManager is null. Failed to attach unique.");
     }
 
     public static bool isPlayer(GameObject iGO)
@@ -50,13 +49,13 @@ public static partial class Utils
         if (!!direct_cc)
             return true;
         // can also be wheels
-        if (iGO.transform.parent==null)
+        if (iGO.transform.parent == null)
             return false;
 
         CarController parent_cc = iGO.transform.parent.GetComponent<CarController>();
-        if ( parent_cc != null )
+        if (parent_cc != null)
             return true;
-        
+
         return false;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimateDeco1 : MonoBehaviour
@@ -10,8 +8,8 @@ public class AnimateDeco1 : MonoBehaviour
     public float y_delta = 1.0f;
     public float y_step = 0.1f;
 
-    private float curr_y_angle = 0f;   
-   
+    private float curr_y_angle = 0f;
+
     private float base_y = 0f;
     private int y_direction = 1; // + or -
     private float upper_y_lim = 0f;
@@ -40,17 +38,17 @@ public class AnimateDeco1 : MonoBehaviour
 
         float tiltAroundY = curr_y_angle;
 
-        Quaternion target = Quaternion.Euler( 0f, tiltAroundY, 0f);
-        transform.rotation = Quaternion.Slerp(transform.rotation, target,  Time.deltaTime * smooth);    
-    
+        Quaternion target = Quaternion.Euler(0f, tiltAroundY, 0f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * smooth);
+
 
         // transfo
-        if ( (transform.position.y >= upper_y_lim) || (transform.position.y <= lower_y_lim) )
+        if ((transform.position.y >= upper_y_lim) || (transform.position.y <= lower_y_lim))
         {
             y_direction *= (-1);
         }
-        float new_y = transform.position.y + (y_step*y_direction);
+        float new_y = transform.position.y + (y_step * y_direction);
         Vector3 new_pos = new Vector3(transform.position.x, new_y, transform.position.z);
-        transform.position = Vector3.Lerp(transform.position, new_pos, 0.5f );
+        transform.position = Vector3.Lerp(transform.position, new_pos, 0.5f);
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -13,7 +11,8 @@ public class Grass : MonoBehaviour
     public GameObject InteractWithGO;
 
     [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-    private struct SourceVertex {
+    private struct SourceVertex
+    {
         public Vector3 position;
     };
 
@@ -21,7 +20,7 @@ public class Grass : MonoBehaviour
     public struct GrassSettings
     {
         public int _MaxBladeSegments;
-        public  float _BladeCurvature;
+        public float _BladeCurvature;
         public float _MaxBendAngle;
         public float _BladeHeight;
         public float _BladeHeightVariance;
@@ -43,35 +42,38 @@ public class Grass : MonoBehaviour
     private int DispatchSize;
     private Bounds LocalBounds;
 
-    private const int SOURCE_VERTEX_STRIDE = sizeof(float) *3;
+    private const int SOURCE_VERTEX_STRIDE = sizeof(float) * 3;
     private const int SOURCE_TRI_STRIDE = sizeof(int);
-    private const int DRAW_STRIDE = sizeof(float) *(3+(3+1)*3);
-    private const int INDIRECT_ARGS_STRIDE = sizeof(int) *4;
+    private const int DRAW_STRIDE = sizeof(float) * (3 + (3 + 1) * 3);
+    private const int INDIRECT_ARGS_STRIDE = sizeof(int) * 4;
 
-    private int[] argsBufferReset = new int[] {0,1,0,0};
+    private int[] argsBufferReset = new int[] { 0, 1, 0, 0 };
     // Start is called before the first frame update
     void OnEnable()
     {
-        if(Initialized) OnDisable();
+        if (Initialized) OnDisable();
         Initialized = true;
 
-        if (Island) {
-           Ground = Island.GetComponent<MeshFilter>().sharedMesh;
+        if (Island)
+        {
+            Ground = Island.GetComponent<MeshFilter>().sharedMesh;
         }
         Vector3[] positions = Ground.vertices;
         int[] tris = Ground.triangles;
 
         SourceVertex[] vertices = new SourceVertex[positions.Length];
-        for(int i=0; i < vertices.Length; i++) {
+        for (int i = 0; i < vertices.Length; i++)
+        {
             Matrix4x4 t = (Island != null ? Island.transform.localToWorldMatrix : Matrix4x4.identity);
-            vertices[i] = new SourceVertex() {
-                position = Island.transform.position + (Island.transform.rotation * Vector3.Scale(positions[i],Island.transform.lossyScale)),
+            vertices[i] = new SourceVertex()
+            {
+                position = Island.transform.position + (Island.transform.rotation * Vector3.Scale(positions[i], Island.transform.lossyScale)),
             };
         }
 
-        int numTriangles = tris.Length/3;
+        int numTriangles = tris.Length / 3;
         int maxBladeSegments = Mathf.Max(1, settings._MaxBladeSegments);
-        int maxBladeTriangles = (maxBladeSegments -1) *2 +1;
+        int maxBladeTriangles = (maxBladeSegments - 1) * 2 + 1;
 
         vertBuff = new ComputeBuffer(vertices.Length, SOURCE_VERTEX_STRIDE, ComputeBufferType.Structured, ComputeBufferMode.Immutable);
         vertBuff.SetData(vertices);
@@ -106,14 +108,16 @@ public class Grass : MonoBehaviour
         GrassMaterial.SetBuffer("_DrawTriangles", drawBuffer);
 
         GrassCS.GetKernelThreadGroupSizes(KernelId, out uint ThreadGroupSize, out _, out _);
-        DispatchSize = Mathf.CeilToInt((float)numTriangles/ThreadGroupSize);
+        DispatchSize = Mathf.CeilToInt((float)numTriangles / ThreadGroupSize);
 
         LocalBounds = Ground.bounds;
         LocalBounds.Expand(Mathf.Max(settings._BladeHeight + settings._BladeHeightVariance, settings._BladeWidth + settings._BladeWidthVariance));
     }
 
-    void OnDisable() {
-        if (Initialized) {
+    void OnDisable()
+    {
+        if (Initialized)
+        {
             vertBuff.Release();
             triBuff.Release();
             drawBuffer.Release();
@@ -122,8 +126,9 @@ public class Grass : MonoBehaviour
         Initialized = false;
     }
 
-    Bounds TransformBoundsIsland (Bounds B) {
-        var center = Island.transform.rotation * Vector3.Scale(B.center,Island.transform.lossyScale);
+    Bounds TransformBoundsIsland(Bounds B)
+    {
+        var center = Island.transform.rotation * Vector3.Scale(B.center, Island.transform.lossyScale);
 
         var extents = B.extents;
         var axisX = Island.transform.rotation * Vector3.Scale(new Vector3(extents.x, 0, 0), Island.transform.lossyScale);
@@ -138,7 +143,8 @@ public class Grass : MonoBehaviour
 
     }
 
-    Bounds TransformBounds(Bounds B) {
+    Bounds TransformBounds(Bounds B)
+    {
         var center = transform.TransformPoint(B.center);
 
         var extents = B.extents;
@@ -150,7 +156,7 @@ public class Grass : MonoBehaviour
         extents.y = Mathf.Abs(axisX.y) + Mathf.Abs(axisY.y) + Mathf.Abs(axisZ.y);
         extents.z = Mathf.Abs(axisX.z) + Mathf.Abs(axisY.z) + Mathf.Abs(axisZ.z);
 
-        return new Bounds {center = center, extents = extents};
+        return new Bounds { center = center, extents = extents };
     }
 
     // Update is called once per frame
@@ -171,9 +177,9 @@ public class Grass : MonoBehaviour
         GrassCS.Dispatch(KernelId, DispatchSize, 1, 1);
 
         settings.centerPosition = InteractWithGO.transform.position;
-        float[] CP = {settings.centerPosition.x, settings.centerPosition.y, settings.centerPosition.z};
+        float[] CP = { settings.centerPosition.x, settings.centerPosition.y, settings.centerPosition.z };
         GrassCS.SetFloats("_CenterPositionWS", CP);
 
-        Graphics.DrawProceduralIndirect(GrassMaterial, B, MeshTopology.Triangles, argsBuffer, 0, null,null, UnityEngine.Rendering.ShadowCastingMode.Off, true, gameObject.layer);
+        Graphics.DrawProceduralIndirect(GrassMaterial, B, MeshTopology.Triangles, argsBuffer, 0, null, null, UnityEngine.Rendering.ShadowCastingMode.Off, true, gameObject.layer);
     }
 }

@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class DeathZone : MonoBehaviour
 {
@@ -8,13 +7,13 @@ public class DeathZone : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnTriggerEnter(Collider iCol)
@@ -27,7 +26,7 @@ public class DeathZone : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        Debug.Log(iCol.gameObject.name);
+        this.Log(iCol.gameObject.name);
         if (iCol.gameObject.GetComponent<CarController>())
         {
             checkPointManager.loadLastCP();

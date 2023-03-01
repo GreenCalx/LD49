@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Hookable : MonoBehaviour, IControllable
 {
-    private CarController   ccPlayer;
-    public GameObject       hook;
-    public Vector3          D;
+    private CarController ccPlayer;
+    public GameObject hook;
+    public Vector3 D;
 
     // Start is called before the first frame update
     void Start()
@@ -42,12 +40,12 @@ public class Hookable : MonoBehaviour, IControllable
 
     public void OnTriggerEnter(Collider iCol)
     {
-        if (null==ccPlayer)
+        if (null == ccPlayer)
             ccPlayer = iCol.GetComponent<CarController>();
     }
     public void OnTriggerStay(Collider iCol)
     {
-        if (null==ccPlayer)
+        if (null == ccPlayer)
             ccPlayer = iCol.GetComponent<CarController>();
     }
     public void OnTriggerExit(Collider iCol)

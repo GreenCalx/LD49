@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// STARTING POINT FOR HUB
@@ -24,7 +22,7 @@ public class StartPortal : AbstractCameraPoint
         {
             relocatePlayer();
             Access.CameraManager().changeCamera(camera_type);
-            
+
             if (enable_tricks)
                 activateTricks();
         }
@@ -33,22 +31,22 @@ public class StartPortal : AbstractCameraPoint
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void relocatePlayer()
     {
         playerRef.transform.position = transform.position;
         playerRef.transform.rotation = Quaternion.identity;
-        if (facingPoint!=null)
+        if (facingPoint != null)
         {
             playerRef.transform.LookAt(facingPoint.transform);
         }
         Rigidbody rb2d = playerRef.GetComponentInChildren<Rigidbody>();
         if (!!rb2d)
         {
-            rb2d.velocity           = Vector3.zero;
-            rb2d.angularVelocity    = Vector3.zero;
+            rb2d.velocity = Vector3.zero;
+            rb2d.angularVelocity = Vector3.zero;
         }
     }
 

@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 
 /// TODO : We need to have the Manager GO asap for input manager, scene loader etc...
@@ -19,7 +16,8 @@ public class TitleScreen : MonoBehaviour, IControllable
         Utils.attachControllable<TitleScreen>(this);
     }
 
-    void OnDestroy() {
+    void OnDestroy()
+    {
         Utils.detachControllable<TitleScreen>(this);
     }
 
@@ -35,7 +33,7 @@ public class TitleScreen : MonoBehaviour, IControllable
         {
             Application.Quit();
         }
-        else if (Entry.Inputs["Jump"].IsDown && (time_offset>=CLICK_TIME) )
+        else if (Entry.Inputs["Jump"].IsDown && (time_offset >= CLICK_TIME))
         {
             Access.SceneLoader().loadScene(Constants.SN_HUB);
         }

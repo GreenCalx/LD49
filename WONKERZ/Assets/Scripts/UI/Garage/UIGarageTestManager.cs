@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
+using static Schnibble.Utils;
 
 public class UIGarageTestManager : MonoBehaviour
 {
@@ -87,7 +89,7 @@ public class UIGarageTestManager : MonoBehaviour
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
         }
-        updateLayers(testCC, Utils.getLayerIndex(Constants.LYR_UIMESH));
+        updateLayers(testCC, getLayerIndex(Constants.LYR_UIMESH));
 
         IM.DeActivate();
         if (testMode == MODE.RECORD)
@@ -126,13 +128,13 @@ public class UIGarageTestManager : MonoBehaviour
         bool file_loaded = SaveAndLoad.loadGarageTest(activeTest.test_data.test_name, activeTest.test_data);
         if (!file_loaded)
         {
-            Debug.LogWarning("Failed to load data.");
+            this.LogWarn("Failed to load data.");
             quitTest();
             return false;
         }
         if (!activeTest.test_data.hasData()) // empty record data
         {
-            Debug.LogWarning("Not data loaded from the file.");
+            this.LogWarn("Not data loaded from the file.");
             quitTest();
             return false;
         }
@@ -180,7 +182,7 @@ public class UIGarageTestManager : MonoBehaviour
     {
         if (iSuccess)
         {
-            Debug.Log("TEST OK!");
+            this.Log("TEST OK!");
             if (IM.CurrentMode == InputManager.Mode.RECORD)
             {
                 Queue<InputManager.InputData> recorded = IM.stopRecord();
@@ -189,7 +191,7 @@ public class UIGarageTestManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("TEST KO!");
+            this.Log("TEST KO!");
         }
         quitTest();
     }

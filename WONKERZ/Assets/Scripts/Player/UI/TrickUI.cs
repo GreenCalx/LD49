@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,10 +11,12 @@ public class TrickUI : MonoBehaviour
 
     public void recordingTrick()
     {
-        if (!!TRICKNAME){
+        if (!!TRICKNAME)
+        {
             TRICKNAME.color = Color.white;
             var spring = TRICKNAME.GetComponent<SpringMono>();
-            if (spring) {
+            if (spring)
+            {
                 spring.spring.rest = 0;
             }
         }
@@ -24,16 +25,19 @@ public class TrickUI : MonoBehaviour
 
     public void validateTrick()
     {
-        if (!!TRICKNAME) {
+        if (!!TRICKNAME)
+        {
             TRICKNAME.color = Color.green;
 
             var spring = TRICKNAME.GetComponent<SpringMono>();
-            if (spring) {
+            if (spring)
+            {
                 spring.spring.rest = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
-            if (animation){
+            if (animation)
+            {
                 animation.mode = UIAnimateTransform.Mode.SUCCESS;
             }
         }
@@ -42,46 +46,49 @@ public class TrickUI : MonoBehaviour
 
     public void failTrick()
     {
-        if (!!TRICKNAME) {
+        if (!!TRICKNAME)
+        {
             TRICKNAME.color = Color.red;
             var spring = TRICKNAME.GetComponent<SpringMono>();
-            if (spring) {
+            if (spring)
+            {
                 spring.spring.rest = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
-            if (animation){
+            if (animation)
+            {
                 animation.mode = UIAnimateTransform.Mode.FAIL;
             }
         }
     }
 
-    public void displayTrick( string iTrick )
+    public void displayTrick(string iTrick)
     {
         if (!!TRICKNAME)
             TRICKNAME.SetText(iTrick);
     }
 
-    public void displayScore( int iScore )
+    public void displayScore(int iScore)
     {
-        if ( iScore <= 0 )
+        if (iScore <= 0)
             SCORE.SetText("");
         else
             SCORE.SetText(iScore.ToString());
     }
 
-    public void displayTricklineScore( int iScore )
+    public void displayTricklineScore(int iScore)
     {
-        if ( iScore <= 0 )
+        if (iScore <= 0)
             TRICKLINE_SCORE.SetText("");
         else
             TRICKLINE_SCORE.SetText(iScore.ToString());
     }
 
-    public void displayTricklineTricks( List<Trick> iTricks )
+    public void displayTricklineTricks(List<Trick> iTricks)
     {
         string tricks = "";
-        foreach( Trick   t in iTricks )
+        foreach (Trick t in iTricks)
         {
             tricks += t.name;
             tricks += '\n';

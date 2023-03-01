@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class WheeledPowerTrap : TrapBundle
-{   
+{
     public readonly string AnimIsWheeling = "isWheeling";
 
     public bool isWheeling = false;
@@ -11,9 +10,9 @@ public class WheeledPowerTrap : TrapBundle
     // Start is called before the first frame update
     void Start()
     {
-        if ((worker==null)||(workstation==null)||(linkedTrap==null))
+        if ((worker == null) || (workstation == null) || (linkedTrap == null))
         {
-            Debug.LogWarning("Missing worker/workstation on " + gameObject.name);
+            this.LogWarn("Missing worker/workstation on " + gameObject.name);
             gameObject.SetActive(false);
         }
         initTimers();
@@ -22,8 +21,8 @@ public class WheeledPowerTrap : TrapBundle
     // Update is called once per frame
     void Update()
     {
-        if ((startTimeOffset >= trapStartElapsedTime)&&(startTimeOffset>=0.1f))
-        { trapStartElapsedTime+=Time.deltaTime; return; }
+        if ((startTimeOffset >= trapStartElapsedTime) && (startTimeOffset >= 0.1f))
+        { trapStartElapsedTime += Time.deltaTime; return; }
 
         if (isAlwaysInCharge)
         {
@@ -49,7 +48,8 @@ public class WheeledPowerTrap : TrapBundle
 
             linkedTrap.OnTrigger();
             trapLoadElapsedTime = 0f;
-        } else if ( trapRestElapsedTime >= restTimeBetweenActivations )
+        }
+        else if (trapRestElapsedTime >= restTimeBetweenActivations)
         {
             // loading trap
             isWheeling = true;
@@ -57,10 +57,14 @@ public class WheeledPowerTrap : TrapBundle
 
             linkedTrap.OnCharge(getTrapLoadStatus());
             trapRestElapsedTime = 0f;
-        } else if (isWheeling) {
+        }
+        else if (isWheeling)
+        {
             // trap is in rest mode
             linkedTrap.OnCharge(getTrapLoadStatus());
-        } else {
+        }
+        else
+        {
             linkedTrap.OnRest(getTrapRestStatus());
         }
     }

@@ -16,8 +16,7 @@ public class Tornado : MonoBehaviour
         {
             // apply upward force
             var RB = CC.GetComponent<Rigidbody>();
-            Debug.Log("Tornqdo");
-            RB.AddForceAtPosition(-transform.up * Force, CC.CenterOfMass.transform.position, ForceMode.VelocityChange);
+            RB.AddForceAtPosition(-transform.up * Force, CC.centerOfMass.transform.position, ForceMode.VelocityChange);
         }
     }
 
@@ -26,7 +25,7 @@ public class Tornado : MonoBehaviour
         CarController CC = C.gameObject.GetComponent<CarController>();
         if (CC)
         {
-            CC.SetMode(CarController.CarMode.DELTA);
+            //CC.SetMode(CarController.CarMode.DELTA);
         }
     }
 

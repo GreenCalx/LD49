@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 // Face to face compressors 
@@ -9,10 +7,10 @@ public class CompressorTrap : MonoBehaviour
     public GameObject comp2;
     private CompressorBlock cBlock1;
     private CompressorBlock cBlock2;
-    
+
     public float speed = 10.0F;
     public float closureOffset = 1f;
-    
+
     private float startTime;
     private float journeyLength1;
     private float journeyLength2;
@@ -32,11 +30,11 @@ public class CompressorTrap : MonoBehaviour
         cBlock1 = comp1.GetComponent<CompressorBlock>();
         cBlock2 = comp2.GetComponent<CompressorBlock>();
 
-        origComp1   = comp1.transform.position;
-        origComp2   = comp2.transform.position;
+        origComp1 = comp1.transform.position;
+        origComp2 = comp2.transform.position;
         virtualPos1 = origComp1;
         virtualPos2 = origComp2;
-        middle      = Vector3.Lerp(origComp1, origComp2, 0.5f);
+        middle = Vector3.Lerp(origComp1, origComp2, 0.5f);
 
         journeyLength1 = Vector3.Distance(origComp1, middle);
         journeyLength2 = Vector3.Distance(origComp2, middle);
@@ -56,42 +54,50 @@ public class CompressorTrap : MonoBehaviour
         {
             virtualPos1 = Vector3.Lerp(origComp1, middle, fractionOfJourney1);
             virtualPos2 = Vector3.Lerp(origComp2, middle, fractionOfJourney2);
-        } else {
+        }
+        else
+        {
             virtualPos1 = Vector3.Lerp(middle, origComp1, fractionOfJourney1);
-            virtualPos2 = Vector3.Lerp(middle, origComp2, fractionOfJourney2);   
+            virtualPos2 = Vector3.Lerp(middle, origComp2, fractionOfJourney2);
         }
 
-        float distToMid1 = Vector3.Distance( virtualPos1, middle);
-        float distToMid2 = Vector3.Distance( virtualPos2, middle);
+        float distToMid1 = Vector3.Distance(virtualPos1, middle);
+        float distToMid2 = Vector3.Distance(virtualPos2, middle);
 
-        if ((distToMid1==journeyLength1) && (distToMid2==journeyLength2))
+        if ((distToMid1 == journeyLength1) && (distToMid2 == journeyLength2))
         {
             isClosing = true; startTime = Time.time;
-        } else if ((distToMid1==0f) && (distToMid2==0f)) {
+        }
+        else if ((distToMid1 == 0f) && (distToMid2 == 0f))
+        {
             isClosing = false; startTime = Time.time;
         }
-        
+
         if (!cBlock1.playerInBall)
         {
             comp1.transform.position = virtualPos1;
-        } else {
+        }
+        else
+        {
             lastDistanceToBall1 = Vector3.Distance(comp1.transform.position, cBlock1.ballPowerPos);
         }
 
         if (!cBlock2.playerInBall)
         {
             comp2.transform.position = virtualPos2;
-        } else {
+        }
+        else
+        {
             lastDistanceToBall2 = Vector3.Distance(comp2.transform.position, cBlock2.ballPowerPos);
         }
-        
+
         if ((!!cBlock2.playerInBall || !!cBlock1.playerInBall) && !isClosing)
         {
             float virtualToCurrentPos1 = Vector3.Distance(comp1.transform.position, virtualPos1);
             float virtualToCurrentPos2 = Vector3.Distance(comp2.transform.position, virtualPos2);
-            if ( virtualToCurrentPos1 >= lastDistanceToBall1)
+            if (virtualToCurrentPos1 >= lastDistanceToBall1)
             { comp1.transform.position = virtualPos1; }
-            if ( virtualToCurrentPos2 >= lastDistanceToBall2)
+            if (virtualToCurrentPos2 >= lastDistanceToBall2)
             { comp2.transform.position = virtualPos2; }
         }
 

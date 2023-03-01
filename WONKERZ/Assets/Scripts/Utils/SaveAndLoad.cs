@@ -2,6 +2,7 @@ using System.Collections;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using Schnibble;
 
 interface ISaveLoad
 {
@@ -55,7 +56,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            Debug.LogError("Failed to serialize : " + e.Message);
+            SchLog.LogError("Failed to serialize : " + e.Message);
             return false;
         }
         finally
@@ -89,7 +90,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            Debug.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize profile : " + e.Message);
             return false;
         }
         finally
@@ -130,7 +131,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            Debug.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize profile : " + e.Message);
             return false;
         }
         finally
@@ -170,7 +171,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            Debug.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize profile : " + e.Message);
             return false;
         }
         finally

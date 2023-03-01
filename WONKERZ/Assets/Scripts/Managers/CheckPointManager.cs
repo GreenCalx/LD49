@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System;
+using Schnibble;
 
 public class CheckPointManager : MonoBehaviour, IControllable
 {
@@ -27,7 +27,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         if (checkpoints.Count <= 0)
         {
-            Debug.LogWarning("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
+            this.LogWarn("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
             findCheckpoints();
         }
         if (player == null)
@@ -37,7 +37,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         //refreshCameras();
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
-        if (last_camerapoint==null)
+        if (last_camerapoint == null)
             last_camerapoint = race_start.GetComponent<StartPortal>();
 
         Utils.attachControllable<CheckPointManager>(this);
@@ -53,7 +53,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
         Utils.detachControllable<CheckPointManager>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry) {
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
         if (Entry.Inputs["Respawn"].IsDown)
             loadLastCP();
     }
@@ -65,12 +66,12 @@ public class CheckPointManager : MonoBehaviour, IControllable
     }
 
     private void refreshCameras()
-    {   
+    {
         if (Cam == null)
         {
             Cam = Access.CameraManager().active_camera.gameObject;
-            Debug.LogWarning("Camera Ref refreshed in CheckPointManager.");
-            foreach(GameObject cp in checkpoints)
+            this.LogWarn("Camera Ref refreshed in CheckPointManager.");
+            foreach (GameObject cp in checkpoints)
             {
                 cp.GetComponent<CheckPoint>().Cam = Cam.GetComponent<Camera>();
             }
@@ -81,10 +82,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
     {
         MultiCheckPoint[] mcps = transform.parent.GetComponentsInChildren<MultiCheckPoint>();
         checkpoints = new List<GameObject>();
-        foreach ( MultiCheckPoint mcp in mcps)
+        foreach (MultiCheckPoint mcp in mcps)
         {
             CheckPoint[] cps = mcp.GetComponentsInChildren<CheckPoint>();
-            foreach(CheckPoint cp in cps)
+            foreach (CheckPoint cp in cps)
             {
                 cp.subscribeToManager(this);
                 checkpoints.Add(cp.gameObject);
@@ -96,7 +97,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     {
         CheckPoint[] CPs = transform.parent.GetComponentsInChildren<CheckPoint>();
         checkpoints = new List<GameObject>(CPs.Length);
-        for (int i=0;i<CPs.Length;i++)
+        for (int i = 0; i < CPs.Length; i++)
         {
             CPs[i].subscribeToManager(this);
             //checkpoints.Add( CPs[i].gameObject );
@@ -130,7 +131,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         }
         else
-            Debug.LogWarning("CheckPointManager: Input GO is not a checkpoint.");
+            this.LogWarn("CheckPointManager: Input GO is not a checkpoint.");
     }
 
     public void notifyGasStation(GasStation iGasStation)
@@ -140,7 +141,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void OnDisable()
     {
-        
+
     }
 
     public void loadLastCP(bool iFromDeath = false)
@@ -166,13 +167,15 @@ public class CheckPointManager : MonoBehaviour, IControllable
             // reset segment resetable items
             List<Resetable> resetables = as_cp.MCP.resetables;
             resetables.RemoveAll((x => x == null));
-            foreach( Resetable r in resetables)
+            foreach (Resetable r in resetables)
             {
                 r.load();
             }
-        } else {
+        }
+        else
+        {
             StartPortal as_sp = last_checkpoint.GetComponent<StartPortal>();
-            if (as_sp!=null)
+            if (as_sp != null)
             {
                 last_camerapoint = as_sp;
             }

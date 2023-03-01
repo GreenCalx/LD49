@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class Resetable : MonoBehaviour
 {
@@ -23,9 +22,9 @@ public class Resetable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (segmentMCP==null)
-        { 
-            Debug.LogWarning("Missing parentCP on Resetable Item.");
+        if (segmentMCP == null)
+        {
+            this.LogWarn("Missing parentCP on Resetable Item.");
         }
         segmentMCP.addResetable(this);
         save();
@@ -34,7 +33,7 @@ public class Resetable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void save()
@@ -52,8 +51,10 @@ public class Resetable : MonoBehaviour
             if (!!MR)
             {
                 o_mesh = MR.sharedMesh;
-            } else {
-                Debug.LogError("Missing MeshRenderer On Object with Resetable");
+            }
+            else
+            {
+                this.LogError("Missing MeshRenderer On Object with Resetable");
             }
         }
     }
@@ -62,11 +63,11 @@ public class Resetable : MonoBehaviour
     {
         if (kill)
             Destroy(this.gameObject);
-        
+
         if (transform_position)
-            transform.position  = t_pos;
+            transform.position = t_pos;
         if (transform_rotation)
-            transform.rotation  = t_rot;
+            transform.rotation = t_rot;
         if (transform_localScale)
             transform.localScale = t_scale;
 
@@ -76,8 +77,10 @@ public class Resetable : MonoBehaviour
             if (!!MR)
             {
                 MR.sharedMesh = o_mesh;
-            } else {
-                Debug.LogError("Missing MeshRenderer On Object with Resetable");
+            }
+            else
+            {
+                this.LogError("Missing MeshRenderer On Object with Resetable");
             }
         }
     }

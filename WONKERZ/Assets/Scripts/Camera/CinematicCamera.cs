@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
 
 /**
 *   A static cinematic camera
@@ -19,13 +15,13 @@ public class CinematicCamera : GameCamera
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public override void init()

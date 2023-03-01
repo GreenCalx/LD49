@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Timers;
 using IM = InputManager;
 using System.IO;
 using System.Text;
@@ -18,11 +16,11 @@ public class GarageTestDump
     public static string refDumpName;
     public static string cmpDumpName;
 
-    private static Dictionary<string,IM.InputData> stack;
+    private static Dictionary<string, IM.InputData> stack;
 
     public static void initStack()
     {
-        stack = new Dictionary<string,IM.InputData>(0);
+        stack = new Dictionary<string, IM.InputData>(0);
     }
     public static void addToStack(float currTime, IM.InputData inputData)
     {
@@ -32,7 +30,7 @@ public class GarageTestDump
     public static void dumpStack(string iFileName)
     {
         FileStream fs = new FileStream(iFileName, FileMode.Create);
-        foreach( KeyValuePair<string,IM.InputData> kvp in stack )
+        foreach (KeyValuePair<string, IM.InputData> kvp in stack)
         {
             string formated = kvp.Key.ToString();
             formated += timeXinputsSeparator;
@@ -48,7 +46,7 @@ public class GarageTestDump
     public static string formatInputData(IM.InputData data)
     {
         string retval = "";
-        foreach(KeyValuePair<string,IM.InputState> kvp in data.Inputs)
+        foreach (KeyValuePair<string, IM.InputState> kvp in data.Inputs)
         {
             retval += kvp.Key;
             retval += inputXValueSeparator;
@@ -63,7 +61,7 @@ public class GarageTestDump
     {
         string retval = "";
         retval += inputStateStartSeparator;
-        
+
         retval += "IsUp" + inputXValueSeparator + iIS.IsUp.ToString() + inputStateXinputeStateSeparator;
         retval += "IsDown" + inputXValueSeparator + iIS.IsDown.ToString() + inputStateXinputeStateSeparator;
         retval += "Down" + inputXValueSeparator + iIS.Down.ToString() + inputStateXinputeStateSeparator;
@@ -84,7 +82,7 @@ public class GarageTestDump
 
         byte[] b = new byte[1024];
         UTF8Encoding encoder = new UTF8Encoding(true);
-        while (fs.Read(b,0,b.Length) > 0)
+        while (fs.Read(b, 0, b.Length) > 0)
         {
             content += encoder.GetString(b);
         }

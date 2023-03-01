@@ -1,21 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SMBKick : StateMachineBehaviour
 {
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float startKickAt;
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float stopKickAt;
     private KickAction kick;
 
     private void refreshKickAction(Animator animator)
     {
-        if (kick==null)
+        if (kick == null)
         {
             kick = animator.transform.parent.GetComponent<KickAction>();
-            if (kick==null)
+            if (kick == null)
             {
                 kick = animator.transform.parent.GetComponentInChildren<KickAction>();
             }
@@ -31,14 +29,14 @@ public class SMBKick : StateMachineBehaviour
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         refreshKickAction(animator);
-        
+
         // time = XX,yyy where X is number of anim loop and Y the progress of current loop 
         float time = stateInfo.normalizedTime;
 
         float anim_progress = time % 1;
-        if ((anim_progress >= startKickAt)&&(!kick.kicking))
+        if ((anim_progress >= startKickAt) && (!kick.kicking))
             kick.kick();
-        else if ((anim_progress >= stopKickAt)&&(kick.kicking))
+        else if ((anim_progress >= stopKickAt) && (kick.kicking))
             kick.stopKick();
     }
 

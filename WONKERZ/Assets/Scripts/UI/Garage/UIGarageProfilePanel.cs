@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class UIGarageProfilePanel : UIGaragePanel
 {
@@ -31,12 +29,12 @@ public class UIGarageProfilePanel : UIGaragePanel
     public void fillProfileFromPlayerCC()
     {
         CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
-            // TORQUE
-            profile.TORQUE_CURVE = new List<Keyframe>(cc.TORQUE.keys);
-            // WEIGHT
-            profile.WEIGHT_CURVE = new List<Keyframe>(cc.WEIGHT.keys);
-            // COLOR
-            profile.color = PlayerColorManager.Instance.getCurrentColor();
+        // TORQUE
+        profile.TORQUE_CURVE = new List<Keyframe>(cc.torqueCurve.keys);
+        // WEIGHT
+        //profile.WEIGHT_CURVE = new List<Keyframe>(cc.s.keys);
+        // COLOR
+        profile.color = PlayerColorManager.Instance.getCurrentColor();
     }
 
     public void load(string profile_name)
@@ -46,7 +44,7 @@ public class UIGarageProfilePanel : UIGaragePanel
         {
             confirmPanel.Parent = this;
             confirmPanel.setTextBoxField("LOAD ?");
-            confirmPanel.setConfirmAction(() => updatePlayerFromProfile(profile_name) );
+            confirmPanel.setConfirmAction(() => updatePlayerFromProfile(profile_name));
             confirmPanel.onActivate?.Invoke();
         }
     }
@@ -56,11 +54,11 @@ public class UIGarageProfilePanel : UIGaragePanel
         SaveAndLoad.loadGarageProfile(profile_name, profile);
 
         CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
-            // TORQUE
-            cc.TORQUE = new AnimationCurve(profile.TORQUE_CURVE.ToArray());
-            // WEIGHT
-            cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
-            //color
-            PlayerColorManager.Instance.colorize(profile.color);
+        // TORQUE
+        cc.torqueCurve = new AnimationCurve(profile.TORQUE_CURVE.ToArray());
+        // WEIGHT
+        //cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
+        //color
+        PlayerColorManager.Instance.colorize(profile.color);
     }
 }

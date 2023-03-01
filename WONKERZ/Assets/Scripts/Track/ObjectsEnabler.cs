@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,13 +7,13 @@ public class ObjectsEnabler : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnTriggerEnter(Collider iCol)
@@ -22,7 +21,7 @@ public class ObjectsEnabler : MonoBehaviour
         CarController player = iCol.GetComponent<CarController>();
         if (!!player)
         {
-            foreach( ObjectDisabler od in disablers)
+            foreach (ObjectDisabler od in disablers)
                 od.reenable();
         }
     }
@@ -32,7 +31,7 @@ public class ObjectsEnabler : MonoBehaviour
         CarController player = iCol.GetComponent<CarController>();
         if (!!player)
         {
-            foreach( ObjectDisabler od in disablers)
+            foreach (ObjectDisabler od in disablers)
                 od.reenable();
         }
     }

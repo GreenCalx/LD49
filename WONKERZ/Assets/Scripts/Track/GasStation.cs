@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GasStation : MonoBehaviour
@@ -24,7 +22,7 @@ public class GasStation : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnTriggerEnter(Collider iCollider)
@@ -51,11 +49,13 @@ public class GasStation : MonoBehaviour
             {
                 bool convertSuccess = Access.CollectiblesManager().tryConvertNutToTurbo();
                 nutConversionElapsed = 0f;
-                if ( convertSuccess && !IsPumpingGas)
+                if (convertSuccess && !IsPumpingGas)
                 {
                     animator.SetBool(animatorParm, true);
                     IsPumpingGas = true;
-                } else if ( !convertSuccess && IsPumpingGas ) {
+                }
+                else if (!convertSuccess && IsPumpingGas)
+                {
                     animator.SetBool(animatorParm, false);
                     IsPumpingGas = false;
                 }
@@ -72,7 +72,7 @@ public class GasStation : MonoBehaviour
                 IsPumpingGas = false;
                 animator.SetBool(animatorParm, false);
             }
-                
+
         }
     }
 }

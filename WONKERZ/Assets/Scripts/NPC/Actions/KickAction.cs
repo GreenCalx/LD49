@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// Controlled by SMBKick into Animator
@@ -41,9 +39,9 @@ public class KickAction : MonoBehaviour
         if (drawDebugRay)
         {
             Vector3 start = transform.parent.position;
-            Vector3 end = transform.parent.forward*100;
+            Vector3 end = transform.parent.forward * 100;
             end.y += Y_Slope;
-            Debug.DrawRay(start, end, Color.green );
+            Debug.DrawRay(start, end, Color.green);
         }
     }
 
@@ -71,7 +69,7 @@ public class KickAction : MonoBehaviour
 
     Vector3 computeKickDirectionFromContactPoint(Collision collision)
     {
-        Vector3 end = new Vector3(0f,0f,0f);
+        Vector3 end = new Vector3(0f, 0f, 0f);
         if (drawHitPointNormals)
         {
             foreach (var item in collision.contacts)
@@ -87,35 +85,35 @@ public class KickAction : MonoBehaviour
 
     private float computeKickStrength(float mass)
     {
-        return kickStrength + (mass*massMultiplier);
+        return kickStrength + (mass * massMultiplier);
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (!kicking)
             return;
-        
+
         CarController cc = collision.gameObject.GetComponent<CarController>();
         Dummy d = collision.gameObject.GetComponent<Dummy>();
-        if ( !cc && !d )
+        if (!cc && !d)
             return;
 
-        Vector3 kickDirection   = (useContactPointNormalForDirection) ?
+        Vector3 kickDirection = (useContactPointNormalForDirection) ?
             computeKickDirectionFromContactPoint(collision) :
             computeKickDirectionFromParent();
-        
 
-        if (cc!=null)
+
+        if (cc != null)
         {
             Rigidbody rb = cc.GetComponent<Rigidbody>();
             float kickForce = computeKickStrength(rb.mass);
-            rb.AddForce( kickDirection * kickForce, forceMode);
+            rb.AddForce(kickDirection * kickForce, forceMode);
         }
-        if (d!=null)
+        if (d != null)
         {
             Rigidbody rb = d.GetComponent<Rigidbody>();
             float kickForce = computeKickStrength(rb.mass);
-            rb.AddForce( kickDirection * kickForce, forceMode);
+            rb.AddForce(kickDirection * kickForce, forceMode);
         }
     }
 }

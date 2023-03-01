@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PortalTrigger : MonoBehaviour
@@ -16,14 +14,14 @@ public class PortalTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void OnTriggerEnter(Collider iCollider)
     {
         if (!isActive)
             return;
-            
+
         CarController player = iCollider.GetComponent<CarController>();
         if (!!player && !!portal)
         {
