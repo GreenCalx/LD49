@@ -296,9 +296,9 @@ public class TrickTracker : MonoBehaviour
         var last = !enumerator.MoveNext();
         TrickLine.TrickTimePair ttp;
 
-        while( !last )
+        while (!last)
         {
-            ttp = enumerator.Current;        
+            ttp = enumerator.Current;
             tricks += ttp.trick.name;
             last = !enumerator.MoveNext();
 
@@ -307,25 +307,20 @@ public class TrickTracker : MonoBehaviour
         }
 
         trickUI.displayTrick(tricks);
-        trickUI.displayScore( trick_line.getLineScore(combo_multiplier) );
+        trickUI.displayScore(trick_line.getLineScore(combo_multiplier));
 
     }
 
     public void updateWheelStatuses()
     {
         // update wheels
-        CarController.Axle front  = CC.FrontAxle;
-        CarController.Axle rear   = CC.RearAxle;
+        Axle front = CC.axles[(int)AxleType.front];
+        Axle rear = CC.axles[(int)AxleType.rear];
 
-        CarController.Wheel front_left  = front.Left.Wheel;
-        CarController.Wheel front_right = front.Right.Wheel;
-        CarController.Wheel rear_left   = rear.Left.Wheel;
-        CarController.Wheel rear_right  = rear.Right.Wheel;
-
-        wheels_statuses[(int)WHEEL_LOCATION.FRONT_LEFT]  = front_left.IsGrounded;
-        wheels_statuses[(int)WHEEL_LOCATION.FRONT_RIGHT] = front_right.IsGrounded;
-        wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT]   = rear_left.IsGrounded;
-        wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT]  = rear_right.IsGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.FRONT_LEFT] = front.left.isGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.FRONT_RIGHT] = front.right.isGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT] = rear.left.isGrounded;
+        wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT] = rear.right.isGrounded;
     }
 
     public bool carIsOnGround()
@@ -333,7 +328,7 @@ public class TrickTracker : MonoBehaviour
         foreach (bool w in wheels_statuses)
         {
             if (w)
-            { return true;}
+            { return true; }
         }
         return false;
     }
