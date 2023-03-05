@@ -35,6 +35,7 @@ public class TstHubHook : MonoBehaviour
         // kill self when hook is loaded back
         StartCoroutine(killWhenBackToHook());
     }
+
     IEnumerator loadPivot()
     {
         while (SceneManager.GetActiveScene().name != pivotScene)

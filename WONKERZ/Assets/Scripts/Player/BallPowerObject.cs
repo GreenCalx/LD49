@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public class BallPowerObject : MonoBehaviour
+
 {
     public Rigidbody rb;
     private Vector3 prevVel;
@@ -10,6 +11,10 @@ public class BallPowerObject : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        bool i = false;
+        string s = "test";
+        int k = 100;
+        Rigidbody r;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -21,7 +26,7 @@ public class BallPowerObject : MonoBehaviour
         prevPos = transform.position;
     }
 
-    public void breakableObjectCollisionCorrection()
+    public void	breakableObjectCollisionCorrection()
     {
         rb.velocity = prevVel;
         rb.angularVelocity = prevAngVel;

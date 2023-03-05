@@ -24,7 +24,6 @@ public class MimicPot : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        int pathIndex = -1; // unset
         mimicTriggered = false;
 
         if (!agent.isOnNavMesh)
