@@ -10,15 +10,21 @@ public class SandWorm : MonoBehaviour
     public bool drawDebugRays = true;
 
 
+    [Header("Track References")]
+    public RandomSpawner randomSpawner;
 
     [Header("Tweaks")]
     public float wanderRadius;
     public float wanderTimer;
     public float agentOffsetUnderground = 0;
     public float agentOffsetSurface = -10;
+    public float timeBetweenGroundLevelChangeRandom = 30f;
+    [Range(0f,1f)]
+    public float chanceOfSwitchingGroundLevel = 0.5f;
+
     [Header("Values")]
     public bool isUnderground = true;
-    [Header("References")]
+    [Header("Self References")]
     public OffMeshLink offMeshLink;
     public Transform endLinkHandler;
     public ParticleSystem PS_Front;
@@ -26,9 +32,13 @@ public class SandWorm : MonoBehaviour
     public GroundDetector FrontDetector;
     public GroundDetector BackDetector;
     public Animator animator;
- 
+    public PlayerDetector playerDetector;
+    public PlayerDetector playerInAttackRange;
+
+    private Transform chasedTarget;
     private NavMeshAgent agent;
     private float timer;
+    private float timerGroundLevelChange;
     private LayerMask groundTargetLayerMask;
     private LayerMask undergroundTargetLayerMask;
     private Vector3 projectionOnOtherGround;
@@ -42,6 +52,7 @@ public class SandWorm : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent> ();
         timer = wanderTimer;
+        timerGroundLevelChange = 0f;
         warpCC_started = false;
 
         groundTargetLayerMask       = LayerMask.GetMask("Default");
@@ -51,19 +62,55 @@ public class SandWorm : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
+        timer                   += Time.deltaTime;
+        timerGroundLevelChange  += Time.deltaTime;
  
+        if (playerDetector.playerInRange)
+        {
+            // Go to player
+            
+            if (!isUnderground)
+            {
+                callGroundLevelChange = true;
+            }
+            else
+            {
+                if (chasedTarget==null)
+                {
+                    chasedTarget = playerDetector.player;
+                }
+                chaseTarget();
+                if (playerInAttackRange.playerInRange && !callGroundLevelChange && isUnderground)
+                { // launch attack !!
+                    callGroundLevelChange = true;
+                }
+            }
+        } else {
+            chasedTarget = null;
+        }
+
         if (callGroundLevelChange)
         {
             setNewGroundLevel();
         }
 
-        if (timer >= wanderTimer) 
+        if (chasedTarget==null)
         {
-            setNewDestination();
-            timer = 0;
+            if (timerGroundLevelChange>=timeBetweenGroundLevelChangeRandom)
+            {
+                float rand = Random.Range(0f,1f);
+                if (rand <= chanceOfSwitchingGroundLevel)
+                {
+                    setNewGroundLevel();
+                }
+                timerGroundLevelChange = 0f;
+            }
+            if (timer >= wanderTimer) 
+            {
+                setNewDestination();
+                timer = 0;
+            }
         }
-        
         // Particles
         if (!isUnderground)
         {
@@ -151,7 +198,29 @@ public class SandWorm : MonoBehaviour
         animator.SetBool(animParmGoUnderground, false);
         animator.SetBool(animParmGoSurface, false);
 
-        agent.SetDestination(newPos);
+        if(!agent.SetDestination(newPos))
+        {
+            respawn();
+        }
+    }
+
+    private void chaseTarget()
+    {
+        Vector3 newPos = chasedTarget.position;
+        newPos.y = transform.position.y; // approx projection on current plane
+        NavMeshHit navHit;
+        NavMesh.SamplePosition (newPos, out navHit, 50f, -1);
+        newPos = navHit.position;
+
+        if (drawDebugRays)
+            Debug.DrawRay(newPos, Vector3.up*500, Color.blue);
+        animator.SetBool(animParmGoUnderground, false);
+        animator.SetBool(animParmGoSurface, false);
+
+        if (!agent.SetDestination(newPos))
+        {
+            respawn();
+        }
     }
 
     void FixedUpdate()
@@ -196,5 +265,11 @@ public class SandWorm : MonoBehaviour
         NavMesh.SamplePosition (randDirection, out navHit, dist, layermask);
  
         return navHit.position;
+    }
+
+    private void respawn()
+    {
+        randomSpawner.respawn(gameObject, true);
+        isUnderground = true;
     }
 }
