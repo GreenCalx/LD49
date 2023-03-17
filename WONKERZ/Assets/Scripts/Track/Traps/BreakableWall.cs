@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Schnibble;
 
 public class BreakableWall : MonoBehaviour
 {
@@ -28,6 +29,26 @@ public class BreakableWall : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
+        ballPowerCollisionProc(iCol);
+        playerCollisionProc(iCol);
+
+    }
+
+    private void playerCollisionProc(Collision iCol)
+    {
+        CarController cc = iCol.collider.gameObject.GetComponent<CarController>();
+        if (!!cc)
+        {
+            Physics.IgnoreCollision(GetComponent<MeshCollider>(), iCol.collider);
+            //BPO.breakableObjectCollisionCorrection();
+
+            breakWall(iCol.contacts[0].point);
+            elapsedTimeSinceBreak = 0f;
+        }
+    }
+
+    private void ballPowerCollisionProc(Collision iCol)
+    {
         BallPowerObject BPO = iCol.collider.gameObject.GetComponent<BallPowerObject>();
         if (!!BPO)
         {
@@ -36,7 +57,7 @@ public class BreakableWall : MonoBehaviour
 
             breakWall(iCol.contacts[0].point);
             elapsedTimeSinceBreak = 0f;
-        }
+        }   
     }
 
     private void breakWall(Vector3 contactPoint)

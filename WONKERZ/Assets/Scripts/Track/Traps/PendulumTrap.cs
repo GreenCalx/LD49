@@ -10,7 +10,8 @@ public class PendulumTrap : MonoBehaviour
     public float speed = 1f;
     [Range(0,3)]
     public int phase = 0;
-    
+    [Range(0.1f,5f)]
+    public float timerForPhaseSwitch = 1f;    
     
     float timer = 0f;
     
@@ -19,7 +20,7 @@ public class PendulumTrap : MonoBehaviour
     void FixedUpdate()
     {
         timer += Time.deltaTime;
-        if (timer>1f)
+        if (timer>timerForPhaseSwitch)
         {
             phase++;
             phase %= 4;
