@@ -6,10 +6,14 @@ public class PendulumTrap : MonoBehaviour
 {
     [Range(0.01f, 2f)]
     public float amplitude = 1f;
-
+    [Range(0.01f, 4f)]
+    public float speed = 1f;
+    [Range(0,3)]
+    public int phase = 0;
+    
+    
     float timer = 0f;
-    float speed = 1f;
-    int phase = 0;
+    
 
     // Update is called once per frame
     void FixedUpdate()

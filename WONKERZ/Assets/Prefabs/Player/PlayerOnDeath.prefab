@@ -902,7 +902,6 @@ Transform:
   - {fileID: 9197565164242634029}
   - {fileID: 9197565163756752097}
   - {fileID: 2906103152408402829}
-  - {fileID: 9197565164727245880}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -960,301 +959,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9c01ab3ffe1834f975bded80a423d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpeedParticles: {fileID: 9197565163851649347}
-  OnDeathClone: {fileID: 0}
-  CarMotor:
-    MaxTorque: 0.3
-    MaxBreak: 0
-    CurrentRPM: 0
-  FrontAxle:
-    Width: 0
-    Length: 0
-    Right:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 0
-        Radius: 0
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    Left:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 0
-        Radius: 0
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    IsTraction: 0
-    IsDirection: 0
-    IsReversedDirection: 0
-  RearAxle:
-    Width: 0
-    Length: 0
-    Right:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 0
-        Radius: 0
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    Left:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 0
-        Radius: 0
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    IsTraction: 0
-    IsDirection: 0
-    IsReversedDirection: 0
-  CenterOfMass: {fileID: 3140755099674687166}
-  RefSuspension:
-    Spring:
-      RestLength: 0
-      MaxLength: 0
-      MinLength: 0
-      Frequency: 0.159
-      Stiffness: 0.1
-      DampRatio: 0.1
-      DampValue: 0.005
-      Anchor: {fileID: 9197565165322759216}
-      CurrentLength: 0
-      Renderer: {fileID: 3827373999509880929}
-    Wheel:
-      Width: 0.5
-      Radius: 1
-      Grip: 0
-      Renderer: {fileID: 2941931917329427710}
-      Trails: {fileID: 9197565164935220769}
-      Direction: {x: 0, y: 0, z: 0}
-      IsGrounded: 0
-      Velocity: {x: 0, y: 0, z: 0}
-  SuspensionRef: {fileID: 9197565165322759216}
-  RefAxle:
-    Width: 2.5
-    Length: 1.5
-    Right:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 0
-        Radius: 0
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    Left:
-      Spring:
-        RestLength: 0
-        MaxLength: 0
-        MinLength: 0
-        Frequency: 0
-        Stiffness: 0
-        DampRatio: 0
-        DampValue: 0
-        Anchor: {fileID: 0}
-        CurrentLength: 0
-        Renderer: {fileID: 0}
-      Wheel:
-        Width: 1
-        Radius: 0.5
-        Grip: 0
-        Renderer: {fileID: 2941931917329427710}
-        Trails: {fileID: 0}
-        Direction: {x: 0, y: 0, z: 0}
-        IsGrounded: 0
-        Velocity: {x: 0, y: 0, z: 0}
-    IsTraction: 1
-    IsDirection: 1
-    IsReversedDirection: 0
-  UseRefs: 1
-  VelocityCorrectionMultiplier: 1
-  CurrentAccelerationTime: 0
-  TORQUE:
+  overrideInertia: 0
+  linearInertia: 0
+  inertiaTensor: {x: 0, y: 0, z: 0}
+  inertiaTensorRotation: {x: 0, y: 0, z: 0}
+  centerOfMass: {fileID: 0}
+  dragCoeff: 0
+  downForceCoeff: 0
+  maxSteeringAngle_deg: 0
+  toeAngle: 0
+  ackerman: 0
+  ackermanReferential: {fileID: 0}
+  differential:
+    axles: []
+    torqueSplitter: 0
+  maxTorque: 0
+  torqueCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.08267212
-      inSlope: 0.07862756
-      outSlope: 0.07862756
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.3975679
-    - serializedVersion: 3
-      time: 0.63595635
-      value: 0.27093834
-      inSlope: 0.44438842
-      outSlope: 0.44438842
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.4631965
-      outWeight: 0.28109524
-    - serializedVersion: 3
-      time: 0.8075422
-      value: 0.7609382
-      inSlope: 0.018518232
-      outSlope: 0.018518232
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.2824311
-    - serializedVersion: 3
-      time: 0.93133295
-      value: 0.76168454
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.99696803
-      value: 0.2070546
-      inSlope: -2.6805942
-      outSlope: -2.6805942
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  torque_movable_keyframe: 1
-  WEIGHT:
+  currentRPM: 0
+  maxBreak: 0
+  breakCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0.50614315
-      inSlope: -0.090731554
-      outSlope: -0.090731554
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.57141167
-    - serializedVersion: 3
-      time: 0.6642167
-      value: 0.22366206
-      inSlope: -0.060991965
-      outSlope: -0.060991965
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.27398235
-    - serializedVersion: 3
-      time: 1
-      value: 0.2
-      inSlope: -0.058352612
-      outSlope: -0.058352612
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.12598525
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  weight_movable_keyframe: 0
-  turboStrength: 5
-  turboTimeInterval: 0.2
-  turboConsumptionPerTick: 0.02
-  SpringStiffness: 0.05
-  SpringDamper: 0.01
-  SpringMax: 2
-  SpringMultiplier: 1000
-  SpringMin: 0.5
-  SpringRestPercent: 0.5
-  SuspensionLock: 0
-  FixedUpdateDone: 0
-  ApplyForceMultiplier: 0
-  IsAircraft: 0
-  SteeringAngle: 30
-  PhysicsSubSteps: 10
-  debugTorque: {fileID: 0}
+  handbreakTorque: 0
+  handbreakBias: 0
+  axles: []
+  trailsMark: {fileID: 0}
+  speedEffect:
+    particles: {fileID: 0}
+    threshold: 0
+  repulseForce: {x: 0, y: 0, z: 0}
+  onDeathClone: {fileID: 0}
+  jump:
+    isStarting: 0
+    isJumping: 0
+    suspensionLock: 0
+    applyForceMultiplier: 0
+    value: 0
+  turbo:
+    infinite: 0
+    strength: 5
+    timeInterval: 0.2
+    intervalElapsedTime: 99
+    consumptionPerTick: 0.02
+    current: 0
+    max: 1
   IsHooked: 0
   grapin: {fileID: 0}
-  Bounciness: 1
+  rb: {fileID: 0}
+  fixedUpdateDone: 0
+  springStiffness: 0
+  springDamper: 0
+  springMax: 0
+  springMin: 0
+  springRestPercent: 0
+  wheelRadius: 0
+  wheelWidth: 0
+  overrideMaxSpring: 0
+  friction:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  debugTorque: {fileID: 0}
   CurrentMode: 3
   MouseLastPosition: {x: 0, y: 0}
-  TorqueForce: 0.5
-  currentSpeed: 0
-  repulseForce: {x: 0, y: 0, z: 0}
 --- !u!114 &6237226707973970300
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16407,103 +16184,6 @@ Transform:
   m_Father: {fileID: 4165800749654020041}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &9197565164727245895
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 9197565164727245880}
-  - component: {fileID: 9197565164727245883}
-  - component: {fileID: 9197565164727245881}
-  m_Layer: 8
-  m_Name: TrackCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &9197565164727245880
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9197565164727245895}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 4165800749654020041}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &9197565164727245883
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9197565164727245895}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 8
-  far clip plane: 5000
-  field of view: 70
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 0
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 1007
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 0
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
---- !u!114 &9197565164727245881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9197565164727245895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b3b8c7a52182ad4f950c79eb1905071, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  camType: 2
-  FOVEffect_damp: 0
-  FOVEffect_speedThreshold: 0
-  FOVEffect_LerpStep: 0
-  FOV_UpperLimit: 100
-  playerRef: {fileID: 4165800749654020042}
-  Distance: {x: 0, y: 15, z: 7}
-  LerpMult: 1
-  Active: 1
-  CPM: {fileID: 0}
 --- !u!1 &9197565164935220769
 GameObject:
   m_ObjectHideFlags: 0
