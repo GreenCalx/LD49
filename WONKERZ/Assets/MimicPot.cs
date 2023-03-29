@@ -5,15 +5,19 @@ using UnityEngine.AI;
 
 public class MimicPot : MonoBehaviour
 {
-
     public GameObject mimicVersionRef;
+    public PlayerDetector playerDetector;
     public List<Transform> mimicPath;
+    public float turnaroundDistThreshold = 10f;
+
     private int pathIndex = -1;
     private GameObject mimicVersionInst;
     
     private bool mimicTriggered = false;
     private NavMeshAgent agent;
     private LayerMask groundTargetLayerMask;
+    private bool inReversedPath = false;
+
 
     // Start is called before the first frame update
     void Start()
@@ -26,11 +30,11 @@ public class MimicPot : MonoBehaviour
         if (!agent.isOnNavMesh)
         {
             Debug.Log("Agent not on navmesh.");
-            // NavMeshHit navHit;
-            // int layermask = NavMesh.GetAreaFromName("MimicPot");
-            // NavMesh.SamplePosition (transform.position, out navHit, agent.height*2, layermask);
-            agent.Warp(getGroundContact(transform.position));
-            // Debug.DrawRay(navHit.position, Vector3.up * 5f, Color.red,10f );
+            NavMeshHit navHit;
+            int layermask = NavMesh.GetAreaFromName("MimicPot");
+            NavMesh.SamplePosition (transform.position, out navHit, agent.height*2, -1 * layermask);
+
+            agent.Warp(navHit.position);
         }
         
     }
@@ -46,12 +50,43 @@ public class MimicPot : MonoBehaviour
                 Debug.LogWarning("Agent is not on Navmesh. Waiting for Unity's link agent/navmesh.");
                 return;
             }
-            if (!agent.hasPath)
-            { tryGoToNextPoint(); } // first call
-            else if (agent.pathStatus==NavMeshPathStatus.PathComplete)
+
+            agent.isStopped = !playerDetector.playerInRange;
+            float angle = Vector3.Angle(transform.position, Access.Player().transform.position);
+            Debug.Log("Angle : " + angle);
+            if (playerInPathForNextPoint() && playerDetector.playerInRange)
+            {
+                inReversedPath = !inReversedPath;
+                tryGoToNextPoint();
+            }
+
+            if ( Vector3.Distance( agent.destination, transform.position) <= agent.stoppingDistance)
             { tryGoToNextPoint(); }
         }
     }
+
+    private bool playerInPathForNextPoint()
+    {
+        float dist = DistanceLineSegmentPoint(transform.position, mimicPath[pathIndex].position, Access.Player().transform.position);
+        Debug.Log("Distance is " + dist);
+        return dist <= turnaroundDistThreshold;
+    }
+
+    public static float DistanceLineSegmentPoint(Vector3 start, Vector3 end, Vector3 point)
+    {
+        var wander = point - start;
+        var span = end - start;
+     
+        // Compute how far along the line is the closest approach to our point.
+        float t = Vector3.Dot(wander, span) / span.sqrMagnitude;
+     
+        // Restrict this point to within the line segment from start to end.
+        t = Mathf.Clamp01(t);
+     
+        Vector3 nearest = start + t * span;
+        return (nearest - point).magnitude;
+    }
+
 
     private void tryGoToNextPoint()
     {
@@ -60,28 +95,39 @@ public class MimicPot : MonoBehaviour
             Debug.LogWarning("Empty Path on MimicPot.");
             return;
         }
+
+        if (inReversedPath)
+        { tryGoToPreviousPoint(); return; }
+
         pathIndex = (pathIndex >= mimicPath.Count-1) ? 0 : pathIndex+1;
         
         NavMeshHit navHit;
         // layermasks not working
-        //int layermask = NavMesh.GetAreaFromName("MimicPot");
-        //float dist = agent.height*2;
-        //Debug.DrawRay(mimicPath[pathIndex].position, transform.up * 5, Color.red, 10f);
-        //NavMesh.SamplePosition (mimicPath[pathIndex].position, out navHit, dist, layermask);
+        int layermask = NavMesh.GetAreaFromName("MimicPot");
+        float dist = agent.height*2;
 
-        agent.SetDestination(getGroundContact(mimicPath[pathIndex].position));
+        NavMesh.SamplePosition (mimicPath[pathIndex].position, out navHit, dist, -1 * layermask);
+
+        agent.SetDestination(navHit.position);
     }
 
-    public Vector3 getGroundContact(Vector3 iPos)
+    private void tryGoToPreviousPoint()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(iPos, -transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, groundTargetLayerMask))
+        if (mimicPath.Count <= 0)
         {
-            Debug.DrawRay(iPos, -transform.TransformDirection(Vector3.up) * hit.distance, Color.red);
-            return hit.point;
-        } else {
-            return Vector3.zero;
+            Debug.LogWarning("Empty Path on MimicPot.");
+            return;
         }
+        pathIndex = (pathIndex > 0) ? pathIndex-1 : mimicPath.Count-1;
+        
+        NavMeshHit navHit;
+        // layermasks not working
+        int layermask = NavMesh.GetAreaFromName("MimicPot");
+        float dist = agent.height*2;
+
+        NavMesh.SamplePosition (mimicPath[pathIndex].position, out navHit, dist, -1 * layermask);
+
+        agent.SetDestination(navHit.position);
     }
 
     public void triggerMimic()
@@ -95,6 +141,7 @@ public class MimicPot : MonoBehaviour
             mimicTriggered = true;
             if ((agent==null) || (mimicPath==null))
             { Debug.LogError("Missing NavMeshAgent or Path on Mimic Pot."); Destroy(gameObject); }
+            tryGoToNextPoint();
         }
     }
 
