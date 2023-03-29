@@ -9,13 +9,14 @@ public class MimicPot : MonoBehaviour
     public PlayerDetector playerDetector;
     public List<Transform> mimicPath;
     public float turnaroundDistThreshold = 10f;
+    public float fragmentExplodeForce = 10f; 
+    public float timeBeforeFragmentClean = 10f;
 
     private int pathIndex = -1;
     private GameObject mimicVersionInst;
     
     private bool mimicTriggered = false;
     private NavMeshAgent agent;
-    private LayerMask groundTargetLayerMask;
     private bool inReversedPath = false;
 
 
@@ -25,7 +26,6 @@ public class MimicPot : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         int pathIndex = -1; // unset
         mimicTriggered = false;
-        groundTargetLayerMask       = LayerMask.GetMask("Default");
 
         if (!agent.isOnNavMesh)
         {
@@ -52,8 +52,7 @@ public class MimicPot : MonoBehaviour
             }
 
             agent.isStopped = !playerDetector.playerInRange;
-            float angle = Vector3.Angle(transform.position, Access.Player().transform.position);
-            Debug.Log("Angle : " + angle);
+            //float angle = Vector3.Angle(transform.position, Access.Player().transform.position);
             if (playerInPathForNextPoint() && playerDetector.playerInRange)
             {
                 inReversedPath = !inReversedPath;
@@ -68,7 +67,6 @@ public class MimicPot : MonoBehaviour
     private bool playerInPathForNextPoint()
     {
         float dist = DistanceLineSegmentPoint(transform.position, mimicPath[pathIndex].position, Access.Player().transform.position);
-        Debug.Log("Distance is " + dist);
         return dist <= turnaroundDistThreshold;
     }
 
@@ -142,8 +140,10 @@ public class MimicPot : MonoBehaviour
             if ((agent==null) || (mimicPath==null))
             { Debug.LogError("Missing NavMeshAgent or Path on Mimic Pot."); Destroy(gameObject); }
             tryGoToNextPoint();
+
         }
     }
+
 
     private void spawnMimic()
     {
@@ -159,5 +159,24 @@ public class MimicPot : MonoBehaviour
         if (!!mr)
             mr.enabled = false;
         Destroy(mc.gameObject);
+
+        // Explode mimic's butt
+        List<MeshRenderer> mrs = new List<MeshRenderer>(mimicVersionInst.GetComponentsInChildren<MeshRenderer>());
+        foreach (MeshRenderer rend in mrs)
+        {
+            if (!rend.gameObject.name.Contains("_cell"))
+                continue;
+            
+            rend.transform.parent = null;
+            
+            Rigidbody loc_rb = rend.gameObject.AddComponent<Rigidbody>();
+            MeshCollider loc_mc = rend.gameObject.AddComponent<MeshCollider>();
+            loc_mc.convex = true;
+            rend.gameObject.layer = LayerMask.NameToLayer("NoPlayerCollision");
+            Vector3 forceDir = (-1)*transform.up;
+            loc_rb.AddForce(forceDir.normalized * fragmentExplodeForce, ForceMode.Impulse);
+        
+            Destroy(rend.gameObject, timeBeforeFragmentClean);
+        }
     }
 }

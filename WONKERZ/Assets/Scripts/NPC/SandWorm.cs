@@ -25,8 +25,8 @@ public class SandWorm : MonoBehaviour
     [Header("Values")]
     public bool isUnderground = true;
     [Header("Self References")]
-    public OffMeshLink offMeshLink;
-    public Transform endLinkHandler;
+    //public OffMeshLink offMeshLink;
+    //public Transform endLinkHandler;
     public ParticleSystem PS_Front;
     public ParticleSystem PS_Back;
     public GroundDetector FrontDetector;
@@ -176,16 +176,11 @@ public class SandWorm : MonoBehaviour
         if (warpCC_started)
             return;
 
-        int layer = (isUnderground) ? groundTargetLayerMask.value : undergroundTargetLayerMask.value; // layer change
-        offMeshLink.startTransform  = transform;
-        offMeshLink.endTransform    = endLinkHandler;
-        
         animator.SetBool(animParmGoUnderground, !isUnderground);
         animator.SetBool(animParmGoSurface, isUnderground);
 
-        StartCoroutine(warpWorm(projectionOnOtherGround, !isUnderground));
-        //StartCoroutine(warpWorm(projectionOnOtherGround, true));
-        
+        Vector3 otherGroundPos = (isUnderground) ? getGroundContact() : getUndergroundContact();
+        StartCoroutine(warpWorm(otherGroundPos, !isUnderground));
     }
 
     private void setNewDestination()
@@ -225,18 +220,20 @@ public class SandWorm : MonoBehaviour
 
     void FixedUpdate()
     {
-        projectionOnOtherGround = (isUnderground) ? getGroundContact() : getUndergroundContact();
-        endLinkHandler.position = projectionOnOtherGround;
+        //projectionOnOtherGround = (isUnderground) ? getGroundContact() : getUndergroundContact();
     }
 
     public Vector3 getGroundContact()
     {
         RaycastHit hit;
-
+        int layermask = (-1) * NavMesh.GetAreaFromName("Ground");
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, groundTargetLayerMask))
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up) * hit.distance, Color.yellow);
-            return hit.point;
+            if (drawDebugRays)
+                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up) * hit.distance, Color.yellow);
+            NavMeshHit navHit;
+            NavMesh.SamplePosition (hit.point, out navHit, agent.height*2, layermask);
+            return navHit.position;
         } else {
             return Vector3.zero;
         }
@@ -245,10 +242,14 @@ public class SandWorm : MonoBehaviour
     public Vector3 getUndergroundContact()
     {
         RaycastHit hit;
+        int layermask = (-1) * NavMesh.GetAreaFromName("Underground");
         if (Physics.Raycast(transform.position, -transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, undergroundTargetLayerMask))
         {
-            Debug.DrawRay(transform.position, -transform.TransformDirection(Vector3.up) * hit.distance, Color.red);
-            return hit.point;
+            if (drawDebugRays)
+                Debug.DrawRay(transform.position, -transform.TransformDirection(Vector3.up) * hit.distance, Color.red);
+            NavMeshHit navHit;
+            NavMesh.SamplePosition (hit.point, out navHit, agent.height*2, layermask);
+            return navHit.position;
         } else {
             return Vector3.zero;
         }

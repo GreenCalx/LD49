@@ -56,9 +56,9 @@ public class BreakableObject : MonoBehaviour
         {
             if (OnBreakFunc!=null)
             {
-                OnBreakFunc.Invoke();
                 if (!swallowBreak)
                 { tryBreak(cc); }
+                OnBreakFunc.Invoke();
             } 
             else { tryBreak(cc); }
         }
