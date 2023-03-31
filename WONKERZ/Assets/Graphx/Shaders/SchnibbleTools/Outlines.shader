@@ -1,4 +1,4 @@
-Shader "Hidden/EdgeDetectionPostFX"
+Shader "Custom/Outlines"
 {
     Properties
     {
@@ -29,7 +29,7 @@ Shader "Hidden/EdgeDetectionPostFX"
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
 			
-			#include "SchnibbleCustomGBuffer.cginc"
+			#include "../Deferred/SchnibbleCustomGBuffer.cginc"
 
             struct appdata
             {
@@ -53,6 +53,7 @@ Shader "Hidden/EdgeDetectionPostFX"
             sampler2D _CameraDepthTexture;
             float4 _CameraDepthTexture_TexelSize;
             sampler2D _MainTex;
+			float4 _MainTex_TexelSize;
 
             float4 _DirectionalLightPosition;
             float _ToonShadowMultiplier;
@@ -211,18 +212,21 @@ Shader "Hidden/EdgeDetectionPostFX"
                 float D = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
 
                 fixed4 col = tex2D(_MainTex, i.uv);
+				
                 float Result;
                 float ResultDepth;
 
-                float2 texSize = (_CameraDepthTexture_TexelSize.x,_CameraDepthTexture_TexelSize.y);
+                float2 texSize = _CameraDepthTexture_TexelSize.xy;
 
                 for (int j=0; j<9; ++j)
                     SobleNeighborsSamples[j] *= texSize;
 
                 float ThicknessFallOff = (1-Linear01Depth(D));
                 ThicknessFallOff = 1;
-
-                SchnibbleCustomGPUData schParams = _SchnibbleMaterialData[GetMaterialId(i.uv)];
+				
+				int matid = GetMaterialId(i.uv);
+                
+                SchnibbleCustomGPUData schParams = _SchnibbleMaterialData[matid];
 				if (schParams.enableOutlineDepth) {
 					ComputeLaplacianAtPoint(i.uv, schParams.outlineDepth.width * ThicknessFallOff, ResultDepth);
 					if (ResultDepth > schParams.outlineDepth.threshold) {
@@ -230,18 +234,25 @@ Shader "Hidden/EdgeDetectionPostFX"
 					}
 				}
 
+                if(schParams.enableOutlineColor) {
+       			   ComputeSobelColorAtPoint(i.uv, schParams.outlineColor.width * ThicknessFallOff, Result);
+                   if (Result > schParams.outlineColor.threshold) {
+                       return schParams.outlineColor.lightColor;
+                   }
+				}
 
-                // ComputeSobelColorAtPoint(i.uv, _ColorThickness * ThicknessFallOff, Result);
-                // if (Result > _SobelColorThreshold) {
-                //     return fixed4(0,0,0,1);
-                // }
+                if(schParams.enableOutlineNormal){
+                    ComputeSobelNormalAtPoint(i.uv, schParams.outlineNormal.width , Result);
+                    if (Result > schParams.outlineNormal.threshold) {
+                        return schParams.outlineNormal.lightColor;
+                    }
+				}
 
-                // ComputeSobelNormalAtPoint(i.uv, _NormalThickness , Result);
-                // if (Result > _SobelNormalThreshold) {
-                //     return fixed4(0,0,0,1);
-                // }
-
-                // static const float PI = 3.14159265f;
+                return float4(0,0,0,0);
+                
+				
+				
+				// static const float PI = 3.14159265f;
                 // float angle;
                 // ComputeSobelLightAtPoint(i.uv, _SobelLightThickness, Result, angle);
                 // if (Result > _SobelLightThreshold ) {
@@ -255,6 +266,7 @@ Shader "Hidden/EdgeDetectionPostFX"
                 //     //return col *  0;
                 // }
 
+/*
                     float3 lightDir = normalize(_DirectionalLightPosition.xyz);
                     float4 normal2 = tex2D(_CameraGBufferTexture2, i.uv);
                     float lightAmount = dot( normal2 , -lightDir);
@@ -273,6 +285,186 @@ Shader "Hidden/EdgeDetectionPostFX"
                 }
 
                 return lerp(col, col * lightEffect, _ToonShadowMultiplier);
+*/
+            }
+            ENDCG
+		}
+			
+			Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "UnityCG.cginc"
+            #include "AutoLight.cginc"
+			
+			#include "../Deferred/SchnibbleCustomGBuffer.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex;
+			float4 _MainTex_TexelSize;
+
+            // this kernel is the same when used in x or y dimension			
+            static float BlurKernel1D[7]= {
+                0.003, 0.048, 0.242, 0.415, 0.242, 0.048, 0.003
+            };
+			static float BlurNeighbors1D[7]= {
+			    -3, -2, -1, 0, 1, 2, 3  
+			};
+			
+			float4 Convolute(float2 uv) {
+                float4 Result = float4(0,0,0,0);
+                [unroll]
+                for (int i=0;i<7;++i) {
+                    float4 v = tex2D(_MainTex, uv + float2(BlurNeighbors1D[i], 0)*_MainTex_TexelSize.xy);
+                    Result += v * BlurKernel1D[i];
+                }
+                return Result;
+			}
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                return Convolute(i.uv);
+            }
+            ENDCG
+        }
+		
+			Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "UnityCG.cginc"
+            #include "AutoLight.cginc"
+			
+			#include "../Deferred/SchnibbleCustomGBuffer.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex; 
+            float4 _MainTex_TexelSize;
+            // this kernel is the same when used in x or y dimension			
+            static float BlurKernel1D[7]= {
+                0.003, 0.048, 0.242, 0.415, 0.242, 0.048, 0.003
+            };
+			
+			static float BlurNeighbors1D[7] ={
+			    -3, -2, -1, 0, 1, 2, 3  
+			};
+			
+			float4 Convolute(float2 uv) {
+                float4 Result = float4(0,0,0,0);
+                [unroll]
+                for (int i=0;i<7;++i) {
+                    float4 v = tex2D(_MainTex, uv + float2(0, BlurNeighbors1D[i])*_MainTex_TexelSize.xy);
+                    Result += v * BlurKernel1D[i];
+                }
+                return Result;
+			}
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                return Convolute(i.uv);
+            }
+            ENDCG
+        }
+		
+		Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "UnityCG.cginc"
+            #include "AutoLight.cginc"
+			
+			#include "../Deferred/SchnibbleCustomGBuffer.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex; 
+            float4 _MainTex_TexelSize;
+			
+			static float Dilate1D[7] ={
+			    -3, -2, -1, 0, 1, 2, 3
+			};
+			
+			float4 Convolute(float2 uv) {
+                float4 Result = float4(0,0,0,0);
+                [unroll]
+                for (int i=0;i<7;++i) {
+                    float4 v = tex2D(_MainTex, uv + float2(0, Dilate1D[i])*_MainTex_TexelSize.xy);
+                    Result = float4(max(v.r, Result.r), max(v.g, Result.g), max(v.b, Result.b), max(v.a, Result.a));
+                }
+
+				[unroll]
+                for (int j=0;j<7;++j) {
+                    float4 v = tex2D(_MainTex, uv + float2( Dilate1D[j], 0)*_MainTex_TexelSize.xy);
+                    Result = float4(max(v.r, Result.r), max(v.g, Result.g), max(v.b, Result.b), max(v.a, Result.a));
+                }
+                return Result;
+			}
+
+            v2f vert (appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = v.uv;
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target
+            {
+                return Convolute(i.uv);
             }
             ENDCG
         }
