@@ -25,6 +25,7 @@ public class NPC_SQR : MonoBehaviour
     public GameObject bombRef;
     public float BombDropForce = 1f;
     public float delayBombAnimStart = 0.5f;
+    public float bombDropYSlope = 3f;
 
     [Range(0f, 1f)]
     public float shootAngleVariationDelta = 5f;
@@ -40,7 +41,7 @@ public class NPC_SQR : MonoBehaviour
     private bool shouldDropBomb = false;
 
     ///
-    private NavMeshAgent navmesh;
+    private NavMeshAgent agent;
     private NavMeshPath path;
     private bool deactivate_sqr;
 
@@ -58,10 +59,9 @@ public class NPC_SQR : MonoBehaviour
     public PlayerDetector detector;
     public PlayerDetector attackRangeDetector;
 
-    public Transform fleeGoal;
+    public NavMeshTransform fleeGoal;
+    public float thresholdFleePointReached = 2f;
     public Transform exitJumpPoint;
-    [Range(20f, 200f)]
-    public float fleeTotDistanceStep = 50f;
     [Range(1f, 20f)]
     public float jumpExitTotDistanceStep = 50f;
 
@@ -73,7 +73,7 @@ public class NPC_SQR : MonoBehaviour
 
     public void init()
     {
-        navmesh = GetComponent<NavMeshAgent>();
+        agent = GetComponent<NavMeshAgent>();
         is_running = false;
         path = new NavMeshPath();
         idle_elapsed_time = 0f;
@@ -83,7 +83,9 @@ public class NPC_SQR : MonoBehaviour
         deactivate_sqr = false;
 
         if (behaviour == SQR_BEHAVIOURS.KICKER)
-            navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
+            agent.SetDestination(RandomNavmeshLocation(walkable_radius));
+        if(behaviour == SQR_BEHAVIOURS.BOMB_DROPPER)
+        { agent.SetDestination(fleeGoal.GetNavPosition()); agent.isStopped = true; }
     }
 
     // Update is called once per frame
@@ -115,11 +117,12 @@ public class NPC_SQR : MonoBehaviour
         timeOfLastBombDrop += Time.deltaTime;
 
         // if goal is reached, we exit the character by exit point
+        exitReached = Vector3.Distance(transform.position, fleeGoal.position)<=thresholdFleePointReached;
         if (exitReached && !!exitJumpPoint)
         {
             // jump to exitPoint
-            //navmesh.SetDestination(exitJumpPoint.position);
-            navmesh.enabled = false;
+            //agent.SetDestination(exitJumpPoint.position);
+            agent.enabled = false;
             exitToCrowPose();
             return;
         }
@@ -127,11 +130,12 @@ public class NPC_SQR : MonoBehaviour
         // RunBackward if player is too close
         if (detector.playerInRange || detector.dummyInRange)
         {
-            Vector3 nextPoint = Vector3.MoveTowards(transform.position, fleeGoal.position, fleeTotDistanceStep);
-            fleeBackwardToPoint(nextPoint);
+            agent.isStopped = false;
+            fleeBackwardToPoint();
         }
         else
         {
+            agent.isStopped = true;
             chill();
         }
 
@@ -158,7 +162,7 @@ public class NPC_SQR : MonoBehaviour
         shouldDropBomb = false;
 
         Vector3 nextPoint = Vector3.MoveTowards(transform.position, exitJumpPoint.position, jumpExitTotDistanceStep);
-        if (transform.position == exitJumpPoint.position)
+        if (Vector3.Distance(transform.position, exitJumpPoint.position)<1f)
         {
             animator.SetBool(crowpose_anim_parm, true);
             deactivate_sqr = true;
@@ -167,10 +171,9 @@ public class NPC_SQR : MonoBehaviour
         transform.position = nextPoint;
     }
 
-    private void fleeBackwardToPoint(Vector3 iGoal)
+    private void fleeBackwardToPoint()
     {
         animator.SetBool(runback_anim_parm, true);
-        navmesh.SetDestination(iGoal);
     }
 
     private void chill()
@@ -199,6 +202,8 @@ public class NPC_SQR : MonoBehaviour
         float angleVal = Random.Range(-shootAngleVariationDelta, shootAngleVariationDelta);
         shootDir.x = transform.forward.x * Mathf.Cos(angleVal) - transform.forward.z * Mathf.Sin(angleVal);
         shootDir.z = transform.forward.x * Mathf.Sin(angleVal) + transform.forward.z * Mathf.Cos(angleVal);
+        
+        shootDir.y = transform.forward.y + bombDropYSlope;
 
         // vary force
         float forceVariation = Random.Range(1f, shootingForceVariationDelta);
@@ -224,7 +229,7 @@ public class NPC_SQR : MonoBehaviour
             }
             else
             {
-                navmesh.SetDestination(detector.player.position);
+                agent.SetDestination(detector.player.position);
                 animator.SetBool(kick_anim_parm, false);
             }
         }
@@ -240,13 +245,13 @@ public class NPC_SQR : MonoBehaviour
             }
             else
             {
-                navmesh.SetDestination(detector.dummy.position);
+                agent.SetDestination(detector.dummy.position);
                 animator.SetBool(kick_anim_parm, false);
             }
         }
 
         // Running
-        if (navmesh.remainingDistance <= destination_tolerance)
+        if (agent.remainingDistance <= destination_tolerance)
         {
             if (is_running)
                 idle_elapsed_time = 0f;
@@ -254,7 +259,7 @@ public class NPC_SQR : MonoBehaviour
 
             if (idle_elapsed_time > idle_duration)
             {
-                navmesh.SetDestination(RandomNavmeshLocation(walkable_radius));
+                agent.SetDestination(RandomNavmeshLocation(walkable_radius));
                 is_running = true;
             }
             else
@@ -286,7 +291,7 @@ public class NPC_SQR : MonoBehaviour
     public void updateTarget(Vector3 iTarget)
     {
         NavMesh.CalculatePath(transform.position, iTarget, NavMesh.AllAreas, path);
-        navmesh.path = path;
+        agent.path = path;
     }
 
 }

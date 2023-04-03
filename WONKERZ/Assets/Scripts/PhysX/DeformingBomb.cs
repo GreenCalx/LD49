@@ -10,16 +10,18 @@ public class DeformingBomb : MonoBehaviour
     public int explosionDamage = 5;
 
     private int n_bounces;
-    private float minTimeBetweenBounces = 0.1f;
+    public float minTimeBetweenBounces = 0.3f;
     private float elapsedTimeBetweenBounces;
 
     public PlayerDetector playerDetector;
+    public Texture2D bounceColorRamp;
 
     // Start is called before the first frame update
     void Start()
     {
         n_bounces = 0;
-        elapsedTimeBetweenBounces = 999f;
+        elapsedTimeBetweenBounces = 0f;
+        updateBombColor();
     }
 
     // Update is called once per frame
@@ -53,26 +55,55 @@ public class DeformingBomb : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnCollisionEnter(Collision other)
+    private void OnCollision(Collision other)
     {
-
         if (elapsedTimeBetweenBounces < minTimeBetweenBounces)
             return;
 
         n_bounces++;
         if (n_bounces < numberOfBounceBeforeExplosion)
-            return;
+        { updateBombColor(); elapsedTimeBetweenBounces = 0f; return; }
 
-        if (other.gameObject.GetComponent<MeshDeform>() != null)
-        {
+        //if (other.gameObject.GetComponent<MeshDeform>() != null)
+        //{
             this.Log("Collided with a DeformMesh : " + other.gameObject.name);
             movePoints(other.gameObject, other.contacts[0].point);
             explode();
+        //}
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        OnCollision(other);
+    }
+
+    void OnCollisionStay(Collision other)
+    {
+        OnCollision(other);
+    }
+
+    private void updateBombColor()
+    {
+        if (bounceColorRamp==null)
+            return;
+
+        float width = bounceColorRamp.width;
+        float bounce_ratio = (float)n_bounces / (float)numberOfBounceBeforeExplosion;
+        
+        Color newcolor = bounceColorRamp.GetPixel((int)(bounce_ratio*width),0);
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+        if (!!mr)
+        {
+            mr.material.SetColor("_Color", newcolor);
         }
     }
 
     public void movePoints(GameObject other, Vector3 contactPoint)
     {
+        MeshDeform md = other.GetComponent<MeshDeform>();
+        if (md==null)
+            return; // nothing to deform
+
         Vector3[] otherVerts = other.GetComponent<MeshDeform>().originalVertices;
         Vector3 localColPos = transform.InverseTransformPoint(contactPoint);
         this.Log("Deformed collision point at : " + contactPoint);

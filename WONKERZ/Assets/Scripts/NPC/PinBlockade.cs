@@ -24,7 +24,7 @@ public class PinBlockade : PIDController
     [SerializeField]
     Transform target;
 
-    public bool autoPowerFromMass = true;
+    public bool autoPowerFromMass = false;
     public override float Power
     {
         get
@@ -40,7 +40,8 @@ public class PinBlockade : PIDController
     public float life_lust_factor = 25;
     public float life_lust_duration = 10f;
 
-    public float ballPowerForceMultiplier = 10f;
+    public bool carHitsLikeBallPower = true;
+    public float onFirstHitPowerMultiplier = 10f;
 
     public override PID GetController()
     {
@@ -125,13 +126,19 @@ public class PinBlockade : PIDController
     {
         if (freshOfCollision)
         {
-            if (!iCol.gameObject.GetComponent<Ground>())
+            BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
+            CarController cc = iCol.gameObject.GetComponent<CarController>();
+            if (!!bpo || !!cc)
             {
-                BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
                 if (!!bpo)
                 {
-                    rb.AddForce(bpo.rb.velocity * ballPowerForceMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(bpo.rb.velocity * ballPowerForceMultiplier);
+                    rb.AddForce(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier);
+                    life_lust = false;
+                } else if (carHitsLikeBallPower && !!cc)
+                {
+                    rb.AddForce(cc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    rb.AddTorque(cc.rb.velocity * onFirstHitPowerMultiplier);
                     life_lust = false;
                 }
                 if (life_lust)

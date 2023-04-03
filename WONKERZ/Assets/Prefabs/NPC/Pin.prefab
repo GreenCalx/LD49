@@ -110,7 +110,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 523426513176700514}
   serializedVersion: 2
-  m_Mass: 500
+  m_Mass: 200
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 1
@@ -169,13 +169,14 @@ MonoBehaviour:
     integrationStored: 0
     velocity: 0
     derivativeInitialized: 0
-  power: 6000
+  power: 2000
   target: {fileID: 0}
-  autoPowerFromMass: 1
+  autoPowerFromMass: 0
   life_lust: 1
   life_lust_factor: 25
   life_lust_duration: 10
-  ballPowerForceMultiplier: 5
+  carHitsLikeBallPower: 1
+  onFirstHitPowerMultiplier: 10
 --- !u!1 &6869423716448212022
 GameObject:
   m_ObjectHideFlags: 0
