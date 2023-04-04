@@ -55,8 +55,9 @@ CGPROGRAM
 													  SchTextureDiffuseBRDFOffset);
                 half3 lightColor = light.color;
 				float lightIntensity = RGBToHSV(lightColor).b;
+				
                 float diffuseIntensity = ndotl_ramped * atten;
-			    half3 diffuseColor = diffuseIntensity* lightColor;
+			    half3 diffuseColor = diffuseIntensity * lightColor;
 				
 				// GGX with roughtness to 0 would mean no specular at all, using max(roughness, 0.002) here to match HDrenderloop roughtness remapping.
                 roughness = max(roughness, 0.002);
@@ -71,11 +72,14 @@ CGPROGRAM
 				specularColor = specularTerm * specularColor * lightColor;
 				
 				float fresnel = 1 - dot(viewDir, normal);
-				fresnel *= nl;
+				fresnel *= pow(nl, 3);
+				if(fresnel < 0.5) fresnel = 0;
 				half3 fresnelColor = fresnel * lightColor;
 				
-				half3 color = diffuseColor + specularColor + fresnelColor;
-                return half4(color, diffuseIntensity*lightIntensity);
+				half3 color =  diffuseColor + specularColor + fresnelColor;
+				
+				half finalIntensity = RGBToHSV(color).b;
+                return half4(color, finalIntensity);
             }
 
 
@@ -204,9 +208,11 @@ v2f vert (float4 vertex : POSITION, float2 texcoord : TEXCOORD0)
 
 fixed4 frag (v2f i) : SV_Target
 {
-    int matID = GetMaterialId(i.texcoord);
-	float4 lightBuffer = tex2D(_MainTex, i.texcoord);
+	float4 lightBuffer = tex2D(_MainTex, i.texcoord) + float4(0.001,0.001,0.001,0); // avoid black
 	float3 lightColorNormalized = NormalizeColor(lightBuffer);
+	float3 lightColorHSV = RGBToHSV(NormalizeColor(lightBuffer));
+	lightColorNormalized = saturate(HSVToRGB(float3(lightColorHSV.xy, 1)));
+	//lightColorNormalized = RGBToHSV(lightBuffer);
 	 // unpack Gbuffer
 	GBuffer gbuffer;
     gbuffer.gBuffer0 = tex2D (_CameraGBufferTexture0, i.texcoord);
@@ -215,10 +221,13 @@ fixed4 frag (v2f i) : SV_Target
     
 	SchnibbleGBuffer schGBuffer;
 	UnpackSchnibbleGBuffer(gbuffer, schGBuffer);
-	float3 colorRamp = SampleTextureRGB(float2(lightBuffer.a, RGBToHSV(schGBuffer.albedo).x),
-                                        matID,
+	float3 colorRamp;
+	if (lightBuffer.a > 1) colorRamp = lightBuffer.a;
+	else 
+	    colorRamp = SampleTextureRGB(float2(lightBuffer.a, RGBToHSV(schGBuffer.albedo).x),
+                                        schGBuffer.matId,
 										SchTextureToonRampOffset);
-    return half4((lightBuffer * colorRamp * schGBuffer.albedo), lightBuffer.a);
+    return half4(lightColorNormalized * colorRamp * (schGBuffer.albedo+schGBuffer.specular), lightBuffer.a);
 }
 ENDCG
 }

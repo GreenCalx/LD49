@@ -10,6 +10,15 @@ struct SchnibbleCustomOutline {
 	float4 distanceColor;
 };
 
+	struct SchnibbleCrossHatchData
+	{
+        float maxSize;
+        float minSize;
+		float spaceSize;
+        float lightPower;
+        float blendPower;		
+	};
+
 #define SchTextureW 255
 #define SchTextureH 255
 
@@ -20,6 +29,8 @@ struct SchnibbleCustomGPUData {
 	int enableOutlineNormal;
 	SchnibbleCustomOutline outlineColor;
 	int enableOutlineColor;
+	SchnibbleCrossHatchData hatch;
+	int enableCrossHatch;
 };
 
 #define SchTextureR8Count 3

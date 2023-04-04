@@ -13,6 +13,8 @@ public class ToonPipeline : MonoBehaviour
 	// double buffering to make possible read/write
 	private RenderTexture outlines_2;
 	
+	public Light mainLight;
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -60,9 +62,20 @@ public class ToonPipeline : MonoBehaviour
 	
 	private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+		var cam = GetComponent<Camera>();
+		
+		Matrix4x4 projectionMatrix = cam.projectionMatrix;
+        projectionMatrix = GL.GetGPUProjectionMatrix(projectionMatrix, false);
+        projectionMatrix.SetColumn(1, projectionMatrix.GetColumn(1) * -1);
+		
+		Matrix4x4 viewMatrix = cam.worldToCameraMatrix;
+
+		
 		Material merge = new Material(Shader.Find("Custom/Merge"));
 		merge.SetTexture("_LightPass", lightPassTex);
 		merge.SetTexture("_Outlines", outlines);
+		merge.SetVector("_LightDir", mainLight.transform.forward);
+		merge.SetMatrix("_UNITY_MATRIX_I_V", viewMatrix.inverse);
         Graphics.Blit(source, destination, merge);
     }
 }

@@ -7,9 +7,11 @@ Shader "Custom/DepthMask"
 		ZWrite On
 		Stencil {
 		    Ref 2
+
 			Comp Always
 			Pass Replace
 		}
+		
 		Pass{
 		    Tags{"LightMode" = "Deferred"}
 		}
