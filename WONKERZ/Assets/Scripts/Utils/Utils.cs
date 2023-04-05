@@ -45,6 +45,9 @@ public static partial class Utils
 
     public static bool isPlayer(GameObject iGO)
     {
+        if (iGO.GetComponent<Dummy>()!=null)
+            return true;
+
         CarController direct_cc = iGO.GetComponent<CarController>();
         if (!!direct_cc)
             return true;
