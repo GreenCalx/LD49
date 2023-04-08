@@ -7,6 +7,7 @@ public class StartPortal : AbstractCameraPoint
 {
     [Header("Behaviour")]
     public bool enable_tricks = false;
+    public bool deleteAfterSpawn = false;
     public GameCamera.CAM_TYPE camera_type;
 
     [Header("Optionals")]
@@ -26,6 +27,10 @@ public class StartPortal : AbstractCameraPoint
 
             if (enable_tricks)
                 activateTricks();
+        }
+        if (deleteAfterSpawn)
+        {
+            Destroy(gameObject);
         }
     }
 

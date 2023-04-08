@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
+using System.Collections.Generic;
 using Schnibble;
 
 // Triggers only once in current scene
 // > TODO : save seen cinematics to init triggerrs accordingly
 public class CinematicTrigger : MonoBehaviour, IControllable
 {
-
     public bool triggerOnlyOnce = true;
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
@@ -14,6 +15,10 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
     public bool freezePlayer = true;
     public CinematicCamera cam;
+
+    public CinematicNode rootNode;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +62,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     private void StartCinematic()
     {
         Utils.attachControllable<CinematicTrigger>(this);
-
+        
         triggered = true;
         cam.launch();
 
@@ -71,6 +76,12 @@ public class CinematicTrigger : MonoBehaviour, IControllable
                 // TODO : Callback to deactivate
                 leui.gameObject.SetActive(true);
             }
+        }
+
+        // Execute node if defined
+        if (rootNode!=null)
+        {
+            rootNode.execNode();
         }
     }
 

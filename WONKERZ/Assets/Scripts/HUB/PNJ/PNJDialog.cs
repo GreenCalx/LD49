@@ -51,7 +51,7 @@ public class PNJDialog : MonoBehaviour, IControllable
 
     }
 
-    private void talk()
+    public bool talk()
     {
         if (!dialog_ongoing)
         {
@@ -64,7 +64,7 @@ public class PNJDialog : MonoBehaviour, IControllable
         }
 
         if (__loaded_dialog_ui == null)
-            return;
+            return false;
 
         if (!__loaded_dialog_ui.message_is_displayed() &&
               __loaded_dialog_ui.has_a_message_to_display())
@@ -80,7 +80,7 @@ public class PNJDialog : MonoBehaviour, IControllable
                 if (curr_dialog_index >= dialog.Length)
                 {
                     end_dialog();
-                    return;
+                    return false;
                 }
 
                 __loaded_dialog_ui.display(npc_name, dialog[curr_dialog_index]);
@@ -89,7 +89,7 @@ public class PNJDialog : MonoBehaviour, IControllable
             }
 
         }
-
+        return true;
     }
 
     private void playVoice()
