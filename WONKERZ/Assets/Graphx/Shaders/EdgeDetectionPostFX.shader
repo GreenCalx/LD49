@@ -29,7 +29,7 @@ Shader "Hidden/EdgeDetectionPostFX"
             #include "UnityCG.cginc"
             #include "AutoLight.cginc"
 			
-			#include "SchnibbleCustomGBuffer.cginc"
+			#include "Deferred/SchnibbleCustomGBuffer.cginc"
 
             struct appdata
             {

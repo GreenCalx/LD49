@@ -1,14 +1,32 @@
-// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
 Shader "Custom/SandNew"
 {
     Properties
     {
-        _MainTex ("Albedo (RGB)", 2D) = "white" {}
-        _NormalHigh ("Normal High Dunes", 2D) = "white" {}
-        _NormalLow ("Normal Low Dunes", 2D) = "white" {}
-        _NormalScale ("Normal Scale", float) = 1
-        _NormalStrength ( "Normal Strength", float ) = 1
+	    _Color("Color", Color) = (1,1,1,1)
+
+        [Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
+        _MetallicGlossMap("Metallic", 2D) = "white" {}
+
+        _Roughness("Roughness", Range(0.0, 1.0)) = 0.5
+
+        _BumpScale("Scale", Float) = 1.0
+        [Normal] _BumpMap("Normal Map", 2D) = "bump" {}
+		
+		_Parallax ("Height Scale", Range (0.005, 0.08)) = 0.02
+        _ParallaxMap ("Height Map", 2D) = "black" {}
+
+        _MaterialID("MaterialID", Int) = 0
+		
+		_DepthMask("DepthMask", Float) = 0
+		_DepthMaskRead("DepthMaskRead", Float) = 0
+		_Ztest("ztest", Float) = 2
+		
+		// Blending state
+        [HideInInspector] _Mode ("__mode", Float) = 0.0
+        [HideInInspector] _SrcBlend ("__src", Float) = 1.0
+        [HideInInspector] _DstBlend ("__dst", Float) = 0.0
+        [HideInInspector] _ZWrite ("__zw", Float) = 1.0
+      
         _NoisePattern ("Noise Pattern", 2D) = "white" {}
         _NoiseMul ("Noise Mul", float) = 1
 
@@ -23,64 +41,76 @@ Shader "Custom/SandNew"
     {
         Tags { "RenderType"="Opaque" }
         LOD 200
-
-        CGPROGRAM
-        // Physically based Standard lighting model, and enable shadows on all light types
-        #pragma surface surf Standard fullforwardshadows vertex:vert
-
-        // Use shader model 3.0 target, to get nicer looking lighting
-        #pragma target 3.0
-
-        sampler2D _MainTex;
-        sampler2D _NormalLow;
-        sampler2D _NoisePattern;
-
-        float _NormalScale;
-        float _NormalStrength;
-
-        float _NoiseMul;
-
-        sampler2D _TracesPosition;
-        float4 _TracesCenter;
-        float _TracesSize;
-
-        sampler2D _MovingSandsPosition;
-        float4 _MovingSandsCenter;
-        float _MovingSandsSize;
-        float _MovingSandsHeightMultiplier;
-
-        struct Input
+	   
+		Pass
         {
-            float2 uv_MainTex : TEXCOORD0;
-            float2 uv_NormalLow : TEXCOORD1;
-            float3 worldPos;
-            float3 worldNormal;
-            INTERNAL_DATA
-        };
+			Tags {
+                "LightMode" = "Deferred"
+            }
+			
+            Stencil {
+			    Ref 192
+				WriteMask 207
+				Comp Always
+				Pass Replace
+			}
+			
+			ZTest Less
+			Cull Back
+			
+            CGPROGRAM
+			
+			fixed4 _BumpMap_ST;
+			sampler2D _NoisePattern;
 
-        void vert (inout appdata_full v) {
-            float4 ObjectWorldPos = mul(unity_ObjectToWorld, v.vertex);
-            float2 MovingSandsUV = ((ObjectWorldPos.xz - _MovingSandsCenter.xz) / (_MovingSandsSize*2)) + 0.5;
-            float heightToMove = tex2Dlod(_MovingSandsPosition, float4(MovingSandsUV,0,1)).x * _MovingSandsHeightMultiplier;
-            //float heightToMove = _MovingSandsHeightMultiplier;
-            v.vertex.xyz += float3(0,0,1) * heightToMove;
-        }
+			float _NoiseMul;
 
-        void surf (Input IN, inout SurfaceOutputStandard o)
-        {
-            // Albedo comes from a texture tinted by color
-            //float2 noise = float2(_NoiseMul, tex2D(_NoisePattern, IN.worldPos.xz * (_NoiseMul - _NoiseMul/10* abs(_SinTime.y))).x);
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex);
-            float2 TrailUV = ((IN.worldPos.xz - _TracesCenter.xz) / (_TracesSize*2)) + 0.5;
-            float IsTrail = 1-tex2D(_TracesPosition, TrailUV).x;
-            o.Albedo = c.rgb*IsTrail;
-            o.Normal =  UnpackNormalWithScale(tex2D(_NormalLow, IN.worldPos.xz * (1/(_NormalScale))), _NormalStrength) ;
-            // Metallic and smoothness come from slider variables
-            o.Metallic = 0;
-            o.Smoothness = 0;
-            o.Alpha = c.a;
-        }
-        ENDCG
-    }
+			sampler2D _TracesPosition;
+			float4 _TracesCenter;
+			float _TracesSize;
+
+			sampler2D _MovingSandsPosition;
+			float4 _MovingSandsCenter;
+			float _MovingSandsSize;
+			float _MovingSandsHeightMultiplier;
+			
+			#define UNITY_REQUIRE_FRAG_WORLDPOS 1
+			
+			#include "SchnibbleTools/SchnibbleFunctions.cginc"
+			#include "Deferred/SchnibbleCustomGBufferInputs.cginc"
+			#include "Deferred/SchnibbleCustomGBuffer.cginc"
+			
+			void vert (inout SchVertexInput v) {
+			    float3 worldPos = mul(unity_ObjectToWorld, v.vertex);
+				float2 movingSandsUV = ((worldPos.xz - _MovingSandsCenter.xz) / (_MovingSandsSize*2)) + 0.5;
+				float  heightToMove = tex2Dlod(_MovingSandsPosition, float4(movingSandsUV,0,1)).x * _MovingSandsHeightMultiplier;
+				
+				v.vertex.xyz += float3(0,0,1) * heightToMove;
+			}
+
+			void surf (VertexOutput o, inout SchnibbleGBuffer buffer)
+			{		
+				//float2 noise = float2(_NoiseMul, tex2D(_NoisePattern, o.worldPos.xz * (_NoiseMul - _NoiseMul/10* abs(_SinTime.y))).x);
+				
+				fixed4 color = _Color;
+				float3 worldPos = IN_WORLDPOS(o);
+				
+				float2 TrailUV = ((worldPos.xz - _TracesCenter.xz) / (_TracesSize*2)) + 0.5;
+				float IsTrail = 1-tex2D(_TracesPosition, TrailUV).x;
+				
+				buffer.albedo = color.rgb * IsTrail;
+				
+				half3 normalMap = UnpackNormalWithScale(tex2D(_BumpMap,TRANSFORM_TEX(worldPos.xz, _BumpMap)), _BumpScale);
+				buffer.normalWorld = SchNormalTangentToWorld(normalMap, o.tangentToWorldAndPackedData) ;
+			}
+			
+			#define CUSTOM_SHADER_FUNCTION_VERT(input) vert(input)
+			#define CUSTOM_SHADER_FUNCTION_FRAG(output, gbuffer) surf(output, gbuffer)
+			#include "Deferred/SchnibbleCustomGBufferPass.cginc"
+			
+			
+			ENDCG
+		}
+	}
     FallBack "Diffuse"
 }

@@ -179,33 +179,8 @@ Shader "Custom/Outlines"
             float _SobelLightThreshold;
             float _SobelLightThickness;
 
-            float4x4 _UNITY_MATRIX_I_P;
-            float4x4 _UNITY_MATRIX_I_V;
-            float4x4 _UNITY_MATRIX_I_VP;
 
-           float3 DepthToWorld(float2 uv, float depth) {
-                // float4 cPos = float4(uv*2-1, depth, 1.0);
-                // float4 vPos = mul(_UNITY_MATRIX_I_P, cPos);
-                // vPos /= vPos.w;
-                // float4 wPos = mul(_UNITY_MATRIX_I_V, vPos);
-                // return wPos;
-                // float4 hpositionWS = mul(_UNITY_MATRIX_I_VP, cPos);
-                // return hpositionWS.xyz/hpositionWS.w;
-
-                 const float2 p11_22 = float2(unity_CameraProjection._11, unity_CameraProjection._22);
-                 const float2 p13_31 = float2(unity_CameraProjection._13, unity_CameraProjection._23);
-                 const float isOrtho = unity_OrthoParams.w;
-                 const float near = _ProjectionParams.y;
-                 const float far = _ProjectionParams.z;
-
-                 #if defined(UNITY_REVERSED_Z)
-                     depth = 1 - depth;
-                 #endif
-                 float vz = near * far / lerp(far, near, depth);
-
-                 float3 vpos = float3((uv * 2 - 1 - p13_31) / p11_22 * vz, -vz);
-                 return mul(_UNITY_MATRIX_I_V, float4(vpos, 1));
-             }
+#include "SchnibbleFunctions.cginc"
 
             fixed4 frag (v2f i) : SV_Target
             {

@@ -32,25 +32,16 @@ Shader "Custom/StylizedWater"
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
-        Blend SrcAlpha OneMinusSrcAlpha
+        Pass {
+        Tags { "LightMode"="ForwardBase" "RenderType"="Transparent" "Queue"="Transparent" }
+
+        Blend One OneMinusSrcAlpha
         ZWrite Off
+        ColorMask 0
         LOD 200
  
         CGPROGRAM
-        #pragma surface surf Standard fullforwardshadows alpha:premul
- 
-        #pragma target 3.0
- 
- 
-        struct Input
-        {
-            float4 screenPos;
-            float3 worldPos;
-            float3 viewDir;
-        };
- 
-        fixed4 _Color;
+
         fixed4 _FogColor;
         fixed4 _IntersectionColor;
  
@@ -73,24 +64,39 @@ Shader "Custom/StylizedWater"
         float _FoamIntensity;
  
         sampler2D _RenderTexture;
-        half _Glossiness;
         float _FresnelPower;
  
         sampler2D _CameraDepthTexture;
         float3 _CamPosition;
         float _OrthographicCamSize;
+		
+		#define UNITY_REQUIRE_FRAG_WORLDPOS 1
+			
+			#include "SchnibbleTools/SchnibbleFunctions.cginc"
+			#include "Deferred/SchnibbleCustomGBufferInputs.cginc"
+			#include "Deferred/SchnibbleCustomGBuffer.cginc"
+            #include "Deferred/SchnibbleCustomOIT.cginc"
  
-        void surf (Input IN, inout SurfaceOutputStandard o)
+        void surf (inout SchInputForwardBase i, inout SchnibbleGBufferForward o)
         {
-            float2 rtUV = IN.worldPos.xz - _CamPosition.xz;
+            uint fragIdx = GetFragIdx(i.screenPos.xy/i.screenPos.w);
+            uint headIdx = _oitFragHeadIdx[fragIdx];
+
+            float3 worldPos = i.worldPos;
+            float2 rtUV = worldPos.xz - _CamPosition.xz;
             rtUV = rtUV/(_OrthographicCamSize *2);
             rtUV += 0.5;
             fixed4 rt = tex2D(_RenderTexture, rtUV);
  
-            float depth = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(IN.screenPos));
-            depth = LinearEyeDepth(depth);
+            //float depth = tex2Dproj(_CameraDepthTexture, i.screenPos);
+
+            float depth = _oitFragDepth[headIdx].depth;
+            if(headIdx == 0) depth = LinearEyeDepth(0);
+            //depth = LinearEyeDepth(depth);
  
-            float diff = (depth - IN.screenPos.w);
+            //float diff = (depth - Linear01Depth(i.screenPos.w));
+            float waterSurface = LinearEyeDepth(i.pos.z);
+            float diff = (depth - waterSurface);
             float intersectionDiff = 0;
             float fogDiff = 1;
             // TODO toffa : Remlove this if by mul and divide if perf bottleneck
@@ -99,25 +105,34 @@ Shader "Custom/StylizedWater"
                 intersectionDiff = saturate(diff / _IntersectionThreshold);
                 fogDiff = saturate(diff / _FogThreshold);
             }
+
+
             float foamDiff = saturate(diff / _FoamThreshold);;
             foamDiff *= (1.0 - rt.b);
              
             fixed4 c = lerp(lerp(_IntersectionColor, _Color, intersectionDiff), _FogColor, fogDiff);
              
-            float foamTex = tex2D(_FoamTexture, IN.worldPos.xz * _FoamTexture_ST.xy + _Time.y * float2(_FoamTextureSpeedX, _FoamTextureSpeedY));
-            float foam = step(foamDiff - (saturate(sin((foamDiff - _Time.y * _FoamLinesSpeed) * 8 * UNITY_PI)) * (1.0 - foamDiff)), foamTex);
+            float foamTex = tex2D(_FoamTexture, worldPos.xz * _FoamTexture_ST.xy + _Time.y * float2(_FoamTextureSpeedX, _FoamTextureSpeedY));
+            float foam = step(foamDiff - (saturate(sin((foamDiff - _Time.y * _FoamLinesSpeed) * 8 * UNITY_PI)) * (1.0 - foamDiff)), foamTex) * (diff>0);
  
-            float fresnel = pow(1.0 - saturate(dot(o.Normal, normalize(IN.viewDir))), _FresnelPower);
+            float fresnel = pow(1.0 - saturate(dot(o.normalWorld, normalize(i.viewDir))), _FresnelPower);
  
-            o.Albedo = c.rgb;
-            float3 normalA = UnpackNormalWithScale(tex2D(_NormalA, IN.worldPos.xz * _NormalA_ST.xy + _Time.y * _NormalPanningSpeeds.xy + rt.rg), _NormalStrength);
-            float3 normalB = UnpackNormalWithScale(tex2D(_NormalB, IN.worldPos.xz * _NormalB_ST.xy + _Time.y * _NormalPanningSpeeds.zw + rt.rg), _NormalStrength);
-            o.Normal = normalA + normalB;
-            o.Smoothness = _Glossiness * saturate(1/pow(IN.screenPos.w,0.2));
-            o.Alpha = lerp(lerp(c.a * fresnel, 1.0, foam), _FogColor.a, fogDiff);
-            o.Emission = foam * _FoamIntensity * saturate(1/ pow(IN.screenPos.w, 1));
+            o.albedo = c;
+            float3 normalA = UnpackNormalWithScale(tex2D(_NormalA, worldPos.xz * _NormalA_ST.xy + _Time.y * _NormalPanningSpeeds.xy + rt.rg), _NormalStrength);
+            float3 normalB = UnpackNormalWithScale(tex2D(_NormalB, worldPos.xz * _NormalB_ST.xy + _Time.y * _NormalPanningSpeeds.zw + rt.rg), _NormalStrength);
+            o.normalWorld = normalA + normalB;
+            o.roughness = _Glossiness * saturate(1/pow(i.screenPos.w,0.2));
+            o.alpha = lerp(lerp(c.a * fresnel, 1.0, foam), _FogColor.a, fogDiff);
+            //o.alpha = (diff>0);
+            o.emission = foam * _FoamIntensity * saturate(1/ pow(i.screenPos.w, 1));
+            o.writeOIT = 1;
         }
+		
+		#define CUSTOM_SHADER_FUNCTION_FRAG(input, output) surf(input, output)
+		#include "Deferred/SchnibbleCustomGBufferForwardPass.cginc"
+
         ENDCG
+        }
     }
     FallBack "Diffuse"
 }

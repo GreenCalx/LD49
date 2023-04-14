@@ -29,7 +29,7 @@ public struct Constants
     public const string GO_PLAYER = "Player";
     public const string GO_HUBCAMERA = "HubCamera";
     public const string GO_SOUNDMANAGER = "SoundManager";
-    public const string GO_MANAGERS = "------ MANAGERS ------";
+    public const string GO_MANAGERS = "MANAGERS";
     public const string GO_UIGARAGE = "UIGarage";
     public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
     public const string GO_PLAYERUI = "PlayerUI";

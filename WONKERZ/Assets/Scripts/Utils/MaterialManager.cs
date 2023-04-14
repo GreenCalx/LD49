@@ -10,6 +10,12 @@ public class MaterialManager : MonoBehaviour
 	public Texture2DArray materialsGPUTextures_R8;
     [HideInInspector]
 	public Texture2DArray materialsGPUTextures_RGB;
+
+    const int maxDepthPerFrag = 8;
+    const int oitFragDepthStride = 5 * sizeof(float) + 1 * sizeof(uint);
+    const int oitFragHeadIdxStride = 1 * sizeof(uint);
+    public ComputeBuffer oitFragDepth;
+    public ComputeBuffer oitFragHeadIdx;
 	
     private void Awake()
     {
@@ -39,5 +45,14 @@ public class MaterialManager : MonoBehaviour
 		materialsGPUTextures_R8.Apply();
 		materialsGPUTextures_RGB.Apply();
 
+        oitFragDepth = new ComputeBuffer(Screen.width * Screen.height * maxDepthPerFrag, oitFragDepthStride, ComputeBufferType.Counter);
+        oitFragHeadIdx = new ComputeBuffer(Screen.width*Screen.height, oitFragHeadIdxStride, ComputeBufferType.Structured, ComputeBufferMode.Immutable);
+    }
+
+    private void OnDestroy()
+    {
+        if(materialsGPUBuffer != null) materialsGPUBuffer.Release();
+        if(oitFragDepth != null) oitFragDepth.Release();
+        if(oitFragHeadIdx != null) oitFragHeadIdx.Release();
     }
 }

@@ -9,8 +9,10 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: SchSurface-Test
   m_Shader: {fileID: 4800000, guid: b3e896281ef088645bc91ef51fccb5c7, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_ValidKeywords:
+  - _NORMALMAP
+  m_InvalidKeywords:
+  - _ZWRITE_ON
   m_LightmapFlags: 6
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -41,11 +43,27 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ea84e97a359dbd8459e01850a2cf5577, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 6.67, y: 5.3}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MovingSandsPosition:
+        m_Texture: {fileID: 8400000, guid: ed5d4a2ab26e1a7498ad5a96bc10a9a2, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoisePattern:
+        m_Texture: {fileID: 2800000, guid: 578983d3c34a071458d1d45cb9f160c7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalHigh:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalLow:
+        m_Texture: {fileID: 2800000, guid: 4a730d8e6d732da46a6bceba5f3c6b5f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -56,9 +74,15 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _TracesPosition:
+        m_Texture: {fileID: 8400000, guid: d07d36fa977874b4f82e6cffaae59f9a, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BlendOp: 0
     - _BumpScale: 1
+    - _CullMode: 0
     - _Cutoff: 0.5
     - _DepthMask: 0
     - _DepthMaskRead: 0
@@ -68,11 +92,16 @@ Material:
     - _Glossiness: 1
     - _GlossyReflections: 1
     - _MaterialID: 0
-    - _Metallic: 1
+    - _Metallic: 0
     - _Mode: 0
+    - _MovingSandsHeightMultiplier: 0
+    - _MovingSandsSize: 0
+    - _NoiseMul: 0
+    - _NormalScale: 10.5
+    - _NormalStrength: 2.47
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _Roughness: 0.395
+    - _Roughness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -80,7 +109,8 @@ Material:
     - _ZWrite: 1
     - _Ztest: 2
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0, g: 1, b: 0.8770242, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _MovingSandsCenter: {r: 1, g: 1, b: 1, a: 1}
     - _Tex: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
