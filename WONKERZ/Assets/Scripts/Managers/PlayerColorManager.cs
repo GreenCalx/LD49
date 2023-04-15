@@ -6,11 +6,11 @@ using UnityEngine;
 //// ugly ofc.. tinker a better solution later on when this feature is really useful.
 public class PlayerColorManager : MonoBehaviour
 {
-    private static readonly Dictionary<Color, string> col_matname_dico = new Dictionary<Color, string>
+    private static readonly Dictionary<Color32, string> col_matname_dico = new Dictionary<Color32, string>
     {
-         { new Color(0.401f, 1.000f, 0.965f, 1.000f), "CarColor"        },
-         { new Color(0.953f, 0.919f, 0.625f, 1.000f), "CarColorYellow"  },
-         { new Color(0.953f, 0.624f, 0.943f, 1.000f), "CarColorPink"    }
+         { new Color32(0x66, 0xFF, 0xF6, 0XFF), "CarColor"        },
+         { new Color32(0xF3, 0xEA, 0x9F, 0XFF), "CarColorYellow"  },
+         { new Color32(0xF3, 0x9F, 0xF0, 0XFF), "CarColorPink"    }
     };
 
     public static Color currentColor;
@@ -57,7 +57,7 @@ public class PlayerColorManager : MonoBehaviour
 
 
 
-        foreach (KeyValuePair<Color, string> kvp in col_matname_dico)
+        foreach (KeyValuePair<Color32, string> kvp in col_matname_dico)
         {
             // material is copied on player, thus unity adds (Instance) extensions to its name
             string matInstName = kvp.Value + Constants.EXT_INSTANCE;
@@ -70,12 +70,12 @@ public class PlayerColorManager : MonoBehaviour
         }
     }
 
-    public void colorize(Color iColor)
+    public void colorize(Color32 iColor, COLORIZABLE_CAR_PARTS iPart)
     {
         var e = col_matname_dico.GetEnumerator();
         while (e.MoveNext())
         {
-            Color c = e.Current.Key;
+            Color32 c = e.Current.Key;
             if (ColorsAreEqual(c, iColor))
             {
                 string matname = e.Current.Value;
@@ -86,9 +86,18 @@ public class PlayerColorManager : MonoBehaviour
                 Material newmat = Resources.Load(matPath, typeof(Material)) as Material;
                 foreach (GameObject p in playerRefs)
                 {
-                    Renderer pRend = p.GetComponentInChildren<Renderer>();
-                    if (!!pRend)
-                        pRend.material = newmat;
+                    MeshRenderer[] pRends = p.GetComponentsInChildren<MeshRenderer>();
+                    int n_parts = pRends.Length;
+                    for (int i=0; i < n_parts; i++)
+                    {
+                        MeshRenderer rend = pRends[i];
+                        CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
+                        if (!!cc_color && cc_color.part == iPart)
+                        { rend.material = newmat; }
+                    }
+
+                    //if (!!pRend)
+                    //    pRend.material = newmat;
                 }
                 currentColor = c;
                 break;
@@ -96,7 +105,7 @@ public class PlayerColorManager : MonoBehaviour
         }
     }
 
-    public static bool ColorsAreEqual(Color first, Color second)
+    public static bool ColorsAreEqual(Color32 first, Color32 second)
     {
         bool r = ((float)Mathf.Round(first.r * 100f) / 100f) == ((float)Mathf.Round(second.r * 100f) / 100f);
         bool g = ((float)Mathf.Round(first.g * 100f) / 100f) == ((float)Mathf.Round(second.g * 100f) / 100f);

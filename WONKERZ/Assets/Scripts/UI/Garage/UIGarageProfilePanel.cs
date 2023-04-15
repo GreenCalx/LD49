@@ -60,6 +60,6 @@ public class UIGarageProfilePanel : UIGaragePanel
         // WEIGHT
         //cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
         //color
-        PlayerColorManager.Instance.colorize(profile.color);
+        PlayerColorManager.Instance.colorize(profile.color, COLORIZABLE_CAR_PARTS.MAIN);
     }
 }
