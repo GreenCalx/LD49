@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 *  before deleting itself.
 *  Purpose : Test play scenes without going thru hub portal
 */
+
 public class TstHubHook : MonoBehaviour
 {
-    private readonly string pivotScene = Constants.SN_HUB;
+    private readonly string pivotScene = Constants.SN_TITLE;
     private string hookedScene = "";
     private bool killMe = false;
     // Start is called before the first frame update

@@ -48,6 +48,15 @@ public class Grass : MonoBehaviour
     private const int INDIRECT_ARGS_STRIDE = sizeof(int) * 4;
 
     private int[] argsBufferReset = new int[] { 0, 1, 0, 0 };
+
+    void Start()
+    {
+        if (InteractWithGO==null)
+        {
+            InteractWithGO = Access.Player().gameObject;
+        }
+    }
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -162,6 +171,7 @@ public class Grass : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+
         if (!Application.isPlaying)
         {
             OnDisable();
@@ -175,8 +185,8 @@ public class Grass : MonoBehaviour
 
         GrassCS.SetMatrix("_LocalToWorld", transform.localToWorldMatrix);
         GrassCS.Dispatch(KernelId, DispatchSize, 1, 1);
-
-        settings.centerPosition = InteractWithGO.transform.position;
+        if (InteractWithGO!=null)
+            settings.centerPosition = InteractWithGO.transform.position;
         float[] CP = { settings.centerPosition.x, settings.centerPosition.y, settings.centerPosition.z };
         GrassCS.SetFloats("_CenterPositionWS", CP);
 

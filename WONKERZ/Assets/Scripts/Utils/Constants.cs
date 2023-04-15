@@ -21,6 +21,7 @@ public struct Constants
     public const string SN_LOADING = "LoadingScene";
     public const string SN_DESERT = "desert_track";
     public const string SN_DESERT_TOWER = "desert_tower";
+    public const string SN_INTRO = "Intro";
 
     // -- Global GameObjects --
     public const string GO_CPManager = "CheckpointManager";

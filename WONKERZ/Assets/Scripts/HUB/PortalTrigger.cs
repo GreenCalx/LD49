@@ -9,7 +9,7 @@ public class PortalTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        portal = GetComponentInParent<HUBPortal>();
+        portal = GetComponentInParent<HUBPortal>(true);
     }
 
     // Update is called once per frame
