@@ -14,12 +14,13 @@ Shader "Custom/Schnibble-DeferredToonShading" {
 		//  LDR case - Lighting encoded into a subtractive ARGB8 buffer
 		//  HDR case - Lighting additively blended into floating point buffer
 		Pass {
+            Cull Off
 			ZWrite Off
-			Blend [_SrcBlend] [_DstBlend]
+            ZTest Always
 
 			CGPROGRAM
 			#pragma target 3.0
-			#pragma vertex vert_deferred
+			#pragma vertex sch_vert_deferred
 			#pragma fragment frag
 			#pragma multi_compile_lightpass
 			#pragma multi_compile ___ UNITY_HDR_ON
@@ -39,6 +40,33 @@ Shader "Custom/Schnibble-DeferredToonShading" {
 
 #include "SchnibbleCustomBRDF.cginc"
 
+#ifdef DIRECTIONAL
+unity_v2f_deferred sch_vert_deferred (float4 vertex : POSITION, float3 normal : NORMAL,uint idx : SV_VertexID)
+{
+    float2 vertices[3] = {float2(-1,-1), float2(3,-1), float2(-1, 3)};
+
+    unity_v2f_deferred o;
+
+    o.pos = float4(vertices[idx],0,1);
+    o.uv  = o.pos * float4(0.5,-0.5,1,1) + 0.5;
+    o.pos = vertex;//UnityObjectToClipPos(vertex);
+    o.pos.a = 1;
+    o.uv  = ComputeScreenPos(o.pos);
+    o.ray = normalize(normal);
+
+    return o;
+}
+#else
+unity_v2f_deferred sch_vert_deferred (float4 vertex : POSITION, float3 normal : NORMAL)
+{
+    unity_v2f_deferred o;
+    o.pos = UnityObjectToClipPos(vertex);
+    o.uv  = ComputeScreenPos(o.pos);
+    o.ray = UnityObjectToViewPos(vertex) * float3(-1,-1,1);
+
+    return o;
+}
+#endif
 			half4 CalculateLight (unity_v2f_deferred i)
 			{
 				float3 wpos;

@@ -3,7 +3,6 @@ Shader "Custom/Merge"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-		_LightPass ("Texture", 2D) = "white" {}
 		_Outlines("Texture", 2D) = "white" {}
     }
     SubShader
@@ -54,7 +53,7 @@ Shader "Custom/Merge"
                 fixed4 col = tex2D(_MainTex, i.uv);
 				fixed4 outlineCol = tex2D(_Outlines, i.uv);
 				if (outlineCol.a > 0.2) {
-				    col = outlineCol;
+				    //col = outlineCol;
 				}
 				
 				SchnibbleGBuffer schGBuffer;

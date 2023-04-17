@@ -25,6 +25,7 @@ public class ToonPipeline : MonoBehaviour
         //Shader.SetGlobalBuffer("_oitFragDepth", mgr.oitFragDepth);
         Shader.SetGlobalBuffer("_oitFragHeadIdx", mgr.oitFragHeadIdx);
 	    
+
 		var cam = GetComponent<Camera>();
 		cam.depthTextureMode = cam.depthTextureMode | DepthTextureMode.DepthNormals;
         cam.clearStencilAfterLightingPass = true;
@@ -69,10 +70,12 @@ public class ToonPipeline : MonoBehaviour
 		cmdApplyOIT.ReleaseTemporaryRT(Shader.PropertyToID("_MainTex"));
         cmdApplyOIT.ClearRandomWriteTargets();
         cam.AddCommandBuffer(CameraEvent.AfterForwardAlpha, cmdApplyOIT);
+
     }
 	
 	private void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
+
 		var cam = GetComponent<Camera>();
 		
 		Matrix4x4 projectionMatrix = cam.projectionMatrix;
@@ -88,6 +91,7 @@ public class ToonPipeline : MonoBehaviour
 		merge.SetVector("_LightDir", mainLight.transform.forward);
 		merge.SetMatrix("_UNITY_MATRIX_I_V", viewMatrix.inverse);
         Graphics.Blit(source, destination, merge);
+
     }
 
     public void Update(){
