@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using TMPro;
 
 public class UIGarageTestingPanel : UIGaragePanel
@@ -16,6 +17,15 @@ public class UIGarageTestingPanel : UIGaragePanel
         test_is_running = false;
     }
 
+    override protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs()
+    {
+        return new List<IUIGarageElement.UIGarageHelperValue>{
+            new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_A, "REPLAY"),
+            new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_Y, "RECORD"),
+            new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_B, "CANCEL")
+        };
+    }
+
     void Update()
     {
         // Hack to quit test simulation
@@ -26,10 +36,11 @@ public class UIGarageTestingPanel : UIGaragePanel
         // > will be fixed by moving onto InputManager
         if (Input.GetKey(KeyCode.Escape))
         {
-            if (test_is_running)
+            if (Access.TestManager().testIsRunning())
             {
                 //selectables[i_test].quit();
                 test_is_running = false;
+                Access.TestManager().quitTest();
             }
         }
     }

@@ -75,7 +75,7 @@ public class UIGarageTestManager : MonoBehaviour
     private bool initTest()
     {
         // clone player to start test position
-        testCC = Instantiate(Utils.getPlayerRef(), transform);
+        testCC = Instantiate(Access.Player().gameObject, transform);
         UIGarageTestStart uigts = startTest.GetComponent<UIGarageTestStart>();
 
         CarController cc = testCC.GetComponent<CarController>();
@@ -89,7 +89,7 @@ public class UIGarageTestManager : MonoBehaviour
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
         }
-        updateLayers(testCC, getLayerIndex(Constants.LYR_UIMESH));
+        //updateLayers(testCC, getLayerIndex(Constants.LYR_UIMESH));
 
         IM.DeActivate();
         if (testMode == MODE.RECORD)
@@ -194,5 +194,10 @@ public class UIGarageTestManager : MonoBehaviour
             this.Log("TEST KO!");
         }
         quitTest();
+    }
+
+    public bool testIsRunning()
+    {
+        return (activeTest != null);
     }
 }

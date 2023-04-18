@@ -24,4 +24,9 @@ public class UIGarage : UIGaragePanel
     {
         garageEntry = iGE;
     }
+
+    public void closeGarage()
+    {
+        garageEntry.closeGarage();
+    }
 }

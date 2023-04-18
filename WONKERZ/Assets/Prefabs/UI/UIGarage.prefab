@@ -35,10 +35,10 @@ RectTransform:
   m_Father: {fileID: 4199582087643231185}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 170, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2929410011914430540
 CanvasRenderer:
@@ -141,7 +141,19 @@ MonoBehaviour:
   activated_color: {r: 1, g: 1, b: 1, a: 1}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1985369497761483711}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
   copyInputsFromParent: 1
@@ -155,6 +167,141 @@ MonoBehaviour:
   toActivate: {fileID: 0}
   image: {fileID: 6130321672610088615}
   parts_to_colorize: 02000000
+--- !u!1 &367803490274132595
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 803677172539319806}
+  - component: {fileID: 1124568878989081909}
+  - component: {fileID: 6912623639721076869}
+  m_Layer: 5
+  m_Name: RECORDING
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &803677172539319806
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367803490274132595}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 142012468853153936}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -125, y: -139}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1124568878989081909
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367803490274132595}
+  m_CullTransparentMesh: 1
+--- !u!114 &6912623639721076869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367803490274132595}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Recording...
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_sharedMaterial: {fileID: -8497889090222444529, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4285169127
+  m_fontColor: {r: 0.90588236, g: 0.49093974, b: 0.41568628, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 50
+  m_fontSizeBase: 50
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -49.82926, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &414023576050246701
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,8 +337,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -119.791245, y: 0.000030517578}
-  m_SizeDelta: {x: -239.5826, y: -0}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0.000030517578}
+  m_SizeDelta: {x: -0.000045776367, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &7576882495200527033
 CanvasRenderer:
@@ -423,10 +570,10 @@ RectTransform:
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4230311273294876290
 CanvasRenderer:
@@ -593,10 +740,10 @@ RectTransform:
   m_Father: {fileID: 9074630063853835541}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 236.95, y: -275}
+  m_SizeDelta: {x: 473.9, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5273210922903399858
 CanvasRenderer:
@@ -901,82 +1048,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &1083551601417364138
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1526606280420420428}
-  - component: {fileID: 2557922792278600461}
-  - component: {fileID: 5557664879486911648}
-  m_Layer: 5
-  m_Name: panel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1526606280420420428
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083551601417364138}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3486990641270856084}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2557922792278600461
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083551601417364138}
-  m_CullTransparentMesh: 1
---- !u!114 &5557664879486911648
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1083551601417364138}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1161962030700747641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,6 +1269,8 @@ RectTransform:
   m_Children:
   - {fileID: 5332030888310253802}
   - {fileID: 3486990641270856084}
+  - {fileID: 6941804125767882279}
+  - {fileID: 803677172539319806}
   m_Father: {fileID: 757868785740981629}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1315,10 +1388,10 @@ RectTransform:
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 170, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &583853665261458708
 CanvasRenderer:
@@ -1421,7 +1494,19 @@ MonoBehaviour:
   activated_color: {r: 1, g: 1, b: 1, a: 1}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4029564812103378864}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
   copyInputsFromParent: 1
@@ -1680,10 +1765,10 @@ RectTransform:
   m_Father: {fileID: 4199582087643231185}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4911170632119191627
 CanvasRenderer:
@@ -1941,7 +2026,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 107.24662, w: -12.335962}
+  m_margin: {x: -65.02288, y: 0, z: 107.24662, w: -12.335962}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2251,6 +2336,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7246212791520975472}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
   copyInputsFromParent: 1
@@ -2415,7 +2512,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2541714862542536215
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2790,6 +2887,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 587029592942046898}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
   copyInputsFromParent: 1
@@ -2822,7 +2931,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3351007174499843233
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2929,6 +3038,141 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2753426027284101009}
   m_CullTransparentMesh: 1
+--- !u!1 &2861865652215539059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6941804125767882279}
+  - component: {fileID: 2597065014374289489}
+  - component: {fileID: 4154788251707617690}
+  m_Layer: 5
+  m_Name: REPLAYING
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &6941804125767882279
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861865652215539059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 142012468853153936}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -125, y: -139}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2597065014374289489
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861865652215539059}
+  m_CullTransparentMesh: 1
+--- !u!114 &4154788251707617690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2861865652215539059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: Replaying...
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_sharedMaterial: {fileID: -8497889090222444529, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4285196201
+  m_fontColor: {r: 0.6625167, g: 0.9056604, b: 0.41438237, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 50
+  m_fontSizeBase: 50
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: -49.82926, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &2923491516725361778
 GameObject:
   m_ObjectHideFlags: 0
@@ -3027,10 +3271,10 @@ RectTransform:
   m_Father: {fileID: 8053268384071754099}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 236.56, y: -87}
-  m_SizeDelta: {x: 379.12, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4109843787666665040
 CanvasRenderer:
@@ -3060,10 +3304,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: STRAIGHT
+  m_text: ' STRAIGHT'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_sharedMaterial: {fileID: -8497889090222444529, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3123,7 +3367,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: -0.19251256, z: 247.86185, w: -0.034208328}
+  m_margin: {x: 0, y: -0.19251256, z: -2.9065475, w: -0.034208328}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -3148,18 +3392,6 @@ MonoBehaviour:
       - m_Target: {fileID: 3714210338715463683}
         m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
         m_MethodName: select
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 3714210338715463683}
-        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
-        m_MethodName: setModeReplay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3230,6 +3462,8 @@ MonoBehaviour:
   toActivate: {fileID: 0}
   text: {fileID: 761604148781363453}
   test_data: {fileID: -4702677820390092140, guid: 299979c8ffda30d43926f4e83b3de2f8, type: 3}
+  txt_replay: {fileID: 4154788251707617690}
+  txt_record: {fileID: 6912623639721076869}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &2990796845841500380
 GameObject:
@@ -3266,10 +3500,10 @@ RectTransform:
   m_Father: {fileID: 6989004424502363123}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2509749473906179191
 CanvasRenderer:
@@ -3626,7 +3860,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 116.31764, y: -254}
+  m_AnchoredPosition: {x: 116.31764, y: -195}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &748438756750745743
@@ -3786,12 +4020,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 587029592942046898}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4376090663162261488}
         m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 587029592942046898}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -3968,7 +4226,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7458308108721949310
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4292,7 +4550,7 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
-  copyInputsFromParent: 0
+  copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputVert: 
@@ -4452,10 +4710,10 @@ RectTransform:
   m_Father: {fileID: 9074630063853835541}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 730.85, y: -275}
+  m_SizeDelta: {x: 473.9, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3897488316755616282
 CanvasRenderer:
@@ -4548,7 +4806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &757868785740981629
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4671,6 +4929,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 3250941839584153397}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
   copyInputsFromParent: 1
@@ -4767,7 +5037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2240761890748608077
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4976,18 +5246,66 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  Parent: {fileID: 2404907657628586622}
   onSelect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8338176663936506305}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8338176663936506305}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageActionConfirmPanel, Assembly-CSharp
+        m_MethodName: confirm
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageActionConfirmPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
@@ -5003,7 +5321,7 @@ MonoBehaviour:
   inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
-  text: {fileID: 0}
+  text: {fileID: 8333641250060660487}
 --- !u!1 &4616960696448292433
 GameObject:
   m_ObjectHideFlags: 0
@@ -5154,18 +5472,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  Parent: {fileID: 2404907657628586622}
   onSelect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5389733762841108001}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5389733762841108001}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2404907657628586622}
+        m_TargetAssemblyTypeName: UIGarageActionConfirmPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
@@ -5181,7 +5535,7 @@ MonoBehaviour:
   inheritsInputMgr: 1
   isActivated: 0
   toActivate: {fileID: 0}
-  text: {fileID: 0}
+  text: {fileID: 2955778439749855565}
 --- !u!1 &4623472415150412364
 GameObject:
   m_ObjectHideFlags: 0
@@ -5199,7 +5553,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4894235213299786102
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5365,12 +5719,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3486990641270856084}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.00089264, y: -0.00087738}
-  m_SizeDelta: {x: 500, y: 500}
+  m_AnchoredPosition: {x: 125.8, y: 27.2}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1805080638941215553
 CanvasRenderer:
@@ -5602,7 +5956,7 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
-  copyInputsFromParent: 0
+  copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputVert: 
@@ -5964,10 +6318,10 @@ RectTransform:
   m_Father: {fileID: 8053268384071754099}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 236.56, y: -167}
-  m_SizeDelta: {x: 379.12, y: 80}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5024509136228079612
 CanvasRenderer:
@@ -5997,12 +6351,12 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'TURN
+  m_text: ' TURN
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
+  m_sharedMaterial: {fileID: -8497889090222444529, guid: 2e8fea9a8fa23f84faa01b834f5532de, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6062,7 +6416,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 243.02365, w: 0.197464}
+  m_margin: {x: 0, y: 0, z: 0.59052277, w: 0.197464}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -6087,18 +6441,6 @@ MonoBehaviour:
       - m_Target: {fileID: 6022244455988058313}
         m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
         m_MethodName: select
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6022244455988058313}
-        m_TargetAssemblyTypeName: UIGaragePickableTest, Assembly-CSharp
-        m_MethodName: setModeReplay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6169,6 +6511,8 @@ MonoBehaviour:
   toActivate: {fileID: 0}
   text: {fileID: 4287985981074926559}
   test_data: {fileID: 2983450686861990788, guid: 7168a77ed142af34eaede7a4246fdab4, type: 3}
+  txt_replay: {fileID: 4154788251707617690}
+  txt_record: {fileID: 6912623639721076869}
   txt_load_status: {fileID: 7292690813002661907}
 --- !u!1 &5641627212575322506
 GameObject:
@@ -6245,8 +6589,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -120.99048, y: 0}
-  m_SizeDelta: {x: -241.981, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -0.000012665987, y: 0}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &3057047960911823524
 CanvasRenderer:
@@ -6427,6 +6771,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7803251183000712775}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
   copyInputsFromParent: 1
@@ -6457,17 +6813,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fileName: profiles
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color:
+    serializedVersion: 2
+    rgba: 0
+  color_bumps:
+    serializedVersion: 2
+    rgba: 0
+  color_hood:
+    serializedVersion: 2
+    rgba: 0
+  color_wheels:
+    serializedVersion: 2
+    rgba: 0
+  color_doors:
+    serializedVersion: 2
+    rgba: 0
   profileData:
     ResourcesPath: Assets/Resources/SaveAndLoad
     ac_torque: []
     ac_weight: []
     color:
-      colorStore:
-      - 1
-      - 1
-      - 1
-      - 1
+      colorStore: 01010101
+    color_bumps:
+      colorStore: ffffffff
+    color_doors:
+      colorStore: ffffffff
+    color_hood:
+      colorStore: ffffffff
+    color_wheels:
+      colorStore: ffffffff
 --- !u!1 &5738207670359115943
 GameObject:
   m_ObjectHideFlags: 0
@@ -6503,10 +6877,10 @@ RectTransform:
   m_Father: {fileID: 4199582087643231185}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2756086990711720596
 CanvasRenderer:
@@ -6670,10 +7044,10 @@ RectTransform:
   m_Father: {fileID: 4636453887671281253}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 30, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5247717224397053009
 CanvasRenderer:
@@ -6993,7 +7367,7 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
-  copyInputsFromParent: 0
+  copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputVert: 
@@ -7105,10 +7479,10 @@ RectTransform:
   m_Father: {fileID: 7114677442639303156}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -234.90343, y: 32.274765}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 1, y: 4.1}
+  m_SizeDelta: {x: 400, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &2198301079537305911
 Canvas:
@@ -7153,7 +7527,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4415790947699853463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7196,7 +7570,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2316321329161022635
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7350,6 +7724,18 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8394905224643846974}
         m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5426931418409663790}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -7986,7 +8372,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8620757827543015486
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8062,7 +8448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1589525929650649891
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8292,6 +8678,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2443288426316825119}
+        m_TargetAssemblyTypeName: UIGarage, Assembly-CSharp
+        m_MethodName: closeGarage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
@@ -8497,10 +8895,10 @@ RectTransform:
   m_Father: {fileID: 4636453887671281253}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 170, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9016127216452505281
 CanvasRenderer:
@@ -8603,7 +9001,19 @@ MonoBehaviour:
   activated_color: {r: 1, g: 1, b: 1, a: 1}
   onDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1734403619576858402}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 0
   copyInputsFromParent: 1
@@ -8634,7 +9044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &9074630063853835541
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8747,6 +9157,18 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6656177162620764295}
         m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2959613121479996623}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -9254,7 +9676,7 @@ MonoBehaviour:
         m_CallState: 2
   activator: {fileID: 0}
   copyColorFromParent: 1
-  copyInputsFromParent: 0
+  copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputVert: 
@@ -9512,7 +9934,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.08627451, g: 0.05882353, b: 0.16078432, a: 0.9647059}
+  m_Color: {r: 0.08627451, g: 0.05882353, b: 0.16078432, a: 0.98039216}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -9564,10 +9986,10 @@ RectTransform:
   m_Father: {fileID: 4636453887671281253}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -30}
+  m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5458213247448717732
 CanvasRenderer:
@@ -9731,8 +10153,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchoredPosition: {x: -3, y: 25}
+  m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8834582392071082521
 CanvasRenderer:
@@ -9966,12 +10388,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7246212791520975472}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3126820112675017629}
         m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7246212791520975472}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -10231,7 +10677,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 116.31764, y: -429}
+  m_AnchoredPosition: {x: 116.31764, y: -283}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8654541443485218159
@@ -10391,12 +10837,36 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 5426931418409663790}
+        m_TargetAssemblyTypeName: UITab, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8394905224643846974}
         m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5426931418409663790}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:
@@ -10512,7 +10982,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6656056546130735533
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10603,7 +11073,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1526606280420420428}
   - {fileID: 799084870768324850}
   m_Father: {fileID: 142012468853153936}
   m_RootOrder: 1
@@ -11003,6 +11472,18 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6543749511385718803}
         m_TargetAssemblyTypeName: UIGarageCarStatsPanel, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2482382197152134356}
+        m_TargetAssemblyTypeName: UISelectableElement, Assembly-CSharp
         m_MethodName: deactivate
         m_Mode: 1
         m_Arguments:

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using Schnibble;
 
 public class UIGarageCarStatsPanel : UIGaragePanel
@@ -10,11 +11,18 @@ public class UIGarageCarStatsPanel : UIGaragePanel
 
     public UIGraphPanel graphPanel;
 
+    override protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs()
+    {
+        return new List<IUIGarageElement.UIGarageHelperValue>{
+            new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_A, "OK"),
+            new IUIGarageElement.UIGarageHelperValue(Constants.RES_ICON_B, "CANCEL")
+        };
+    }
+
     public void selectTorque()
     {
         // update displayed curve
-        GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
-        CarController cc = player.GetComponent<CarController>();
+        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
         graphPanel.graphRenderer.view.SetCurve(cc.torqueCurve);
 
         selectCurve();
@@ -23,9 +31,8 @@ public class UIGarageCarStatsPanel : UIGaragePanel
     public void selectWeigth()
     {
         // update displayed curve
-        GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
-        CarController cc = player.GetComponent<CarController>();
-        //       graphPanel.graphRenderer.view.SetCurve(cc.WEIGHT);
+        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
+        //graphPanel.graphRenderer.view.SetCurve(cc.WEIGHT);
 
         selectCurve();
     }
@@ -45,8 +52,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
 
     public void updatePlayerTorqueCurve()
     {
-        GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
-        CarController cc = player.GetComponent<CarController>();
+        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
         for (int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i)
         {
             var v = graphPanel.graphRenderer.view.points[i];
@@ -61,8 +67,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
     public void updatePlayerWeightCurve()
     {
 #if false
-        GameObject player = (Parent as UIGarage).getGarageEntry().playerRef;
-        CarController cc = player.GetComponent<CarController>();
+        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
 
         for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
             var v = graphPanel.graphRenderer.view.points[i];

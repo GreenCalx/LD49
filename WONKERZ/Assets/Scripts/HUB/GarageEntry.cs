@@ -7,7 +7,6 @@ public class GarageEntry : MonoBehaviour, IControllable
     private GameObject garageUI;
     private bool playerInGarage;
     private bool garageOpened;
-    public GameObject playerRef;
     public CarController playerCC;
 
     // Start is called before the first frame update
@@ -33,13 +32,11 @@ public class GarageEntry : MonoBehaviour, IControllable
 
     void OnTriggerEnter(Collider iCol)
     {
-        playerCC = iCol.GetComponent<CarController>();
         // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (playerCC && !playerInGarage)
+        if (!!iCol.GetComponent<CarController>() && !playerInGarage)
         {
-            playerRef = iCol.gameObject;
             playerInGarage = true;
-
+            playerCC = Access.Player();
             var SndMgr = Access.SoundManager();
             SndMgr.SwitchClip("garage");
         }
@@ -48,13 +45,11 @@ public class GarageEntry : MonoBehaviour, IControllable
     void OnTriggerExit(Collider iCol)
     {
         // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (iCol.GetComponent<CarController>() && playerInGarage)
+        if (!!iCol.GetComponent<CarController>() && playerInGarage)
         {
-            playerRef = null;
+            closeGarage();
             playerCC = null;
             playerInGarage = false;
-            closeGarage();
-
 
             var SndMgr = Access.SoundManager();
             SndMgr.SwitchClip("theme");
@@ -72,9 +67,11 @@ public class GarageEntry : MonoBehaviour, IControllable
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         uig.onActivate.Invoke();
-        garageOpened = true;
-
+        
+        
         playerCC.stateMachine.ForceState(playerCC.frozenState);
+        
+        garageOpened = true;
     }
 
     public void closeGarage()
@@ -85,14 +82,15 @@ public class GarageEntry : MonoBehaviour, IControllable
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);
 
-        //Utils.attachControllable<CarController>(playerCC);
+        
         if (!!playerCC)
             playerCC.stateMachine.ForceState(playerCC.aliveState);
         else
         {
-            var player = Utils.getPlayerRef().GetComponent<CarController>();
+            CarController player = Access.Player();
             player.stateMachine.ForceState(player.aliveState);
         }
+
         garageOpened = false;
     }
 }

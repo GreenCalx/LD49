@@ -45,13 +45,14 @@ public class UIGarageInputHelper : MonoBehaviour
             helperIdx++;
         }
 
-        var range = (availableHelperBoxes.Count - 1) - helperIdx;
+        var range = (availableHelperBoxes.Count) - helperIdx;
         if (range > 0)
         {
             while (helperIdx < availableHelperBoxes.Count)
             {
                 // remove uneeded helpers
                 GameObject.Destroy(availableHelperBoxes[helperIdx].gameObject);
+                helperIdx++;
             }
             availableHelperBoxes.RemoveRange(availableHelperBoxes.Count - range, range);
         }

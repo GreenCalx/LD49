@@ -25,6 +25,13 @@ public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
         inputHelper.refreshHelper(this);
     }
 
+    public override void deactivate()
+    {
+        base.deactivate();
+        if (Parent!=null)
+            inputHelper.refreshHelper((Parent as UIGaragePanel));
+    }
+
     public override void select()
     {
         gameObject.SetActive(true);

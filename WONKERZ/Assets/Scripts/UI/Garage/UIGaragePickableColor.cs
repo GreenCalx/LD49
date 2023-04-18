@@ -9,6 +9,7 @@ public class UIGaragePickableColor : UIImageTab
     override public void activate()
     {
         base.activate();
+        
 
         Color c = GetComponent<Image>().color;
         Color c2 = GetComponentInChildren<Image>().color;
@@ -17,8 +18,17 @@ public class UIGaragePickableColor : UIImageTab
         {
             PlayerColorManager.Instance.colorize(c2, ccp);
         }
-        // PlayerColorManager.Instance.colorize(c2, COLORIZABLE_CAR_PARTS.MAIN);
-        // PlayerColorManager.Instance.colorize(c2, COLORIZABLE_CAR_PARTS.DOORS);
-        // PlayerColorManager.Instance.colorize(c2, COLORIZABLE_CAR_PARTS.HOOD);
+    }
+
+    override public void select()
+    {
+        base.select();
+        transform.localScale = new Vector3(1.2f, 1.2f, 1.2f );
+    }
+
+    override public void deselect()
+    {
+        base.deselect();
+        transform.localScale = new Vector3(1f, 1f, 1f );
     }
 }

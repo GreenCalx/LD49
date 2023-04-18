@@ -10,6 +10,8 @@ public class UIGaragePickableTest : UITextTab
     private bool last_launch_failed;
     [Header("MANDATORY")]
     public UIGarageTestData test_data;
+    public TextMeshProUGUI txt_replay;
+    public TextMeshProUGUI txt_record;
 
     // set by parent
     [HideInInspector]
@@ -44,7 +46,12 @@ public class UIGaragePickableTest : UITextTab
         {
             setModeRecord();
             activate();
+            
+        } else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
+            setModeReplay();
+            activate();
         }
+        
     }
 
     public void setModeReplay()
@@ -71,6 +78,15 @@ public class UIGaragePickableTest : UITextTab
         }
         last_launch_failed = false;
         txt_load_status.gameObject.SetActive(false);
+        
+        if ( Access.TestManager().testMode ==  UIGarageTestManager.MODE.RECORD )
+        {
+            txt_record.gameObject.SetActive(true);
+            txt_replay.gameObject.SetActive(false);
+        } else { // Replay
+            txt_record.gameObject.SetActive(false);
+            txt_replay.gameObject.SetActive(true);
+        }
     }
     override public void deactivate()
     {
@@ -79,6 +95,9 @@ public class UIGaragePickableTest : UITextTab
         if (!last_launch_failed) // dont display load error if test launch was a success
             txt_load_status.gameObject.SetActive(false);
         SaveAndLoad.datas.Remove(test_data);
+
+        txt_record.gameObject.SetActive(false);
+        txt_replay.gameObject.SetActive(false);
     }
 
 

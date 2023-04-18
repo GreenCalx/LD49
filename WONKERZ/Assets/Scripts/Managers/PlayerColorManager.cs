@@ -13,15 +13,9 @@ public class PlayerColorManager : MonoBehaviour
          { new Color32(0xF3, 0x9F, 0xF0, 0XFF), "CarColorPink"    }
     };
 
-    public static Color currentColor;
+    public static Dictionary<COLORIZABLE_CAR_PARTS, Color32> col_part_dico = 
+        new Dictionary<COLORIZABLE_CAR_PARTS, Color32> {};
 
-    // List of all player to retrieve for mat update : OBSOLETE?
-    private static readonly List<string> playerNames = new List<string>
-    {
-        "Player",
-        "PlayerHub",
-        "GARAGEUI_CAR"
-    };
 
     private static List<GameObject> playerRefs = new List<GameObject>();
 
@@ -35,39 +29,63 @@ public class PlayerColorManager : MonoBehaviour
 
     void Awake()
     {
-        playerRefs.Clear();
-        foreach (string pname in playerNames)
-        {
-            GameObject p = GameObject.Find(pname);
-            if (!!p)
-                playerRefs.Add(p);
-        }
-        initCurrentColor();
+        resetPlayersToColorize();
+        initColorsFromPlayer();
     }
 
-    private void initCurrentColor()
+    public void addPlayerToColorize(GameObject iGO)
+    {
+        if (!!iGO && !playerRefs.Contains(iGO))
+        {
+            playerRefs.Add(iGO);
+        }
+    }
+    public void removePlayerToColorize(GameObject iGO)
+    {
+        if (!!iGO)
+            playerRefs.Remove(iGO);
+    }
+
+    public void resetPlayersToColorize()
+    {
+        playerRefs.Clear();
+        playerRefs.Add(Access.Player().gameObject); 
+    }
+
+    private void initColorsFromPlayer()
     {
         if (playerRefs.Count <= 0)
         { this.LogError("No player refs in PlayerColorManager to init current color."); return; }
 
         GameObject p = playerRefs[0];
-        Renderer pRend = p.GetComponentInChildren<Renderer>();
-        if (pRend == null)
-        { this.LogError("No Renderer Component found on player in PlayerColorManager to init current color."); return; }
+        // Renderer pRend = p.GetComponentInChildren<Renderer>();
+        // if (pRend == null)
+        // { this.LogError("No Renderer Component found on player in PlayerColorManager to init current color."); return; }
 
-
-
-        foreach (KeyValuePair<Color32, string> kvp in col_matname_dico)
+        MeshRenderer[] pRends = p.GetComponentsInChildren<MeshRenderer>();
+        int n_parts = pRends.Length;
+        for (int i=0; i < n_parts; i++)
         {
-            // material is copied on player, thus unity adds (Instance) extensions to its name
-            string matInstName = kvp.Value + Constants.EXT_INSTANCE;
-            if (matInstName == pRend.material.name)
-            {
-                currentColor = kvp.Key;
-                this.Log("Current color : " + kvp.Value);
-                break;
-            }
+            MeshRenderer rend = pRends[i];
+            CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
+            if (!!cc_color)
+            { 
+                Color32 part_color = Color.white;
+                foreach (KeyValuePair<Color32, string> kvp in col_matname_dico)
+                {
+                     // material is copied on player, thus unity adds (Instance) extensions to its name
+                    string matInstName = kvp.Value + Constants.EXT_INSTANCE;
+                    if (matInstName == rend.material.name)
+                    {
+                        part_color = kvp.Key;
+                        this.Log("Current color : " + kvp.Value);
+                        break;
+                    }
+                }
+                col_part_dico[cc_color.part] = part_color;
+            } 
         }
+
     }
 
     public void colorize(Color32 iColor, COLORIZABLE_CAR_PARTS iPart)
@@ -93,13 +111,16 @@ public class PlayerColorManager : MonoBehaviour
                         MeshRenderer rend = pRends[i];
                         CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
                         if (!!cc_color && cc_color.part == iPart)
-                        { rend.material = newmat; }
+                        { 
+                            rend.material = newmat; 
+                            col_part_dico[iPart] = c;
+                        }
                     }
 
                     //if (!!pRend)
                     //    pRend.material = newmat;
                 }
-                currentColor = c;
+                //currentColor = c;
                 break;
             }
         }
@@ -114,8 +135,10 @@ public class PlayerColorManager : MonoBehaviour
         return r && g && b && a;
     }
 
-    public Color getCurrentColor()
+    public Color32 getColorOfPart(COLORIZABLE_CAR_PARTS iPart)
     {
-        return currentColor;
+        Color32 c;
+        col_part_dico.TryGetValue( iPart, out c);
+        return c;
     }
 }
