@@ -19,9 +19,14 @@ public struct Constants
     public const string SN_FINISH = "finishscene";
     public const string SN_HUB = "HUB";
     public const string SN_LOADING = "LoadingScene";
-    public const string SN_DESERT = "desert_track";
-    public const string SN_DESERT_TOWER = "desert_tower";
     public const string SN_INTRO = "Intro";
+    public const string SN_DESERT_TOWER = "desert_tower";
+    public const string SN_GROTTO_TRACK = "GrottoTrack";
+    public const string SN_WATERWORLD_TRACK = "WaterWorldTrack";
+    public const string SN_SKYCASTLE_TRACK = "SkyCastleTrack";
+    public const string SN_JUNKYARD_TRACK = "JunkyardTrack";
+
+
 
     // -- Global GameObjects --
     public const string GO_CPManager = "CheckpointManager";

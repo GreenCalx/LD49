@@ -27,7 +27,8 @@ public class FinishLine : MonoBehaviour
             PlayerPrefs.SetInt("racetime", (int)racetime);
             PlayerPrefs.Save();
             end_triggered = true;
-            SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Single);
+            //SceneManager.LoadScene(Constants.SN_FINISH, LoadSceneMode.Single);
+            Access.SceneLoader().loadScene(Constants.SN_FINISH);
         }
     }
 }

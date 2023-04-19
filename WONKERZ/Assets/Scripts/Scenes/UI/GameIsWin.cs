@@ -23,7 +23,8 @@ public class GameIsWin : MonoBehaviour
         double time_offset = Time.time - start_time;
         if (key_pressed && (time_offset >= CLICK_TIME))
         {
-            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+            //SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+            Access.SceneLoader().loadScene(Constants.SN_HUB);
             PlayerPrefs.SetString("racetime", "0");
         }
     }
