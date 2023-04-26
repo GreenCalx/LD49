@@ -75,6 +75,7 @@ public class CollectiblesManager : MonoBehaviour
         public UniqueJar<CollectibleWONKERZ> WONKERZjar;
         public UniqueJar<CageKeyCollectible> CageKeyjar;
         public UniqueJar<GaragistCollectible> Garagistjar;
+        public UniqueJar<CosmeticCollectible> Cosmeticsjar;
 
         // Infinites
         public int collectedNuts;
@@ -85,6 +86,7 @@ public class CollectiblesManager : MonoBehaviour
             WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar = new UniqueJar<CageKeyCollectible>();
             Garagistjar = new UniqueJar<GaragistCollectible>();
+            Cosmeticsjar = new UniqueJar<CosmeticCollectible>();
         }
 
         public void collect(AbstractCollectible iAC)
@@ -102,6 +104,9 @@ public class CollectiblesManager : MonoBehaviour
                 else if (iAC is GaragistCollectible)
                 {
                     Garagistjar.addToJar(iAC as GaragistCollectible);
+                } else if (iAC is CosmeticCollectible) 
+                {
+                    Cosmeticsjar.addToJar(iAC as CosmeticCollectible);
                 }
                 return;
             }
@@ -116,8 +121,7 @@ public class CollectiblesManager : MonoBehaviour
     public enum COLLECT_MOD { HEAVEN = 0, HELL = 2 }
 
     [Header("Mandatory")]
-    public GameObject nutCollectibleRef;
-    public GameObject wonkerzCollectibleRef;
+    public GameObject nutCollectibleRef; // nutOnDamage
 
     [Header("Tweakables")]
     public Material heavenModeMat;

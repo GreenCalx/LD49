@@ -35,7 +35,7 @@ public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
     public override void select()
     {
         gameObject.SetActive(true);
-        base.select();
+         base.select();
         animateIn();
     }
 

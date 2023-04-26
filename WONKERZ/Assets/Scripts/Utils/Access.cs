@@ -146,6 +146,11 @@ public class Access
         return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
     }
 
+    public static PlayerSkinManager PlayerSkinManager()
+    {
+        return cache.getObject<PlayerSkinManager>(Constants.GO_MANAGERS, false);
+    }
+
     public static UITurboAndLifePool UITurboAndLifePool()
     {
         return cache.getObject<UITurboAndLifePool>(Constants.GO_PLAYERUI, true);
@@ -159,4 +164,5 @@ public class Access
     {
         return cache.getObject<UIPowerWheel>(Constants.GO_PLAYERUI, true);
     }
+
 }

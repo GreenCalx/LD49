@@ -3,6 +3,41 @@ using UnityEngine;
 using Schnibble;
 
 [System.Serializable]
+public class SerializableSkin
+{
+    public int carPartID; // CarPartToColorize
+    public string partSkinName; // id of the skin for a given car part
+
+    public CarColorizable buildSkin()
+    {
+        CarColorizable retval = new CarColorizable();
+        retval.part = (COLORIZABLE_CAR_PARTS) carPartID;
+        retval.partSkinName = partSkinName;
+        return retval;
+    }
+    public CarColorizable CarColorizable
+    {
+        get 
+        { 
+            return buildSkin();
+        } 
+        set 
+        { 
+            carPartID = (int) value.part; 
+            partSkinName = value.partSkinName;
+        }
+    }
+    public static implicit operator CarColorizable(SerializableSkin inst)
+    {
+        return inst.CarColorizable;
+    }
+    public static implicit operator SerializableSkin(CarColorizable iSkin)
+    {
+        return new SerializableSkin { CarColorizable = iSkin };
+    }
+}
+
+[System.Serializable]
 public class SerializableColor
 {
     public byte[] colorStore = new byte[4] { 0xFF, 0xFF, 0xFF, 0xFF};
@@ -82,6 +117,14 @@ public class ProfileData : EntityData
     public SerializableColor color_hood;
     public SerializableColor color_wheels;
 
+    public SerializableSkin skin_body;
+    public SerializableSkin skin_back_bump;
+    public SerializableSkin skin_front_bump;
+    public SerializableSkin skin_left_door;
+    public SerializableSkin skin_right_door;
+    public SerializableSkin skin_hood;
+    public SerializableSkin skin_wheel;
+
     public override void OnLoad(GameObject gameObject)
     {
         UIGarageProfile uigp = gameObject.GetComponent<UIGarageProfile>();
@@ -104,6 +147,13 @@ public class ProfileData : EntityData
             uigp.color_wheels = color_wheels;
             uigp.color_doors = color_doors;
 
+            uigp.skin_body = skin_body;
+            uigp.skin_back_bump = skin_back_bump;
+            uigp.skin_front_bump = skin_front_bump;
+            uigp.skin_left_door = skin_left_door;
+            uigp.skin_right_door = skin_right_door;
+            uigp.skin_hood = skin_hood;
+            uigp.skin_wheel = skin_wheel;
 
             uigp.profileData = this;
 
@@ -135,6 +185,14 @@ public class UIGarageProfile : MonoBehaviour, ISaveLoad
     public Color32 color_wheels;
     public Color32 color_doors;
 
+    public CarColorizable skin_body;
+    public CarColorizable skin_front_bump;
+    public CarColorizable skin_back_bump;
+    public CarColorizable skin_left_door;
+    public CarColorizable skin_right_door;
+    public CarColorizable skin_hood;
+    public CarColorizable skin_wheel;
+
     // Serizable datas
     public ProfileData profileData;
 
@@ -161,6 +219,14 @@ public class UIGarageProfile : MonoBehaviour, ISaveLoad
         profileData.color_hood = color_hood;
         profileData.color_wheels = color_wheels;
         profileData.color_doors = color_doors;  
+
+        profileData.skin_body = skin_body;
+        profileData.skin_front_bump = skin_front_bump;
+        profileData.skin_back_bump = skin_back_bump;
+        profileData.skin_hood = skin_hood;
+        profileData.skin_wheel = skin_wheel;
+        profileData.skin_right_door = skin_right_door;
+        profileData.skin_left_door = skin_left_door;
 
         return profileData;
     }

@@ -58,9 +58,6 @@ public class PlayerColorManager : MonoBehaviour
         { this.LogError("No player refs in PlayerColorManager to init current color."); return; }
 
         GameObject p = playerRefs[0];
-        // Renderer pRend = p.GetComponentInChildren<Renderer>();
-        // if (pRend == null)
-        // { this.LogError("No Renderer Component found on player in PlayerColorManager to init current color."); return; }
 
         MeshRenderer[] pRends = p.GetComponentsInChildren<MeshRenderer>();
         int n_parts = pRends.Length;
