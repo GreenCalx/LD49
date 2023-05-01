@@ -28,6 +28,7 @@ public class UITitleScreen : UIGaragePanel
 
     public void launchLoadGame()
     {
+        Access.CollectiblesManager().loadJars();
         Access.SceneLoader().loadScene(Constants.SN_HUB);
     }
 }

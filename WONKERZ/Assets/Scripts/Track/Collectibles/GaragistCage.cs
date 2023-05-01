@@ -9,6 +9,15 @@ public class GaragistCage : MonoBehaviour
     private string openCageAnimParm = "unlock";
 
     public GaragistCollectible garagist;
+    public string trackname = "";
+
+    void Start()
+    {
+        if (Access.CollectiblesManager().hasGaragist(trackname))
+        {
+            gameObject.SetActive(false);
+        }
+    }
 
     void OnTriggerEnter(Collider iCollider)
     {

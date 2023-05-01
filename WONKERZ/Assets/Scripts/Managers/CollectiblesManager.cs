@@ -2,27 +2,104 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using Schnibble;
+
+[System.Serializable]
+public class JarData : EntityData
+{
+    //cosmetics
+    public SerializableJar<GaragistCollectible> Garagistjar;
+
+    public override void OnLoad(GameObject gameObject)
+    {
+        CollectiblesManager ccm = Access.CollectiblesManager();
+        if (!!ccm)
+        {
+            // 
+            ccm.jar.Garagistjar = Garagistjar;
+
+            ccm.jar.jarData = this;
+        }
+        else
+        {
+            this.LogError("Failed to retrieve CollectiblesManager OnLoad()");
+        }
+    }
+}
+
+[System.Serializable]
+public class SerializableJar<T> where T : AbstractCollectible
+{
+    HashSet<string> jarValues = new HashSet<string>();
+
+    public CollectiblesManager.CollectibleJar.UniqueJar<T> Jar
+    {
+        get 
+        { 
+            return new CollectiblesManager.CollectibleJar.UniqueJar<T>(jarValues); 
+        }
+        set
+        { 
+            jarValues = value.GetAllValues(); 
+        }
+    }
+    public static implicit operator CollectiblesManager.CollectibleJar.UniqueJar<T>(SerializableJar<T> inst)
+    {
+        return inst.Jar;
+    }
+    public static implicit operator SerializableJar<T>(CollectiblesManager.CollectibleJar.UniqueJar<T> iJar)
+    {
+        return new SerializableJar<T> { Jar = iJar };
+    }
+}
 
 public class CollectiblesManager : MonoBehaviour
 {
     [Serializable]
-    public class CollectibleJar
+    public class CollectibleJar : MonoBehaviour, ISaveLoad
     {
         public class UniqueJar<T> where T : AbstractCollectible
         {
             IDictionary<string, HashSet<string>> jar;
+            
+            private char serializationSep = '_';
 
             public UniqueJar()
             {
                 jar = new Dictionary<string, HashSet<string>>(0);
             }
+
+            public UniqueJar(HashSet<string> iValues)
+            {
+                jar = new Dictionary<string, HashSet<string>>(0);
+                foreach( string v in iValues)
+                {
+                    string[] subs = v.Split(serializationSep);
+                    if (subs.Length != 2)
+                    {
+                        this.LogWarn("Corrupted data in the UniqueJar constructor, expected 2 values (scene and collectible name), found " + subs.Length.ToString());
+                    }
+                    string sc_name = subs[0];
+                    string col_name = subs[1];
+                    addToJar(col_name, sc_name);
+                }
+            }
+
             public void addToJar(T iAC)
             {
                 string scene_name = SceneManager.GetActiveScene().name;
                 checkJar(scene_name);
-                HashSet<string> collected;
+                HashSet<string> collected;  
                 jar.TryGetValue(scene_name, out collected);
                 collected.Add(iAC.gameObject.name);
+            }
+
+            public void addToJar(string iColName, string iSceneName)
+            {
+                checkJar(iSceneName);
+                HashSet<string> collected;  
+                jar.TryGetValue(iSceneName, out collected);
+                collected.Add(iColName);
             }
             public void removeFromJar(T iAC)
             {
@@ -62,6 +139,23 @@ public class CollectiblesManager : MonoBehaviour
                 return collected;
             }
 
+            // note : Prepends scene name to the output values
+            public HashSet<string> GetAllValues()
+            {
+                HashSet<string> collected = new HashSet<string>();
+                foreach( string sc_name in jar.Keys)
+                {
+                    HashSet<string> scene_collected;
+                    jar.TryGetValue(sc_name, out scene_collected);
+                    foreach(string c in scene_collected)
+                    {
+                        collected.Add( sc_name + serializationSep + c);
+                    }
+                }
+                
+                return collected;
+            }
+
             private void checkJar(string scene_name)
             {
                 if (!jar.ContainsKey(scene_name))
@@ -80,13 +174,30 @@ public class CollectiblesManager : MonoBehaviour
         // Infinites
         public int collectedNuts;
 
+        // serializable data
+        public JarData jarData;
+
         public CollectibleJar()
+        {
+
+        }
+
+        public void init()
         {
             collectedNuts = 0;
             WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar = new UniqueJar<CageKeyCollectible>();
             Garagistjar = new UniqueJar<GaragistCollectible>();
             Cosmeticsjar = new UniqueJar<CosmeticCollectible>();
+        }
+
+        object ISaveLoad.GetData()
+        {
+            if (jarData==null)
+                jarData = new JarData();
+            jarData.Garagistjar = Garagistjar;
+
+            return jarData;
         }
 
         public void collect(AbstractCollectible iAC)
@@ -154,7 +265,8 @@ public class CollectiblesManager : MonoBehaviour
     {
         collectModCombo = 0;
         jar = new CollectibleJar();
-        loadJar();
+        jar.init();
+        //loadJars();
 
         currentTurbo = turboValueAtStart;
     }
@@ -164,14 +276,17 @@ public class CollectiblesManager : MonoBehaviour
         jar.collectedNuts = 0;
     }
 
-    private void loadJar()
+    public void loadJars()
     {
         // TODO load the collected collectibles
+        SaveAndLoad.loadCollectiblesJar("collectibles", jar);
     }
 
-    public void saveJar()
+    public void saveJars()
     {
         // TODO save current jar status
+        SaveAndLoad.datas.Add(jar);
+        SaveAndLoad.save("collectibles");
     }
 
     public bool tryConvertNutToTurbo()
