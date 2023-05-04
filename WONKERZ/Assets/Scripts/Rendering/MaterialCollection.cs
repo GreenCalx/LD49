@@ -22,9 +22,17 @@ public class MaterialCollection : ScriptableObject
         System.Diagnostics.Debug.Assert(id >= 0 && id < size);
         if (materials[id] == null)
         {
-            materials[id] = ScriptableObject.CreateInstance<MaterialToonShaderParams>() as MaterialToonShaderParams;
-            AssetDatabase.CreateAsset(materials[id], AssetDatabase.GetAssetPath(this).Replace(".asset","") + "Material" + id.ToString() + ".asset");
-            materials[id].toonRamp.mode = GradientMode.Fixed;
+            // quick fix: dunno why but the collection sometimes remove refs to the scriptableobjects.
+            // this function checks that we did not already created a material with the same name as a quick fix.
+            // TODO: Remove quick fix => find root cause and fix for good.
+            var assetName = AssetDatabase.GetAssetPath(this).Replace(".asset","") + "Material" + id.ToString() + ".asset";
+            if (AssetDatabase.FindAssets(assetName).Length == 0){
+                materials[id] = ScriptableObject.CreateInstance<MaterialToonShaderParams>() as MaterialToonShaderParams;
+                AssetDatabase.CreateAsset(materials[id], assetName);
+                materials[id].toonRamp.mode = GradientMode.Fixed;
+            } else {
+                materials[id] = (MaterialToonShaderParams)AssetDatabase.LoadAssetAtPath(assetName, typeof(MaterialToonShaderParams));
+            }
         }
         return materials[id];
     }
