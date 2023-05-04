@@ -3,7 +3,7 @@ using UnityEngine;
 using System;
 using Schnibble;
 
-public class TSTSaveStates : MonoBehaviour
+public class TSTSaveStates : MonoBehaviour, IControllable
 {
     public GameObject saveStateMarkerRef;
     private GameObject saveStateMarkerInst;
@@ -19,6 +19,8 @@ public class TSTSaveStates : MonoBehaviour
     private int nPanelUsed;
     private int nPanelRespawn;
 
+    public float ss_latch = 0.2f;
+    private float elapsedSinceLastSS = 0f;
     [Serializable]
     public struct ESS
     {
@@ -33,17 +35,39 @@ public class TSTSaveStates : MonoBehaviour
         hasSS = false;
         nPanelUsed = 0;
         nPanelRespawn = 0;
+        elapsedSinceLastSS = 0f;
+        Utils.attachControllable(this);
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(load) || pollExtraSaveStates()) // load
+        elapsedSinceLastSS += Time.deltaTime;
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+        if ( elapsedSinceLastSS < ss_latch)
         {
-            loadState();
+            return;
         }
-        else if (Input.GetKeyDown(save))
+        elapsedSinceLastSS = 0f;
+        
+        var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
+        if (ss_save_or_load > 0) // SAVE
         {
+            CheckPointManager cpm = Access.CheckPointManager();
+            if (cpm.currPanels<=0)
+            {
+                return; // no more panels available !
+            }
+            cpm.currPanels -= 1;
+
             ss_pos = Access.Player().gameObject.transform.position;
             ss_rot = Access.Player().gameObject.transform.rotation;
             hasSS = true;
@@ -57,6 +81,10 @@ public class TSTSaveStates : MonoBehaviour
                 saveStateMarkerInst.transform.position = ss_pos;
                 saveStateMarkerInst.transform.rotation = ss_rot;
             }
+        }
+        else if (ss_save_or_load < 0) // LOAD
+        {
+            loadState();
         }
     }
 

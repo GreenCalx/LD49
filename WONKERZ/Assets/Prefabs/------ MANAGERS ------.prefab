@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 610670227064521680}
   - component: {fileID: 6713470549655148566}
   - component: {fileID: 9001404649862612618}
+  - component: {fileID: 6406061366281777605}
   m_Layer: 0
   m_Name: ------ MANAGERS ------
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2461822761771495987}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 73.7995, y: -144.20084, z: -268.87674}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -118,10 +119,7 @@ MonoBehaviour:
   nutSpreadDistanceOnDamage: 10
   collectMod: 0
   collectModCombo: 0
-  jar:
-    collectedNuts: 0
-    jarData:
-      ResourcesPath: collectibles
+  jar: {fileID: 0}
   allCollectiblesInCurrStage: []
   currentTurbo: 0
 --- !u!114 &610670227064521673
@@ -227,3 +225,15 @@ MonoBehaviour:
       carPart: 6
     - mesh: {fileID: 970530299443152570, guid: 4a4c5347355e6b14781b242f0bdc660f, type: 3}
       carPart: 7
+--- !u!114 &6406061366281777605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2542a84f7a14a6144902c18543517364, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

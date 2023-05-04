@@ -1,6 +1,12 @@
+using System;
 
 public struct Constants
 {
+    // -- Tweaks --
+    public const int EASY_N_PANELS      = Int32.MaxValue;
+    public const int MEDIUM_N_PANELS    = 2;
+    public const int HARD_N_PANELS      = 0;
+    public const int IRONMAN_N_PANELS   = 0;
 
     // -- Debug vars --
     public const bool DBG_REPLAYDUMP = false;
@@ -25,6 +31,7 @@ public struct Constants
     public const string SN_WATERWORLD_TRACK = "WaterWorldTrack";
     public const string SN_SKYCASTLE_TRACK = "SkyCastleTrack";
     public const string SN_JUNKYARD_TRACK = "JunkyardTrack";
+    public static readonly string[] SN_TRACKS = { SN_DESERT_TOWER, SN_GROTTO_TRACK, SN_WATERWORLD_TRACK, SN_SKYCASTLE_TRACK, SN_JUNKYARD_TRACK};
 
 
 
@@ -50,6 +57,7 @@ public struct Constants
     public const string INPUT_UIUPDOWN = "UIUpDown";
     public const string INPUT_RESPAWN = "Respawn";
     public const string INPUT_START = "Start";
+    public const string INPUT_SAVESTATES = "SaveStates";
 
     // -- Resources paths --
     public const string RES_ICON_BLANK = "Icons/UI_InputBlank";

@@ -13,7 +13,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public GameObject Cam;
 
     public int MAX_PANELS = 2;
-    private int currPanels;
+    public int currPanels { get; set; }
 
     [HideInInspector]
     public GameObject last_checkpoint;
@@ -23,8 +23,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void Start()
     {
-        currPanels = MAX_PANELS;
-
         if (checkpoints.Count <= 0)
         {
             this.LogWarn("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
@@ -41,6 +39,29 @@ public class CheckPointManager : MonoBehaviour, IControllable
             last_camerapoint = race_start.GetComponent<StartPortal>();
 
         Utils.attachControllable<CheckPointManager>(this);
+
+        // Init from difficulty
+        switch (Access.TrackManager().track_score.selected_diff)
+        {
+            case DIFFICULTIES.EASY:
+                MAX_PANELS = Constants.EASY_N_PANELS;
+                break;
+            case DIFFICULTIES.MEDIUM:
+                MAX_PANELS = Constants.MEDIUM_N_PANELS;
+                break;
+            case DIFFICULTIES.HARD:
+                MAX_PANELS = Constants.HARD_N_PANELS;
+                break;
+            case DIFFICULTIES.IRONMAN:
+                MAX_PANELS = Constants.IRONMAN_N_PANELS;
+                foreach(GameObject go in checkpoints)
+                { go.transform.parent.gameObject.SetActive(false); }
+                break;
+            default:
+                MAX_PANELS = Constants.EASY_N_PANELS;
+                break;
+        }
+        currPanels = MAX_PANELS;
     }
 
 
@@ -128,6 +149,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
             last_checkpoint = iGO;
             last_camerapoint = iGO.GetComponent<CheckPoint>();
+            currPanels = MAX_PANELS;
 
         }
         else

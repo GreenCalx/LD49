@@ -234,4 +234,44 @@ public static class SaveAndLoad
         return true;
     }
 
+    public static bool loadTrackScore(string iFileName, TrackManager target)
+    {
+        updateFileName(ref iFileName);
+
+        if (!File.Exists(fileName))
+        { return false; }
+
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        ArrayList load_datas;
+
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            load_datas = (ArrayList)formatter.Deserialize(fs);
+            formatter = null;
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
+            SchLog.LogError("Failed to deserialize profile : " + e.Message);
+            return false;
+        }
+        finally
+        {
+            fs.Close();
+        }
+
+        datas.Clear();
+        foreach (object o in load_datas)
+        {
+            EntityData ed = (EntityData)o;
+            ed.OnLoad(null);
+        }
+
+        load_datas.Clear();
+        load_datas = null;
+        fs = null;
+
+        return true;
+    }
+
 }

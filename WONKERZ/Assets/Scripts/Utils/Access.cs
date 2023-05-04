@@ -150,6 +150,10 @@ public class Access
     {
         return cache.getObject<PlayerSkinManager>(Constants.GO_MANAGERS, false);
     }
+    public static TrackManager TrackManager()
+    {
+        return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);
+    }
 
     public static UITurboAndLifePool UITurboAndLifePool()
     {
