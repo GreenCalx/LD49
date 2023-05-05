@@ -15,10 +15,11 @@ public class MaterialToonShaderParams : ScriptableObject
         public float width;
         public int enableDistanceBlend;
         public float fadeStart;
+        public float fadeStop;
         public Color distanceColor;
     };
     public static int SchnibbleCustomOutlineGPUStride = (sizeof(float) * 4) * 3
-                                                        + sizeof(float) * 3
+                                                        + sizeof(float) * 4
                                                         + sizeof(int) * 1;
     [System.Serializable]
     public struct SchnibbleCrossHatchData

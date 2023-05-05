@@ -2,18 +2,19 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: WATER2_RED
   m_Shader: {fileID: 4800000, guid: ca2a879a1dbc65f458bc093fbebdac63, type: 3}
-  m_ShaderKeywords: 
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -79,6 +80,7 @@ Material:
         m_Texture: {fileID: 8400000, guid: 2c834b5631712b546a0acb9c5956d2a6, type: 2}
         m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - _Amplitude: 1
     - _BumpScale: 1
@@ -97,9 +99,9 @@ Material:
     - _FoamTextureSpeedY: 0.1
     - _FoamThreshold: 2
     - _FogThreshold: 6.73
-    - _FresnelPower: 0
+    - _FresnelPower: 26.6
     - _GlossMapScale: 1
-    - _Glossiness: 1
+    - _Glossiness: 0.414
     - _GlossyReflections: 1
     - _IntersectionThreshold: 2.16
     - _InvFade: 0.01
@@ -126,14 +128,14 @@ Material:
     - _WindStrength: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.8018868, g: 0.04160734, b: 0.11233104, a: 1}
+    - _Color: {r: 0.4811321, g: 0.03479882, b: 0.0764259, a: 1}
     - _ColorDetail: {r: 0, g: 0, b: 1, a: 1}
     - _ColorMain: {r: 0.031149892, g: 0.031149892, b: 0.9433962, a: 1}
     - _DepthCol: {r: 0.16981131, g: 0.06327874, b: 0.06327874, a: 1}
     - _Direction: {r: 1, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FogColor: {r: 0.20754719, g: 0.010768958, b: 0.038631376, a: 1}
-    - _IntersectionColor: {r: 1, g: 0.8349056, b: 0.8349056, a: 1}
+    - _FogColor: {r: 1, g: 0, b: 0.019032478, a: 1}
+    - _IntersectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _NormalPanningSpeeds: {r: 0, g: 0, b: 0, a: 0.1}
     - _WindDir: {r: 0, g: 1, b: 1, a: 5}
   m_BuildTextureStacks: []

@@ -36,6 +36,8 @@ Shader "Custom/SandNew"
         _MovingSandsCenter ("Moving Sands center", Vector) = (1,1,1,1)
         _MovingSandsSize ("Moving Sands Size", float) = 1
         _MovingSandsHeightMultiplier ("Moving Sands Height Multiplier", float) = 1
+
+        [IntRange]_MaterialID("MaterialID", Range(0,255)) = 0
     }
     SubShader
     {
