@@ -81,6 +81,7 @@ public class MaterialToonShaderParams : ScriptableObject
     };
     public DiffuseBRDFType brdfType = DiffuseBRDFType.Lambert;
 
+    [System.NonSerialized]
     public bool needUpdateOnGPU = true;
     public void OnValidate()
     {

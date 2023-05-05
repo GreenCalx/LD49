@@ -14,32 +14,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gpuParams:
     outlineDepth:
-      lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 0, g: 0, b: 0, a: 0}
-      threshold: 0.16
-      width: 1.06
-      enableDistanceBlend: 18
-      fadeStart: 1.47
+      lightColor: {r: 1, g: 0, b: 0, a: 1}
+      shadowColor: {r: 1, g: 0, b: 0, a: 1}
+      threshold: 0.001
+      width: 1
+      enableDistanceBlend: 1
+      fadeStart: 0
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
     enableOutlineDepth: 1
     outlineNormal:
-      lightColor: {r: 0, g: 0, b: 0, a: 0}
-      shadowColor: {r: 0, g: 0, b: 0, a: 0}
-      threshold: 0
-      width: 0
+      lightColor: {r: 1, g: 0, b: 0.938499, a: 0.46666667}
+      shadowColor: {r: 0, g: 1, b: 0.19215687, a: 1}
+      threshold: 2
+      width: 1
       enableDistanceBlend: 0
       fadeStart: 0
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
-    enableOutlineNormal: 0
+    enableOutlineNormal: 1
     outlineColor:
-      lightColor: {r: 0, g: 0, b: 0, a: 0}
-      shadowColor: {r: 0, g: 0, b: 0, a: 0}
-      threshold: 0
-      width: 0
+      lightColor: {r: 0, g: 0.16981132, b: 0.3207547, a: 1}
+      shadowColor: {r: 0, g: 0.5294118, b: 1, a: 1}
+      threshold: 1
+      width: 1
       enableDistanceBlend: 0
       fadeStart: 0
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
-    enableOutlineColor: 0
+    enableOutlineColor: 1
     hatch:
       maxSize: 0
       minSize: 0
@@ -83,4 +83,3 @@ MonoBehaviour:
   diffuseBRDF: {fileID: 0}
   diffuseBRDFColored: {fileID: 0}
   brdfType: 0
-  needUpdateOnGPU: 0
