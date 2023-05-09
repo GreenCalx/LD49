@@ -69,13 +69,11 @@ public class Ground : MonoBehaviour
 
         // TODO toffa :
         // Remove this and make it esier to use and more reliable
-        var MovingObjectA = GetComponent<testphysx>();
-        if (MovingObjectA)
+        if(TryGetComponent<testphysx>(out var MovingObjectA))
         {
             GI.Velocity = MovingObjectA.Velocity;
         }
-        var MovingObjectB = GetComponent<BridgePhysX>();
-        if (MovingObjectB)
+        if(TryGetComponent<BridgePhysX>(out var MovingObjectB))
         {
             GI.Velocity = MovingObjectB.Velocity;
         }
@@ -86,8 +84,7 @@ public class Ground : MonoBehaviour
                 GI.DepthPerturbation.y = -1 * (Mathf.Sin(HitPosition.x * 0.1f) - 1);
                 // TODO toffa : remove this and make it better
                 // find if we are in moving sands
-                var Test = GetComponent<TestUpdateMeshCollider>();
-                if (Test)
+                if (TryGetComponent<TestUpdateMeshCollider>(out var Test))
                 {
                     var HP = new Vector2(HitPosition.x, HitPosition.z);
                     foreach (var Sand in Test.SandPositions)
