@@ -7,18 +7,19 @@ using UnityEditor;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/SchnibbleToonMaterialCollection", order = 1)]
 public class MaterialCollection : ScriptableObject
 {
-    private static readonly int size = 256;
+    public static readonly int size = 256;
 
     public MaterialToonShaderParams[] materials = new MaterialToonShaderParams[size];
 
     public MaterialToonShaderParams GetMaterial(int id)
     {
-        System.Diagnostics.Debug.Assert(id > 0 && id < size);
+        //System.Diagnostics.Debug.Assert(id > 0 && id < size);
         return materials[id];
     }
 
     public MaterialToonShaderParams GetMaterial_NonNull(int id)
     {
+        #if UNITY_EDITOR
         System.Diagnostics.Debug.Assert(id >= 0 && id < size);
         if (materials[id] == null)
         {
@@ -34,6 +35,7 @@ public class MaterialCollection : ScriptableObject
                 materials[id] = (MaterialToonShaderParams)AssetDatabase.LoadAssetAtPath(assetName, typeof(MaterialToonShaderParams));
             }
         }
+        #endif
         return materials[id];
     }
 
