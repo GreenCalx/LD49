@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Schnibble;
 
 public class StartLine : MonoBehaviour
 {
-    [Header("MAND")]
-    public string track_name;
+    //[Header("MAND")]
+    //public string track_name;
 
     // Start is called before the first frame update
     void Start()
@@ -21,8 +22,8 @@ public class StartLine : MonoBehaviour
         if (!!cc)
         {
             // start line crossed !! gogogo
-            
-            Access.TrackManager().launchTrack(track_name);
+            Scene currentScene = SceneManager.GetActiveScene();
+            Access.TrackManager().launchTrack(currentScene.name);
         }
     }
 }

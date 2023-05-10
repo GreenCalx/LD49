@@ -150,13 +150,17 @@ public class TrackManager : MonoBehaviour
 
     public double getRaceTime()
     {
-
         return track_score.track_time;
     }
 
     public string getRacePBKey()
     {
         return track_score.track_name + "_pb_" + track_score.selected_diff.ToString();
+    }
+
+    public string getRacePBKey(string iTrackName, DIFFICULTIES iDiff)
+    {
+        return iTrackName + "_pb_" + iDiff.ToString();
     }
 
     public void saveRacePB()
@@ -168,6 +172,15 @@ public class TrackManager : MonoBehaviour
     public double getRacePB()
     {
         if ( SaveAndLoad.loadTrackScore(getRacePBKey(), this) )
+        {
+            return track_score.track_time;
+        }
+        return defaultPBValue;
+    }
+
+    public double getRacePB(string iSceneName, DIFFICULTIES iDiff)
+    {
+        if ( SaveAndLoad.loadTrackScore(getRacePBKey(iSceneName, iDiff), this) )
         {
             return track_score.track_time;
         }

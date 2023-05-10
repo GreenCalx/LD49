@@ -155,6 +155,11 @@ public class Access
         return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);
     }
 
+    public static BountyArray BountyArray()
+    {
+        return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
+    }
+
     public static UITurboAndLifePool UITurboAndLifePool()
     {
         return cache.getObject<UITurboAndLifePool>(Constants.GO_PLAYERUI, true);
@@ -168,5 +173,6 @@ public class Access
     {
         return cache.getObject<UIPowerWheel>(Constants.GO_PLAYERUI, true);
     }
+
 
 }
