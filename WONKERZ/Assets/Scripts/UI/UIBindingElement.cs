@@ -8,10 +8,11 @@ public class UIBindingElement : UISelectableElement
     public GameObject name;
     public GameObject binding;
     public string inputKey;
+    public bool isNegativeAxis;
 
     public void SetBinding(KeyCode c){
         binding.GetComponent<TMP_Text>().text = c.ToString();
-        (Parent as UIBindings).SetBinding(c, inputKey);
+        (Parent as UIBindings).SetBinding(c, inputKey, isNegativeAxis);
     }
 
     public void SetAsParent(){

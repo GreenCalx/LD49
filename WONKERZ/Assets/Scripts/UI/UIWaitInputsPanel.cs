@@ -13,10 +13,14 @@ public class UIWaitInputsPanel : UIPanelControlable
                 {
                     wait = false;
                     (Parent as UIBindingElement).SetBinding(e.keyCode);
-                    onDeactivate?.Invoke();
                 }
             }
         }
+    }
+
+    void Update(){
+        if (!wait)
+                    onDeactivate?.Invoke();
     }
 
     public void WaitForInput(){
