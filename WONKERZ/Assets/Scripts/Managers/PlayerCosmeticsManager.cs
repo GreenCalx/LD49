@@ -12,27 +12,22 @@ public class CosmeticElement
     public COLORIZABLE_CAR_PARTS carPart;
 
     public string   matName     = "";
-    public Mesh     modelName   ;
+    public string   modelName   = "";
 
     public CosmeticElement()
     {
         name = "default";
         carPart = COLORIZABLE_CAR_PARTS.ANY;
         matName = "CarColor";
+        modelName = "";
     }
 
-    public CosmeticElement(string iName, COLORIZABLE_CAR_PARTS iPart, string iMatName)
+    public CosmeticElement(string iName, COLORIZABLE_CAR_PARTS iPart, string iMatName, string iModelName)
     {
-        name = iName;
-        carPart = iPart;
-        matName = iMatName;
-    }
-
-    public CosmeticElement(string iName, COLORIZABLE_CAR_PARTS iPart, Mesh iModelName)
-    {
-        name = iName;
-        carPart = iPart;
-        modelName = iModelName;
+        name        = iName;
+        carPart     = iPart;
+        matName     = iMatName;
+        modelName   = iModelName;
     }
 }
 
@@ -42,7 +37,7 @@ public class CosmeticElement
 */
 public class PlayerCosmeticsManager : MonoBehaviour
 {
-        // TODO : Find a way to expose string(skin_name)/Mesh(skin itself) in editor
+    // TODO : Find a way to expose string(skin_name)/Mesh(skin itself) in editor
     [Serializable]
     public struct SkinDesc
     {
@@ -119,25 +114,28 @@ public class PlayerCosmeticsManager : MonoBehaviour
     private void initCustomizationFromPlayer()
     {
         // COLORS
-        addCosmetic(  new CosmeticElement("default_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "CarColor") );
-        addCosmetic(  new CosmeticElement("default_body_secondary", COLORIZABLE_CAR_PARTS.FRONT_BUMP, "CarCommonMat") );
-        addCosmetic(  new CosmeticElement("default_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "CarCommonMat") );
+        addCosmetic(  new CosmeticElement("default_color_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "CarColor", "") );
+        addCosmetic(  new CosmeticElement("default_color_body_secondary", COLORIZABLE_CAR_PARTS.FRONT_BUMP, "CarCommonMat", "") );
+        addCosmetic(  new CosmeticElement("default_color_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "CarCommonMat", "") );
 
         // SKINS
-        GameObject p = Access.Player().gameObject;
+        addCosmetic(  new CosmeticElement("default_skin_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "", "default") );
+        addCosmetic(  new CosmeticElement("default_skin_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "", "default") );
+        
+        // GameObject p = Access.Player().gameObject;
 
-        MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
-        int n_parts = pRends.Length;
-        for (int i=0; i < n_parts; i++)
-        {
-            MeshFilter rend = pRends[i];
-            CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
-            if (!!cc_color)
-            {
-                // TODO : Prevent duplicated at init (multiple car parts sharing same cosmetic)
-               // addCosmetic( new CosmeticElement("default", cc_color.part, cc_color.partSkinName) );
-            } 
-        }
+        // MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
+        // int n_parts = pRends.Length;
+        // for (int i=0; i < n_parts; i++)
+        // {
+        //     MeshFilter rend = pRends[i];
+        //     CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
+        //     if (!!cc_color)
+        //     {
+        //         // TODO : Prevent duplicated at init (multiple car parts sharing same cosmetic)
+        //        // addCosmetic( new CosmeticElement("default", cc_color.part, cc_color.partSkinName) );
+        //     } 
+        // }
 
     }
 

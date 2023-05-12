@@ -13,6 +13,9 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
     public UIPanelTabbed primaryCarColorHandle;
     public UIPanelTabbed secondaryCarColorHandle;
     public UIPanelTabbed primaryWheelColorHandle;
+    
+    public UIPanelTabbed carSkinHandle;
+    public UIPanelTabbed wheelSkinHandle;
 
     public UIGaragePanel uiNavParentForCar;
     public UIGaragePanel uiNavParentForWheels;
@@ -21,7 +24,11 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
     public List<COLORIZABLE_CAR_PARTS> secondaryCarColorParts;
     public List<COLORIZABLE_CAR_PARTS> primaryWheelColorParts;
 
+    public List<COLORIZABLE_CAR_PARTS> carSkinParts;
+    public List<COLORIZABLE_CAR_PARTS> wheelSkinParts;
+
     public GameObject uiGaragePickableColorRef;
+    public GameObject uiGaragePickableSkinRef;
 
 
     override protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs()
@@ -67,6 +74,17 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
             }
 
             // Init available skins
+            if (c_el.modelName != "")
+            {
+                if ( carSkinParts.Contains(c_el.carPart) )
+                {
+                    addSkin( carSkinHandle, uiNavParentForCar, carSkinParts, c_el);
+                }
+                else if ( wheelSkinParts.Contains(c_el.carPart))
+                {
+                    addSkin( wheelSkinHandle, uiNavParentForWheels, wheelSkinParts, c_el);
+                }
+            }
         }
         
     }
@@ -86,6 +104,22 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         ui_img.color = mat.color; 
 
         iParent.tabs.Add(uigpc);
+    }
+
+    private void addSkin(UIPanelTabbed iParent, UIGaragePanel iNavParent, List<COLORIZABLE_CAR_PARTS> iParts, CosmeticElement iCosmetic)
+    {
+        GameObject go = Instantiate(uiGaragePickableSkinRef, iParent.transform);
+        UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
+        Image ui_img = go.GetComponent<Image>();
+
+        uigps.Parent = iNavParent;
+        uigps.copyInputsFromParent = true;
+        uigps.carParts = iParts;
+        uigps.skinName = iCosmetic.modelName;
+
+        //ui_img.color = mat.color; 
+
+        iParent.tabs.Add(uigps);
     }
 
 
