@@ -25,15 +25,15 @@ public class BountyArray : MonoBehaviour
     {
         public string name; //  key to retrieve bounty in the garage and such
         public int x, y;
-        public AbstractCollectible bounty;
+        public CosmeticElement cosmeticBounty;
         public string hint;
 
-        public AbstractBounty(int iX, int iY, string iName, string iHint , AbstractCollectible iBounty)
+        public AbstractBounty(int iX, int iY, string iName, string iHint , CosmeticElement iCosmeticBounty)
         {
             name    = iName;
             x       = iX;
             y       = iY;
-            bounty  = iBounty;
+            cosmeticBounty  = iCosmeticBounty;
             hint    = iHint;
         }
 
@@ -75,7 +75,7 @@ public class BountyArray : MonoBehaviour
     {
         public TrackScoreConstraint tsc;
 
-        public TrackScoreBounty(int iX, int iY, string iName, string iHint , AbstractCollectible iBounty, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBounty)
+        public TrackScoreBounty(int iX, int iY, string iName, string iHint , CosmeticElement iBounty, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBounty)
         {
             tsc = iTSC;
         }
@@ -98,7 +98,7 @@ public class BountyArray : MonoBehaviour
     {
         loadBounties();
         checkBounties();
-        //updateArray(); // collectibles manager might not be inited
+        updateArray(); // collectibles manager might not be inited
 
     }
 
@@ -132,7 +132,7 @@ public class BountyArray : MonoBehaviour
                 if (bounties[i,j].check())
                 { 
                     bountiesUnlockStatus[i,j] = EItemState.UNLOCKED;
-                    bounties[i,j].bounty.ForceCollect();
+                    Access.PlayerCosmeticsManager().addCosmetic(bounties[i,j].cosmeticBounty);
                     continue; 
                 }
             }

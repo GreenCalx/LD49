@@ -105,11 +105,6 @@ public class Access
         return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);
     }
 
-    public static PlayerColorManager PlayerColorManager()
-    {
-        return cache.getObject<PlayerColorManager>(Constants.GO_MANAGERS, false);
-    }
-
     public static UIGarageTestManager TestManager()
     {
         return cache.getObject<UIGarageTestManager>(Constants.GO_TESTMANAGER, false);
@@ -146,10 +141,11 @@ public class Access
         return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
     }
 
-    public static PlayerSkinManager PlayerSkinManager()
+    public static PlayerCosmeticsManager PlayerCosmeticsManager()
     {
-        return cache.getObject<PlayerSkinManager>(Constants.GO_MANAGERS, false);
+        return cache.getObject<PlayerCosmeticsManager>(Constants.GO_MANAGERS, false);
     }
+
     public static TrackManager TrackManager()
     {
         return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);

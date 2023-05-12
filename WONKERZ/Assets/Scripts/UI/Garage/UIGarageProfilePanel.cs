@@ -44,20 +44,14 @@ public class UIGarageProfilePanel : UIGaragePanel
         // WEIGHT
         //profile.WEIGHT_CURVE = new List<Keyframe>(cc.s.keys);
         
-        // COLOR
-        profile.color           = PlayerColorManager.Instance.getColorOfPart(COLORIZABLE_CAR_PARTS.MAIN);
-        profile.color_bumps     = PlayerColorManager.Instance.getColorOfPart(COLORIZABLE_CAR_PARTS.FRONT_BUMP);
-        profile.color_doors     = PlayerColorManager.Instance.getColorOfPart(COLORIZABLE_CAR_PARTS.LEFT_DOOR);
-        profile.color_hood      = PlayerColorManager.Instance.getColorOfPart(COLORIZABLE_CAR_PARTS.HOOD);
-        profile.color_wheels    = PlayerColorManager.Instance.getColorOfPart(COLORIZABLE_CAR_PARTS.WHEELS);
-
-        profile.skin_body = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.MAIN);
-        profile.skin_back_bump = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.BACK_BUMP);
-        profile.skin_front_bump = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.FRONT_BUMP);
-        profile.skin_hood = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.HOOD);
-        profile.skin_left_door = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.LEFT_DOOR);
-        profile.skin_right_door = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
-        profile.skin_wheel = PlayerSkinManager.Instance.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.WHEELS);
+        // COSMETICS
+        profile.skin_body       = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.MAIN);
+        profile.skin_back_bump  = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.BACK_BUMP);
+        profile.skin_front_bump = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.FRONT_BUMP);
+        profile.skin_hood       = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.HOOD);
+        profile.skin_left_door  = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.LEFT_DOOR);
+        profile.skin_right_door = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
+        profile.skin_wheel      = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.WHEELS);
 
     }
 
@@ -83,20 +77,22 @@ public class UIGarageProfilePanel : UIGaragePanel
         // WEIGHT
         //cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
         //color
-        PlayerColorManager.Instance.colorize(profile.color, COLORIZABLE_CAR_PARTS.MAIN);
-        PlayerColorManager.Instance.colorize(profile.color_bumps, COLORIZABLE_CAR_PARTS.FRONT_BUMP);
-        PlayerColorManager.Instance.colorize(profile.color_bumps, COLORIZABLE_CAR_PARTS.BACK_BUMP);
-        PlayerColorManager.Instance.colorize(profile.color_doors, COLORIZABLE_CAR_PARTS.LEFT_DOOR);
-        PlayerColorManager.Instance.colorize(profile.color_doors, COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
-        PlayerColorManager.Instance.colorize(profile.color_hood, COLORIZABLE_CAR_PARTS.HOOD);
-        PlayerColorManager.Instance.colorize(profile.color_wheels, COLORIZABLE_CAR_PARTS.WHEELS);
+        PlayerCosmeticsManager PCM = Access.PlayerCosmeticsManager();
 
-        PlayerSkinManager.Instance.customize(profile.skin_body);
-        PlayerSkinManager.Instance.customize(profile.skin_hood);
-        PlayerSkinManager.Instance.customize(profile.skin_back_bump);
-        PlayerSkinManager.Instance.customize(profile.skin_front_bump);
-        PlayerSkinManager.Instance.customize(profile.skin_right_door);
-        PlayerSkinManager.Instance.customize(profile.skin_left_door);
-        PlayerSkinManager.Instance.customize(profile.skin_wheel);
+        PCM.colorize(profile.skin_body.materialName, COLORIZABLE_CAR_PARTS.MAIN);
+        PCM.colorize(profile.skin_hood.materialName, COLORIZABLE_CAR_PARTS.HOOD);
+        PCM.colorize(profile.skin_back_bump.materialName, COLORIZABLE_CAR_PARTS.BACK_BUMP);
+        PCM.colorize(profile.skin_front_bump.materialName, COLORIZABLE_CAR_PARTS.FRONT_BUMP);
+        PCM.colorize(profile.skin_right_door.materialName, COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
+        PCM.colorize(profile.skin_left_door.materialName, COLORIZABLE_CAR_PARTS.LEFT_DOOR);
+        PCM.colorize(profile.skin_wheel.materialName, COLORIZABLE_CAR_PARTS.WHEELS);
+
+        PCM.customize(profile.skin_body);
+        PCM.customize(profile.skin_hood);
+        PCM.customize(profile.skin_back_bump);
+        PCM.customize(profile.skin_front_bump);
+        PCM.customize(profile.skin_right_door);
+        PCM.customize(profile.skin_left_door);
+        PCM.customize(profile.skin_wheel);
     }
 }

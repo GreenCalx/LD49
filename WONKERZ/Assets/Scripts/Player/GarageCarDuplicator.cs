@@ -6,13 +6,11 @@ public class GarageCarDuplicator : MonoBehaviour
 {
     void Start()
     {
-        PlayerColorManager.Instance.addPlayerToColorize(gameObject);
-        PlayerSkinManager.Instance.addPlayerToCustomize(gameObject);
+        Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
     }
 
     void OnDestroy()
     {
-        PlayerColorManager.Instance.removePlayerToColorize(gameObject);
-        PlayerSkinManager.Instance.removePlayerToCustomize(gameObject);
+        Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
     }
 }

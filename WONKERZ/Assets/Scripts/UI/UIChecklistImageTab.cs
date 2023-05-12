@@ -15,7 +15,7 @@ public class UIChecklistImageTab : UIImageTab
     public BountyArray bountyArray { set; private get; }
     public TextMeshProUGUI tooltip { set; private get; }
 
-    public Image image;
+    public Image img2;
 
     [HideInInspector]
     public int x, y;
@@ -55,16 +55,16 @@ public class UIChecklistImageTab : UIImageTab
         switch (status)
         {
             case BountyArray.EItemState.UNLOCKED:
-                image.color = c_unlocked;
+                img2.color = c_unlocked;
                 break;
             case BountyArray.EItemState.VISIBLE:
-                image.color = c_visible;
+                img2.color = c_visible;
                 break;
             case BountyArray.EItemState.LOCKED:
-                image.color = c_locked;
+                img2.color = c_locked;
                 break;
             default:
-                image.color = c_locked;
+                img2.color = c_locked;
                 break;
         }
     }

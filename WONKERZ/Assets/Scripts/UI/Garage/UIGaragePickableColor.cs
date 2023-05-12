@@ -5,18 +5,20 @@ using System.Collections.Generic;
 public class UIGaragePickableColor : UIImageTab
 {
     public List<COLORIZABLE_CAR_PARTS> parts_to_colorize;
+    public string material_name;
+
+    void Start()
+    {
+
+    }
 
     override public void activate()
     {
         base.activate();
         
-
-        Color c = GetComponent<Image>().color;
-        Color c2 = GetComponentInChildren<Image>().color;
-
         foreach(COLORIZABLE_CAR_PARTS ccp in parts_to_colorize)
         {
-            PlayerColorManager.Instance.colorize(c2, ccp);
+            Access.PlayerCosmeticsManager().colorize( material_name ,ccp);
         }
     }
 

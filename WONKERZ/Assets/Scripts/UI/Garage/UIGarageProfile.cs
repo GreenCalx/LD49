@@ -7,12 +7,14 @@ public class SerializableSkin
 {
     public int carPartID; // CarPartToColorize
     public string partSkinName; // id of the skin for a given car part
+    public string materialName; // id of the material for a given car part
 
     public CarColorizable buildSkin()
     {
         CarColorizable retval = new CarColorizable();
         retval.part = (COLORIZABLE_CAR_PARTS) carPartID;
         retval.partSkinName = partSkinName;
+        retval.materialName = materialName;
         return retval;
     }
     public CarColorizable CarColorizable
@@ -25,6 +27,7 @@ public class SerializableSkin
         { 
             carPartID = (int) value.part; 
             partSkinName = value.partSkinName;
+            materialName = value.materialName;
         }
     }
     public static implicit operator CarColorizable(SerializableSkin inst)
@@ -34,25 +37,6 @@ public class SerializableSkin
     public static implicit operator SerializableSkin(CarColorizable iSkin)
     {
         return new SerializableSkin { CarColorizable = iSkin };
-    }
-}
-
-[System.Serializable]
-public class SerializableColor
-{
-    public byte[] colorStore = new byte[4] { 0xFF, 0xFF, 0xFF, 0xFF};
-    public Color32 Color
-    {
-        get { return new Color32(colorStore[0], colorStore[1], colorStore[2], colorStore[3]); }
-        set { colorStore = new byte[4] { value.r, value.g, value.b, value.a }; }
-    }
-    public static implicit operator Color32(SerializableColor inst)
-    {
-        return inst.Color;
-    }
-    public static implicit operator SerializableColor(Color32 iColor)
-    {
-        return new SerializableColor { Color = iColor };
     }
 }
 
@@ -111,12 +95,6 @@ public class ProfileData : EntityData
     public List<SerializableKeyframe> ac_weight;
 
     //cosmetics
-    public SerializableColor color;
-    public SerializableColor color_bumps;
-    public SerializableColor color_doors;
-    public SerializableColor color_hood;
-    public SerializableColor color_wheels;
-
     public SerializableSkin skin_body;
     public SerializableSkin skin_back_bump;
     public SerializableSkin skin_front_bump;
@@ -140,13 +118,7 @@ public class ProfileData : EntityData
             // foreach (SerializableKeyframe sk in ac_weight)
             // { uigp.WEIGHT_CURVE.Add(sk); }
 
-            // COLOR
-            uigp.color = color;
-            uigp.color_bumps = color_bumps;
-            uigp.color_hood = color_hood;
-            uigp.color_wheels = color_wheels;
-            uigp.color_doors = color_doors;
-
+            // COSMETICS
             uigp.skin_body = skin_body;
             uigp.skin_back_bump = skin_back_bump;
             uigp.skin_front_bump = skin_front_bump;
@@ -178,13 +150,6 @@ public class UIGarageProfile : MonoBehaviour, ISaveLoad
     public List<Keyframe> WEIGHT_CURVE;
 
     // Cosmetics
-    [HideInInspector]
-    public Color32 color;
-    public Color32 color_bumps;
-    public Color32 color_hood;
-    public Color32 color_wheels;
-    public Color32 color_doors;
-
     public CarColorizable skin_body;
     public CarColorizable skin_front_bump;
     public CarColorizable skin_back_bump;
@@ -214,12 +179,6 @@ public class UIGarageProfile : MonoBehaviour, ISaveLoad
         // { profileData.ac_weight.Add(k); }
 
         // COLOR
-        profileData.color = color;
-        profileData.color_bumps = color_bumps;
-        profileData.color_hood = color_hood;
-        profileData.color_wheels = color_wheels;
-        profileData.color_doors = color_doors;  
-
         profileData.skin_body = skin_body;
         profileData.skin_front_bump = skin_front_bump;
         profileData.skin_back_bump = skin_back_bump;

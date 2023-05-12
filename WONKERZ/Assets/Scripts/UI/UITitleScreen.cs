@@ -7,6 +7,11 @@ public class UITitleScreen : UIPanelTabbed
     void Start(){
         activate();
     }
+
+    void OnDestroy()
+    {
+        deactivate();
+    }
     public void launchNewGame()
     {
         Access.SceneLoader().loadScene(Constants.SN_INTRO);

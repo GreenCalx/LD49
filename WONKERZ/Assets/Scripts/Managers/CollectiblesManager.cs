@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 using System;
 using Schnibble;
 
+/**
+*   Scene dependant collectibles jars
+*/
+
 [System.Serializable]
 public class JarData : EntityData
 {
@@ -169,7 +173,6 @@ public class CollectiblesManager : MonoBehaviour
         public UniqueJar<CollectibleWONKERZ> WONKERZjar;
         public UniqueJar<CageKeyCollectible> CageKeyjar;
         public UniqueJar<GaragistCollectible> Garagistjar;
-        public UniqueJar<CosmeticCollectible> Cosmeticsjar;
 
         // Infinites
         public int collectedNuts;
@@ -188,7 +191,6 @@ public class CollectiblesManager : MonoBehaviour
             WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar = new UniqueJar<CageKeyCollectible>();
             Garagistjar = new UniqueJar<GaragistCollectible>();
-            Cosmeticsjar = new UniqueJar<CosmeticCollectible>();
         }
 
         object ISaveLoad.GetData()
@@ -215,9 +217,6 @@ public class CollectiblesManager : MonoBehaviour
                 else if (iAC is GaragistCollectible)
                 {
                     Garagistjar.addToJar(iAC as GaragistCollectible);
-                } else if (iAC is CosmeticCollectible) 
-                {
-                    Cosmeticsjar.addToJar(iAC as CosmeticCollectible);
                 }
                 return;
             }

@@ -14,7 +14,7 @@ public class UIGaragePickableSkin : UIImageTab
     {
         base.activate();
 
-        PlayerSkinManager.Instance.customize(skinName, carParts);
+        Access.PlayerCosmeticsManager().customize(skinName, carParts);
         
     }
 
