@@ -6,13 +6,11 @@ using TMPro;
 public class UIBountyMatrix : UIPanelTabbed
 {
     private BountyArray bountyMatrix;
-    public TextMeshProUGUI tooltip;
+    public TextMeshProUGUI tooltip; 
     // Start is called before the first frame update
     void Start()
     {
         bountyMatrix = Access.BountyArray();
-        //bountyMatrix.display(this);
-
     }
 
     // Update is called once per frame
