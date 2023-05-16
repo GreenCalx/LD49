@@ -6,11 +6,11 @@ public class GarageCarDuplicator : MonoBehaviour
 {
     void Start()
     {
-        Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
+        //Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
     }
 
     void OnDestroy()
     {
-        Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
+       // Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
     }
 }
