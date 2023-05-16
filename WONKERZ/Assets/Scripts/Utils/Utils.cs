@@ -16,11 +16,11 @@ public static partial class Utils
         else
             SchLog.LogWarn("InputManager is null. Failed to detach.");
     }
-    public static void detachUniqueControllable()
+    public static void detachUniqueControllable<T>(T toDetach)
     {
         InputManager IM = Access.InputManager();
         if (!!IM)
-            IM.UnsetUnique();
+            IM.UnsetUnique(toDetach as IControllable);
         else
             SchLog.LogWarn("InputManager is null. Failed to detach unique.");
     }

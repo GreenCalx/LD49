@@ -18,7 +18,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
     public TextMeshProUGUI TMP_selectedCP;
 
     public void activate() { isActivated = true; Utils.attachUniqueControllable<UIDebugCPSelector>(this); }
-    public void deactivate() { isActivated = false; Utils.detachUniqueControllable(); }
+    public void deactivate() { isActivated = false; Utils.detachUniqueControllable<UIDebugCPSelector>(this); }
 
 
     // Start is called before the first frame update

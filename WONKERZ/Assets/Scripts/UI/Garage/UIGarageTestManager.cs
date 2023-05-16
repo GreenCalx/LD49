@@ -170,7 +170,7 @@ public class UIGarageTestManager : MonoBehaviour
         }
         if (testCC != null)
         {
-            Utils.detachUniqueControllable();
+            Utils.detachUniqueControllable<UIGarageTestManager>(this);
             Destroy(testCC.gameObject);
         }
 
