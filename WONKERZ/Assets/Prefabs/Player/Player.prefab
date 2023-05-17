@@ -825,6 +825,7 @@ MonoBehaviour:
   springMax: 2.44
   springMin: 0.35
   springRestPercent: 0.42
+  springCompressionTime: 0.5
   wheelRadius: 1.5
   wheelWidth: 1.5
   overrideMaxSpring: 0
@@ -945,6 +946,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c3f306dbcd92143a51dae0a4bf3326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3489446743618113856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4108275501745766101}
+  - component: {fileID: 5921613615011174667}
+  - component: {fileID: 1722637468868394983}
+  m_Layer: 0
+  m_Name: CarDecal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4108275501745766101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3489446743618113856}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 2.98, z: -0.24}
+  m_LocalScale: {x: 5.59, y: 5.59, z: 5.59}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 8016672390232687855}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5921613615011174667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3489446743618113856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  fillDepthMesh: {fileID: 0}
+  mat: {fileID: 2100000, guid: bb57facec59fad34b920ec2540be095f, type: 2}
+  matDepth: {fileID: 0}
+  cam: {fileID: 0}
+  postDecalMesh: {fileID: 0}
+  writeColor: 0
+  writeNormal: 0
+  writeMaterial: 0
+  writeDepth: 0
+  writeEmission: 0
+  writeMatID: 0
+--- !u!114 &1722637468868394983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3489446743618113856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decalRenderer: {fileID: 5921613615011174667}
 --- !u!1 &3565375268887571088
 GameObject:
   m_ObjectHideFlags: 0
@@ -6437,6 +6508,7 @@ Transform:
   - {fileID: 8016672391185234446}
   - {fileID: 8016672390417225574}
   - {fileID: 8016672391433947136}
+  - {fileID: 4108275501745766101}
   m_Father: {fileID: 2966540010634319501}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
