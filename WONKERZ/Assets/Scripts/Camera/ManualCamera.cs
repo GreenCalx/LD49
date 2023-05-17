@@ -25,7 +25,6 @@ public class ManualCamera : PlayerCamera, IControllable
     private float lastManualRotationTime;
     private float jumpStartTime;
     private float baseFocusRadius;
-    private Camera cam;
     private Vector3 CameraHalfExtends
     {
         get

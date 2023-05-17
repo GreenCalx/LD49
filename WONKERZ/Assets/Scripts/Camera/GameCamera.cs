@@ -14,6 +14,8 @@ using UnityEngine;
 *                             \___ ManualCamera(HUB)
 *                             \___ FlyCamera(FlyMode) TBD
 *                             \___ FPSCamera(FPS)
+*           \____ UICamera (UI)
+*
 *
 */
 public class GameCamera : MonoBehaviour
@@ -31,11 +33,12 @@ public class GameCamera : MonoBehaviour
                         // Bypasses other cameras for a given duration or trigger input
         TRANSITION=5,    // Camera used to transition between 2 cameras
                         // Is automatically cleaned by CameraManager on endTransition()
-        FPS=6           // FPS Camera used for looping and such places with limited vision
+        FPS=6,           // FPS Camera used for looping and such places with limited vision
+        UI=7
     }
     [Header("GameCamera")]
     public CAM_TYPE camType = CAM_TYPE.UNDEFINED;
-
+    public Camera cam;
     protected float initial_FOV;
 
     // Start is called before the first frame update

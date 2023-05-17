@@ -176,8 +176,10 @@ public class CameraManager : MonoBehaviour, IControllable
                 this.LogError("Failed to switch Camera. Selecting first of the list as fallback.");
                 if (cameras.Count > 0)
                 {
-                    active_camera = cameras[0];
-                    active_camera.gameObject.SetActive(true);
+                    //active_camera = cameras[0];
+                    //active_camera.gameObject.SetActive(true);
+                    operateCameraSwitch(cameras[0]);
+                    return;
                 }
                 else
                 {
