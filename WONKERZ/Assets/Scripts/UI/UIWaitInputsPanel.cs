@@ -18,6 +18,8 @@ public class UIWaitInputsPanel : UIPanelControlable
         }
     }
 
+    // IMPORTANT toffa: needs to be done in update to be sure that we dont send
+    // inputs back next frame.
     void Update(){
         if (!wait)
                     onDeactivate?.Invoke();
