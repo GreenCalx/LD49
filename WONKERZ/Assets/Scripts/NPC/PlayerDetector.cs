@@ -21,6 +21,16 @@ public class PlayerDetector : MonoBehaviour
 
     }
 
+    void OnTriggerStay(Collider iCollider)
+    {
+        // If the player dies while in range
+        if ((player!=null) && (player.GetComponent<CarController>()==null))
+        {
+            playerInRange = false;
+            player = null;
+        }
+    }
+
     // if player is out of range
     void OnTriggerExit(Collider iCollider)
     {
@@ -35,7 +45,9 @@ public class PlayerDetector : MonoBehaviour
         if (!!d)
         {
             dummyInRange = false;
+            playerInRange = false;
             dummy = null;
+            player = null;
         }
     }
 
@@ -53,7 +65,9 @@ public class PlayerDetector : MonoBehaviour
         if (!!d)
         {
             dummyInRange = true;
+            playerInRange = true;
             dummy = d.transform;
+            player = d.transform;
         }
     }
 }

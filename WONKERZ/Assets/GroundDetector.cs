@@ -29,7 +29,7 @@ public class GroundDetector : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision iCol)
+    void OnTriggerEnter(Collider iCol)
     {
         if (iCol.gameObject.GetComponent<Ground>())
         {
@@ -38,7 +38,7 @@ public class GroundDetector : MonoBehaviour
         }
     }
 
-    void OnCollisionStay(Collision iCol)
+    void OnTriggerStay(Collider iCol)
     {
         if (iCol.gameObject.GetComponent<Ground>())
         {
@@ -47,7 +47,7 @@ public class GroundDetector : MonoBehaviour
         }
     }
 
-    void OnCollisionExit(Collision iCol)
+    void OnTriggerExit(Collider iCol)
     {
         if (iCol.gameObject.GetComponent<Ground>())
         {

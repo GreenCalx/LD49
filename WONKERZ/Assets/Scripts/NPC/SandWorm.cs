@@ -3,48 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using Schnibble;
+
 public class SandWorm : MonoBehaviour
 {
     [Header("Debug")]
-    public bool callGroundLevelChange = false;
     public bool drawDebugRays = true;
-
-
-    [Header("Track References")]
-    public RandomSpawner randomSpawner;
 
     [Header("Tweaks")]
     public float wanderRadius;
     public float wanderTimer;
-    public float agentOffsetUnderground = 0;
-    public float agentOffsetSurface = -10;
-    public float timeBetweenGroundLevelChangeRandom = 30f;
-    [Range(0f,1f)]
-    public float chanceOfSwitchingGroundLevel = 0.5f;
 
     [Header("Values")]
-    public bool isUnderground = true;
+    private float defaultAgentOffset = 0f;
+    public float agentMaxOffsetOnChase = 5f;
+    public float agentOffsetStepChange = 0.2f;
+
     [Header("Self References")]
-    //public OffMeshLink offMeshLink;
-    //public Transform endLinkHandler;
+
     public ParticleSystem PS_Front;
     public ParticleSystem PS_Back;
     public GroundDetector FrontDetector;
     public GroundDetector BackDetector;
-    public Animator animator;
+
     public PlayerDetector playerDetector;
     public PlayerDetector playerInAttackRange;
 
     private Transform chasedTarget;
     private NavMeshAgent agent;
     private float timer;
-    private float timerGroundLevelChange;
-    private LayerMask groundTargetLayerMask;
-    private LayerMask undergroundTargetLayerMask;
-    private Vector3 projectionOnOtherGround;
-    private readonly string animParmGoSurface = "GoToSurface";
-    private readonly string animParmGoUnderground = "GoToUnderground";
-    private readonly string animParmGoTurn = "turnClockwise";
+
+
     
     private bool warpCC_started = false;
     // Start is called before the first frame update
@@ -52,207 +41,112 @@ public class SandWorm : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent> ();
         timer = wanderTimer;
-        timerGroundLevelChange = 0f;
         warpCC_started = false;
+        defaultAgentOffset = agent.baseOffset;
 
-        groundTargetLayerMask       = LayerMask.GetMask("Default");
-        undergroundTargetLayerMask  = LayerMask.GetMask("OnlyCollideDefault");
+        if (!agent.isOnNavMesh)
+        {
+            Debug.Log("Agent not on navmesh.");
+            NavMeshHit navHit;
+            int layermask = NavMesh.GetAreaFromName("Ground");
+            NavMesh.SamplePosition (transform.position, out navHit, agent.height*2, -1 * layermask);
+
+            agent.Warp(navHit.position);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer                   += Time.deltaTime;
-        timerGroundLevelChange  += Time.deltaTime;
+        timer += Time.deltaTime;
  
         if (playerDetector.playerInRange)
         {
-            // Go to player
-            
-            if (!isUnderground)
+            if (chasedTarget==null)
             {
-                callGroundLevelChange = true;
+                chasedTarget = playerDetector.player;
             }
-            else
-            {
-                if (chasedTarget==null)
-                {
-                    chasedTarget = playerDetector.player;
-                }
-                chaseTarget();
-                if (playerInAttackRange.playerInRange && !callGroundLevelChange && isUnderground)
-                { // launch attack !!
-                    callGroundLevelChange = true;
-                }
-            }
+            chaseTarget();
         } else {
             chasedTarget = null;
         }
 
-        if (callGroundLevelChange)
-        {
-            setNewGroundLevel();
-        }
-
         if (chasedTarget==null)
         {
-            if (timerGroundLevelChange>=timeBetweenGroundLevelChangeRandom)
-            {
-                float rand = Random.Range(0f,1f);
-                if (rand <= chanceOfSwitchingGroundLevel)
-                {
-                    setNewGroundLevel();
-                }
-                timerGroundLevelChange = 0f;
-            }
             if (timer >= wanderTimer) 
             {
-                setNewDestination();
-                timer = 0;
+                setNewWanderDestination();
+                timer = 0f;
+            } else if ( agent.remainingDistance <= 10f )
+            {
+                setNewWanderDestination();
+                timer = 0f;
             }
         }
         // Particles
-        if (!isUnderground)
+        if (FrontDetector.crossedGround)
         {
-            if (FrontDetector.crossedGround)
-            {
-                if (!PS_Front.isPlaying)
-                { PS_Front.Play(); }
-            } else {
-                PS_Front.Stop();
-            }
-
-            if (BackDetector.crossedGround)
-            {
-                if (!PS_Back.isPlaying)
-                { PS_Back.Play(); }
-            } else {
-                PS_Back.Stop();
-            }
+            if (!PS_Front.isPlaying)
+            { PS_Front.Play(); }
         } else {
             PS_Front.Stop();
+        }
+        if (BackDetector.crossedGround)
+        {
+            if (!PS_Back.isPlaying)
+            { PS_Back.Play(); }
+        } else {
             PS_Back.Stop();
         }
     }
 
-    IEnumerator warpWorm(Vector3 position, bool waitAnimToFinish)
+    private void setNewWanderDestination()
     {
-        warpCC_started = true;
-        if (waitAnimToFinish)
+        if (agent.baseOffset != defaultAgentOffset)
         {
-            while (animator.GetCurrentAnimatorStateInfo(0).IsTag("crawl"))
-            {
-                 yield return new WaitForSeconds(.01f);
-            }
-            float motion_progress = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            while (motion_progress<=0.8f)
-            {
-                motion_progress = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-                yield return new WaitForSeconds(.01f);
-            }
-            agent.Warp(position);
-            isUnderground = !isUnderground;
-            agent.baseOffset = (isUnderground) ? agentOffsetUnderground : agentOffsetSurface;
-            callGroundLevelChange = false;
-            warpCC_started = false;
-            timer = wanderTimer + 1f;
-            
-        } else {
-            agent.Warp(position);
-            isUnderground = !isUnderground;
-            agent.baseOffset = (isUnderground) ? agentOffsetUnderground : agentOffsetSurface;
-            while (animator.GetCurrentAnimatorStateInfo(0).IsTag("crawl"))
-            {
-                 yield return new WaitForSeconds(.01f);
-            }
-            callGroundLevelChange = false;
-            warpCC_started = false;
-            timer = wanderTimer + 1f;
+            agent.baseOffset = defaultAgentOffset;
         }
-    }
 
-    private void setNewGroundLevel()
-    {
-        if (warpCC_started)
-            return;
-
-        animator.SetBool(animParmGoUnderground, !isUnderground);
-        animator.SetBool(animParmGoSurface, isUnderground);
-
-        Vector3 otherGroundPos = (isUnderground) ? getGroundContact() : getUndergroundContact();
-        StartCoroutine(warpWorm(otherGroundPos, !isUnderground));
-    }
-
-    private void setNewDestination()
-    {
-        Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1);
+        int layermask = NavMesh.GetAreaFromName("Ground");
+        Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1 * layermask);
         
         if (drawDebugRays)
             Debug.DrawRay(newPos, Vector3.up, Color.green);
-        
-        animator.SetBool(animParmGoUnderground, false);
-        animator.SetBool(animParmGoSurface, false);
 
         if(!agent.SetDestination(newPos))
         {
-            respawn();
+            this.Log("SandWorm failed to reach wander destination");
         }
     }
 
     private void chaseTarget()
     {
+        // check if target is reachable
+        NavMeshPath navMeshPath = new NavMeshPath();
+        if (!agent.CalculatePath(chasedTarget.position, navMeshPath) && navMeshPath.status == NavMeshPathStatus.PathComplete)
+            return;
+
+
         Vector3 newPos = chasedTarget.position;
-        newPos.y = transform.position.y; // approx projection on current plane
+        //newPos.y = transform.position.y; // approx projection on current plane
         NavMeshHit navHit;
         NavMesh.SamplePosition (newPos, out navHit, 50f, -1);
         newPos = navHit.position;
 
         if (drawDebugRays)
             Debug.DrawRay(newPos, Vector3.up*500, Color.blue);
-        animator.SetBool(animParmGoUnderground, false);
-        animator.SetBool(animParmGoSurface, false);
 
         if (!agent.SetDestination(newPos))
         {
-            respawn();
+            // Target is not accessible /  behind navmehs obstacle
+            setNewWanderDestination();
         }
+        if (agent.baseOffset < agentMaxOffsetOnChase)
+            agent.baseOffset += agentOffsetStepChange;
     }
 
     void FixedUpdate()
     {
-        //projectionOnOtherGround = (isUnderground) ? getGroundContact() : getUndergroundContact();
-    }
-
-    public Vector3 getGroundContact()
-    {
-        RaycastHit hit;
-        int layermask = (-1) * NavMesh.GetAreaFromName("Ground");
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, groundTargetLayerMask))
-        {
-            if (drawDebugRays)
-                Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.up) * hit.distance, Color.yellow);
-            NavMeshHit navHit;
-            NavMesh.SamplePosition (hit.point, out navHit, agent.height*2, layermask);
-            return navHit.position;
-        } else {
-            return Vector3.zero;
-        }
-    }
-
-    public Vector3 getUndergroundContact()
-    {
-        RaycastHit hit;
-        int layermask = (-1) * NavMesh.GetAreaFromName("Underground");
-        if (Physics.Raycast(transform.position, -transform.TransformDirection(Vector3.up), out hit, Mathf.Infinity, undergroundTargetLayerMask))
-        {
-            if (drawDebugRays)
-                Debug.DrawRay(transform.position, -transform.TransformDirection(Vector3.up) * hit.distance, Color.red);
-            NavMeshHit navHit;
-            NavMesh.SamplePosition (hit.point, out navHit, agent.height*2, layermask);
-            return navHit.position;
-        } else {
-            return Vector3.zero;
-        }
     }
 
     public static Vector3 RandomNavSphere(Vector3 origin, float dist, int layermask) 
@@ -268,9 +162,4 @@ public class SandWorm : MonoBehaviour
         return navHit.position;
     }
 
-    private void respawn()
-    {
-        randomSpawner.respawn(gameObject, true);
-        isUnderground = true;
-    }
 }
