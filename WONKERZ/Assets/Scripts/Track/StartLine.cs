@@ -32,7 +32,10 @@ public class StartLine : MonoBehaviour
             {
                 Destroy(UIStartTrackInst.gameObject);
                 if (destroyOnActivation)
+                {
                     Destroy(gameObject);
+                }
+                
             }
         }
     }
