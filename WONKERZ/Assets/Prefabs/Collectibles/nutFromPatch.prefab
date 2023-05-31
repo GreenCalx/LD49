@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7514764545922874121}
   - component: {fileID: 465490669490208955}
-  m_Layer: 8
+  m_Layer: 14
   m_Name: collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ GameObject:
   - component: {fileID: 8518420739941233666}
   - component: {fileID: 4763704186197976653}
   - component: {fileID: -5993025812054318375}
-  m_Layer: 15
+  m_Layer: 20
   m_Name: nutFromPatch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e80a39671d0df8c4cbf550b89d60a0dc, type: 2}
+  - {fileID: 2100000, guid: f3eeed3b75c5fae42bbe6e7612e8fc89, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -152,7 +152,7 @@ MonoBehaviour:
   onCollectPSRef_Hell: {fileID: 1526806351114147239, guid: 2b8047e12c8eb2e47b0f7572a2ffc14f, type: 3}
   yOscillation: 0
   oscillationSpeed: 0
-  yRotationSpeed: 0
+  yRotationSpeed: 0.2
   yExpulsionSlope: 1.5
   playerExpulsionForceMul: 2
   onDamageSpawnOffset: {x: 0, y: 2, z: 0}
@@ -171,7 +171,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.5
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &-5993025812054318375
 Rigidbody:
@@ -183,7 +183,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0

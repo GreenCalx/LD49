@@ -139,7 +139,8 @@ public class CollectibleNut : AbstractCollectible
         if (iCol.gameObject.GetComponent<Ground>() != null)
         {
             Rigidbody rb = GetComponent<Rigidbody>();
-            rb.isKinematic = true;
+            //rb.isKinematic = true;
+            rb.velocity = Vector3.zero;
         }
     }
 

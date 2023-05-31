@@ -13,6 +13,10 @@ public abstract class AbstractCollectible : MonoBehaviour
         {
             OnCollect();
         }
+        if (!!iCollider.gameObject.GetComponent<AbstractCollector>())
+        {
+            OnCollect();
+        }
     }
 
     public void ForceCollect()

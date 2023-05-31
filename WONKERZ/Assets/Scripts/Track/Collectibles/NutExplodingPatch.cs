@@ -6,6 +6,7 @@ public class NutExplodingPatch : MonoBehaviour
 {
     public int n_nuts = 5;
     public float forceStr = 10f;
+    public float rotStr = 1f;
     public GameObject nutRef;
     public float start_delay = 0.1f;
     private float elapsedTime = 0f;
@@ -41,6 +42,9 @@ public class NutExplodingPatch : MonoBehaviour
             Vector3 randDirection = Random.insideUnitCircle.normalized;
             randDirection.y *= randDirection.y;
             rb.AddForce(randDirection*forceStr, ForceMode.Impulse);
+
+            Vector3 torqueDir = Random.onUnitSphere;
+            rb.AddTorque(torqueDir * rotStr, ForceMode.Impulse);
         }
         Destroy(gameObject);
     }

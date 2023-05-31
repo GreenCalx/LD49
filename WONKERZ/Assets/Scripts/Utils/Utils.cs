@@ -52,6 +52,10 @@ public static partial class Utils
         if (!!direct_cc)
             return true;
         // can also be wheels
+        CarColorizable carpart = iGO.GetComponent<CarColorizable>();
+        if (!!carpart)
+            return true;
+
         if (iGO.transform.parent == null)
             return false;
 
