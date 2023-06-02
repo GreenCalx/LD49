@@ -95,7 +95,7 @@ public class PowerController : MonoBehaviour
         }
     }
 
-    public void applyPowerEffectInInputs(InputManager.InputData iEntry, Schnibble.CarController iCC)
+    public void applyPowerEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
         if (currentPower != null)
         {

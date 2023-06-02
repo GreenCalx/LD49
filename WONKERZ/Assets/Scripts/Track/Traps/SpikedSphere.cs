@@ -29,7 +29,7 @@ public class SpikedSphere : Trap
 
     void OnCollisionEnter(Collision iCol)
     {
-        CarController cc = iCol.gameObject.GetComponent<CarController>();
+        PlayerController cc = iCol.gameObject.GetComponent<PlayerController>();
         if (!!cc)
         {
             ContactPoint cp = iCol.contacts[0];

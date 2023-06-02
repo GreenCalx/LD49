@@ -3,7 +3,7 @@ using Schnibble;
 
 public class grapintest : MonoBehaviour, IControllable
 {
-    public CarController Player;
+    public PlayerController Player;
     public GameObject grapin;
     public Vector3 D;
     // Start is called before the first frame update

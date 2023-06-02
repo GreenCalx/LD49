@@ -102,9 +102,9 @@ public class PinBlockade : PIDController
         // PID Y : Follow target
         if (target == null)
         {
-            CarController cc = Access.Player();
-            if (!!cc)
-                target = cc.gameObject.transform;
+            PlayerController player = Access.Player();
+            if (!!player)
+                target = player.gameObject.transform;
             return;
         }
 

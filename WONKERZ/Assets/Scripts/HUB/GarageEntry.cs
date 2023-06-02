@@ -7,7 +7,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     private GameObject garageUI;
     private bool playerInGarage;
     private bool garageOpened;
-    public CarController playerCC;
+    public PlayerController player;
 
     // Start is called before the first frame update
     void Start()
@@ -36,7 +36,7 @@ public class GarageEntry : MonoBehaviour, IControllable
         if (!!iCol.GetComponent<CarController>() && !playerInGarage)
         {
             playerInGarage = true;
-            playerCC = Access.Player();
+            player = Access.Player();
             var SndMgr = Access.SoundManager();
             SndMgr.SwitchClip("garage");
         }
@@ -48,7 +48,7 @@ public class GarageEntry : MonoBehaviour, IControllable
         if (!!iCol.GetComponent<CarController>() && playerInGarage)
         {
             closeGarage();
-            playerCC = null;
+            player = null;
             playerInGarage = false;
 
             var SndMgr = Access.SoundManager();
@@ -67,10 +67,9 @@ public class GarageEntry : MonoBehaviour, IControllable
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         uig.onActivate.Invoke();
-        
-        
-        playerCC.stateMachine.ForceState(playerCC.frozenState);
-        
+
+        player.Freeze();
+
         garageOpened = true;
     }
 
@@ -82,13 +81,15 @@ public class GarageEntry : MonoBehaviour, IControllable
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);
 
-        
-        if (!!playerCC)
-            playerCC.stateMachine.ForceState(playerCC.aliveState);
+
+        if (!!player)
+        player.UnFreeze();
         else
         {
-            CarController player = Access.Player();
-            player.stateMachine.ForceState(player.aliveState);
+            PlayerController player = Access.Player();
+            if (player) player.UnFreeze();
+            else
+            this.LogWarn("No player could be found!");
         }
 
         garageOpened = false;

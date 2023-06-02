@@ -80,10 +80,10 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void LateUpdate()
     {
-        CarController cc = Access.Player();
-        if (!!cc)
+        var player = Access.Player();
+        if (!!player)
         {
-            if (cc.GetAndUpdateIsInJump())
+            if (player.GetAndUpdateIsInJump())
             {
                 if (jumpStartTime <= 0f)
                     jumpStartTime = Time.unscaledTime;

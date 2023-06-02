@@ -38,7 +38,7 @@ public class UIGarageProfilePanel : UIGaragePanel
 
     public void fillProfileFromPlayerCC()
     {
-        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
+        PlayerController player = (Parent as UIGarage).getGarageEntry().player;
         // TORQUE
         //profile.TORQUE_CURVE = new List<Keyframe>(cc.torqueCurve.keys);
         // WEIGHT
@@ -71,7 +71,7 @@ public class UIGarageProfilePanel : UIGaragePanel
     {
         SaveAndLoad.loadGarageProfile(profile_name, profile);
 
-        CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
+        PlayerController cc = (Parent as UIGarage).getGarageEntry().player;
         // TORQUE
         //cc.torqueCurve = new AnimationCurve(profile.TORQUE_CURVE.ToArray());
         // WEIGHT

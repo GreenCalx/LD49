@@ -115,9 +115,9 @@ public class Access
         return cache.getObject<CheckPointManager>(Constants.GO_CPManager, false);
     }
 
-    public static CarController Player()
+    public static PlayerController Player()
     {
-        return cache.getObject<CarController>(Constants.GO_PLAYER, true);
+        return cache.getObject<PlayerController>(Constants.GO_PLAYER, true);
     }
 
     public static UIGarage UIGarage()

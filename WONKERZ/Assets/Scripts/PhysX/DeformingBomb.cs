@@ -44,10 +44,10 @@ public class DeformingBomb : MonoBehaviour
         {
             if (playerDetector.playerInRange || playerDetector.dummyInRange)
             {
-                CarController cc = Access.Player();
+                PlayerController player = Access.Player();
                 Vector3 pushBackDir = Vector3.zero;
-                pushBackDir = (cc.gameObject.transform.position - transform.position);
-                cc.takeDamage(explosionDamage, transform.position, pushBackDir, explosionForce);
+                pushBackDir = (player.gameObject.transform.position - transform.position);
+                player.takeDamage(explosionDamage, transform.position, pushBackDir, explosionForce);
             }
         }
 

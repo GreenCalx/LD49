@@ -8,7 +8,7 @@ public interface ICarPower
     public void applyDirectEffect();
 
     public void onRefresh();
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC);
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC);
 
     public bool turnOffTriggers();
     public void onDisableEffect();
@@ -23,7 +23,7 @@ public class NeutralCarPower : ICarPower
     }
     public void applyDirectEffect()
     {
-        Access.Player().SetMode(CarController.CarMode.NONE);
+        //Access.Player().SetMode(CarController.CarMode.NONE);
     }
     public void onRefresh()
     {
@@ -33,7 +33,7 @@ public class NeutralCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
 
     }
@@ -57,14 +57,13 @@ public class BallCarPower : ICarPower
     }
     public void applyDirectEffect()
     {
-        CarController cc = Access.Player();
-        cc.SetMode(CarController.CarMode.BALL); // disables physx / control effects
+        PlayerController player = Access.Player();
 
         modelObjectInst = GameObject.Instantiate(modelObjectRef);
-        modelObjectInst.transform.position = cc.transform.position;
-        modelObjectInst.transform.rotation = cc.transform.rotation;
+        modelObjectInst.transform.position = player.transform.position;
+        modelObjectInst.transform.rotation = player.transform.rotation;
 
-        Rigidbody player_rb = cc.GetComponent<Rigidbody>();
+        Rigidbody player_rb = player.car.rb;
         Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
         if (model_rb && player_rb)
         {
@@ -74,7 +73,7 @@ public class BallCarPower : ICarPower
     }
     public void onRefresh()
     {
-        CarController cc = Access.Player();
+        PlayerController cc = Access.Player();
         cc.transform.position = modelObjectInst.transform.position;
         cc.transform.rotation = modelObjectInst.transform.rotation;
 
@@ -88,7 +87,7 @@ public class BallCarPower : ICarPower
     }
     public void onDisableEffect()
     {
-        CarController cc = Access.Player();
+        PlayerController cc = Access.Player();
         Rigidbody player_rb = cc.GetComponent<Rigidbody>();
         Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
         if (model_rb && player_rb)
@@ -98,7 +97,7 @@ public class BallCarPower : ICarPower
         }
         GameObject.Destroy(modelObjectInst);
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
         this.Log("Ball Input effects");
         // No motor
@@ -120,7 +119,7 @@ public class WaterCarPower : ICarPower
     }
     public void applyDirectEffect()
     {
-        Access.Player().SetMode(CarController.CarMode.WATER);
+        //Access.Player().SetMode(CarController.CarMode.WATER);
     }
     public void onRefresh()
     {
@@ -130,7 +129,7 @@ public class WaterCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
         this.Log("Water Input effects");
     }
@@ -151,7 +150,7 @@ public class PlaneCarPower : ICarPower
     }
     public void applyDirectEffect()
     {
-        Access.Player().SetMode(CarController.CarMode.DELTA);
+//        Access.Player().SetMode(CarController.CarMode.DELTA);
         //Access.Player().IsAircraft = true;
     }
     public void onRefresh()
@@ -162,7 +161,7 @@ public class PlaneCarPower : ICarPower
     {
         //Access.Player().IsAircraft = false;
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
         this.Log("Plane Input effects");
     }
@@ -183,7 +182,7 @@ public class SpiderCarPower : ICarPower
     }
     public void applyDirectEffect()
     {
-        Access.Player().SetMode(CarController.CarMode.SPIDER);
+        //Access.Player().SetMode(CarController.CarMode.SPIDER);
     }
     public void onRefresh()
     {
@@ -193,7 +192,7 @@ public class SpiderCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, CarController iCC)
+    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
         this.Log("Spider Input effects");
     }

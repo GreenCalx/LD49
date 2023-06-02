@@ -34,9 +34,9 @@ public class CompressorBlock : MonoBehaviour
             ballPowerPos = Access.Player().transform.position;
 
         playerInBall = !!bpo;
-        if (!playerInBall && !!cc && !(Access.Player().CurrentMode == CarController.CarMode.BALL))
+        if (!playerInBall && !!cc && !(Access.Player().fsm.currentState == Access.Player().fsm.states[(int)PlayerFSM.States.Ball]))
         {
-            Access.Player().kill();
+            Access.Player().Kill();
         }
     }
 }

@@ -49,9 +49,9 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         Time.timeScale = (isPaused ? 0 : 1);
         var player = Access.Player();
         if (isPaused)
-            player.stateMachine.ForceState(player.frozenState);
+        player.Freeze();
         else
-            player.stateMachine.ForceState(player.aliveState);
+        player.UnFreeze();
     }
 
     public void OnExitButton()
@@ -97,7 +97,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         {
             wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
         }
-            
+
         // key + cage status
         string sceneName = SceneManager.GetActiveScene().name;
         TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? Color.green : Color.red;

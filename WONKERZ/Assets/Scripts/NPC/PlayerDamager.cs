@@ -21,7 +21,7 @@ public class PlayerDamager : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        CarController cc = iCol.gameObject.GetComponent<CarController>();
+        PlayerController cc = iCol.gameObject.GetComponent<PlayerController>();
         if (!!cc)
         {
             ContactPoint cp = iCol.contacts[0];
@@ -31,7 +31,7 @@ public class PlayerDamager : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController cc = iCol.gameObject.GetComponent<CarController>();
+        PlayerController cc = iCol.gameObject.GetComponent<PlayerController>();
         if (!!cc)
         {
             cc.takeDamage(damageOnCollide, transform.position, transform.forward);

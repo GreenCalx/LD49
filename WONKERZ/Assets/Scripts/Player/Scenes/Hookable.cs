@@ -3,7 +3,7 @@ using Schnibble;
 
 public class Hookable : MonoBehaviour, IControllable
 {
-    private CarController ccPlayer;
+    private PlayerController ccPlayer;
     public GameObject hook;
     public Vector3 D;
 
@@ -42,16 +42,16 @@ public class Hookable : MonoBehaviour, IControllable
     public void OnTriggerEnter(Collider iCol)
     {
         if (null == ccPlayer)
-            ccPlayer = iCol.GetComponent<CarController>();
+            ccPlayer = iCol.GetComponent<PlayerController>();
     }
     public void OnTriggerStay(Collider iCol)
     {
         if (null == ccPlayer)
-            ccPlayer = iCol.GetComponent<CarController>();
+            ccPlayer = iCol.GetComponent<PlayerController>();
     }
     public void OnTriggerExit(Collider iCol)
     {
         if (!!ccPlayer && !ccPlayer.IsHooked)
-            ccPlayer = iCol.GetComponent<CarController>();
+            ccPlayer = iCol.GetComponent<PlayerController>();
     }
 }

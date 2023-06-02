@@ -65,8 +65,8 @@ public class CheckListEntry : MonoBehaviour, IControllable
         uibm.onActivate.Invoke();
         uibm.onDeactivate.AddListener(close);
 
-        CarController cc = Access.Player();
-        cc.stateMachine.ForceState(cc.frozenState);
+        PlayerController player = Access.Player();
+        player.Freeze();
         checkListOpened = true;
     }
 
@@ -81,8 +81,9 @@ public class CheckListEntry : MonoBehaviour, IControllable
 
         Destroy(uiCheckList);
 
-        CarController cc = Access.Player();
-        cc.stateMachine.ForceState(cc.aliveState);
+        PlayerController player = Access.Player();
+        player.UnFreeze();
+
         checkListOpened = false;
     }
 }
