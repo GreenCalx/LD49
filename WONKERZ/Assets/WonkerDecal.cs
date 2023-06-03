@@ -14,7 +14,7 @@ public class WonkerDecal : MonoBehaviour
     {
         if (decalRenderer.cam==null)
         {
-            decalRenderer.SetCamera(Access.CameraManager().active_camera.GetComponent<Camera>());
+            decalRenderer.SetCamera(Access.CameraManager().active_camera?.GetComponent<Camera>());
         }
     }
 

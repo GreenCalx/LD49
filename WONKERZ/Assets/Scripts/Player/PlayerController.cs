@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         springElapsedCompression += Time.deltaTime;
         float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression/springCompressionTime);
-        //jumpDecal.SetAnimationTime(springElapsedCompression/springCompressionTime);
+        jumpDecal.SetAnimationTime(springElapsedCompression/springCompressionTime);
         foreach (var axle in car.axles)
         {
             axle.right.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
