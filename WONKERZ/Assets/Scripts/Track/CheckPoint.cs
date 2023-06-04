@@ -80,12 +80,11 @@ public class CheckPoint : AbstractCameraPoint
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController player = iCol.GetComponent<CarController>();
-        if (!player)
+        if (!Utils.colliderIsPlayer(iCol))
             return;
 
         alreadyTriggered = (MCP!=null) ? MCP.triggered : alreadyTriggered;
-        if (!!player && !alreadyTriggered)
+        if (!alreadyTriggered)
         {
             if (MCP!=null)
             { MCP.triggered = true; }

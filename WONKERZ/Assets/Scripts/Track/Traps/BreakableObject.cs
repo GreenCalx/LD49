@@ -51,16 +51,16 @@ public class BreakableObject : MonoBehaviour
     {
         if (isBroken)
             return;
-        CarController cc = iCol.gameObject.GetComponent<CarController>();
-        if (!!cc)
+
+        if (!!Utils.colliderIsPlayer(iCol))
         {
             if (OnBreakFunc!=null)
             {
                 if (!swallowBreak)
-                { tryBreak(cc); }
+                { tryBreak(Access.Player()); }
                 OnBreakFunc.Invoke();
             } 
-            else { tryBreak(cc); }
+            else { tryBreak(Access.Player()); }
         }
     }
 
@@ -74,18 +74,19 @@ public class BreakableObject : MonoBehaviour
         OnBreak(iCol);
     }
 
-    private void tryBreak(CarController iCC)
+    private void tryBreak(PlayerController iPC)
     {
+        CarController cc = iPC.car;
         // break cond : player speed > threshold speed && dist < breakdist
-        if (iCC.GetCurrentSpeed() < breakSpeedThreshold)
+        if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }
 
-        float dist = Vector3.Distance(transform.position, iCC.transform.position);
+        float dist = Vector3.Distance(transform.position, cc.transform.position);
         if (dist > breakDistance)
         {  return; }
 
 
-        Vector3 dir =  transform.position - iCC.transform.position;
+        Vector3 dir =  transform.position - cc.transform.position;
         
         RaycastHit rch;
         if (Physics.Raycast(transform.position, dir, out rch));

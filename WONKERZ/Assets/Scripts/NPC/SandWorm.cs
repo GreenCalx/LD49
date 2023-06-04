@@ -18,6 +18,8 @@ public class SandWorm : MonoBehaviour
     private float defaultAgentOffset = 0f;
     public float agentMaxOffsetOnChase = 5f;
     public float agentOffsetStepChange = 0.2f;
+    [Range(0f,1f)]
+    public float speedThrshldForParticles = 0.2f;
 
     [Header("Self References")]
 
@@ -28,6 +30,8 @@ public class SandWorm : MonoBehaviour
 
     public PlayerDetector playerDetector;
     public PlayerDetector playerInAttackRange;
+
+    public ObjectDetector pinEaterDetector;
 
     private Transform chasedTarget;
     private NavMeshAgent agent;
@@ -67,6 +71,12 @@ public class SandWorm : MonoBehaviour
                 chasedTarget = playerDetector.player;
             }
             chaseTarget();
+        } else if (pinEaterDetector.objectInRange){
+            if (chasedTarget==null)
+            {
+                chasedTarget = pinEaterDetector.detectedTransform;
+            }
+            chaseTarget();
         } else {
             chasedTarget = null;
         }
@@ -84,18 +94,25 @@ public class SandWorm : MonoBehaviour
             }
         }
         // Particles
-        if (FrontDetector.crossedGround)
+        float agent_speed = (agent.velocity.magnitude/agent.speed);
+        if (speedThrshldForParticles < agent_speed)
         {
-            if (!PS_Front.isPlaying)
-            { PS_Front.Play(); }
+            if (FrontDetector.crossedGround)
+            {
+                if (!PS_Front.isPlaying)
+                { PS_Front.Play(); }
+            } else {
+                PS_Front.Stop();
+            }
+            if (BackDetector.crossedGround)
+            {
+                if (!PS_Back.isPlaying)
+                { PS_Back.Play(); }
+            } else {
+                PS_Back.Stop();
+            }
         } else {
             PS_Front.Stop();
-        }
-        if (BackDetector.crossedGround)
-        {
-            if (!PS_Back.isPlaying)
-            { PS_Back.Play(); }
-        } else {
             PS_Back.Stop();
         }
     }

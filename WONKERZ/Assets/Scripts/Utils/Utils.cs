@@ -65,4 +65,9 @@ public static partial class Utils
 
         return false;
     }
+
+    public static bool colliderIsPlayer(Collider iCollider)
+    {
+        return !!iCollider.transform.parent.GetComponent<PlayerController>();
+    }
 }

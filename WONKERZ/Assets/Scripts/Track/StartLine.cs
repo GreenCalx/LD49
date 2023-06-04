@@ -42,9 +42,7 @@ public class StartLine : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController cc = iCol.GetComponent<CarController>();
-
-        if (!!cc)
+        if (Utils.colliderIsPlayer(iCol))
         {
             if (UIStartTrackInst==null)
             {

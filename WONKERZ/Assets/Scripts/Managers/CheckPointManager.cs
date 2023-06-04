@@ -30,7 +30,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
         if (player == null)
         {
-            player = Utils.getPlayerRef();
+            player = Access.Player().gameObject;
         }
         //refreshCameras();
         last_checkpoint = race_start;
