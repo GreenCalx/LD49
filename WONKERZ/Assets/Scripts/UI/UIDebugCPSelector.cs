@@ -17,8 +17,8 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
     [Header("MAND")]
     public TextMeshProUGUI TMP_selectedCP;
 
-    public void activate() { isActivated = true; Utils.attachUniqueControllable<UIDebugCPSelector>(this); }
-    public void deactivate() { isActivated = false; Utils.detachUniqueControllable<UIDebugCPSelector>(this); }
+    public void activate()      { isActivated = true; Utils.attachUniqueControllable<UIDebugCPSelector>(this); }
+    public void deactivate()    { isActivated = false; Utils.detachUniqueControllable<UIDebugCPSelector>(this);}
 
 
     // Start is called before the first frame update
@@ -82,8 +82,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
                     cpm.last_checkpoint = cp.gameObject;
                     cpm.loadLastCP();
                     deactivate();
-                    //UIPauseMenu uipm = GetComponentInParent<UIPauseMenu>();
-                    //uipm.panel.onDeactivate.Invoke();
+                    break;
                 }
             }
         }

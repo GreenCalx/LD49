@@ -11,16 +11,19 @@ public class PinEater : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (!!iCol.gameObject.GetComponent<PinBlockade>())
-        {
-            Destroy(iCol.gameObject);
-        }
+        tryEat(iCol);
     }
     void OnTriggerStay(Collider iCol)
     {
-        if (!!iCol.gameObject.GetComponent<PinBlockade>())
+        tryEat(iCol);
+    }
+
+    private void tryEat(Collider iCol)
+    {
+        PinBlockade pb = iCol.gameObject.GetComponent<PinBlockade>();
+        if (!!pb)
         {
-            Destroy(iCol.gameObject);
+            pb.kill();
         }
     }
 }

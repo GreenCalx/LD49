@@ -37,7 +37,7 @@ public class SpikedSphere : Trap
         }
     }
 
-    public override void OnTrigger()
+    public override void OnTrigger(float iCooldownPercent = 1f)
     {
         rb.isKinematic = false;
     }

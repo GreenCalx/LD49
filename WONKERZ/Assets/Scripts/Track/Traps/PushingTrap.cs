@@ -79,7 +79,7 @@ public class PushingTrap : Trap
         return new_col * new_col;
     }
 
-    public override void OnTrigger()
+    public override void OnTrigger(float iCooldownPercent)
     {
         isTriggered = true;
         pushingAction.kick();

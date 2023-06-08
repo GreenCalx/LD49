@@ -6,13 +6,18 @@ using Schnibble;
 */
 public class ObjectDetector : MonoBehaviour
 {
-    private ObjectDetectable followed;
     public Transform detectedTransform;
     public bool objectInRange = false;
 
     void Start()
     {
         objectInRange = false;
+    }
+
+    void Update()
+    {
+        if (objectInRange && detectedTransform==null)
+        { objectInRange = false; }
     }
 
     void OnTriggerEnter(Collider iCollider)

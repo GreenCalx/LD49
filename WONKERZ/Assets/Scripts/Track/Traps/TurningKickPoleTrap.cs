@@ -18,7 +18,7 @@ public class TurningKickPoleTrap : Trap
 
     }
 
-    public override void OnTrigger()
+    public override void OnTrigger(float iCooldownPercent)
     {
         // always triggered
     }

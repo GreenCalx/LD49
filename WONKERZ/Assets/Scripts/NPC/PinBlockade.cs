@@ -107,7 +107,7 @@ public class PinBlockade : PIDController
     {
         if (destination==Vector3.zero)
         {
-            if ((++jumpsDoneInOnDirection > n_jumps_keepDirection) ||previousDestinationNormalized==Vector3.zero)
+            if ((++jumpsDoneInOnDirection > n_jumps_keepDirection) || previousDestinationNormalized==Vector3.zero)
             {
                 Vector3 randDirection = Random.insideUnitSphere * jumpRange;
                 randDirection += transform.position;
@@ -150,7 +150,7 @@ public class PinBlockade : PIDController
 
         if (NavMesh.SamplePosition(iJumper.transform.position, out NavMeshHit hit, 1f, iJumper.agent.areaMask))
         {
-            iJumper.agent.Warp(hit.position);
+            //iJumper.agent.Warp(hit.position);
             destination = Vector3.zero;
         }
     }
@@ -248,4 +248,12 @@ public class PinBlockade : PIDController
             }
         }
     }
+
+    public void kill()
+    {
+        StopAllCoroutines();
+        Destroy(gameObject);
+    }
+
 }
+

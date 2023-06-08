@@ -187,15 +187,15 @@ public class CheckPointManager : MonoBehaviour, IControllable
             player.transform.rotation = respawn.transform.rotation;
 
             // reset segment resetable items
-            if ( as_cp.MCP != null )
-            {
-                List<Resetable> resetables = as_cp.MCP.resetables;
-                resetables.RemoveAll((x => x == null));
-                foreach (Resetable r in resetables)
-                {
-                    r.load();
-                }
-            }
+            // if ( as_cp.MCP != null )
+            // {
+            //     List<Resetable> resetables = as_cp.MCP.resetables;
+            //     resetables.RemoveAll((x => x == null));
+            //     foreach (Resetable r in resetables)
+            //     {
+            //         r.load();
+            //     }
+            // }
         }
         else
         {

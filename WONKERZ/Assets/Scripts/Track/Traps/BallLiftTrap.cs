@@ -23,7 +23,7 @@ public class BallLiftTrap : Trap
 
     }
 
-    public override void OnTrigger()
+    public override void OnTrigger(float iCooldownPercent)
     {
         GameObject newball = Instantiate(ballRef);
         newball.transform.position = spawnPoint.position;
