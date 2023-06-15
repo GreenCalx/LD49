@@ -13,6 +13,8 @@ public class StartLine : MonoBehaviour
     public bool destroyOnActivation = true;
     public float uiShowTime = 2f;
 
+    public bool enable_tricks = false;
+
     private GameObject UIStartTrackInst = null;
 
 
@@ -60,6 +62,18 @@ public class StartLine : MonoBehaviour
             Scene currentScene = SceneManager.GetActiveScene();
             Access.TrackManager().launchTrack(currentScene.name);
 
+            if (enable_tricks)
+                activateTricks();
+        }
+    }
+
+    private void activateTricks()
+    {
+        TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
+        if (!!tt)
+        {
+            tt.activate_tricks = true; // activate default in hub
+            tt.init();
         }
     }
 }

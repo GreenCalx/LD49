@@ -17,7 +17,9 @@ public class TrickTracker : MonoBehaviour
 
     [Header("MANDATORY")]
     public bool activate_tricks;
-    public TrickUI trickUI;
+    public GameObject trickUIRef;
+    private GameObject trickUIInst;
+    private TrickUI trickUI;
     public Transform player_transform;
     [Header("TWEAK PARAMS")]
     public float combo_multiplier = 1f;
@@ -53,6 +55,14 @@ public class TrickTracker : MonoBehaviour
 
     void Start()
     {
+        init();
+    }
+
+    public void init()
+    {
+        if (!activate_tricks)
+            return;
+
         CC = GetComponent<CarController>();
         if (!CC)
         {
@@ -66,7 +76,8 @@ public class TrickTracker : MonoBehaviour
 
         if (trickUI == null)
         {
-            this.LogWarn("TrickUI is missing.");
+            trickUIInst = Instantiate(trickUIRef);
+            trickUI =  trickUIInst.GetComponent<TrickUI>();
         }
 
         trick_line = new TrickLine();

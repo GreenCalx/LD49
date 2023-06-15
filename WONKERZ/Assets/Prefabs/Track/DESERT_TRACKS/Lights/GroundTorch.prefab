@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6915018611507501831}
   - component: {fileID: 4550965810793717206}
+  - component: {fileID: 2998191870016654922}
   m_Layer: 0
   m_Name: TorchLight
   m_TagString: Untagged
@@ -83,7 +84,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -94,6 +95,43 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &2998191870016654922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968301885025701268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271a1f7eb3a3e914b95f7f8416f5dbc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AC:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2.195867
+      outSlope: 2.195867
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.041888297
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  target_light: {fileID: 4550965810793717206}
 --- !u!1 &6271863973754542450
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,12 +179,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 4.9
       objectReference: {fileID: 0}
     - target: {fileID: 3060573426998999254, guid: 519429fe9a1f7824b94bcc8814599e7e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -203,12 +253,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 4.900027
       objectReference: {fileID: 0}
     - target: {fileID: 7102757086787796856, guid: facf1fc14677be74b8236602bf41b0dd, type: 3}
       propertyPath: m_LocalPosition.z

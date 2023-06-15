@@ -25,9 +25,6 @@ public class StartPortal : AbstractCameraPoint
         {
             relocatePlayer();
             Access.CameraManager().changeCamera(camera_type);
-
-            if (enable_tricks)
-                activateTricks();
         }
         if (deleteAfterSpawn)
         {
@@ -54,15 +51,6 @@ public class StartPortal : AbstractCameraPoint
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
-        }
-    }
-
-    private void activateTricks()
-    {
-        TrickTracker tt = playerRef.GetComponent<TrickTracker>();
-        if (!!tt)
-        {
-            tt.activate_tricks = true; // activate default in hub
         }
     }
 

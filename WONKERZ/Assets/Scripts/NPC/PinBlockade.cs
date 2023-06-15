@@ -257,12 +257,12 @@ public class PinBlockade : PIDController
                 if (!!bpo)
                 {
                     rb.AddForce(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier);
+                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
                     life_lust = false;
                 } else if (carHitsLikeBallPower && !!pc)
                 {
                     rb.AddForce(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier);
+                    rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
                     life_lust = false;
                 }
                 if (life_lust)
