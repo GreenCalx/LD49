@@ -17,15 +17,14 @@ public class NutExplodingPatch : MonoBehaviour
     {
         if (triggered)
             return;
-        
+
+        triggered = true;
         elapsedTime = 0f;
         StartCoroutine(explodePatch());
-        triggered = true;
     }
 
     IEnumerator explodePatch()
     {
-        
         while (elapsedTime <= start_delay)
         {
             elapsedTime += Time.deltaTime;

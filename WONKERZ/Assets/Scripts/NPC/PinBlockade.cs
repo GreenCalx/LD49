@@ -9,6 +9,7 @@ using Schnibble;
 public class PinBlockade : PIDController
 {
     public bool is_NavAgent = false;
+    public string navAgentMaskName = "Walkable";
 
     private Rigidbody rb;
     private bool freshOfCollision = true;
@@ -55,9 +56,10 @@ public class PinBlockade : PIDController
     public float jumpRange = 25f;
     public int n_jumps_keepDirection = 6;
 
-    private int jumpsDoneInOnDirection = 0;
-    private Vector3 destination;
-    private Vector3 previousDestinationNormalized = Vector3.zero;
+    private int jumpsDoneInOnDirection = 99;
+    private Vector3 prevPosition = Vector3.zero;
+
+    private bool jump_done = true;
 
     public override PID GetController()
     {
@@ -105,26 +107,42 @@ public class PinBlockade : PIDController
 
     private void move()
     {
-        if (destination==Vector3.zero)
+        if (jump_done)
         {
-            if ((++jumpsDoneInOnDirection > n_jumps_keepDirection) || previousDestinationNormalized==Vector3.zero)
+            Vector3 destination = Vector3.zero;
+
+            if (jumpsDoneInOnDirection > n_jumps_keepDirection)
             {
-                Vector3 randDirection = Random.insideUnitSphere * jumpRange;
-                randDirection += transform.position;
+                // Poll a new position
 
-                NavMesh.SamplePosition(randDirection, out NavMeshHit hit, jumpRange, agent.areaMask);
-                destination = hit.position;
+                destination = AINavigation.GoInRandomDirection(transform, jumpRange, navAgentMaskName);
+                
+                if (destination==Vector3.zero)
+                {   // Had no destination + no destination available
+                    is_NavAgent = false;
+                    return;
+                }
 
-                previousDestinationNormalized = destination.normalized;
-                jumpsDoneInOnDirection = 0;
-            } else {
-                NavMesh.SamplePosition(transform.position + previousDestinationNormalized*jumpRange, out NavMeshHit hit, jumpRange, agent.areaMask);
-                destination = hit.position;
+                prevPosition = transform.position;
+                jumpsDoneInOnDirection = 1;
+                jump_done = false;
             }
-            
+            else {
+                // Follow same direction
+                destination = AINavigation.GetNextMoveInDirection(transform, transform.position - prevPosition, jumpRange, navAgentMaskName);
+                
+                if (destination==Vector3.zero)
+                {   // Had no destination + no destination available
+                    is_NavAgent = false;
+                    return;
+                }
+                prevPosition = transform.position;
+                jumpsDoneInOnDirection++;
+                jump_done = false;
+            }
+            StopAllCoroutines();
             StartCoroutine(Jump(this,destination));
         }
-        
     }
 
     private IEnumerator Jump(PinBlockade iJumper, Vector3 iTarget)
@@ -147,11 +165,10 @@ public class PinBlockade : PIDController
 
         pinPIDBehaviourIsActive = true;
         iJumper.agent.enabled = true;
-
+        jump_done = true;
         if (NavMesh.SamplePosition(iJumper.transform.position, out NavMeshHit hit, 1f, iJumper.agent.areaMask))
         {
             //iJumper.agent.Warp(hit.position);
-            destination = Vector3.zero;
         }
     }
 
@@ -207,19 +224,29 @@ public class PinBlockade : PIDController
     {
         if (freshOfCollision)
         {
+            // Sandworm uc
             if (!!iCol.gameObject.GetComponentInParent<SandWorm>())
             {
-                Destroy(agent);
+                StopAllCoroutines();
+
                 is_NavAgent = false;
+                Destroy(agent);
                 rb.constraints = RigidbodyConstraints.None;
                 pinPIDBehaviourIsActive = false;
                 freshOfCollision = false;
+                return;
             }
 
+
+            
+            // If player or ball add impact force/torque
             BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
             PlayerController pc = iCol.gameObject.GetComponent<PlayerController>();
             if (!!bpo || !!pc)
             {
+                StopAllCoroutines();
+
+                // disable agent, enable PID
                 if (is_NavAgent)
                 {
                     is_NavAgent = false;
