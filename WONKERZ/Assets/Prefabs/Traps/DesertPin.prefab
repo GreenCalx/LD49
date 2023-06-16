@@ -164,6 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   is_NavAgent: 1
+  navAgentMaskName: Walkable
   controller:
     proportionalGain: 5.5
     integralGain: 0
@@ -203,12 +204,13 @@ MonoBehaviour:
     integrationStored: 0
     velocity: 0
     derivativeInitialized: 0
-  power: 7000
+  power: 1000
   target: {fileID: 0}
   autoPowerFromMass: 0
   life_lust: 1
-  life_lust_factor: 25
+  life_lust_factor: 10
   life_lust_duration: 10
+  life_lust_delay: 2
   carHitsLikeBallPower: 1
   onFirstHitPowerMultiplier: 10
   heightCurve:
@@ -266,7 +268,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 13.757184
-  m_BaseOffset: -0.2
+  m_BaseOffset: -0.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &8951329060342508161

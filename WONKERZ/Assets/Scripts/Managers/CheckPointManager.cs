@@ -182,6 +182,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             tt.end_line(true);
             tt.storedScore = 0;
+            tt.trickUI.displayTricklineScore(0);
         }
 
         // relocate player

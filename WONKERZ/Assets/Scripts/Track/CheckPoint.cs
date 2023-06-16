@@ -98,6 +98,9 @@ public class CheckPoint : AbstractCameraPoint
             {
                 Access.TrackManager().addToScore(tt.storedScore);
                 tt.storedScore = 0;
+
+                tt.trickUI.displayTrackScore(Access.TrackManager().getTrickScore());
+                tt.trickUI.displayTricklineScore(0);
             }
 
             Access.CollectiblesManager().changeCollectMod(collectMod);

@@ -19,7 +19,7 @@ public class TrickTracker : MonoBehaviour
     public bool activate_tricks;
     public GameObject trickUIRef;
     private GameObject trickUIInst;
-    private TrickUI trickUI;
+    public TrickUI trickUI;
     public Transform player_transform;
     [HideInInspector]
     public int storedScore = 0;

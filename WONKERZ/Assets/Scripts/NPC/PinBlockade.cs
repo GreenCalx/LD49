@@ -14,6 +14,7 @@ public class PinBlockade : PIDController
     private Rigidbody rb;
     private bool freshOfCollision = true;
     private float life_lust_elapsed = 0f;
+    private float life_lust_delay_elapsed = 0f;
 
     [SerializeField]
     PID controller;
@@ -44,6 +45,7 @@ public class PinBlockade : PIDController
     public bool life_lust = true;
     public float life_lust_factor = 25;
     public float life_lust_duration = 10f;
+    public float life_lust_delay = 1f;
 
     public bool carHitsLikeBallPower = true;
     public float onFirstHitPowerMultiplier = 10f;
@@ -91,11 +93,15 @@ public class PinBlockade : PIDController
     {
         if (!freshOfCollision && life_lust)
         {
-            life_lust_elapsed += Time.deltaTime;
-            if (life_lust_elapsed >= life_lust_duration)
+            life_lust_delay_elapsed += Time.deltaTime;
+            if (life_lust_delay_elapsed >= life_lust_delay)
             {
-                life_lust = false;
-                power = 0f;
+                life_lust_elapsed += Time.deltaTime;
+                if (life_lust_elapsed >= life_lust_duration)
+                {
+                    life_lust = false;
+                    power = 0f;
+                }
             }
         }
 
@@ -237,8 +243,6 @@ public class PinBlockade : PIDController
                 return;
             }
 
-
-            
             // If player or ball add impact force/torque
             BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
             PlayerController pc = iCol.gameObject.GetComponent<PlayerController>();
@@ -257,18 +261,19 @@ public class PinBlockade : PIDController
                 if (!!bpo)
                 {
                     rb.AddForce(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    life_lust = false;
+                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    //life_lust = false;
                 } else if (carHitsLikeBallPower && !!pc)
                 {
                     rb.AddForce(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    life_lust = false;
+                    rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    //life_lust = false;
                 }
                 if (life_lust)
                 {
                     power *= life_lust_factor;
                     life_lust_elapsed = 0f;
+                    life_lust_delay_elapsed = 0f;
                 }
                 rb.constraints = RigidbodyConstraints.None;
                 freshOfCollision = false;

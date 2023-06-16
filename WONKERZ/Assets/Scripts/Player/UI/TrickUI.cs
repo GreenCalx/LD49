@@ -3,11 +3,14 @@ using UnityEngine;
 
 public class TrickUI : MonoBehaviour
 {
+    // BOTTOM
     public TMPro.TextMeshProUGUI TRICKNAME;
     public TMPro.TextMeshProUGUI SCORE;
 
-    public TMPro.TextMeshProUGUI TRICKLINE_SCORE;
+    // UPPER
     public TMPro.TextMeshProUGUI TRICKLINE_TRICKS;
+    public TMPro.TextMeshProUGUI TRICKLINE_SCORE;
+    public TMPro.TextMeshProUGUI TRACKSCORE;
 
     public void recordingTrick()
     {
@@ -85,6 +88,14 @@ public class TrickUI : MonoBehaviour
             TRICKLINE_SCORE.SetText(iScore.ToString());
     }
 
+    public void displayTrackScore(int iScore)
+    {
+        if (iScore <= 0)
+            TRACKSCORE.SetText("0");
+        else
+            TRACKSCORE.SetText(iScore.ToString());
+    }
+
     public void displayTricklineTricks(List<Trick> iTricks)
     {
         string tricks = "";
@@ -95,4 +106,6 @@ public class TrickUI : MonoBehaviour
         }
         TRICKLINE_TRICKS.SetText(tricks);
     }
+
+
 }
