@@ -80,7 +80,7 @@ public class TrickUI : MonoBehaviour
     public void displayTricklineScore(int iScore)
     {
         if (iScore <= 0)
-            TRICKLINE_SCORE.SetText("");
+            TRICKLINE_SCORE.SetText("0");
         else
             TRICKLINE_SCORE.SetText(iScore.ToString());
     }

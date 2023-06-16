@@ -281,7 +281,7 @@ public class TrickTracker : MonoBehaviour
         else
         {
             trickUI.failTrick();
-            trickUI.displayTricklineScore(0);
+            trickUI.displayTricklineScore(storedScore);
             trickUI.displayTricklineTricks(new List<Trick>(0));
         }
 
