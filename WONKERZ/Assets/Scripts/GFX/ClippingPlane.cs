@@ -34,9 +34,10 @@ public class ClippingPlane : MonoBehaviour
         // refresh for clipping
         foreach (Material mat in mats)
         {
-            mat.SetVector("_Plane", planeRepresentation);
-            mat.SetFloat("_TriggerPlaneClipping", triggerPlaneClipping);
-            mat.SetFloat("_ClipAbovePlane", (clipAbovePlane ? 1f : 0f));
+            // Not working with new GBuffer
+            //mat.SetVector("_Plane", planeRepresentation);
+            //mat.SetFloat("_TriggerPlaneClipping", triggerPlaneClipping);
+            //mat.SetFloat("_ClipAbovePlane", (clipAbovePlane ? 1f : 0f));
         }
     }
 
@@ -49,7 +50,7 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (!!iCol.GetComponent<PlayerController>())
+        if (Utils.colliderIsPlayer(iCol))
         {
             HUBPortal hub_p = GetComponentInParent<HUBPortal>();
             if (!!hub_p)
@@ -70,11 +71,10 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerStay(Collider iCol)
     {
-        PlayerController cc = iCol.GetComponent<PlayerController>();
-        if (!!cc && (triggerPlaneClipping > 0))
+        if (Utils.colliderIsPlayer(iCol) && (triggerPlaneClipping > 0))
         {
             // refresh self ripple
-            Vector3 rippleOrig = Vector3.ProjectOnPlane(cc.transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z));
+            Vector3 rippleOrig = Vector3.ProjectOnPlane(Access.Player().transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z));
             selfMat.SetVector("_RippleOrigin",
                 new Vector4(rippleOrig.x,
                              rippleOrig.y,
@@ -86,7 +86,7 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerExit(Collider iCol)
     {
-        if (!!iCol.GetComponent<PlayerController>())
+        if (Utils.colliderIsPlayer(iCol))
         {
             HUBPortal hub_p = GetComponentInParent<HUBPortal>();
             if (!!hub_p && (hub_p.activeClippingPortal == this.gameObject))

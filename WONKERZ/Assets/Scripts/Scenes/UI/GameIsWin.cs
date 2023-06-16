@@ -49,6 +49,7 @@ public class GameIsWin : MonoBehaviour
         track_name.SetText( tm.track_score.track_name );
 
         publishTime();
+        publishScore();
     }
 
     // Update is called once per frame

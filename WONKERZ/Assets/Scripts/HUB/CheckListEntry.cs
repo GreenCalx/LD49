@@ -33,7 +33,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (!!iCol.GetComponent<CarController>() && !playerInCheckList)
+        if (Utils.colliderIsPlayer(iCol) && !playerInCheckList)
         {
             playerInCheckList = true;
             var SndMgr = Access.SoundManager();
@@ -43,7 +43,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
 
     void OnTriggerExit(Collider iCol)
     {
-        if (!!iCol.GetComponent<CarController>() && playerInCheckList)
+        if (Utils.colliderIsPlayer(iCol) && playerInCheckList)
         {
             close();
             playerInCheckList = false;

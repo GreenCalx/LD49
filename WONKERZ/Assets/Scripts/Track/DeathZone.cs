@@ -18,7 +18,7 @@ public class DeathZone : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (iCol.GetComponent<CarController>())
+        if (Utils.colliderIsPlayer(iCol))
         {
             checkPointManager.loadLastCP();
         }
@@ -27,7 +27,7 @@ public class DeathZone : MonoBehaviour
     void OnCollisionEnter(Collision iCol)
     {
         this.Log(iCol.gameObject.name);
-        if (iCol.gameObject.GetComponent<CarController>())
+        if (Utils.collisionIsPlayer(iCol))
         {
             checkPointManager.loadLastCP();
         }

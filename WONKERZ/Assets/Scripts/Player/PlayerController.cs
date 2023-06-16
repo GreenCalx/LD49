@@ -343,7 +343,11 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         springElapsedCompression += Time.deltaTime;
         float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression/springCompressionTime);
-        jumpDecal.SetAnimationTime(springElapsedCompression/springCompressionTime);
+        springCompVal = Mathf.Min(1, springCompVal);
+            
+        float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression/springCompressionTime));
+        
+        jumpDecal.SetAnimationTime(springJumpFactor);
         foreach (var axle in car.axles)
         {
             axle.right.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
@@ -353,18 +357,21 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public float springCompressionTime = 0.5f;
+    public AnimationCurve jumpCompressionOverTime;
     private float springElapsedCompression = 0f;
     public void TryJump()
     {
         if (jump.applyForceMultiplier)
         {
             float springCompVal =  springElapsedCompression / springCompressionTime;
-
             springCompVal = Mathf.Min(1, springCompVal);
+            
+            float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
+
             foreach (var axle in car.axles)
             {
-                car.rb.AddForceAtPosition(jump.value * springCompVal * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
-                car.rb.AddForceAtPosition(jump.value * springCompVal * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
             }
             jump.applyForceMultiplier = false;
             springElapsedCompression = 0f;

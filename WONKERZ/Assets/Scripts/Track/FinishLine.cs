@@ -15,14 +15,13 @@ public class FinishLine : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        PlayerController cc = iCol.GetComponent<PlayerController>();
-        if (!end_triggered && !!cc)
+        if (!end_triggered && Utils.colliderIsPlayer(iCol))
         {
             end_triggered = true;
 
             Access.TrackManager().endTrack();
             
-            TrickTracker tt = cc.GetComponent<TrickTracker>();
+            TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
             if (!!tt)
             {
                 Access.TrackManager().addToScore(tt.storedScore);

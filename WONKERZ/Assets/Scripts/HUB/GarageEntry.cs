@@ -33,7 +33,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     void OnTriggerEnter(Collider iCol)
     {
         // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (!!iCol.GetComponent<CarController>() && !playerInGarage)
+        if (Utils.colliderIsPlayer(iCol) && !playerInGarage)
         {
             playerInGarage = true;
             player = Access.Player();
@@ -45,7 +45,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     void OnTriggerExit(Collider iCol)
     {
         // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (!!iCol.GetComponent<CarController>() && playerInGarage)
+        if (Utils.colliderIsPlayer(iCol) && playerInGarage)
         {
             closeGarage();
             player = null;
