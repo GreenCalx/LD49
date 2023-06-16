@@ -120,14 +120,24 @@ public class TSTSaveStates : MonoBehaviour, IControllable
             ss_rot = Quaternion.identity;
             hasSS = true;
         }
-        Rigidbody rb2d = Access.Player().gameObject.GetComponentInChildren<Rigidbody>();
+
+        PlayerController player = Access.Player();
+        Rigidbody rb2d = player.gameObject.GetComponentInChildren<Rigidbody>();
         if (!!rb2d)
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
         }
-        Access.Player().gameObject.transform.position = ss_pos;
-        Access.Player().gameObject.transform.rotation = ss_rot;
+        player.gameObject.transform.position = ss_pos;
+        player.gameObject.transform.rotation = ss_rot;
+
+        TrickTracker tt = player.GetComponent<TrickTracker>();
+        if (!!tt)
+        {
+            tt.storedScore = 0;
+            tt.end_line(true);
+        }
+
         nPanelRespawn += 1;
         Access.UITurboAndLifePool().updatePanelRespawn(nPanelRespawn);
     }

@@ -1,5 +1,74 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4496439865708405438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 215667635627571168}
+  - component: {fileID: 9203308361493683005}
+  - component: {fileID: 9016720506822991906}
+  - component: {fileID: 6717307719248433305}
+  m_Layer: 0
+  m_Name: Damager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &215667635627571168
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4496439865708405438}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 4.6, y: 0, z: 0}
+  m_LocalScale: {x: 84, y: 6, z: 84}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8495167932638337391}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!114 &9203308361493683005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4496439865708405438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928b834c699087e4899315b2fa683d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageOnCollide: 5
+--- !u!33 &9016720506822991906
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4496439865708405438}
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!64 &6717307719248433305
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4496439865708405438}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &8495167932638337388
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +100,7 @@ Transform:
   - {fileID: 8245632716280169111}
   - {fileID: 8245632716739095862}
   - {fileID: 8245632715847518851}
+  - {fileID: 215667635627571168}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -163,20 +233,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 915c86c1b5cecd34895be9a8f7bb5a84, type: 3}
   m_PrefabInstance: {fileID: 8495167933180634492}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &530849227320951698
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8729541680137001005}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3098033426144282819, guid: 915c86c1b5cecd34895be9a8f7bb5a84, type: 3}
 --- !u!114 &8509803184100026840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,19 +250,6 @@ MonoBehaviour:
   z: 0
   rotSpeed: 125
   rotDamp: 10
---- !u!114 &8678355434525083991
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8729541680137001005}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 928b834c699087e4899315b2fa683d2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageOnCollide: 5
 --- !u!1001 &8495167933621939560
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -274,20 +317,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 915c86c1b5cecd34895be9a8f7bb5a84, type: 3}
   m_PrefabInstance: {fileID: 8495167933621939560}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &8477411393942715918
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8729541679505084473}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3098033426144282819, guid: 915c86c1b5cecd34895be9a8f7bb5a84, type: 3}
 --- !u!114 &1525324713353918019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,16 +334,3 @@ MonoBehaviour:
   z: 0
   rotSpeed: 125
   rotDamp: 10
---- !u!114 &4321883560043262006
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8729541679505084473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 928b834c699087e4899315b2fa683d2d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageOnCollide: 5

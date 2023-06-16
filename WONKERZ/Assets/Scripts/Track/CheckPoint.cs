@@ -5,6 +5,7 @@ public class CheckPoint : AbstractCameraPoint
 {
     [Header("MAND")]
     public Transform respawn_location;
+    public AudioSource  checkpoint_SFX;
 
     [Header("Tweaks")]
     public string checkpoint_name;
@@ -92,10 +93,20 @@ public class CheckPoint : AbstractCameraPoint
 
             cpm.notifyCP(this.gameObject, collectMod == CollectiblesManager.COLLECT_MOD.HEAVEN);
 
+            TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
+            if (!!tt)
+            {
+                Access.CollectiblesManager().AddToScore(tt.storedScore);
+                tt.storedScore = 0;
+            }
+
             Access.CollectiblesManager().changeCollectMod(collectMod);
             
             if (!!animator)
                 animator.SetBool("TRIGGERED", true);
+            if (!!checkpoint_SFX)
+                checkpoint_SFX.Play();
+
 
             if (!!activation_pff)
                 activation_pff?.gameObject.SetActive(true);

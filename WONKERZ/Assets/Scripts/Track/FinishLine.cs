@@ -15,11 +15,21 @@ public class FinishLine : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController cc = iCol.GetComponent<CarController>();
+        PlayerController cc = iCol.GetComponent<PlayerController>();
         if (!end_triggered && !!cc)
         {
             end_triggered = true;
+
             Access.TrackManager().endTrack();
+            
+            TrickTracker tt = cc.GetComponent<TrickTracker>();
+            if (!!tt)
+            {
+                Access.CollectiblesManager().AddToScore(tt.storedScore);
+                tt.storedScore = 0;
+            }
+            
+
             Access.SceneLoader().loadScene(Constants.SN_FINISH);
         }
     }

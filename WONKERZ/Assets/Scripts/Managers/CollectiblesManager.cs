@@ -176,6 +176,7 @@ public class CollectiblesManager : MonoBehaviour
 
         // Infinites
         public int collectedNuts;
+        public int trackScore;
 
         // serializable data
         public JarData jarData;
@@ -188,6 +189,7 @@ public class CollectiblesManager : MonoBehaviour
         public void init()
         {
             collectedNuts = 0;
+            trackScore = 0;
             WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar = new UniqueJar<CageKeyCollectible>();
             Garagistjar = new UniqueJar<GaragistCollectible>();
@@ -270,9 +272,10 @@ public class CollectiblesManager : MonoBehaviour
         currentTurbo = turboValueAtStart;
     }
 
-    public void reset()
+    public void resetInfCollectibles()
     {
         jar.collectedNuts = 0;
+        jar.trackScore = 0;
     }
 
     public void loadJars()
@@ -318,6 +321,11 @@ public class CollectiblesManager : MonoBehaviour
             jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
 
         Access.UITurboAndLifePool().updateLifePool();
+    }
+
+    public void AddToScore(int iValue)
+    {
+        jar.trackScore += iValue;
     }
 
     public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible

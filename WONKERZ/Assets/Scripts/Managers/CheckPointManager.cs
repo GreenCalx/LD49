@@ -176,6 +176,14 @@ public class CheckPointManager : MonoBehaviour, IControllable
             rb2d.angularVelocity = Vector3.zero;
         }
 
+        // invalidate trick
+        TrickTracker tt = player.GetComponent<TrickTracker>();
+        if (!!tt)
+        {
+            tt.end_line(true);
+            tt.storedScore = 0;
+        }
+
         // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp != null)
@@ -209,7 +217,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         if (iFromDeath)
         {
             Access.CameraManager().launchDeathCam();
-            Access.CollectiblesManager().reset();
+            Access.CollectiblesManager().jar.collectedNuts = 0;
             return;
         }
 

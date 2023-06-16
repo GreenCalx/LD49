@@ -57,6 +57,8 @@ public class StartLine : MonoBehaviour
                 startLineCrossed_SFX.Play();
             }
             
+            // Reset track infinite collectibles
+            Access.CollectiblesManager().resetInfCollectibles();
 
             // start line crossed !! gogogo
             Scene currentScene = SceneManager.GetActiveScene();

@@ -21,6 +21,9 @@ public class TrickTracker : MonoBehaviour
     private GameObject trickUIInst;
     private TrickUI trickUI;
     public Transform player_transform;
+    [HideInInspector]
+    public int storedScore = 0;
+
     [Header("TWEAK PARAMS")]
     public float combo_multiplier = 1f;
     public float rot_epsilon = 2f;
@@ -87,6 +90,8 @@ public class TrickTracker : MonoBehaviour
         init_rot_x = 0f;
         init_rot_y = 0f;
         init_rot_z = 0f;
+
+        storedScore = 0;
     }
 
     // Update is called once per frame
@@ -261,11 +266,15 @@ public class TrickTracker : MonoBehaviour
         return false;
     }
 
-    private void end_line()
+    public void end_line(bool iForceFail = false)
     {
-        if (carIsOnGround())
+        if (carIsOnGround() && !iForceFail)
         {
-            trickUI.displayTricklineScore(trick_line.getLineScore(combo_multiplier));
+            int trick_score = trick_line.getLineScore(combo_multiplier);
+
+            storedScore += trick_score;
+
+            trickUI.displayTricklineScore(storedScore);
             trickUI.displayTricklineTricks(trick_line.getTrickList());
             trickUI.validateTrick();
         }
