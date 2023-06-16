@@ -26,6 +26,7 @@ public class TrackScoreData : EntityData
             tm.track_score.track_time = loadedTrackScore.track_time;
             tm.track_score.selected_diff = loadedTrackScore.selected_diff;
             tm.track_score.track_name = loadedTrackScore.track_name;
+            tm.track_score.trick_score = loadedTrackScore.trick_score;
 
             tm.track_score.track_score_data = this;
         }
@@ -36,6 +37,7 @@ public class TrackScoreData : EntityData
 public class SerializableTrackScore
 {
     public double track_time = 0;
+    public int trick_score = 0;
     public DIFFICULTIES selected_diff = DIFFICULTIES.NONE;
     public string track_name;
 
@@ -45,6 +47,7 @@ public class SerializableTrackScore
         retval.track_time = track_time;
         retval.selected_diff = selected_diff;
         retval.track_name = track_name;
+        retval.trick_score = trick_score;
         return retval;
     }
 
@@ -76,6 +79,7 @@ public class SerializableTrackScore
 public class TrackScore : ISaveLoad
 {
     public double track_time = 0;
+    public int trick_score = 0;
     public DIFFICULTIES selected_diff = DIFFICULTIES.NONE;
     public string track_name;
 
@@ -97,6 +101,7 @@ public class TrackScore : ISaveLoad
 public class TrackManager : MonoBehaviour
 {
     public double defaultPBValue = 999999999;
+    public int defaultHighScoreValue = 0;
     
     private bool timer_is_on;
 
@@ -123,6 +128,7 @@ public class TrackManager : MonoBehaviour
     private void reset()
     {
         track_score.track_time = 0;
+        track_score.trick_score = 0;
     }
 
     public void launchTrack(string iTrackName)
@@ -153,6 +159,17 @@ public class TrackManager : MonoBehaviour
         return track_score.track_time;
     }
 
+    //// Trick score for current track
+    public void addToScore(int iValue)
+    {
+        track_score.trick_score += iValue;
+    }
+    public int getTrickScore()
+    {
+        return track_score.trick_score;
+    }
+
+    //// Best Time
     public string getRacePBKey()
     {
         return track_score.track_name + "_pb_" + track_score.selected_diff.ToString();
@@ -185,5 +202,39 @@ public class TrackManager : MonoBehaviour
             return track_score.track_time;
         }
         return defaultPBValue;
+    }
+
+    //// Trick Score
+    public string getRaceHighScoreKey()
+    {
+        return track_score.track_name + "_hs_" + track_score.selected_diff.ToString();
+    }
+
+    public string getRaceHighScoreKey(string iTrackName, DIFFICULTIES iDiff)
+    {
+        return iTrackName + "_hs_" + iDiff.ToString();
+    }
+    public void saveRaceHighScore()
+    {
+        SaveAndLoad.datas.Add(track_score);
+        SaveAndLoad.save(getRaceHighScoreKey());
+    }
+
+    public int getRaceHighScore()
+    {
+        if ( SaveAndLoad.loadTrackScore(getRaceHighScoreKey(), this) )
+        {
+            return track_score.trick_score;
+        }
+        return defaultHighScoreValue;
+    }
+
+    public int getRaceHighScore(string iSceneName, DIFFICULTIES iDiff)
+    {
+        if ( SaveAndLoad.loadTrackScore(getRaceHighScoreKey(iSceneName, iDiff), this) )
+        {
+            return track_score.trick_score;
+        }
+        return defaultHighScoreValue;
     }
 }

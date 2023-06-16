@@ -23,7 +23,7 @@ public class PortalTrigger : MonoBehaviour
         if (!isActive)
             return;
 
-        CarController player = iCollider.GetComponent<CarController>();
+        PlayerController player = iCollider.GetComponent<PlayerController>();
         if (!!player && !!portal)
         {
             portal.activatePortal();

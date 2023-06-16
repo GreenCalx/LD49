@@ -178,7 +178,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         // invalidate trick
         TrickTracker tt = player.GetComponent<TrickTracker>();
-        if (!!tt)
+        if (!!tt && tt.activate_tricks)
         {
             tt.end_line(true);
             tt.storedScore = 0;

@@ -11,8 +11,11 @@ public class GameIsWin : MonoBehaviour
     public TMPro.TextMeshProUGUI difficulty_txt;
     public TMPro.TextMeshProUGUI racetime_txt;
     public TMPro.TextMeshProUGUI pb_txt;
+    public TMPro.TextMeshProUGUI trackscore_txt;
+    public TMPro.TextMeshProUGUI highscore_txt;
 
     public TMPro.TextMeshProUGUI new_record;
+    public TMPro.TextMeshProUGUI new_highscore;
 
     public Color easy_diff;
     public Color medium_diff;
@@ -84,5 +87,23 @@ public class GameIsWin : MonoBehaviour
             int pb_val_sec = (int)(pb % 60);
             pb_txt.SetText(pb_val_min.ToString() + " m " + pb_val_sec.ToString() + " s ");
         }
+    }
+
+    public void publishScore()
+    {
+        int trickscore = Access.TrackManager().getTrickScore();
+        int highscore = Access.TrackManager().getRaceHighScore();
+
+        trackscore_txt.SetText(trickscore.ToString());
+        if ( trickscore > highscore )
+        {
+            highscore = trickscore;
+            if (!!new_highscore)
+            {
+                new_highscore.gameObject.SetActive(true);
+            }
+            Access.TrackManager().saveRaceHighScore();
+        }
+        highscore_txt.SetText(highscore.ToString());
     }
 }

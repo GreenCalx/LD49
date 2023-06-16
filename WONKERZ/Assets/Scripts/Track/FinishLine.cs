@@ -25,7 +25,7 @@ public class FinishLine : MonoBehaviour
             TrickTracker tt = cc.GetComponent<TrickTracker>();
             if (!!tt)
             {
-                Access.CollectiblesManager().AddToScore(tt.storedScore);
+                Access.TrackManager().addToScore(tt.storedScore);
                 tt.storedScore = 0;
             }
             

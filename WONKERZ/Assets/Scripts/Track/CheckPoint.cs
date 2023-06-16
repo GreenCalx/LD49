@@ -96,7 +96,7 @@ public class CheckPoint : AbstractCameraPoint
             TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
             if (!!tt)
             {
-                Access.CollectiblesManager().AddToScore(tt.storedScore);
+                Access.TrackManager().addToScore(tt.storedScore);
                 tt.storedScore = 0;
             }
 

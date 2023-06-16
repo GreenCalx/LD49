@@ -49,7 +49,7 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (!!iCol.GetComponent<CarController>())
+        if (!!iCol.GetComponent<PlayerController>())
         {
             HUBPortal hub_p = GetComponentInParent<HUBPortal>();
             if (!!hub_p)
@@ -70,7 +70,7 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerStay(Collider iCol)
     {
-        CarController cc = iCol.GetComponent<CarController>();
+        PlayerController cc = iCol.GetComponent<PlayerController>();
         if (!!cc && (triggerPlaneClipping > 0))
         {
             // refresh self ripple
@@ -86,7 +86,7 @@ public class ClippingPlane : MonoBehaviour
 
     void OnTriggerExit(Collider iCol)
     {
-        if (!!iCol.GetComponent<CarController>())
+        if (!!iCol.GetComponent<PlayerController>())
         {
             HUBPortal hub_p = GetComponentInParent<HUBPortal>();
             if (!!hub_p && (hub_p.activeClippingPortal == this.gameObject))
