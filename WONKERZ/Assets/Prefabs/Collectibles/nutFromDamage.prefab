@@ -59,7 +59,6 @@ GameObject:
   - component: {fileID: 5816477527592971544}
   - component: {fileID: 7247371858530795351}
   - component: {fileID: 7407317764289110563}
-  - component: {fileID: 9191457804252589165}
   m_Layer: 20
   m_Name: nutFromDamage
   m_TagString: Untagged
@@ -169,10 +168,10 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6663408453627524912}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.81
+  m_Radius: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &7407317764289110563
 Rigidbody:
@@ -182,7 +181,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6663408453627524912}
   serializedVersion: 2
-  m_Mass: 0.5
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
@@ -190,16 +189,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!65 &9191457804252589165
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6663408453627524912}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.5, y: 0.5, z: 0.91770416}
-  m_Center: {x: 0, y: -0.0066684186, z: 0.20218441}

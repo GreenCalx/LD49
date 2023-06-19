@@ -42,6 +42,8 @@ public class TrickTracker : MonoBehaviour
 
     //[HideInInspector]
     public float init_rot_x, init_rot_y, init_rot_z;
+    public Quaternion initQ;
+
     //[HideInInspector]
     private List<float> rec_rot_x, rec_rot_y, rec_rot_z;
 
@@ -91,6 +93,8 @@ public class TrickTracker : MonoBehaviour
         init_rot_y = 0f;
         init_rot_z = 0f;
 
+        initQ = Quaternion.identity;
+
         storedScore = 0;
     }
 
@@ -131,14 +135,22 @@ public class TrickTracker : MonoBehaviour
 
     public void recordRotations()
     {
+        //Vector3 curr_PYR = player_transform.rotation.eulerAngles;
         Vector3 curr_PYR = player_transform.rotation.eulerAngles;
 
+        float angle =0f;
+        Vector3 axis = Vector3.zero;
+
+        player_transform.rotation.ToAngleAxis(out angle, out axis);
+        
+
+
         // add to rec values
-        if (!rec_rot_x.Contains(curr_PYR.x))
-            rec_rot_x.Add(curr_PYR.x);
-        if (!rec_rot_y.Contains(curr_PYR.y))
+        //if (!rec_rot_x.Contains(curr_PYR.x))
+        rec_rot_x.Add(curr_PYR.x);
+        //if (!rec_rot_y.Contains(curr_PYR.y))
             rec_rot_y.Add(curr_PYR.y);
-        if (!rec_rot_z.Contains(curr_PYR.z))
+        //if (!rec_rot_z.Contains(curr_PYR.z))
             rec_rot_z.Add(curr_PYR.z);
 
         updateRotations();
@@ -243,6 +255,7 @@ public class TrickTracker : MonoBehaviour
         {
             trick_line.add(tbasic, trick_duration);
             updateConsumedRotations(tbasic.condition);
+            time_trick_started = Time.time;
             return true;
         }
         else if (tflat != null)
@@ -250,11 +263,13 @@ public class TrickTracker : MonoBehaviour
             if (trick_duration > hold_time_start_flat_trick)
             {
                 trick_line.add(tflat, trick_duration);
+                time_trick_started = Time.time;
                 return true;
             }
         }
         else if (tneutral != null)
         {
+            time_trick_started = Time.time;
             trick_line.add(tneutral, trick_duration);
             return true;
         }

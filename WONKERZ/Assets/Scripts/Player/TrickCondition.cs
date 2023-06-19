@@ -50,7 +50,10 @@ public class TrickCondition
             return false;
 
         if ((x_rot == 0) && (y_rot == 0) && (z_rot == 0))
-            return true;
+            if (iTT.trick_line.getTrickList().Count == 0)
+                return true;
+            else if (iTT.trick_line.getTrickList()[iTT.trick_line.getTrickList().Count-1].type == Trick.TRICK_TYPE.GROUND)
+                return true;
 
         Vector3 rots = iTT.rotations;
 
