@@ -47,8 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   drawDebugRay: 0
   forceMode: 2
-  kickStrength: 0.5
-  Y_Slope: 3
+  kickStrength: 0.4
+  Y_Slope: 3.5
   massMultiplier: 0.1
   autoColliderDisable: 0
   useContactPointNormalForDirection: 1
@@ -65,8 +65,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2.8012388, y: 96.28026, z: 1.9264867}
-  m_Center: {x: 0.15650822, y: -0.1627819, z: -7.1325083}
+  m_Size: {x: 2.8012388, y: 83.33819, z: 1.9264872}
+  m_Center: {x: 0.15650831, y: -0.09374283, z: -7.132511}
 --- !u!1 &1360894915752549612
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1360894915752549612}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.22997546, y: 14.341034, z: 0.62652373}
+  m_LocalPosition: {x: 0.22997546, y: 4.8, z: 0.62652373}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -111,8 +111,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.3540329, g: 0.8784314, b: 0.3098039, a: 1}
-  m_Intensity: 1.8
-  m_Range: 89
+  m_Intensity: 1.2
+  m_Range: 155.68
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -187,7 +187,7 @@ Transform:
   m_GameObject: {fileID: 1680194498029583860}
   m_LocalRotation: {x: 0, y: -0.36540484, z: 0, w: 0.93084866}
   m_LocalPosition: {x: 171.98438, y: -29.955963, z: -502.7304}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1214712422726717890}
@@ -247,7 +247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b039aad17df01604881745863d3c7c30, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.5910263
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b039aad17df01604881745863d3c7c30, type: 3}
       propertyPath: m_LocalPosition.z
@@ -364,7 +364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -9.8
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
       propertyPath: m_LocalPosition.z
@@ -402,6 +402,14 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 8d11fa65d18e36b4e8935aa89f08eac0, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0d82ce2342383b74cab40ca076069ef6, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: f722adc3931bdc944860244f088f3df4, type: 2}
     - target: {fileID: 919132149155446097, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
       propertyPath: m_Name
       value: TurningKickPole
@@ -433,7 +441,7 @@ MonoBehaviour:
   ParentMCP: {fileID: 0}
   x_turningSpeed: 0
   y_turningSpeed: 0
-  z_turningSpeed: 1
+  z_turningSpeed: 0.45
 --- !u!4 &4584365359634269337 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 22e8c96c6be6c80419836f6bf92f1250, type: 3}
@@ -468,7 +476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1527455444073172488, guid: b16c9a25bd3ff9b4cae64474e7de7bd2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.841034
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 1527455444073172488, guid: b16c9a25bd3ff9b4cae64474e7de7bd2, type: 3}
       propertyPath: m_LocalPosition.z
