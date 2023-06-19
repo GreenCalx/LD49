@@ -5,7 +5,7 @@ using Schnibble;
 
 
 // FSM when in ground mode
-public class GroundFSM : PlayerFSM
+public class GroundFSM : PlayerFSM, IControllable
 {
    public override void OnEnter(FSMBase fsm){
         (fsm as PlayerFSM).player.ActivateCar();
@@ -35,6 +35,32 @@ public class GroundFSM : PlayerFSM
 
         invulState.transitions.Add(invulTrans);
     }
+
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+
+                if (Entry.Inputs["Jump"].Down)
+                {
+                    player.SetSpringSizeMinAndLock();
+                }
+                else
+                {
+                    if (Entry.Inputs["Jump"].IsUp)
+                    {
+                        player.jump.applyForceMultiplier = true;
+                    }
+                    player.ResetSpringSizeMinAndUnlock();
+                }
+
+
+                if (Entry.Inputs["Turbo"].Down)
+                {
+                    player.useTurbo();
+                }
+    }
+
+
 };
 
 
@@ -187,6 +213,7 @@ public class PlayerFSM : FSMBase
 
         // Ground state
         var groundState = states[(int)States.Ground] as GroundFSM;
+        groundState.player = player;
         groundState.CreateFSM();
         //    ground -> air
         //groundState.transitions.Add(airTransition);
@@ -310,10 +337,6 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         Utils.detachControllable(this);
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     // Update is called once per frame
     void Update()
@@ -329,7 +352,7 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public WonkerDecal jumpDecal;
-    private void ResetSpringSizeMinAndUnlock()
+    public void ResetSpringSizeMinAndUnlock()
     {
         foreach (var axle in car.axles)
         {
@@ -339,7 +362,7 @@ public class PlayerController : MonoBehaviour, IControllable
         car.overrideMaxSpring = false;
     }
 
-    private void SetSpringSizeMinAndLock()
+    public void SetSpringSizeMinAndLock()
     {
         springElapsedCompression += Time.deltaTime;
         float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression/springCompressionTime);
@@ -563,27 +586,12 @@ public class PlayerController : MonoBehaviour, IControllable
 
             // Specific states control
 
-            if (fsm.currentState == fsm.states[(int)PlayerFSM.States.Ground])
+            var stateInputs = (fsm.currentState as IControllable);
+            if (stateInputs != null)
             {
-                if (Entry.Inputs["Jump"].Down)
-                {
-                    SetSpringSizeMinAndLock();
-                }
-                else
-                {
-                    if (Entry.Inputs["Jump"].IsUp)
-                    {
-                        jump.applyForceMultiplier = true;
-                    }
-                    ResetSpringSizeMinAndUnlock();
-                }
-
-
-                if (Entry.Inputs["Turbo"].Down)
-                {
-                    useTurbo();
-                }
+                stateInputs.ProcessInputs(Entry);
             }
+
 
             pc.applyPowerEffectInInputs(Entry, this);
         }
