@@ -1,3 +1,5 @@
+#if false
+
 using UnityEngine;
 
 // Face to face compressors 
@@ -103,3 +105,5 @@ public class CompressorTrap : MonoBehaviour
 
     }
 }
+
+#endif

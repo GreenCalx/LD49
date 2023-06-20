@@ -2,69 +2,124 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
-
+using System.Collections.Specialized;
 
 // FSM when in ground mode
-public class GroundFSM : PlayerFSM, IControllable
+public class GroundState : FSMState, IControllable
 {
-   public override void OnEnter(FSMBase fsm){
-        (fsm as PlayerFSM).player.ActivateCar();
+    private PlayerController player;
+
+    private class GeneralGroundAction : FSMAction { public override void Execute(FSMBase fsm) {
+        var player = (fsm as PlayerFSM).GetPlayer();
+
+        player.TryJump();
+        player.flags[PlayerController.FJump] = !player.TouchGround();
+        // apply jump correction
+        var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
+        torque = player.car.transform.TransformDirection( torque);
+        player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
+        // reset jump correction
+        player.jump.diRoll = 0;
+        player.jump.diPitch = 0;
+
+    } }
+
+    public GroundState(PlayerController player) : base("Car") { this.player = player; this.fixedActions.Add(new GeneralGroundAction()); }
+
+    public override void OnEnter(FSMBase fsm){
+        base.OnEnter(fsm);
+        (fsm as PlayerFSM).GetPlayer().ActivateCar();
     }
 
     public override void OnExit(FSMBase fsm){
-        (fsm as PlayerFSM).player.DeactivateCar();
+        base.OnExit(fsm);
+        (fsm as PlayerFSM).GetPlayer().DeactivateCar();
     }
-
-    public void CreateFSM()
-    {
-        name = "Ground";
-
-        FSMState invulState = new FSMState();
-        states[(int)States.Invulnerable] = invulState;
-
-
-        invulState.name = "Invulnerable";
-
-        FSMTimedCondition invulTime = new FSMTimedCondition();
-        invulTime.time = 1f;
-
-        FSMTransition invulTrans = new FSMTransition();
-        invulTrans.condition = invulTime;
-        invulTrans.falseState = invulState;
-        invulTrans.trueState = this;
-
-        invulState.transitions.Add(invulTrans);
-    }
-
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
+        if (Entry.Inputs["Jump"].Down)
+        {
+            player.SetSpringSizeMinAndLock();
+        }
+        else
+        {
+            if (Entry.Inputs["Jump"].IsUp)
+            {
+                player.jump.applyForceMultiplier = true;
+            }
+            player.ResetSpringSizeMinAndUnlock();
+        }
 
-                if (Entry.Inputs["Jump"].Down)
-                {
-                    player.SetSpringSizeMinAndLock();
-                }
-                else
-                {
-                    if (Entry.Inputs["Jump"].IsUp)
-                    {
-                        player.jump.applyForceMultiplier = true;
-                    }
-                    player.ResetSpringSizeMinAndUnlock();
-                }
+        if (Entry.Inputs["Turbo"].Down)
+        {
+            player.useTurbo();
+        }
 
+        if (player.flags[PlayerController.FJump])
+        {
+            var x = Entry.Inputs["Turn"].AxisValue;
+            var y = Entry.Inputs["UIUpDown"].AxisValue;
 
-                if (Entry.Inputs["Turbo"].Down)
-                {
-                    player.useTurbo();
-                }
+            player.jump.diRoll += x;
+            player.jump.diPitch += y;
+        }
     }
-
 
 };
 
-
 public class PlayerFSM : FSMBase
+{
+    protected PlayerController player;
+
+    public PlayerFSM(PlayerController player) : base("PlayerFSM")
+    {
+        this.player = player;
+    }
+
+    public PlayerController GetPlayer() { return player; }
+}
+
+public class PlayerVehicleStates : PlayerFSM
+{
+
+    public PlayerVehicleStates(PlayerController p) : base(p) { CreateFSM(); }
+
+    // this is used to commonly refers to some states
+    // for instance setting the "Frozen" state, might be the one from
+    // the current FSM, or maybe from the currentState FSM, etc
+    // As sometimes we need to force a certain state it is better to have a
+    // common enum too. We dont need to know what exact state object "Init" refers too.
+    public enum States
+    {
+        // common
+        Init,
+        Car,
+        Boat,
+        Plane,
+        Spider,
+        Count,
+    };
+    public FSMState[] states = new FSMState[(int)States.Count];
+
+    public void CreateFSM()
+    {
+        states[(int)States.Init] = new FSMState("Init");
+        states[(int)States.Car] = new GroundState(player);
+
+        var initState = states[(int)States.Init];
+        var carState = states[(int)States.Car];
+
+        globalTransitions.Add(new FSMNullTransition(initState));
+
+        //initState.transitions.Add(new GroundTransition(carState));
+
+        ForceState(initState);
+    }
+
+}
+
+public class PlayerGeneralStates : PlayerFSM
 {
     // this is used to commonly refers to some states
     // for instance setting the "Frozen" state, might be the one from
@@ -79,47 +134,34 @@ public class PlayerFSM : FSMBase
         Alive,
         Dead,
         Frozen,
-        Jumping,
-        Invulnerable,
-        // vehicle types
-        Ground,
-        Water,
-        Air,
-        // power
-        Ball,
+        InMenu,
         Count,
     };
     public FSMState[] states = new FSMState[(int)States.Count];
 
-    public PlayerController player;
+    public PlayerGeneralStates(PlayerController player) : base(player) { CreateFSM(); }
 
-    private class AliveCondition : FSMCondition {
+    private class PlayerAliveCondition : FSMCondition {
         public override bool Check(FSMBase fsm) {
-            return (fsm as PlayerFSM).player.IsAlive();
+            return (fsm as PlayerFSM).GetPlayer().IsAlive();
         }
     }
-    FSMCondition aliveCondition = new AliveCondition();
 
-    public class GroundTransition : FSMTransition {
-        public override void OnTransition(FSMBase fsm, FSMState toState){
-            (fsm as PlayerFSM).player.ActivateCar();
-        }
-    };
-    public class WaterTransition : FSMTransition {};
-    public class AirTransition : FSMTransition {};
-
-    private class CarCondition : FSMCondition {
-        public override bool Check(FSMBase fsm) {
-            return (fsm as PlayerFSM).player.playerQueryTransitionToCarController;
+    private class PlayerInMenuCondition : FSMCondition
+    {
+        public override bool Check(FSMBase fsm)
+        {
+            return (fsm as PlayerFSM).GetPlayer().IsInMenu();
         }
     }
-    FSMCondition carCondition = new CarCondition();
 
     public class DieTransition : FSMTransition
     {
+        public DieTransition(FSMCondition condition, FSMState tstate, FSMState fstate) :base(condition, tstate, fstate){}
+
         public override void OnTransition(FSMBase fsm, FSMState toState)
         {
-            (fsm as PlayerFSM).player.Kill();
+            (fsm as PlayerFSM).GetPlayer().Kill();
 
             Access.CheckPointManager().loadLastCP(true);
 
@@ -127,129 +169,50 @@ public class PlayerFSM : FSMBase
         }
     }
 
-    private class WaterState : FSMState {
-    }
-
-    private class AirState : FSMState {
-    }
-
-    private FSMState stateBeforeFreeze;
-    public void FreezeState()
-    {
-        var currentStateFSM = currentState as PlayerFSM;
-        if (currentStateFSM != null)
-        {
-            // try set freeze state
-            var currentStateFSMFreezeState = currentStateFSM.states[(int)States.Invulnerable];
-            if (currentStateFSMFreezeState != null)
-            {
-                stateBeforeFreeze = currentStateFSM.currentState;
-                currentStateFSM.ForceState(currentStateFSMFreezeState);
-                return;
-            }
-        }
-
-        stateBeforeFreeze = currentState;
-        ForceState(states[(int)States.Invulnerable]);
-    }
-
-    public void UnFreezeState()
-    {
-        ForceState(stateBeforeFreeze);
-        stateBeforeFreeze = null;
-    }
-
-    public void CreateFSM(PlayerController player)
-    {
-        this.player = player;
-
+    private void CreateFSM(){
         // init states
-        states[(int)States.Init] = new FSMState();
-        states[(int)States.Alive] = new FSMState();
-        states[(int)States.Dead] = new FSMState();
-        states[(int)States.Frozen] = new FSMState();
-        states[(int)States.Ground] = new GroundFSM();
+        states[(int)States.Init] = new FSMState("Init");
+        states[(int)States.Alive] = new FSMState("Alive");
+        states[(int)States.Dead] = new FSMState("Dead");
+        states[(int)States.Frozen] = new FSMState("Frozen");
+        states[(int)States.InMenu] = new FSMState("InMenu");
+
+        var aliveState = states[(int)States.Alive];
+        var deadState = states[(int)States.Dead];
+        var inMenuState = states[(int)States.InMenu];
+        var initState = states[(int)States.Init];
 
         // Transitions
 
         // Global Transitions that every states can go to all the time
         // -> dead
-        FSMTransition dieTransition = new DieTransition();
-        dieTransition.condition = aliveCondition;
-        dieTransition.falseState = states[(int)States.Dead];
+        FSMCondition aliveCondition = new PlayerAliveCondition();
+        FSMTransition dieTransition = new DieTransition(aliveCondition, null, deadState);
 
         // we can die from any state
         this.globalTransitions.Add(dieTransition);
+        this.globalTransitions.Add(new FSMNullTransition(initState));
+        this.globalTransitions.Add(new FSMTransition(new PlayerInMenuCondition(), inMenuState, null));
 
-        // -> ground
-        FSMTransition groundTransition = new GroundTransition();
-        groundTransition.condition = carCondition;
-        groundTransition.trueState = states[(int)States.Ground];
-
-        // -> water
-        //FSMTransition waterTransition = new WaterTransition();
-        //waterTransition.condition = boatCondition;
-        //waterTransition.trueState = waterState;
-
-        // -> air
-        //FSMTransition airTransition = new AirTransition();
-        //airTransition.condition = airCondition;
-        //airTransition.trueState = airState;
-
-        // -> ball
-        //FSMTransition ballTransition = new BallTransition();
-
-        //
-        // States
-        //
-
-        // AliveState transitions
-
-        var aliveState = states[(int)States.Alive];
-        aliveState.name = "Alive";
-        //aliveState.transitions.Add(airTransition);
-        aliveState.transitions.Add(groundTransition);
-        //aliveState.transitions.Add(waterTransition);
-
-        // Ground state
-        var groundState = states[(int)States.Ground] as GroundFSM;
-        groundState.player = player;
-        groundState.CreateFSM();
-        //    ground -> air
-        //groundState.transitions.Add(airTransition);
-        //    ground -> water
-        //groundState.transitions.Add(waterTransition);
-        //    ground -> invulnerableGround
+        aliveState.transitions.Add(new FSMTransition(aliveCondition, null, deadState));
+        deadState.transitions.Add(new FSMTransition(aliveCondition, aliveState, null));
+        inMenuState.transitions.Add(new FSMTransition(aliveCondition, null, deadState));
+        initState.transitions.Add(new FSMTransition(aliveCondition, aliveState, null));
 
         ForceState(states[(int)States.Init]);
-        SetState(states[(int)States.Ground]);
-
-        #if false
-        // Water state
-        waterState.name = "Water";
-        //    water -> air
-        waterState.transitions.Add(airTransition);
-        //    water -> ground
-        waterState.transitions.Add(groundTransition);
-
-        // Air state
-        airState.name = "Air";
-        //    air -> ground
-        airState.transitions.Add(groundTransition);
-        //    air -> water
-        airState.transitions.Add(waterTransition);
-        #endif
     }
-};
-
+}
 
 public class PlayerController : MonoBehaviour, IControllable
 {
-    public PlayerFSM fsm = new PlayerFSM();
+    public PlayerGeneralStates generalStates;
+    public PlayerVehicleStates vehicleStates;
 
-    public bool playerQueryTransitionToCarController = false;
-    public bool playerQueryTransitionToBoatController = false;
-    public bool playerQueryTransitionToAircraftController = false;
+    private bool isInMenu = false;
+
+    // Flags
+    public static readonly int FJump = 1;
+    public BitVector32 flags = new BitVector32(0);
 
     public Vector3 repulseForce;
     [Header("Prefab Refs(MAND)")]
@@ -259,10 +222,13 @@ public class PlayerController : MonoBehaviour, IControllable
     public struct Jump
     {
         public bool isStarting;
-        public bool isJumping;
         public bool suspensionLock;
         public bool applyForceMultiplier;
         public float value;
+        // di
+        public float diPitch;
+        public float diRoll;
+        public float diMaxForce;
     }
     [Header("Jump")]
     public Jump jump;
@@ -328,7 +294,8 @@ public class PlayerController : MonoBehaviour, IControllable
         }
         carInstance.SetActive(false);
 
-        fsm.CreateFSM(this);
+            generalStates = new PlayerGeneralStates(this);
+            vehicleStates = new PlayerVehicleStates(this);
 
         Utils.attachControllable(this);
     }
@@ -341,14 +308,14 @@ public class PlayerController : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
-        fsm.Update();
-        TryJump();
+        generalStates.Update();
+        vehicleStates.Update();
     }
 
     void FixedUpdate()
     {
-        fsm.FixedUpdate();
-        jump.applyForceMultiplier = false;
+        generalStates.FixedUpdate();
+        vehicleStates.FixedUpdate();
     }
 
     public WonkerDecal jumpDecal;
@@ -367,9 +334,9 @@ public class PlayerController : MonoBehaviour, IControllable
         springElapsedCompression += Time.deltaTime;
         float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression/springCompressionTime);
         springCompVal = Mathf.Min(1, springCompVal);
-            
+
         float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression/springCompressionTime));
-        
+
         jumpDecal.SetAnimationTime(springJumpFactor);
         foreach (var axle in car.axles)
         {
@@ -388,13 +355,13 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             float springCompVal =  springElapsedCompression / springCompressionTime;
             springCompVal = Mathf.Min(1, springCompVal);
-            
+
             float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
 
             foreach (var axle in car.axles)
             {
                 car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
-                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
+               car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
             }
             jump.applyForceMultiplier = false;
             springElapsedCompression = 0f;
@@ -423,47 +390,14 @@ public class PlayerController : MonoBehaviour, IControllable
         turbo.intervalElapsedTime = 0f;
     }
 
-    public bool GetAndUpdateIsInJump()
-    {
-        PowerController PC = GetComponent<PowerController>();
-        if (!!PC && PC.isInNeutralPowerMode())
+    public bool TouchGround() {
+        foreach (var a in car.axles)
         {
-            jump.isStarting = false;
-            jump.isJumping = false;
-            return false;
-        }
-
-        // Jump Start over when 4wheels touching ground
-        if (jump.isStarting)
-        {
-            foreach (var a in car.axles)
+            if (a.left.isGrounded || a.right.isGrounded)
             {
-                if (a.left.isGrounded && a.right.isGrounded)
-                {
-                    this.Log("Still starting to jump");
-                    return false; // early return
-                }
+                return true; // early return
             }
-            // no more wheels grounded
-            jump.isStarting = false;
-            jump.isJumping = true;
-            return false;
         }
-        else if (jump.isJumping)
-        { // In actual Jump airtime
-            foreach (var a in car.axles)
-            {
-                if (a.left.isGrounded || a.right.isGrounded)
-                {
-                    this.Log("IsInJump over : " + a);
-                    jump.isJumping = false;
-                    return false;
-                }
-            }
-            return true;
-        }
-        jump.isStarting = false;
-        jump.isJumping = false;
         return false;
     }
 
@@ -499,6 +433,10 @@ public class PlayerController : MonoBehaviour, IControllable
         carInstance.SetActive(false);
         Utils.detachControllable(car);
     }
+
+    public bool IsInMenu() { return isInMenu; }
+    public void Freeze() { isInMenu = true; }
+    public void UnFreeze() { isInMenu = false; }
 
 
     /// =============== Game Logic ==================
@@ -586,24 +524,21 @@ public class PlayerController : MonoBehaviour, IControllable
 
             // Specific states control
 
-            var stateInputs = (fsm.currentState as IControllable);
-            if (stateInputs != null)
+            var generalInputs = (generalStates.GetState() as IControllable);
+            if (generalInputs != null)
             {
-                stateInputs.ProcessInputs(Entry);
+                generalInputs.ProcessInputs(Entry);
+            }
+
+
+            var vehicleInputs = (vehicleStates.GetState() as IControllable);
+            if (vehicleInputs != null)
+            {
+                vehicleInputs.ProcessInputs(Entry);
             }
 
 
             pc.applyPowerEffectInInputs(Entry, this);
         }
-    }
-
-
-    public void Freeze()
-    {
-        fsm.FreezeState();
-    }
-
-    public void UnFreeze() {
-        fsm.UnFreezeState();
     }
 }

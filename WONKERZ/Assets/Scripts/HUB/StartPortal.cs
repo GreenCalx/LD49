@@ -26,6 +26,10 @@ public class StartPortal : AbstractCameraPoint
             relocatePlayer();
             Access.CameraManager().changeCamera(camera_type);
         }
+
+        var states = Access.Player().vehicleStates;
+        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+
         if (deleteAfterSpawn)
         {
             Destroy(gameObject);

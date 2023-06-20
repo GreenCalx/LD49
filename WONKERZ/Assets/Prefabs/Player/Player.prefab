@@ -66,17 +66,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c3f306dbcd92143a51dae0a4bf3326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerQueryTransitionToCarController: 0
-  playerQueryTransitionToBoatController: 0
-  playerQueryTransitionToAircraftController: 0
   repulseForce: {x: 0, y: 0, z: 0}
   onDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
   jump:
     isStarting: 0
-    isJumping: 0
     suspensionLock: 0
     applyForceMultiplier: 0
     value: 10
+    diPitch: 0
+    diRoll: 0
+    diMaxForce: 0.1
   turbo:
     infinite: 0
     strength: 5
@@ -670,6 +669,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activate_tricks: 0
   trickUIRef: {fileID: 78465226459344293, guid: 26e30dcdec69d2140abb2e4c9c553d25, type: 3}
+  trickUI: {fileID: 0}
   player_transform: {fileID: 2966540010634319501}
   storedScore: 0
   combo_multiplier: 1

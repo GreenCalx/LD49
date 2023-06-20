@@ -83,7 +83,7 @@ public class ManualCamera : PlayerCamera, IControllable
         var player = Access.Player();
         if (!!player)
         {
-            if (player.GetAndUpdateIsInJump())
+            if (player.flags[PlayerController.FJump])
             {
                 if (jumpStartTime <= 0f)
                     jumpStartTime = Time.unscaledTime;
