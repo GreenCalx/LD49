@@ -24,18 +24,17 @@ public class PlayerDetector : MonoBehaviour
     void OnTriggerStay(Collider iCollider)
     {
         // If the player dies while in range
-        if ((player!=null) && (player.GetComponent<PlayerController>()==null))
-        {
-            playerInRange = false;
-            player = null;
-        }
+        // if ((player!=null) && (player.GetComponent<PlayerController>()==null))
+        // {
+        //     playerInRange = false;
+        //     player = null;
+        // }
     }
 
     // if player is out of range
     void OnTriggerExit(Collider iCollider)
     {
-        PlayerController cc = iCollider.GetComponent<PlayerController>();
-        if (!!cc)
+        if (Utils.colliderIsPlayer(iCollider))
         {
             playerInRange = false;
             player = null;
@@ -54,11 +53,10 @@ public class PlayerDetector : MonoBehaviour
     //player in range, stop rolling
     void OnTriggerEnter(Collider iCollider)
     {
-        PlayerController cc = iCollider.GetComponent<PlayerController>();
-        if (!!cc)
+        if (Utils.colliderIsPlayer(iCollider))
         {
             playerInRange = true;
-            player = cc.transform;
+            player = iCollider.transform;
         }
 
         Dummy d = iCollider.GetComponent<Dummy>();

@@ -68,7 +68,10 @@ public static partial class Utils
 
     public static bool colliderIsPlayer(Collider iCollider)
     {
-        return !!iCollider.transform.parent.GetComponent<PlayerController>();
+        if (!!iCollider.transform.parent)
+            return !!iCollider.transform.parent.GetComponent<PlayerController>();
+        else
+            return false;
     }
 
     public static bool collisionIsPlayer(Collision iCollision)

@@ -66,7 +66,6 @@ public class DeformingBomb : MonoBehaviour
 
         //if (other.gameObject.GetComponent<MeshDeform>() != null)
         //{
-            this.Log("Collided with a DeformMesh : " + other.gameObject.name);
             movePoints(other.gameObject, other.contacts[0].point);
             explode();
         //}

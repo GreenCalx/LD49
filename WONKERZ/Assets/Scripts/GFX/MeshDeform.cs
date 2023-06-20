@@ -5,7 +5,7 @@ using Schnibble;
 public class MeshDeform : MonoBehaviour
 {
     public string cloneName = "clone";
-    public bool normalsForQuadMesh = false;
+    //public bool normalsForQuadMesh = false;
     MeshCollider meshCollider;
 
     Mesh originalMesh;
@@ -131,6 +131,7 @@ public class MeshDeform : MonoBehaviour
         if (meshCollider == null)
             meshCollider = GetComponent<MeshCollider>();
         meshCollider.sharedMesh = originalMesh;
+        meshFilter.mesh = originalMesh;
     }
 
     void DisplaceVertices(Vector3 targetVertexPos, float force, float radius)
@@ -141,11 +142,12 @@ public class MeshDeform : MonoBehaviour
         for (int i = 0; i < modifiedVertices.Length; i++)
         {
             currentVertexPos = modifiedVertices[i];
-            float sqrMagnitude = ((currentVertexPos - targetVertexPos) - transform.position).sqrMagnitude;
+            Vector3 vertexDelta = (meshFilter.transform.InverseTransformPoint(currentVertexPos) - targetVertexPos);
+            float sqrMagnitude = (vertexDelta).sqrMagnitude;
             if (sqrMagnitude > sqrRadius)
             {
                 continue;
-            }
+            }   
             float distance = Mathf.Sqrt(sqrMagnitude);
             float falloff = GaussFalloff(distance, radius);
             Vector3 translate = (currentVertexPos * force) * falloff;
