@@ -85,7 +85,7 @@ public class NPC_SQR : MonoBehaviour
         if (behaviour == SQR_BEHAVIOURS.KICKER)
             agent.SetDestination(RandomNavmeshLocation(walkable_radius));
         if(behaviour == SQR_BEHAVIOURS.BOMB_DROPPER)
-        { agent.SetDestination(fleeGoal.GetNavPosition()); agent.isStopped = true; }
+        { agent.SetDestination(fleeGoal.transform.position); agent.isStopped = true; }
     }
 
     // Update is called once per frame
@@ -102,6 +102,7 @@ public class NPC_SQR : MonoBehaviour
 
     private void bombDropperUpdate()
     {
+        // Activation of the sqr bomber
         if (!launchBombDrop)
         {
             if (detector.playerInRange || detector.dummyInRange)
@@ -127,7 +128,7 @@ public class NPC_SQR : MonoBehaviour
             return;
         }
 
-        // RunBackward if player is too close
+        // RunBackward if player is too close, keep dropping bombs
         if (detector.playerInRange || detector.dummyInRange)
         {
             agent.isStopped = false;
