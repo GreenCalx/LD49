@@ -21,20 +21,19 @@ public class PlayerDamager : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        PlayerController cc = iCol.gameObject.GetComponent<PlayerController>();
-        if (!!cc)
+        
+        if (Utils.collisionIsPlayer(iCol))
         {
             ContactPoint cp = iCol.contacts[0];
-            cc.takeDamage(damageOnCollide, cp.point, cp.normal);
+            Access.Player().takeDamage(damageOnCollide, cp.point, cp.normal);
         }
     }
 
     void OnTriggerEnter(Collider iCol)
     {
-        PlayerController cc = iCol.gameObject.GetComponent<PlayerController>();
-        if (!!cc)
+        if (!!Utils.colliderIsPlayer(iCol))
         {
-            cc.takeDamage(damageOnCollide, transform.position, transform.forward);
+            Access.Player().takeDamage(damageOnCollide, transform.position, transform.forward);
         }
     }
 }
