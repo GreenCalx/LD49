@@ -289,22 +289,31 @@ public class TrickTracker : MonoBehaviour
 
             storedScore += trick_score;
 
-            trickUI.displayTricklineScore(storedScore);
-            trickUI.displayTricklineTricks(trick_line.getTrickList());
-            trickUI.validateTrick();
+            if (!!trickUI)
+            {
+                trickUI.displayTricklineScore(storedScore);
+                trickUI.displayTricklineTricks(trick_line.getTrickList());
+                trickUI.validateTrick();
+            }
         }
         else
         {
-            trickUI.failTrick();
-            trickUI.displayTricklineScore(storedScore);
-            trickUI.displayTricklineTricks(new List<Trick>(0));
+            if (!!trickUI)
+            {
+                trickUI.failTrick();
+                trickUI.displayTricklineScore(storedScore);
+                trickUI.displayTricklineTricks(new List<Trick>(0));
+            }
         }
 
-        trick_line.close();
+        if (trick_line.is_opened)
+        {
+            trick_line.close();
 
-        rec_rot_x.Clear();
-        rec_rot_y.Clear();
-        rec_rot_z.Clear();
+            rec_rot_x.Clear();
+            rec_rot_y.Clear();
+            rec_rot_z.Clear();
+        }
 
         time_waited_after_line = Time.time;
     }

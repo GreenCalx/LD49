@@ -7,6 +7,7 @@ public class ModelAutoRot : MonoBehaviour
                 z = false;
     public float rotSpeed = 250;
     public float rotDamp = 10;
+    public bool worldSpace = false;
 
     private float axeRotX, axeRotY, axeRotZ;
 
@@ -31,7 +32,8 @@ public class ModelAutoRot : MonoBehaviour
         transform.Rotate( 
             ((!!x)?rotSpeed*Time.deltaTime:0f),
             ((!!y)?rotSpeed*Time.deltaTime:0f),
-            ((!!z)?rotSpeed*Time.deltaTime:0f)
+            ((!!z)?rotSpeed*Time.deltaTime:0f),
+            ((!!worldSpace)?Space.World:Space.Self)
         );
     }
 

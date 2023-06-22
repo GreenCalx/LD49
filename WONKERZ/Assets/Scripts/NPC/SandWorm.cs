@@ -64,7 +64,7 @@ public class SandWorm : MonoBehaviour
     {
         timer += Time.deltaTime;
  
-        if (playerDetector.playerInRange)
+        if ( !!playerDetector && playerDetector.playerInRange)
         {
             if (chasedTarget==null)
             {
