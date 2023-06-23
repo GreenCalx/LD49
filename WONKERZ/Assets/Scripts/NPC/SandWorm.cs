@@ -29,7 +29,7 @@ public class SandWorm : MonoBehaviour
     public GroundDetector BackDetector;
 
     public PlayerDetector playerDetector;
-    public PlayerDetector playerInAttackRange;
+    public PlayerDetector playerInAttackRange; // unused for now
 
     public ObjectDetector pinEaterDetector;
 

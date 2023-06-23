@@ -19,10 +19,10 @@ public class WheeledPowerTrap : TrapBundle
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if ((startTimeOffset >= trapStartElapsedTime) && (startTimeOffset >= 0.1f))
-        { trapStartElapsedTime += Time.deltaTime; return; }
+        { trapStartElapsedTime += Time.fixedDeltaTime; return; }
 
         if (isAlwaysInCharge)
         {
