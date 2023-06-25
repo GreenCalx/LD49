@@ -23,13 +23,11 @@ public class SandWorm : MonoBehaviour
 
     [Header("Self References")]
 
-    public ParticleSystem PS_Front;
+    public ParticleSystem PS_FrontUp;
+    public ParticleSystem PS_FrontDown;
     public ParticleSystem PS_Back;
     public GroundDetector FrontDetector;
     public GroundDetector BackDetector;
-
-    public PlayerDetector playerDetector;
-    public PlayerDetector playerInAttackRange; // unused for now
 
     public ObjectDetector pinEaterDetector;
 
@@ -64,14 +62,7 @@ public class SandWorm : MonoBehaviour
     {
         timer += Time.deltaTime;
  
-        if ( !!playerDetector && playerDetector.playerInRange)
-        {
-            if (chasedTarget==null)
-            {
-                chasedTarget = playerDetector.player;
-            }
-            chaseTarget();
-        } else if (pinEaterDetector.objectInRange){
+        if (pinEaterDetector.objectInRange){
             if (chasedTarget==null)
             {
                 chasedTarget = pinEaterDetector.detectedTransform;
@@ -99,10 +90,21 @@ public class SandWorm : MonoBehaviour
         {
             if (FrontDetector.crossedGround)
             {
-                if (!PS_Front.isPlaying)
-                { PS_Front.Play(); }
+                if (chasedTarget)
+                {
+                    if (!PS_FrontDown.isPlaying)
+                    {
+                        PS_FrontDown.Play();
+                    }
+                }
+                else 
+                { 
+                    PS_FrontDown.Stop(); 
+                    if (!PS_FrontUp.isPlaying)
+                    { PS_FrontUp.Play(); }
+                }
             } else {
-                PS_Front.Stop();
+                PS_FrontUp.Stop();
             }
             if (BackDetector.crossedGround)
             {
@@ -112,8 +114,9 @@ public class SandWorm : MonoBehaviour
                 PS_Back.Stop();
             }
         } else {
-            PS_Front.Stop();
+            PS_FrontUp.Stop();
             PS_Back.Stop();
+            PS_FrontDown.Stop();
         }
     }
 
