@@ -226,6 +226,10 @@ public class ManualCamera : PlayerCamera, IControllable
             return false;
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
+        if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
+        {
+            return false;
+        }
         float movementDeltaSqr = movement.sqrMagnitude;
         if (movementDeltaSqr < 0.000001f)
         {
@@ -240,8 +244,9 @@ public class ManualCamera : PlayerCamera, IControllable
         }
         else if (180f - deltaAbs < alignSmoothRange)
         {
-            rotationChange *= (180f - deltaAbs) / alignSmoothRange;
+             rotationChange *= (180f - deltaAbs) / alignSmoothRange;
         }
+        
         orbitAngles.y = Mathf.MoveTowardsAngle(orbitAngles.y, headingAngle, rotationChange);
         return true;
     }
