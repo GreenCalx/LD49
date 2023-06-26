@@ -156,9 +156,14 @@ public class Access
         return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
     }
 
-    public static UITurboAndLifePool UITurboAndLifePool()
+    public static UITurboAndSaves UITurboAndSaves()
     {
-        return cache.getObject<UITurboAndLifePool>(Constants.GO_PLAYERUI, true);
+        return cache.getObject<UITurboAndSaves>(Constants.GO_PLAYERUI, true);
+    }
+
+    public static UISpeedAndLifePool UISpeedAndLifePool()
+    {
+        return cache.getObject<UISpeedAndLifePool>(Constants.GO_PLAYERUI, true);
     }
 
     public static LevelEntryUI LevelEntryUI()

@@ -297,8 +297,8 @@ public class CollectiblesManager : MonoBehaviour
 
         jar.collectedNuts--;
 
-        Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
-        Access.UITurboAndLifePool().updateLifePool();
+        Access.UITurboAndSaves().updateTurboBar(currentTurbo);
+        Access.UISpeedAndLifePool().updateLifePool();
 
         return true;
     }
@@ -317,7 +317,7 @@ public class CollectiblesManager : MonoBehaviour
         if (clamp)
             jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
 
-        Access.UITurboAndLifePool().updateLifePool();
+        Access.UISpeedAndLifePool().updateLifePool();
     }
 
     public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
@@ -356,12 +356,12 @@ public class CollectiblesManager : MonoBehaviour
             if (collectMod == COLLECT_MOD.HELL)
             {
                 currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
-                Access.UITurboAndLifePool().updateTurboBar(currentTurbo);
+                Access.UITurboAndSaves().updateTurboBar(currentTurbo);
             }
             else
             {
                 jar.collect(AC);
-                Access.UITurboAndLifePool().updateLifePool();
+                Access.UISpeedAndLifePool().updateLifePool();
             }
             allCollectiblesInCurrStage.Remove(AC);
         }

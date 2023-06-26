@@ -6,6 +6,7 @@ public class CheckPoint : AbstractCameraPoint
     [Header("MAND")]
     public Transform respawn_location;
     public AudioSource  checkpoint_SFX;
+    public int id;
 
     [Header("Tweaks")]
     public string checkpoint_name;
@@ -27,10 +28,6 @@ public class CheckPoint : AbstractCameraPoint
     public ParticleSystemForceField activation_pff;
     public ParticleSystemForceField base_pff;
 
-    // Multi checkpoint
-    [HideInInspector]
-    public MultiCheckPoint MCP;
-
 
     // Start is called before the first frame update
     void Start()
@@ -43,7 +40,6 @@ public class CheckPoint : AbstractCameraPoint
         animator = GetComponentInChildren<Animator>();
         if (animator==null)
             animator?.SetBool("TRIGGERED", false);
-        MCP = GetComponentInParent<MultiCheckPoint>();
 
         if (checkpoint_name=="")
             checkpoint_name = gameObject.name;
@@ -84,11 +80,8 @@ public class CheckPoint : AbstractCameraPoint
         if (!Utils.colliderIsPlayer(iCol))
             return;
 
-        alreadyTriggered = (MCP!=null) ? MCP.triggered : alreadyTriggered;
         if (!alreadyTriggered)
         {
-            if (MCP!=null)
-            { MCP.triggered = true; }
             alreadyTriggered = true;
 
             cpm.notifyCP(this.gameObject, collectMod == CollectiblesManager.COLLECT_MOD.HEAVEN);

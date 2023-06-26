@@ -57,7 +57,7 @@ public class GasStation : MonoBehaviour
             if (bypassNutsCost)
             {
                 Access.CollectiblesManager().currentTurbo = 1f;
-                Access.UITurboAndLifePool().updateTurboBar(Access.CollectiblesManager().currentTurbo);
+                Access.UITurboAndSaves().updateTurboBar(Access.CollectiblesManager().currentTurbo);
                 return;
             }
             nutConversionElapsed += Time.deltaTime;

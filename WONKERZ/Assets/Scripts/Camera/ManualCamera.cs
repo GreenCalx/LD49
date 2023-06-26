@@ -11,7 +11,8 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Min(0f)] public float focusRadius = 1f;
     [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
     [SerializeField, Range(1f, 360f)] public float rotationSpeed = 90f;
-    [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f;
+
+    [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f, defaultVerticalAngle = 30f;
     [SerializeField, Min(0f)] float alignDelay = 5f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     [SerializeField] LayerMask obstructionMask = -1;
@@ -47,6 +48,7 @@ public class ManualCamera : PlayerCamera, IControllable
         initial_FOV = cam.fieldOfView;
         jumpStartTime = 0f;
         baseFocusRadius = focusRadius;
+        
     }
     private void Start()
     {
@@ -71,6 +73,7 @@ public class ManualCamera : PlayerCamera, IControllable
         focus = playerRef.transform;
         focusPoint = focus.position;
         transform.localRotation = Quaternion.Euler(orbitAngles);
+        orbitAngles = new Vector2(defaultVerticalAngle, 0f);
     }
 
     void Update()

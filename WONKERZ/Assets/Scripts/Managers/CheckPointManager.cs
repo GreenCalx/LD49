@@ -7,7 +7,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public List<GameObject> checkpoints;
     public GameObject race_start;
     public FinishLine finishLine;
-    public UICheckpoint ui_ref;
+    public UICheckpoint ui_cp;
 
     public GameObject player;
     public GameObject Cam;
@@ -134,13 +134,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     public void notifyCP(GameObject iGO, bool setAsLastCPTriggered)
     {
-        if (iGO.GetComponent<CheckPoint>())
+        CheckPoint cp = iGO.GetComponent<CheckPoint>();
+        if (!!cp)
         {
-            if (!!ui_ref)
-            {
-                ui_ref.displayCP(iGO);
-            }
-
             if (last_checkpoint == iGO)
                 return;
 
@@ -148,8 +144,15 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 return;
 
             last_checkpoint = iGO;
-            last_camerapoint = iGO.GetComponent<CheckPoint>();
+            last_camerapoint = cp;
             currPanels = MAX_PANELS;
+
+            Access.UITurboAndSaves().updateLastCPTriggered(cp.id.ToString());
+            Access.UITurboAndSaves().updateAvailablePanels(currPanels);
+            if (!!ui_cp)
+            {
+                ui_cp.displayCP(cp);
+            }
 
         }
         else

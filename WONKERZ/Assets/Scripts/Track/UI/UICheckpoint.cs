@@ -3,13 +3,18 @@ using UnityEngine.UI;
 
 public class UICheckpoint : MonoBehaviour
 {
+    public GameObject globalShowHideHandle;
+    public GameObject cpNotifShowHideHandle;
+
     public TMPro.TextMeshProUGUI cp_text;
     public TMPro.TextMeshProUGUI cp_name_textval;
     public TMPro.TextMeshProUGUI cp_time_textval;
+    
     public Image pompistImage;
+    public TMPro.TextMeshProUGUI idOfLastCPTriggered;
 
-    public float PANEL_DURATION = 3f;
-    public float CP_INFO_DURATION = 1.5f;
+    public float FULL_DURATION = 3f;
+    public float CP_NOTIF_DURATION = 1.5f;
 
     private bool is_enabled = false;
     private float display_start_time;
@@ -22,26 +27,20 @@ public class UICheckpoint : MonoBehaviour
 
     public void disable()
     {
-        cp_text.gameObject.SetActive(false);
-        cp_name_textval.gameObject.SetActive(false);
-        cp_time_textval.gameObject.SetActive(false);
-        pompistImage.gameObject.SetActive(false);
+        globalShowHideHandle.SetActive(false);
         is_enabled = false;
     }
 
     public void enable()
     {
-        cp_text.gameObject.SetActive(true);
-        cp_name_textval.gameObject.SetActive(true);
-        cp_time_textval.gameObject.SetActive(true);
-        pompistImage.gameObject.SetActive(true);
+        globalShowHideHandle.SetActive(true);
+        cpNotifShowHideHandle.SetActive(true);
         is_enabled = true;
     }
 
     public void disable_cpinfo()
     {
-        cp_text.gameObject.SetActive(false);
-        pompistImage.gameObject.SetActive(false);
+        cpNotifShowHideHandle.SetActive(false);
     }
 
     // Update is called once per frame
@@ -49,25 +48,21 @@ public class UICheckpoint : MonoBehaviour
     {
         if (is_enabled)
         {
-            if ((Time.time - display_start_time) >= CP_INFO_DURATION)
+            if ((Time.time - display_start_time) >= CP_NOTIF_DURATION)
                 disable_cpinfo();
-            if ((Time.time - display_start_time) >= PANEL_DURATION)
+            if ((Time.time - display_start_time) >= FULL_DURATION)
                 disable();
         }
     }
 
-    public void displayCP(GameObject iGO)
+    public void displayCP(CheckPoint iCP)
     {
-        CheckPoint cp = iGO.GetComponent<CheckPoint>();
-        if (!!cp)
-        {
-            int racetime_val_min = (int)(Access.TrackManager().track_score.track_time / 60);
-            int racetime_val_sec = (int)(Access.TrackManager().track_score.track_time % 60);
-
-            cp_name_textval.SetText(cp.checkpoint_name);
-            cp_time_textval.SetText(racetime_val_min.ToString() + " m " + racetime_val_sec.ToString() + " s");
-            enable();
-            display_start_time = Time.time;
-        }
+        idOfLastCPTriggered.text = iCP.id.ToString();
+        int racetime_val_min = (int)(Access.TrackManager().track_score.track_time / 60);
+        int racetime_val_sec = (int)(Access.TrackManager().track_score.track_time % 60);
+        cp_name_textval.SetText(iCP.checkpoint_name);
+        cp_time_textval.SetText(racetime_val_min.ToString() + " m " + racetime_val_sec.ToString() + " s");
+        enable();
+        display_start_time = Time.time;
     }
 }
