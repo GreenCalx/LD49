@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Schnibble;
 
@@ -9,9 +10,16 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public FinishLine finishLine;
     public UICheckpoint ui_cp;
 
-    public GameObject player;
+
+    private GameObject player;
     public GameObject Cam;
 
+    // SaveStates
+    public GameObject saveStateMarkerRef;
+    private GameObject saveStateMarkerInst;
+    private Vector3 ss_pos = Vector3.zero;
+    private Quaternion ss_rot = Quaternion.identity;
+    private bool hasSS;
     public int MAX_PANELS = 2;
     public int currPanels { get; set; }
 
@@ -21,6 +29,13 @@ public class CheckPointManager : MonoBehaviour, IControllable
     [HideInInspector]
     public AbstractCameraPoint last_camerapoint;
 
+    public float timeToForceCPLoad = 2f;
+    public float ss_latch = 0.2f;
+    private float elapsedSinceLastSS = 0f;
+    private float elapsedSinceLastSSLoad = 0f;
+    private float respawnButtonDownElapsed = 0f;
+    private bool respawnCalled = false;
+
     void Start()
     {
         if (checkpoints.Count <= 0)
@@ -28,10 +43,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             this.LogWarn("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
             findCheckpoints();
         }
-        if (player == null)
-        {
-            player = Access.Player().gameObject;
-        }
+
+        player = Access.Player().gameObject;
         //refreshCameras();
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
@@ -62,6 +75,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 break;
         }
         currPanels = MAX_PANELS;
+        hasSS = false;
+        respawnCalled = false;
     }
 
 
@@ -76,14 +91,81 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (Entry.Inputs["Respawn"].IsDown)
-            loadLastCP();
+        var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
+
+        if (ss_save_or_load > 0) // SAVE
+        {
+            if (elapsedSinceLastSS >= ss_latch)
+            {
+                putSaveStateDown();
+                elapsedSinceLastSS = 0f;
+            }
+            return;
+        } else if ((ss_save_or_load < 0)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
+        {
+            if (!respawnCalled)
+            {
+                respawnCalled = true;
+                respawnButtonDownElapsed = 0f;
+            }
+            respawnButtonDownElapsed += Time.fixedDeltaTime;
+            float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
+            Access.UITurboAndSaves().updateCPFillImage(fillVal);
+        }
+
+        if (respawnCalled) // ACTUAL LOAD
+        {
+            if (ss_save_or_load >= 0f) // input released
+            {
+                if (respawnButtonDownElapsed>=timeToForceCPLoad)
+                {
+                    loadLastCP(false);
+                } else {
+                    loadLastSaveState();
+                }
+                respawnButtonDownElapsed = 0f;
+                respawnCalled = false;
+                Access.UITurboAndSaves().updateCPFillImage(0f);
+                elapsedSinceLastSSLoad = 0f;
+            } else if (respawnButtonDownElapsed>=timeToForceCPLoad) 
+            {
+                loadLastCP(false);
+                respawnButtonDownElapsed = 0f;
+                respawnCalled = false;
+                Access.UITurboAndSaves().updateCPFillImage(0f);
+                elapsedSinceLastSSLoad = 0f;
+            }
+        }
+
+        elapsedSinceLastSS += Time.fixedDeltaTime;
+        elapsedSinceLastSSLoad += Time.fixedDeltaTime;
     }
 
     // Update is called once per frame
     void Update()
     {
         refreshCameras();
+    }
+
+    public void putSaveStateDown()
+    {
+        if (currPanels>0)
+        {
+            currPanels -= 1;
+            ss_pos = player.transform.position;
+            ss_rot = player.gameObject.transform.rotation;
+            hasSS = true;
+            
+            Access.UITurboAndSaves().updateAvailablePanels(currPanels);
+            if (!!saveStateMarkerRef)
+            {
+                if (!!saveStateMarkerInst)
+                    Destroy(saveStateMarkerInst);
+                saveStateMarkerInst = Instantiate(saveStateMarkerRef);
+                saveStateMarkerInst.transform.position = ss_pos;
+                saveStateMarkerInst.transform.rotation = ss_rot;
+            }
+        }
     }
 
     private void refreshCameras()
@@ -146,7 +228,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
             last_checkpoint = iGO;
             last_camerapoint = cp;
             currPanels = MAX_PANELS;
-
+            
+            hasSS = false;
+            if (!!saveStateMarkerInst)
+                Destroy(saveStateMarkerInst);
+            
             Access.UITurboAndSaves().updateLastCPTriggered(cp.id.ToString());
             Access.UITurboAndSaves().updateAvailablePanels(currPanels);
             if (!!ui_cp)
@@ -169,7 +255,19 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     }
 
-    public void loadLastCP(bool iFromDeath = false)
+    private IEnumerator waitInputToResume(PlayerController iPC)
+    {
+        iPC.Freeze();
+        yield return new WaitForSeconds(0.2f);
+        while (!Input.anyKeyDown)
+        {
+            iPC.rb.velocity = Vector3.zero;
+            yield return null;
+        }
+        iPC.UnFreeze();
+    }
+
+    public void OnPlayerRespawn()
     {
         // reset player physx
         Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
@@ -177,7 +275,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
-        }
+        }   
 
         // invalidate trick
         TrickTracker tt = player.GetComponent<TrickTracker>();
@@ -187,6 +285,29 @@ public class CheckPointManager : MonoBehaviour, IControllable
             tt.storedScore = 0;
             tt.trickUI.displayTricklineScore(0);
         }
+    }
+
+    public void loadLastSaveState()
+    {
+        OnPlayerRespawn();
+
+        if (!hasSS)
+        {
+            loadLastCP(false);
+        } else {
+            player.gameObject.transform.position = ss_pos;
+            player.gameObject.transform.rotation = ss_rot;
+        }
+
+        PlayerController pc = player.GetComponent<PlayerController>();
+        StartCoroutine(waitInputToResume(pc));
+
+        updateCamera();
+    }
+
+    public void loadLastCP(bool iFromDeath = false)
+    {
+        OnPlayerRespawn();
 
         // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
@@ -198,6 +319,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             player.transform.position = respawn.transform.position;
             player.transform.rotation = respawn.transform.rotation;
 
+            PlayerController pc = player.GetComponent<PlayerController>();
+            StartCoroutine(waitInputToResume(pc));
             // reset segment resetable items
             // if ( as_cp.MCP != null )
             // {
@@ -211,12 +334,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
         else
         {
-            StartPortal as_sp = last_checkpoint.GetComponent<StartPortal>();
-            if (as_sp != null)
-            {
-                last_camerapoint = as_sp;
-            }
-            as_sp.relocatePlayer();
+            loadRaceStart();
         }
         if (iFromDeath)
         {
@@ -225,6 +343,24 @@ public class CheckPointManager : MonoBehaviour, IControllable
             return;
         }
 
+        updateCamera();
+
+    }
+
+    public void loadRaceStart()
+    {
+        StartPortal as_sp = last_checkpoint.GetComponent<StartPortal>();
+        if (as_sp != null)
+        {
+            last_camerapoint = as_sp;
+        }
+        as_sp.relocatePlayer();
+        PlayerController pc = player.GetComponent<PlayerController>();
+        StartCoroutine(waitInputToResume(pc));
+    }
+
+    public void updateCamera()
+    {
         // Update caemra too !
         var Direction = Cam.transform.position - player.transform.position;
         var F = player.transform.forward;
@@ -240,6 +376,5 @@ public class CheckPointManager : MonoBehaviour, IControllable
             // Camera is in front of player, bu sure it is behind
             Cam.transform.position = player.transform.position + (player.transform.forward * -10000);
         }
-
     }
 }

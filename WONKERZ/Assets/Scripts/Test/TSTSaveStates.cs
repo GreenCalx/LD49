@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using System;
 using Schnibble;
@@ -130,6 +131,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         }
         player.gameObject.transform.position = ss_pos;
         player.gameObject.transform.rotation = ss_rot;
+        StartCoroutine(waitInputToResume(player));
 
         TrickTracker tt = player.GetComponent<TrickTracker>();
         if (!!tt)
@@ -140,5 +142,17 @@ public class TSTSaveStates : MonoBehaviour, IControllable
 
         nPanelRespawn += 1;
         Access.UITurboAndSaves().updatePanelOnRespawn();
+    }
+
+    private IEnumerator waitInputToResume(PlayerController iPC)
+    {
+        iPC.Freeze();
+        yield return new WaitForSeconds(0.2f);
+        while (!Input.anyKeyDown)
+        {
+            iPC.rb.velocity = Vector3.zero;
+            yield return null;
+        }
+        iPC.UnFreeze();
     }
 }

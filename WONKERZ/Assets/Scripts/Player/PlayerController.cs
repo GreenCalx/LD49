@@ -435,8 +435,8 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public bool IsInMenu() { return isInMenu; }
-    public void Freeze() { isInMenu = true; }
-    public void UnFreeze() { isInMenu = false; }
+    public void Freeze() { isInMenu = true; rb.isKinematic = true; }
+    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; }
 
 
     /// =============== Game Logic ==================

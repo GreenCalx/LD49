@@ -6,6 +6,7 @@ public class UITurboAndSaves : MonoBehaviour
 {
 
     public Image            turboBar;
+    public Image            cpImageFilled;
 
     public TextMeshProUGUI nAvailablePanels;
     //public TextMeshProUGUI nPanelRespawn;
@@ -17,6 +18,7 @@ public class UITurboAndSaves : MonoBehaviour
     {
         updateTurboBar(Access.CollectiblesManager().turboValueAtStart);
         updateLastCPTriggered("x");
+        cpImageFilled.fillAmount = 0f;
     }
 
     // Update is called once per frame
@@ -46,5 +48,10 @@ public class UITurboAndSaves : MonoBehaviour
     public void updateLastCPTriggered(string iTxt)
     {
         idOfLastCPTriggered.text = iTxt;
+    }
+
+    public void updateCPFillImage(float iVal)
+    {
+        cpImageFilled.fillAmount = iVal;
     }
 }

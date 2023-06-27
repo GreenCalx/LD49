@@ -39,9 +39,12 @@ public class CollectibleNut : AbstractCollectible
     [Range(0f, 10f)]
     public float blinkFreqAddFactor = 1.2f;
 
+    private bool collected = false;
+
     void Awake()
     {
         elapsedTimeAfterDamage = 0f;
+        collected = false;
     }
 
     // Start is called before the first frame update
@@ -146,6 +149,10 @@ public class CollectibleNut : AbstractCollectible
 
     protected override void OnCollect()
     {
+        if (collected)
+            return;
+        collected = true;
+
         if (spawnedFromDamage)
         {
             if (uncollectableTimeAfterDamage >= elapsedTimeAfterDamage)
@@ -175,7 +182,6 @@ public class CollectibleNut : AbstractCollectible
         }
 
         //gameObject.SetActive(false);
-        //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
         Destroy(gameObject);
     }
