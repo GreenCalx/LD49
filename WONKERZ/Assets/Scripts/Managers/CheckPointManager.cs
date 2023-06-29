@@ -35,6 +35,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private float elapsedSinceLastSSLoad = 0f;
     private float respawnButtonDownElapsed = 0f;
     private bool respawnCalled = false;
+    private bool saveStateLoaded = false;
 
     void Start()
     {
@@ -77,6 +78,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         currPanels = MAX_PANELS;
         hasSS = false;
         respawnCalled = false;
+        saveStateLoaded = false;
     }
 
 
@@ -92,6 +94,12 @@ public class CheckPointManager : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
+
+        if (saveStateLoaded && (ss_save_or_load !=0))
+        {
+            return;
+        } else { saveStateLoaded = false; }
+
 
         if (ss_save_or_load > 0) // SAVE
         {
@@ -120,8 +128,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 if (respawnButtonDownElapsed>=timeToForceCPLoad)
                 {
                     loadLastCP(false);
+                    saveStateLoaded = true;
                 } else {
                     loadLastSaveState();
+                    saveStateLoaded = true;
                 }
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
@@ -134,6 +144,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 respawnCalled = false;
                 Access.UITurboAndSaves().updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
+                saveStateLoaded = true;
             }
         }
 

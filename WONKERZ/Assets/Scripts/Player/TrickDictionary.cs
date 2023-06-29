@@ -21,12 +21,12 @@ public static class TrickDictionary
         new Trick( TN.FLAT, "RIGHT WHEELIE",  15, new TrickCondition(new bool[4]{ false, true, false, true})),
 
         // BASIC AIRS
-        new Trick( TN.BASIC, "HALF FS FLIP"   , 125   , new TrickCondition( 90, 0, 0 ) ),
-        new Trick( TN.BASIC, "HALF BS FLIP"    , 125   , new TrickCondition( -90, 0, 0 ) ),
-        new Trick( TN.BASIC, "HALF FS BARREL" , 75    , new TrickCondition( 0, 0, -90)),
-        new Trick( TN.BASIC, "HALF BS BARREL"  , 75    , new TrickCondition( 0, 0, 90)),
-        new Trick( TN.BASIC, "180 FS"        , 40    , new TrickCondition( 0, 90, 0 ) ),
-        new Trick( TN.BASIC, "180 BS"         , 40    , new TrickCondition( 0, -90, 0 ) ),
+        new Trick( TN.BASIC, "HALF FS FLIP"   , 125   , new TrickCondition( 180, 0, 0 ) ),
+        new Trick( TN.BASIC, "HALF BS FLIP"    , 125   , new TrickCondition( -180, 0, 0 ) ),
+        new Trick( TN.BASIC, "HALF FS BARREL" , 75    , new TrickCondition( 0, 0, -180)),
+        new Trick( TN.BASIC, "HALF BS BARREL"  , 75    , new TrickCondition( 0, 0, 180)),
+        new Trick( TN.BASIC, "180 FS"        , 40    , new TrickCondition( 0, 180, 0 ) ),
+        new Trick( TN.BASIC, "180 BS"         , 40    , new TrickCondition( 0, -180, 0 ) ),
 
         // CHAINED
             // classics
