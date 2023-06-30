@@ -26,6 +26,7 @@ public class NPC_SQR : MonoBehaviour
     public float BombDropForce = 1f;
     public float delayBombAnimStart = 0.5f;
     public float bombDropYSlope = 3f;
+    public bool jumpToExitOnTrigger = true;
 
     [Range(0f, 1f)]
     public float shootAngleVariationDelta = 5f;
@@ -129,12 +130,17 @@ public class NPC_SQR : MonoBehaviour
         }
 
         // RunBackward if player is too close, keep dropping bombs
-        if (detector.playerInRange || detector.dummyInRange)
+        if ((detector.playerInRange || detector.dummyInRange) && jumpToExitOnTrigger)
+        {
+            agent.isStopped = false;
+            moveToExit();
+        }
+        else if (detector.playerInRange || detector.dummyInRange)
         {
             agent.isStopped = false;
             fleeBackwardToPoint();
         }
-        else
+        else if (!jumpToExitOnTrigger)
         {
             agent.isStopped = true;
             chill();
@@ -153,7 +159,13 @@ public class NPC_SQR : MonoBehaviour
             startDropBomb();
         }
 
+    }
 
+    private void moveToExit()
+    {
+        transform.LookAt(fleeGoal.transform);
+        animator.SetBool(run_anim_parm, true);
+        shouldDropBomb = false;
     }
 
     private void exitToCrowPose()
