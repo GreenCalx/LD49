@@ -19,11 +19,14 @@ public class MimicPot : MonoBehaviour
     private NavMeshAgent agent;
     private bool inReversedPath = false;
 
+    private TrackEvent trackEvent;
 
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        trackEvent = GetComponent<TrackEvent>();
+
         mimicTriggered = false;
 
         if (!agent.isOnNavMesh)
@@ -50,16 +53,31 @@ public class MimicPot : MonoBehaviour
                 return;
             }
 
-            agent.isStopped = !playerDetector.playerInRange;
-            //float angle = Vector3.Angle(transform.position, Access.Player().transform.position);
-            if (playerInPathForNextPoint() && playerDetector.playerInRange)
+            if (playerDetector.playerInRange)
             {
-                inReversedPath = !inReversedPath;
-                tryGoToNextPoint();
-            }
+                agent.isStopped = false;
 
-            if ( Vector3.Distance( agent.destination, transform.position) <= agent.stoppingDistance)
-            { tryGoToNextPoint(); }
+                if (playerInPathForNextPoint())
+                {
+                     inReversedPath = !inReversedPath;
+                }
+                //tryGoToNextPoint();
+
+                
+                if (Vector3.Distance( agent.destination, transform.position) <= agent.stoppingDistance)
+                { 
+                    if (!agent.hasPath)
+                        tryGoToNextPoint(); 
+                }
+            }
+            else if (!agent.hasPath)
+            {
+                agent.isStopped = true;
+            } else {
+                agent.isStopped = false;
+            }
+            //float angle = Vector3.Angle(transform.position, Access.Player().transform.position);
+
         }
     }
 
@@ -104,7 +122,8 @@ public class MimicPot : MonoBehaviour
         float dist = agent.height*2;
 
         NavMesh.SamplePosition (mimicPath[pathIndex].position, out navHit, dist, -1 * layermask);
-
+        
+        Debug.DrawRay(navHit.position, transform.up * 10, Color.green, 0.5f);
         agent.SetDestination(navHit.position);
     }
 
@@ -176,6 +195,15 @@ public class MimicPot : MonoBehaviour
             loc_rb.AddForce(forceDir.normalized * fragmentExplodeForce, ForceMode.Impulse);
         
             Destroy(rend.gameObject, timeBeforeFragmentClean);
+        }
+    }
+
+    void OnCollisionEnter(Collision iCollision)
+    {
+        if (Utils.collisionIsPlayer(iCollision))
+        {
+            trackEvent.setSolved();
+            Destroy(gameObject);
         }
     }
 }

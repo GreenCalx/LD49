@@ -171,7 +171,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            SchLog.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize test : " + e.Message);
             return false;
         }
         finally
@@ -212,7 +212,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            SchLog.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize jar : " + e.Message);
             return false;
         }
         finally
@@ -252,7 +252,7 @@ public static class SaveAndLoad
         }
         catch (System.Runtime.Serialization.SerializationException e)
         {
-            SchLog.LogError("Failed to deserialize profile : " + e.Message);
+            SchLog.LogError("Failed to deserialize track score : " + e.Message);
             return false;
         }
         finally
@@ -273,5 +273,46 @@ public static class SaveAndLoad
 
         return true;
     }
+
+    public static bool loadBountyMatrix(string iFileName, BountyArray target)
+    {
+        updateFileName(ref iFileName);
+
+        if (!File.Exists(fileName))
+        { return false; }
+
+        FileStream fs = new FileStream(fileName, FileMode.Open);
+        ArrayList load_datas;
+
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            load_datas = (ArrayList)formatter.Deserialize(fs);
+            formatter = null;
+        }
+        catch (System.Runtime.Serialization.SerializationException e)
+        {
+            SchLog.LogError("Failed to deserialize bounty matrix : " + e.Message);
+            return false;
+        }
+        finally
+        {
+            fs.Close();
+        }
+
+        datas.Clear();
+        foreach (object o in load_datas)
+        {
+            EntityData ed = (EntityData)o;
+            ed.OnLoad(null);
+        }
+
+        load_datas.Clear();
+        load_datas = null;
+        fs = null;
+
+        return true;
+    }
+
 
 }

@@ -7,6 +7,82 @@ using TMPro;
 using UnityEngine.Events;
 using Schnibble;
 
+
+[System.Serializable]
+public class BountyUnlockMatrixData : EntityData
+{
+    public SerializableBountyUnlockMatrix loadedBountyUnlockMatrix;
+
+    public override void OnLoad(GameObject gameObject)
+    {
+        BountyArray ba = Access.BountyArray();
+        if (!!ba)
+        {
+            // 
+            //ba.unlockMatrix.xyz       = loadedBountyUnlockMatrix.xyz;
+            ba.bountyMatrix.bountiesUnlockStatus = loadedBountyUnlockMatrix.bountiesUnlockStatus;
+
+            ba.bountyMatrix.bounty_unlock_matrix_data = this;
+        }
+    }
+}
+
+[System.Serializable]
+public class SerializableBountyUnlockMatrix
+{
+    public BountyArray.EItemState[,] bountiesUnlockStatus = new BountyArray.EItemState[BountyArray.N_BOUNTY, BountyArray.N_BOUNTY];
+
+    public BountyUnlockMatrix buildBountyUnlockMatrix()
+    {
+        BountyUnlockMatrix retval = new BountyUnlockMatrix();
+        
+        retval.bountiesUnlockStatus = bountiesUnlockStatus;
+
+        return retval;
+    }
+
+    public BountyUnlockMatrix BountyUnlockMatrix
+    {
+        get 
+        { 
+            return buildBountyUnlockMatrix(); 
+        }
+        set
+        { 
+            bountiesUnlockStatus = value.bountiesUnlockStatus;
+        }
+    }
+    public static implicit operator BountyUnlockMatrix(SerializableBountyUnlockMatrix inst)
+    {
+        return inst.BountyUnlockMatrix;
+    }
+    public static implicit operator SerializableBountyUnlockMatrix(BountyUnlockMatrix iTS)
+    {
+        return new SerializableBountyUnlockMatrix { BountyUnlockMatrix = iTS };
+    }
+}
+
+///////
+[Serializable]
+public class BountyUnlockMatrix : ISaveLoad
+{
+    public BountyArray.EItemState[,] bountiesUnlockStatus = new BountyArray.EItemState[BountyArray.N_BOUNTY, BountyArray.N_BOUNTY];
+
+    // save
+    public BountyUnlockMatrixData bounty_unlock_matrix_data;
+
+    object ISaveLoad.GetData()
+    {
+        if (bounty_unlock_matrix_data==null)
+            bounty_unlock_matrix_data = new BountyUnlockMatrixData();
+
+        bounty_unlock_matrix_data.loadedBountyUnlockMatrix = this;
+
+        return bounty_unlock_matrix_data;
+    }
+}
+
+///
 public class BountyArray : MonoBehaviour
 {
     [Header("UI")]
@@ -15,7 +91,7 @@ public class BountyArray : MonoBehaviour
     public static readonly int N_BOUNTY = 10;
     public enum EItemState { LOCKED=0, VISIBLE=1, UNLOCKED=2 };
 
-    public EItemState[,] bountiesUnlockStatus = new EItemState[N_BOUNTY, N_BOUNTY];
+    public BountyUnlockMatrix bountyMatrix;
 
     public AbstractBounty[,] bounties = new AbstractBounty[N_BOUNTY,N_BOUNTY];
 
@@ -71,6 +147,19 @@ public class BountyArray : MonoBehaviour
 
     ///
     [Serializable]
+    public struct EventTriggerConstraint
+    {
+        public string track_name;
+        public string eventID;
+        public EventTriggerConstraint(string iTName, string iEventID)
+        {
+            eventID     = iEventID;
+            track_name  = iTName;
+        }
+    }
+
+    ///
+    [Serializable]
     public class TrackScoreBounty : AbstractBounty
     {
         public TrackScoreConstraint tsc;
@@ -94,6 +183,32 @@ public class BountyArray : MonoBehaviour
         }
     }
 
+    [Serializable]
+    public class TrackEventBounty : AbstractBounty
+    {
+        public EventTriggerConstraint etc;
+        public TrackEventBounty(int iX, int iY, string iName, string iHint , CosmeticElement iBounty, EventTriggerConstraint iETC) : base(iX, iY, iName, iHint, iBounty)
+        {
+            etc = iETC;
+        }
+        override public bool check()
+        {
+            // check etc
+            TrackManager TM = Access.TrackManager();
+            if (TM.launchedTrackName != etc.track_name)
+                return false;
+
+            foreach( TrackEvent e in TM.track_events )
+            {
+                if (e.eventID == etc.eventID)
+                {
+                    return e.isSolved;
+                }
+            }
+            return false;
+        }
+    }
+
     void Start()
     {
         loadBounties();
@@ -102,7 +217,7 @@ public class BountyArray : MonoBehaviour
 
     }
 
-    public EItemState getStatus( int iX, int iY) { return bountiesUnlockStatus[iX,iY]; }
+    public EItemState getStatus( int iX, int iY) { return bountyMatrix.bountiesUnlockStatus[iX,iY]; }
 
     private void loadBounties()
     {
@@ -110,10 +225,10 @@ public class BountyArray : MonoBehaviour
         {
             for (int j=0; j<N_BOUNTY; j++)
             {
-                bounties[j,i] = BountiesData.getBountyAt(i, j);
+                bounties[i,j] = BountiesData.getBountyAt(i, j);
             }
         }
-
+        loadBountyMatrix();
     }
 
     private void checkBounties()
@@ -122,17 +237,25 @@ public class BountyArray : MonoBehaviour
     }
 
     // TODO : O(2N²) iz bad
-    private void updateArray()
+    public void updateArray()
     {
         // Get unlocks
         for(int i = 0; i<N_BOUNTY; i++)
         {
             for (int j=0; j<N_BOUNTY; j++)
             {                
+                if (bountyMatrix.bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
+                {
+                    // Already unlocked, nothing to do
+                    continue;
+                }
+
                 if (bounties[i,j].check())
-                { 
-                    bountiesUnlockStatus[i,j] = EItemState.UNLOCKED;
+                {   // new unlock !
+                    bountyMatrix.bountiesUnlockStatus[i,j] = EItemState.UNLOCKED;
                     Access.PlayerCosmeticsManager().addCosmetic(bounties[i,j].cosmeticBounty);
+
+                    saveBountyMatrix();
                     continue; 
                 }
             }
@@ -143,20 +266,20 @@ public class BountyArray : MonoBehaviour
         {
             for (int j=0; j<N_BOUNTY; j++)
             {
-                if (bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
+                if (bountyMatrix.bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
                 {
                     // UP
-                    if ( (i>0) && bountiesUnlockStatus[i-1,j]!=EItemState.UNLOCKED )
-                    { bountiesUnlockStatus[i-1,j] = EItemState.VISIBLE; }
+                    if ( (i>0) && bountyMatrix.bountiesUnlockStatus[i-1,j]!=EItemState.UNLOCKED )
+                    { bountyMatrix.bountiesUnlockStatus[i-1,j] = EItemState.VISIBLE; }
                     // LEFT
-                    if ( (j>0) && bountiesUnlockStatus[i,j-1]!=EItemState.UNLOCKED )
-                    { bountiesUnlockStatus[i,j-1] = EItemState.VISIBLE; }
+                    if ( (j>0) && bountyMatrix.bountiesUnlockStatus[i,j-1]!=EItemState.UNLOCKED )
+                    { bountyMatrix.bountiesUnlockStatus[i,j-1] = EItemState.VISIBLE; }
                     // DOWN
-                    if ( (i<N_BOUNTY-1) && bountiesUnlockStatus[i+1,j]!=EItemState.UNLOCKED )
-                    { bountiesUnlockStatus[i+1,j] = EItemState.VISIBLE; }
+                    if ( (i<N_BOUNTY-1) && bountyMatrix.bountiesUnlockStatus[i+1,j]!=EItemState.UNLOCKED )
+                    { bountyMatrix.bountiesUnlockStatus[i+1,j] = EItemState.VISIBLE; }
                     // RIGHT
-                    if ( (j<N_BOUNTY-1) && bountiesUnlockStatus[i,j+1]!=EItemState.UNLOCKED )
-                    { bountiesUnlockStatus[i,j+1] = EItemState.VISIBLE; }
+                    if ( (j<N_BOUNTY-1) && bountyMatrix.bountiesUnlockStatus[i,j+1]!=EItemState.UNLOCKED )
+                    { bountyMatrix.bountiesUnlockStatus[i,j+1] = EItemState.VISIBLE; }
                 }
             }
         }
@@ -188,8 +311,8 @@ public class BountyArray : MonoBehaviour
                 uictt.copyInputsFromParent = true;
                 uictt.init();
 
-                uictt.x = j;
-                uictt.y = i;
+                uictt.x = i;
+                uictt.y = j;
 
                 uictt.bountyArray = this;
 
@@ -207,9 +330,27 @@ public class BountyArray : MonoBehaviour
     {
         oBounty = null;
 
-        if (bountiesUnlockStatus[x,y] != EItemState.LOCKED)
+        if (bountyMatrix.bountiesUnlockStatus[x,y] != EItemState.LOCKED)
         { oBounty = bounties[x,y]; }
 
+        return (oBounty != null);
+    }
+
+    public bool findBountyFromName( string iName, out AbstractBounty oBounty )
+    {
+        oBounty = null;
+        for(int i = 0; i<N_BOUNTY; i++)
+        {
+            for (int j=0; j<N_BOUNTY; j++)
+            {   
+                AbstractBounty bounty = bounties[i,j];
+                if (bounty.name == iName)
+                {
+                    oBounty = bounty;
+                    break;
+                }
+            }
+        }
         return (oBounty != null);
     }
 
@@ -222,5 +363,15 @@ public class BountyArray : MonoBehaviour
         parentUI.tabs.Clear();
     }
 
+    public void saveBountyMatrix()
+    {
+        SaveAndLoad.datas.Add(bountyMatrix);
+        SaveAndLoad.save(Constants.FD_BOUNTYMATRIX);
+    }
+
+    public void loadBountyMatrix()
+    {
+        SaveAndLoad.loadBountyMatrix(Constants.FD_BOUNTYMATRIX, this);
+    }
 
 }

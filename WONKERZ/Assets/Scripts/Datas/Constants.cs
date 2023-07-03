@@ -14,6 +14,7 @@ public struct Constants
     // -- Paths --
     public const string FD_SAVEFILES = "./savefiles/";
     public const string unix_FD_SAVEFILES = "";
+    public const string FD_BOUNTYMATRIX = "bountymatrix";
 
     // -- Generic Object names extensions --
     public const string EXT_INSTANCE = " (Instance)";

@@ -102,14 +102,18 @@ public class TrackManager : MonoBehaviour
 {
     public double defaultPBValue = 999999999;
     public int defaultHighScoreValue = 0;
+
+    public string launchedTrackName = "";
     
     private bool timer_is_on;
 
     public TrackScore track_score;
+    public List<TrackEvent> track_events;
 
     void Awake()
     {
         track_score = new TrackScore();
+        track_events = new List<TrackEvent>();
     }
 
     // Start is called before the first frame update
@@ -135,6 +139,7 @@ public class TrackManager : MonoBehaviour
     {
         reset();
         track_score.track_name = iTrackName;
+        launchedTrackName = iTrackName;
         
         timer_is_on = true;
     }
@@ -236,5 +241,10 @@ public class TrackManager : MonoBehaviour
             return track_score.trick_score;
         }
         return defaultHighScoreValue;
+    }
+
+    public void susbscribe(TrackEvent iTE)
+    {
+        track_events.Add(iTE);
     }
 }
