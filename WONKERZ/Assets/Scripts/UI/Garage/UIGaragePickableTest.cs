@@ -42,7 +42,7 @@ public class UIGaragePickableTest : UITextTab
     {
         base.ProcessInputs(Entry);
 
-        if (Entry.Inputs[Constants.INPUT_RESPAWN].IsDown)
+        if (Entry.Inputs[Constants.INPUT_CAMERACHANGE].IsDown)
         {
             setModeRecord();
             activate();

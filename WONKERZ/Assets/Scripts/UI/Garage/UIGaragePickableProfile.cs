@@ -9,7 +9,7 @@ public class UIGaragePickableProfile : UITextTab
         if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
             (Parent as UIGarageProfilePanel).save(profile_name);
 
-        if (Entry.Inputs[Constants.INPUT_RESPAWN].IsDown)
+        if (Entry.Inputs[Constants.INPUT_CAMERACHANGE].IsDown)
             (Parent as UIGarageProfilePanel).load(profile_name);
     }
 

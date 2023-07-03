@@ -52,13 +52,17 @@ public struct Constants
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
 
     // -- Inputs --
+    public const string INPUT_ACCEL = "Accelerator";
     public const string INPUT_TURN = "Turn";
     public const string INPUT_JUMP = "Jump";
     public const string INPUT_CANCEL = "Cancel";
     public const string INPUT_UIUPDOWN = "UIUpDown";
-    public const string INPUT_RESPAWN = "Respawn";
     public const string INPUT_START = "Start";
     public const string INPUT_SAVESTATES = "SaveStates";
+    public const string INPUT_TURBO = "Start";
+    public const string INPUT_CAMERACHANGE = "CameraChange";
+    public static readonly string[] INPUT_AXIS = {INPUT_ACCEL, INPUT_TURN, INPUT_SAVESTATES}; // No cam input innit atm
+    public static readonly string[] INPUT_BTNS = {INPUT_JUMP, INPUT_CANCEL, INPUT_TURBO, INPUT_START, INPUT_CAMERACHANGE};
 
     // -- Resources paths --
     public const string RES_ICON_BLANK = "Icons/UI_InputBlank";

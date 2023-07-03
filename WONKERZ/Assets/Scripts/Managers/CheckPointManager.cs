@@ -37,6 +37,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private bool respawnCalled = false;
     private bool saveStateLoaded = false;
 
+    private bool playerIsFrozen = false;
+    private bool anyKeyPressed = false;
+
     void Start()
     {
         if (checkpoints.Count <= 0)
@@ -93,6 +96,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
+        if (playerIsFrozen)
+            anyKeyPressed = Utils.checkAnyKeyPressed(Entry, true);
+
         var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
 
         if (saveStateLoaded && (ss_save_or_load !=0))
@@ -269,13 +275,16 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private IEnumerator waitInputToResume(PlayerController iPC)
     {
         iPC.Freeze();
-        yield return new WaitForSeconds(0.2f);
-        while (!Input.anyKeyDown)
+        anyKeyPressed = false;
+        yield return new WaitForSeconds(0.2f);        
+        playerIsFrozen = true;
+        while (!anyKeyPressed)
         {
             iPC.rb.velocity = Vector3.zero;
             yield return null;
         }
         iPC.UnFreeze();
+        playerIsFrozen = false;
     }
 
     public void OnPlayerRespawn()
