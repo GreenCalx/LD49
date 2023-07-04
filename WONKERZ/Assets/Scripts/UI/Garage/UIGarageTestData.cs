@@ -16,10 +16,6 @@ public class SerializableInputData
         InputManager.InputData retval = new InputManager.InputData();
         retval.Inputs = Inputs;
         retval.NumberOfFramesIsSame = NumberOfFramesIsSame;
-        retval.isDpadDownPressed = isDpadDownPressed;
-        retval.isDpadUpPressed = isDpadUpPressed;
-        retval.isDpadLeftPressed = isDpadLeftPressed;
-        retval.isDpadRightPressed = isDpadRightPressed;
         return retval;
     }
 
@@ -33,10 +29,6 @@ public class SerializableInputData
         {
             Inputs = value.Inputs;
             NumberOfFramesIsSame = value.NumberOfFramesIsSame;
-            isDpadDownPressed = value.isDpadDownPressed;
-            isDpadUpPressed = value.isDpadUpPressed;
-            isDpadLeftPressed = value.isDpadLeftPressed;
-            isDpadRightPressed = value.isDpadRightPressed;
         }
     }
     public static implicit operator InputManager.InputData(SerializableInputData inst)

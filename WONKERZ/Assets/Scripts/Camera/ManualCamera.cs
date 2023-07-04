@@ -5,6 +5,7 @@ public class ManualCamera : PlayerCamera, IControllable
 {
     [Header("ManualCamera")]
     /// TWEAKS
+    [SerializeField] public bool needButtonPressBeforeMove = true;
     [SerializeField] public bool autoAlign = false;
     [SerializeField] public Transform focus = default;
     [SerializeField, Range(1f, 80f)] public float distance = 5f;
@@ -63,8 +64,10 @@ public class ManualCamera : PlayerCamera, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         input = Vector3.zero;
-        if (Input.GetMouseButton(0))
+        if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
+        {
             input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
+        }
     }
 
     public override void init()
@@ -89,7 +92,7 @@ public class ManualCamera : PlayerCamera, IControllable
             if (player.flags[PlayerController.FJump])
             {
                 if (jumpStartTime <= 0f)
-                    jumpStartTime = Time.unscaledTime;
+                jumpStartTime = Time.unscaledTime;
                 UpdateFocusPointInJump();
             }
             else
@@ -139,7 +142,7 @@ public class ManualCamera : PlayerCamera, IControllable
         Vector3 targetPoint = focus.position;
 
         if (focusRadius > baseFocusRadius)
-            focusRadius = ((focusRadius - jumpFocusRadiusStep) > baseFocusRadius) ? focusRadius - jumpFocusRadiusStep : baseFocusRadius;
+        focusRadius = ((focusRadius - jumpFocusRadiusStep) > baseFocusRadius) ? focusRadius - jumpFocusRadiusStep : baseFocusRadius;
 
         if (focusRadius > 0f)
         {
@@ -162,13 +165,13 @@ public class ManualCamera : PlayerCamera, IControllable
     void UpdateFocusPointInJump()
     {
         if (Time.unscaledTime - jumpStartTime < jumpDelay)
-            return;
+        return;
 
         previousFocusPoint = focusPoint;
         Vector3 targetPoint = focus.position;
 
         if (focusRadius < jumpMaxFocusRadius)
-            focusRadius += jumpFocusRadiusStep;
+        focusRadius += jumpFocusRadiusStep;
 
         if (focusRadius > 0f)
         {
@@ -226,7 +229,7 @@ public class ManualCamera : PlayerCamera, IControllable
     bool autoRotation()
     {
         if (Time.unscaledTime - lastManualRotationTime < alignDelay)
-            return false;
+        return false;
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
         if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
@@ -247,9 +250,9 @@ public class ManualCamera : PlayerCamera, IControllable
         }
         else if (180f - deltaAbs < alignSmoothRange)
         {
-             rotationChange *= (180f - deltaAbs) / alignSmoothRange;
+            rotationChange *= (180f - deltaAbs) / alignSmoothRange;
         }
-        
+
         orbitAngles.y = Mathf.MoveTowardsAngle(orbitAngles.y, headingAngle, rotationChange);
         return true;
     }

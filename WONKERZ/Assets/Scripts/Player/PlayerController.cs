@@ -1,37 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Schnibble;
 using System.Collections.Specialized;
+using UnityEngine;
 
 // FSM when in ground mode
 public class GroundState : FSMState, IControllable
 {
     private PlayerController player;
 
-    private class GeneralGroundAction : FSMAction { public override void Execute(FSMBase fsm) {
-        var player = (fsm as PlayerFSM).GetPlayer();
+    private class GeneralGroundAction : FSMAction
+    {
+        public override void Execute(FSMBase fsm)
+        {
+            var player = (fsm as PlayerFSM).GetPlayer();
 
-        player.TryJump();
-        player.flags[PlayerController.FJump] = !player.TouchGround();
-        // apply jump correction
-        var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
-        torque = player.car.transform.TransformDirection( torque);
-        player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
-        // reset jump correction
-        player.jump.diRoll = 0;
-        player.jump.diPitch = 0;
+            player.TryJump();
+            player.flags[PlayerController.FJump] = !player.TouchGround();
+            // apply jump correction
+            var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
+            torque = player.car.transform.TransformDirection(torque);
+            player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
+            // reset jump correction
+            player.jump.diRoll = 0;
+            player.jump.diPitch = 0;
 
-    } }
+        }
+    }
 
     public GroundState(PlayerController player) : base("Car") { this.player = player; this.fixedActions.Add(new GeneralGroundAction()); }
 
-    public override void OnEnter(FSMBase fsm){
+    public override void OnEnter(FSMBase fsm)
+    {
         base.OnEnter(fsm);
         (fsm as PlayerFSM).GetPlayer().ActivateCar();
     }
 
-    public override void OnExit(FSMBase fsm){
+    public override void OnExit(FSMBase fsm)
+    {
         base.OnExit(fsm);
         (fsm as PlayerFSM).GetPlayer().DeactivateCar();
     }
@@ -141,8 +145,10 @@ public class PlayerGeneralStates : PlayerFSM
 
     public PlayerGeneralStates(PlayerController player) : base(player) { CreateFSM(); }
 
-    private class PlayerAliveCondition : FSMCondition {
-        public override bool Check(FSMBase fsm) {
+    private class PlayerAliveCondition : FSMCondition
+    {
+        public override bool Check(FSMBase fsm)
+        {
             return (fsm as PlayerFSM).GetPlayer().IsAlive();
         }
     }
@@ -157,7 +163,7 @@ public class PlayerGeneralStates : PlayerFSM
 
     public class DieTransition : FSMTransition
     {
-        public DieTransition(FSMCondition condition, FSMState tstate, FSMState fstate) :base(condition, tstate, fstate){}
+        public DieTransition(FSMCondition condition, FSMState tstate, FSMState fstate) : base(condition, tstate, fstate) { }
 
         public override void OnTransition(FSMBase fsm, FSMState toState)
         {
@@ -169,7 +175,8 @@ public class PlayerGeneralStates : PlayerFSM
         }
     }
 
-    private void CreateFSM(){
+    private void CreateFSM()
+    {
         // init states
         states[(int)States.Init] = new FSMState("Init");
         states[(int)States.Alive] = new FSMState("Alive");
@@ -294,8 +301,8 @@ public class PlayerController : MonoBehaviour, IControllable
         }
         carInstance.SetActive(false);
 
-            generalStates = new PlayerGeneralStates(this);
-            vehicleStates = new PlayerVehicleStates(this);
+        generalStates = new PlayerGeneralStates(this);
+        vehicleStates = new PlayerVehicleStates(this);
 
         Utils.attachControllable(this);
     }
@@ -332,10 +339,10 @@ public class PlayerController : MonoBehaviour, IControllable
     public void SetSpringSizeMinAndLock()
     {
         springElapsedCompression += Time.deltaTime;
-        float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression/springCompressionTime);
+        float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression / springCompressionTime);
         springCompVal = Mathf.Min(1, springCompVal);
 
-        float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression/springCompressionTime));
+        float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression / springCompressionTime));
 
         jumpDecal.SetAnimationTime(springJumpFactor);
         foreach (var axle in car.axles)
@@ -353,7 +360,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         if (jump.applyForceMultiplier)
         {
-            float springCompVal =  springElapsedCompression / springCompressionTime;
+            float springCompVal = springElapsedCompression / springCompressionTime;
             springCompVal = Mathf.Min(1, springCompVal);
 
             float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
@@ -361,7 +368,7 @@ public class PlayerController : MonoBehaviour, IControllable
             foreach (var axle in car.axles)
             {
                 car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
-               car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
             }
             jump.applyForceMultiplier = false;
             springElapsedCompression = 0f;
@@ -373,11 +380,11 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         turbo.intervalElapsedTime += Time.deltaTime;
         if (turbo.intervalElapsedTime < turbo.timeInterval)
-        return;
+            return;
 
         var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
         if (nextTurboValue < 0)
-        return;
+            return;
 
         turbo.current = Mathf.Clamp(0, turbo.max, nextTurboValue);
 
@@ -390,7 +397,8 @@ public class PlayerController : MonoBehaviour, IControllable
         turbo.intervalElapsedTime = 0f;
     }
 
-    public bool TouchGround() {
+    public bool TouchGround()
+    {
         foreach (var a in car.axles)
         {
             if (a.left.isGrounded || a.right.isGrounded)
@@ -401,13 +409,15 @@ public class PlayerController : MonoBehaviour, IControllable
         return false;
     }
 
-    public bool IsAlive() {
+    public bool IsAlive()
+    {
         CollectiblesManager cm = Access.CollectiblesManager();
         int n_nuts = cm != null ? cm.getCollectedNuts() : 0;
         return (n_nuts >= 0);
     }
 
-    public void Kill(Vector3 iSteer = default(Vector3)) {
+    public void Kill(Vector3 iSteer = default(Vector3))
+    {
         GameObject dummy_player = Instantiate(onDeathClone, transform.position, transform.rotation);
         Destroy(dummy_player.GetComponent<CarController>());
 
@@ -418,18 +428,20 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             Rigidbody rb = child.GetComponent<Rigidbody>();
             if (!!rb)
-            dc.objects.Add(rb);
+                dc.objects.Add(rb);
         }
 
         dc.Activate(iSteer);
     }
 
-    public void ActivateCar(){
+    public void ActivateCar()
+    {
         carInstance.SetActive(true);
         Utils.attachControllable(car);
     }
 
-    public void DeactivateCar(){
+    public void DeactivateCar()
+    {
         carInstance.SetActive(false);
         Utils.detachControllable(car);
     }
@@ -469,7 +481,7 @@ public class PlayerController : MonoBehaviour, IControllable
         //stateMachine.ForceState(invulState);
     }
 
-    bool modifierCalled =false;
+    bool modifierCalled = false;
 
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
