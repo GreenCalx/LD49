@@ -20,8 +20,6 @@ public class StartPortal : AbstractCameraPoint
     [Header("Debug")]
     public bool bypassCinematic = true;
 
-    private GameObject playerRef;
-
     // Start is called before the first frame updatezd
     void Start()
     {
@@ -29,6 +27,7 @@ public class StartPortal : AbstractCameraPoint
         {
             if (entryLevelCinematic!=null)
             {
+                relocatePlayer();
                 StartCoroutine(waitEntryLevelCinematic(Access.Player()));
                 return;
             }
@@ -39,8 +38,6 @@ public class StartPortal : AbstractCameraPoint
 
     void init()
     {
-        playerRef = Access.Player().gameObject;
-
         relocatePlayer();
         Access.CameraManager().changeCamera(camera_type);
 
@@ -72,18 +69,15 @@ public class StartPortal : AbstractCameraPoint
 
     public void relocatePlayer()
     {
-        playerRef.transform.position = transform.position;
-        playerRef.transform.rotation = Quaternion.identity;
+        PlayerController pc = Access.Player();
+        pc.transform.position = transform.position;
+        pc.transform.rotation = Quaternion.identity;
         if (facingPoint != null)
         {
-            playerRef.transform.LookAt(facingPoint.transform);
+            pc.transform.LookAt(facingPoint.transform);
         }
-        Rigidbody rb2d = playerRef.GetComponentInChildren<Rigidbody>();
-        if (!!rb2d)
-        {
-            rb2d.velocity = Vector3.zero;
-            rb2d.angularVelocity = Vector3.zero;
-        }
+        pc.rb.velocity = Vector3.zero;
+        pc.rb.angularVelocity = Vector3.zero;
     }
 
 }

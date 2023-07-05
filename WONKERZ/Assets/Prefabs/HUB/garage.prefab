@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1915845694}
   - component: {fileID: 1915845692}
   - component: {fileID: 1915845695}
+  - component: {fileID: 5771695926843237977}
   m_Layer: 14
   m_Name: ENTRY
   m_TagString: Untagged
@@ -53,8 +54,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 30, y: 20, z: 30}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 25.279758, y: 20, z: 11.304409}
+  m_Center: {x: 5.892853, y: 0, z: -3.0994093}
 --- !u!114 &1915845695
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,7 +69,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   garageUIRef: {fileID: 5339288306730999949, guid: f20164b360f702c448a64ef919f27bb7, type: 3}
-  playerCC: {fileID: 0}
+  detector: {fileID: 5771695926843237977}
+  player: {fileID: 0}
+--- !u!114 &5771695926843237977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1915845690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1dda1437eb9914d8acb608135b131b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  player: {fileID: 0}
+  dummy: {fileID: 0}
+  dummyInRange: 0
 --- !u!1 &4218442429093851413
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,7 +214,7 @@ PrefabInstance:
     - target: {fileID: -5169677972427226811, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 0d82ce2342383b74cab40ca076069ef6, type: 2}
+      objectReference: {fileID: 2100000, guid: c50b4f5eb95efc8408318e0704d01d29, type: 2}
     - target: {fileID: -4645408978387301571, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -204,7 +222,7 @@ PrefabInstance:
     - target: {fileID: -4314260423059753413, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 0d82ce2342383b74cab40ca076069ef6, type: 2}
+      objectReference: {fileID: 2100000, guid: 90e7e9790574b0742a8b3bbd784545d2, type: 2}
     - target: {fileID: -3313513751285588586, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -304,7 +322,7 @@ PrefabInstance:
     - target: {fileID: 3701450037327833207, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 0d82ce2342383b74cab40ca076069ef6, type: 2}
+      objectReference: {fileID: 2100000, guid: c50b4f5eb95efc8408318e0704d01d29, type: 2}
     - target: {fileID: 4320820112654780828, guid: b039690943a053f40b53045367383f85, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

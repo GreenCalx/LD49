@@ -21,7 +21,7 @@ public class CinematicNode : MonoBehaviour
     }
     public List<CinematicStep> nodeExecs;
 
-    void Start()
+    void Awake()
     {
         elapsedTime = 0f;
         nodeActive = false;

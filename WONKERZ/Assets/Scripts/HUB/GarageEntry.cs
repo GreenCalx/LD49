@@ -4,9 +4,13 @@ using Schnibble;
 public class GarageEntry : MonoBehaviour, IControllable
 {
     public GameObject garageUIRef;
+    public PlayerDetector detector;
+
     private GameObject garageUI;
     private bool playerInGarage;
     private bool garageOpened;
+    
+    [HideInInspector]
     public PlayerController player;
 
     // Start is called before the first frame update
@@ -23,43 +27,21 @@ public class GarageEntry : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (playerInGarage)
+        if (detector.playerInRange)
         {
-            if (Entry.Inputs["Jump"].IsDown)
+            if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
                 openGarage();
         }
     }
 
-    void OnTriggerEnter(Collider iCol)
-    {
-        // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (Utils.colliderIsPlayer(iCol) && !playerInGarage)
-        {
-            playerInGarage = true;
-            player = Access.Player();
-            var SndMgr = Access.SoundManager();
-            SndMgr.SwitchClip("garage");
-        }
-    }
-
-    void OnTriggerExit(Collider iCol)
-    {
-        // NOTE toffa : added check if playerInGarage because every collider will trigger, meaning we would be triggered multiple time on enter and on exit!
-        if (Utils.colliderIsPlayer(iCol) && playerInGarage)
-        {
-            closeGarage();
-            player = null;
-            playerInGarage = false;
-
-            var SndMgr = Access.SoundManager();
-            SndMgr.SwitchClip("theme");
-        }
-    }
 
     public void openGarage()
     {
         if (garageOpened)
             return;
+
+        player = Access.Player();
+
         //Time.timeScale = 0; // pause
         garageUI = Instantiate(garageUIRef);
         garageUI.name = Constants.GO_UIGARAGE;
@@ -69,6 +51,9 @@ public class GarageEntry : MonoBehaviour, IControllable
         uig.onActivate.Invoke();
 
         player.Freeze();
+
+        var SndMgr = Access.SoundManager();
+        SndMgr.SwitchClip("garage");
 
         garageOpened = true;
     }
@@ -91,6 +76,9 @@ public class GarageEntry : MonoBehaviour, IControllable
             else
             this.LogWarn("No player could be found!");
         }
+
+        var SndMgr = Access.SoundManager();
+        SndMgr.SwitchClip("theme");
 
         garageOpened = false;
     }

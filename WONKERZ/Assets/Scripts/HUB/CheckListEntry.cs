@@ -6,10 +6,15 @@ using Schnibble;
 public class CheckListEntry : MonoBehaviour, IControllable
 {
     public GameObject uiCheckListRef;
+    public PlayerDetector detector;
+
     private GameObject uiCheckList;
 
     private bool playerInCheckList;
     private bool checkListOpened;
+
+    private Vector3 playerPositionWhenEntered;
+    private Transform playerTransform;
 
     void Start()
     {
@@ -24,32 +29,10 @@ public class CheckListEntry : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (playerInCheckList)
+        if (detector.playerInRange)
         {
             if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
                 open();
-        }
-    }
-
-    void OnTriggerEnter(Collider iCol)
-    {
-        if (Utils.colliderIsPlayer(iCol) && !playerInCheckList)
-        {
-            playerInCheckList = true;
-            var SndMgr = Access.SoundManager();
-            SndMgr.SwitchClip("garage");
-        }
-    }
-
-    void OnTriggerExit(Collider iCol)
-    {
-        if (Utils.colliderIsPlayer(iCol) && playerInCheckList)
-        {
-            close();
-            playerInCheckList = false;
-
-            var SndMgr = Access.SoundManager();
-            SndMgr.SwitchClip("theme");
         }
     }
 
@@ -66,6 +49,8 @@ public class CheckListEntry : MonoBehaviour, IControllable
         uibm.onDeactivate.AddListener(close);
 
         PlayerController player = Access.Player();
+        playerTransform = player.transform;
+        playerPositionWhenEntered = player.transform.position;
         player.Freeze();
         checkListOpened = true;
     }
@@ -75,9 +60,8 @@ public class CheckListEntry : MonoBehaviour, IControllable
         if (!checkListOpened)
             return;
         
-        //uiCheckList.SetActive(true);
-        UIBountyMatrix uibm = uiCheckList.GetComponentInChildren<UIBountyMatrix>();
-        //uibm.onDeactivate.Invoke();
+        var SndMgr = Access.SoundManager();
+        SndMgr.SwitchClip("theme");
 
         Destroy(uiCheckList);
 
@@ -85,5 +69,14 @@ public class CheckListEntry : MonoBehaviour, IControllable
         player.UnFreeze();
 
         checkListOpened = false;
+        playerPositionWhenEntered = Vector3.zero;
+    }
+
+    void Update()
+    {
+        if (checkListOpened)
+        {
+            playerTransform.position = playerPositionWhenEntered;
+        }
     }
 }

@@ -124,7 +124,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
             respawnButtonDownElapsed += Time.fixedDeltaTime;
             float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
-            Access.UITurboAndSaves().updateCPFillImage(fillVal);
+            Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
         }
 
         if (respawnCalled) // ACTUAL LOAD
@@ -141,14 +141,14 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 }
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                Access.UITurboAndSaves().updateCPFillImage(0f);
+                Access.UITurboAndSaves()?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
             } else if (respawnButtonDownElapsed>=timeToForceCPLoad) 
             {
                 loadLastCP(false);
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                Access.UITurboAndSaves().updateCPFillImage(0f);
+                Access.UITurboAndSaves()?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
                 saveStateLoaded = true;
             }
@@ -176,7 +176,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             ss_rot = player.gameObject.transform.rotation;
             hasSS = true;
             
-            Access.UITurboAndSaves().updateAvailablePanels(currPanels);
+            Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
@@ -253,8 +253,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             if (!!saveStateMarkerInst)
                 Destroy(saveStateMarkerInst);
             
-            Access.UITurboAndSaves().updateLastCPTriggered(cp.id.ToString());
-            Access.UITurboAndSaves().updateAvailablePanels(currPanels);
+            Access.UITurboAndSaves()?.updateLastCPTriggered(cp.id.ToString());
+            Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
             if (!!ui_cp)
             {
                 ui_cp.displayCP(cp);

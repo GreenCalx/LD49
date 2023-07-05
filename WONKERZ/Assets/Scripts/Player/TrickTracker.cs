@@ -238,7 +238,7 @@ public class TrickTracker : MonoBehaviour
 
     public void OnCollisionEnter(Collision iCol)
     {
-        if (!carIsOnGround())
+        if (!carIsOnGround() && activate_tricks)
             end_line();
     }
 
