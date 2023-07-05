@@ -30,5 +30,6 @@ public class CollectibleWONKERZ : AbstractCollectible
         gameObject.SetActive(false);
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
+        Access.UIWonkerzBar().display();
     }
 }

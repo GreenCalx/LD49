@@ -179,6 +179,9 @@ public class Access
     {
         return cache.getObject<UIPowerWheel>(Constants.GO_PLAYERUI, true);
     }
-
+    public static UIWonkerzBar UIWonkerzBar()
+    {
+        return cache.getObject<UIWonkerzBar>(Constants.GO_PLAYERUI, true);
+    }
 
 }
