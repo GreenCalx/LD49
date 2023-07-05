@@ -17,12 +17,15 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public CinematicCamera cam;
 
     public CinematicNode rootNode;
+    public bool cinematicDone = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
         triggered = false;
+        cinematicDone = false;
+        StartCinematic();
     }
 
     // Update is called once per frame
@@ -35,28 +38,23 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (!isSkippable)
             return;
 
-        if (Entry.Inputs["Jump"].Down)
-            EndCinematic();
-    }
-
-    void OnDestroy()
-    {
-        if (!triggered)
+        if (Utils.checkAnyKeyPressed(Entry, false))
             EndCinematic();
     }
 
     private void EndCinematic()
     {
         Utils.detachControllable<CinematicTrigger>(this);
-
+        cam.gameObject.SetActive(false);
         LevelEntryUI leui = Access.LevelEntryUI();
         if (!!leui)
         {
             leui.gameObject.SetActive(false);
-            cam.end();
-            if (triggerOnlyOnce)
-                Destroy(gameObject);
         }
+        cam.end();
+        if (triggerOnlyOnce)
+            Destroy(gameObject);
+        cinematicDone = true;
     }
 
     private void StartCinematic()
@@ -64,6 +62,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         Utils.attachControllable<CinematicTrigger>(this);
         
         triggered = true;
+        cam.gameObject.SetActive(true);
         cam.launch();
 
         // if is a level entry cinematic, display the right UI
@@ -85,24 +84,12 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
     }
 
-    // TODO : temp solution while there is no callback
-    void OnTriggerExit(Collider iCollider)
-    {
-        if (!triggered)
-            return;
-
-        if (Utils.isPlayer(iCollider.gameObject))
-        {
-            EndCinematic();
-        }
-    }
-
     void OnTriggerStay(Collider iCollider)
     {
         if (triggerOnlyOnce && triggered)
             return;
 
-        if (!!iCollider.GetComponent<CarController>())
+        if (Utils.colliderIsPlayer(iCollider))
         {
             StartCinematic();
         }

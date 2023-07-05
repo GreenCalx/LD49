@@ -11,61 +11,101 @@ public class StartLine : MonoBehaviour
     public GameObject UIStartTrackRef;
     public AudioSource  startLineCrossed_SFX;
     public bool destroyOnActivation = true;
-    public float uiShowTime = 2f;
+
+    private float countdownElapsedTime = 0f;
 
     public bool enable_tricks = false;
+    public bool is_rdy_to_launch = true;
 
-    private GameObject UIStartTrackInst = null;
+    [Header("Debug")]
+    public bool bypassCountdown = false;
 
-
-    private float uiVisibleElapsed = 0f;
+    private UIStartTrack UIStartTrackInst = null;
     // Start is called before the first frame update
     void Start()
     {
-        uiVisibleElapsed = 0f;
+        countdownElapsedTime = 0f;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (UIStartTrackInst != null)
         {
-            uiVisibleElapsed += Time.deltaTime;
-            if (uiVisibleElapsed >= uiShowTime)
-            {
-                Destroy(UIStartTrackInst.gameObject);
-                if (destroyOnActivation)
-                {
-                    Destroy(gameObject);
-                }
-                
-            }
+            countdownElapsedTime += Time.fixedDeltaTime;
         }
     }
 
-    void OnTriggerEnter(Collider iCol)
+    public void launchCountdown()
     {
-        if (Utils.colliderIsPlayer(iCol))
+        if (UIStartTrackInst==null)
         {
-            if (UIStartTrackInst==null)
+            UIStartTrackInst = Instantiate(UIStartTrackRef).GetComponent<UIStartTrack>();
+            countdownElapsedTime = 0f;
+
+            StartCoroutine(countdown(Access.Player()));
+        }
+    }
+
+    public void launchTrack()
+    {
+        if (!!startLineCrossed_SFX)
+        {
+            startLineCrossed_SFX.Play();
+        }
+
+        // Reset track infinite collectibles
+        Access.CollectiblesManager().resetInfCollectibles();
+
+        // start line crossed !! gogogo
+        Scene currentScene = SceneManager.GetActiveScene();
+        Access.TrackManager().launchTrack(currentScene.name);
+
+        if (enable_tricks)
+            activateTricks();
+
+        StartCoroutine(postCountdown());
+    }
+
+    IEnumerator countdown(PlayerController iPC)
+    {
+        iPC.Freeze();
+
+        while (countdownElapsedTime < 3f)
+        {
+            UIStartTrackInst.updateDisplay(countdownElapsedTime);
+            yield return new WaitForSeconds(0.1f);
+        }
+        UIStartTrackInst.updateDisplay(countdownElapsedTime);
+        launchTrack();
+        iPC.UnFreeze();
+    }
+
+    IEnumerator postCountdown()
+    {
+        yield return new WaitForSeconds(2f);
+        
+        Destroy(UIStartTrackInst.gameObject);
+        if (destroyOnActivation)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    void OnTriggerStay(Collider iCol)
+    {
+        if ((Utils.colliderIsPlayer(iCol))&& is_rdy_to_launch)
+        {
+            if (bypassCountdown) // debug
             {
-                UIStartTrackInst = Instantiate(UIStartTrackRef);
-                uiVisibleElapsed = 0f;
+                Access.CollectiblesManager().resetInfCollectibles();
+                Scene currentScene = SceneManager.GetActiveScene();
+                Access.TrackManager().launchTrack(currentScene.name);
+                if (enable_tricks)
+                    activateTricks();
+                return;
             }
 
-            if (!!startLineCrossed_SFX)
-            {
-                startLineCrossed_SFX.Play();
-            }
-            
-            // Reset track infinite collectibles
-            Access.CollectiblesManager().resetInfCollectibles();
-
-            // start line crossed !! gogogo
-            Scene currentScene = SceneManager.GetActiveScene();
-            Access.TrackManager().launchTrack(currentScene.name);
-
-            if (enable_tricks)
-                activateTricks();
+            launchCountdown();
         }
     }
 

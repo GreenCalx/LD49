@@ -53,7 +53,7 @@ public class ManualCamera : PlayerCamera, IControllable
     }
     private void Start()
     {
-
+        init();
     }
 
     void OnDestroy()

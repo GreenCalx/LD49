@@ -26,6 +26,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: 0.7115583, w: 0.702627}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 9186775506258258963}
   m_RootOrder: 0
@@ -58,7 +59,8 @@ Transform:
   m_GameObject: {fileID: 8373927881834247849}
   m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
   m_LocalPosition: {x: 3.0963802, y: 24.126846, z: 22.05651}
-  m_LocalScale: {x: 2325.1965, y: 2325.1965, z: 2325.1965}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1966827112}
   m_Father: {fileID: 0}
@@ -79,10 +81,11 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8373927881834247849}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -125,6 +128,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff4bc96c016adf4782769f9fdd3f74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enable_tricks: 0
-  camera_type: 2
-  playerRef: {fileID: 0}
+  nextPoint: {fileID: 0}
+  prevPoint: {fileID: 0}
+  CamDescEnd:
+    position: {x: 0, y: 0, z: 0}
+    mode: 0
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  CamDescStart:
+    position: {x: 0, y: 0, z: 0}
+    mode: 0
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+  enable_tricks: 1
+  deleteAfterSpawn: 0
+  camera_type: 1
+  facingPoint: {fileID: 0}

@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Schnibble;
+using System.Collections;
+using System.Collections.Generic;
 
 /// STARTING POINT FOR HUB
 // > ACTIVATES TRICKS AUTO
@@ -13,19 +15,34 @@ public class StartPortal : AbstractCameraPoint
 
     [Header("Optionals")]
     public Transform facingPoint;
+    public CinematicTrigger entryLevelCinematic;
+
+    [Header("Debug")]
+    public bool bypassCinematic = true;
 
     private GameObject playerRef;
 
     // Start is called before the first frame updatezd
     void Start()
     {
-        playerRef = Utils.getPlayerRef();
-        CarController player = playerRef.GetComponent<CarController>();
-        if (!!player)
+        if (!bypassCinematic)
         {
-            relocatePlayer();
-            Access.CameraManager().changeCamera(camera_type);
+            if (entryLevelCinematic!=null)
+            {
+                StartCoroutine(waitEntryLevelCinematic(Access.Player()));
+                return;
+            }
         }
+
+        init();
+    }
+
+    void init()
+    {
+        playerRef = Access.Player().gameObject;
+
+        relocatePlayer();
+        Access.CameraManager().changeCamera(camera_type);
 
         var states = Access.Player().vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
@@ -40,6 +57,17 @@ public class StartPortal : AbstractCameraPoint
     void Update()
     {
 
+    }
+
+    IEnumerator waitEntryLevelCinematic(PlayerController iPC)
+    {
+        iPC.Freeze();
+        while(!entryLevelCinematic.cinematicDone)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        iPC.UnFreeze();
+        init();
     }
 
     public void relocatePlayer()

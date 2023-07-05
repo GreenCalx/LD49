@@ -244,7 +244,13 @@ public class CameraManager : MonoBehaviour, IControllable
 
         // switch on intermediate transition camera
         if (transitionCameraInst == null)
+        {
+            ToonPipeline active_tp = active_camera.GetComponent<ToonPipeline>();
             transitionCameraInst = Instantiate(transitionCameraRef);
+            ToonPipeline transition_tp = transitionCameraInst.GetComponent<ToonPipeline>();
+            transition_tp.mgr       = active_tp.mgr;
+            transition_tp.mainLight = active_tp.mainLight;
+        }
 
         transitionCameraInst.transform.position = active_camera.transform.position;
         transitionCameraInst.transform.rotation = active_camera.transform.rotation;
@@ -308,6 +314,11 @@ public class CameraManager : MonoBehaviour, IControllable
     // Returns true when transition is done, false otherwise
     public bool transition(Transform iStart, Transform iEnd)
     {
+        if (active_camera==null)
+        { // transition failed?
+            return true;
+        }
+
         if ((iStart == null) || (iEnd == null))
         {
             this.LogWarn("CameraManager::Tried to transition from/to null Transform. Forcing transition quit.");
@@ -333,7 +344,13 @@ public class CameraManager : MonoBehaviour, IControllable
     public void launchDeathCam()
     {
         if (deathCamInst == null)
+        {
+            ToonPipeline active_tp = active_camera.GetComponent<ToonPipeline>();
             deathCamInst = Instantiate(deathCameraRef);
+            ToonPipeline deathcam_tp = deathCamInst.GetComponent<ToonPipeline>();
+            deathcam_tp.mgr       = active_tp.mgr;
+            deathcam_tp.mainLight = active_tp.mainLight;
+        }
         deathCamInst.transform.position = active_camera.transform.position;
         deathCamInst.transform.rotation = active_camera.transform.rotation;
 
