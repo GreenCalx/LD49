@@ -168,6 +168,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
     {
         if (currPanels>0)
         {
+            if (!Access.Player().TouchGroundAll())
+                return;
+
             currPanels -= 1;
             ss_pos = player.transform.position;
             ss_rot = player.gameObject.transform.rotation;

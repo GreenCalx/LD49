@@ -409,6 +409,18 @@ public class PlayerController : MonoBehaviour, IControllable
         return false;
     }
 
+    public bool TouchGroundAll()
+    {
+        foreach (var a in car.axles)
+        {
+            if (!a.left.isGrounded || !a.right.isGrounded)
+            {
+                return false; // early return
+            }
+        }
+        return true;
+    }
+
     public bool IsAlive()
     {
         CollectiblesManager cm = Access.CollectiblesManager();
