@@ -214,7 +214,6 @@ public class ManualCamera : PlayerCamera, IControllable
         {
             orbitAngles.y -= 360f;
         }
-        Debug.Log(orbitAngles);
     }
 
 
