@@ -247,6 +247,7 @@ public class BountyArray : MonoBehaviour
                 if (bountyMatrix.bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
                 {
                     // Already unlocked, nothing to do
+                    Access.PlayerCosmeticsManager().addCosmetic(bounties[i,j].cosmeticBounty);
                     continue;
                 }
 

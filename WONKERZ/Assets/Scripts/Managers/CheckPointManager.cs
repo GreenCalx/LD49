@@ -290,7 +290,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         playerIsFrozen = false;
     }
 
-    public void OnPlayerRespawn()
+    public void OnPlayerRespawn(Transform respawnSource)
     {
         // reset player physx
         Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
@@ -308,29 +308,39 @@ public class CheckPointManager : MonoBehaviour, IControllable
             tt.storedScore = 0;
             tt.trickUI.displayTricklineScore(0);
         }
+
+        // reset manual camera behind the player
+        CameraManager CM = Access.CameraManager();
+        if (CM.active_camera!=null)
+        {
+            ManualCamera manual_cam = CM.active_camera.GetComponent<ManualCamera>();
+            if (!!manual_cam)
+            { // force realignement
+                manual_cam.forceAlignToHorizontal(respawnSource.rotation.eulerAngles.y);
+            }
+        }
     }
 
     public void loadLastSaveState()
     {
-        OnPlayerRespawn();
-
         if (!hasSS)
         {
             loadLastCP(false);
         } else {
+            
             player.gameObject.transform.position = ss_pos;
             player.gameObject.transform.rotation = ss_rot;
+            OnPlayerRespawn(saveStateMarkerInst.transform);
         }
 
         PlayerController pc = player.GetComponent<PlayerController>();
         StartCoroutine(waitInputToResume(pc));
 
-        updateCamera();
     }
 
     public void loadLastCP(bool iFromDeath = false)
     {
-        OnPlayerRespawn();
+
 
         // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
@@ -341,6 +351,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
             player.transform.position = respawn.transform.position;
             player.transform.rotation = respawn.transform.rotation;
+            OnPlayerRespawn(respawn.transform.parent.transform);
 
             PlayerController pc = player.GetComponent<PlayerController>();
             StartCoroutine(waitInputToResume(pc));
@@ -365,8 +376,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
             Access.CollectiblesManager().jar.collectedNuts = 0;
             return;
         }
-
-        updateCamera();
 
     }
 

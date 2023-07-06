@@ -14,7 +14,7 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Range(1f, 360f)] public float rotationSpeed = 90f;
 
     [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f, defaultVerticalAngle = 30f;
-    [SerializeField, Min(0f)] float alignDelay = 5f;
+    [SerializeField, Min(0f)] public float alignDelay = 5f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     [SerializeField] LayerMask obstructionMask = -1;
     [Header("Jump")]
@@ -24,9 +24,11 @@ public class ManualCamera : PlayerCamera, IControllable
     /// Internals
     private Vector3 focusPoint, previousFocusPoint;
     private Vector2 orbitAngles = new Vector2(45f, 0f);
-    private float lastManualRotationTime;
+    [HideInInspector]
+    public float lastManualRotationTime;
     private float jumpStartTime;
     private float baseFocusRadius;
+
     private Vector3 CameraHalfExtends
     {
         get
@@ -75,8 +77,10 @@ public class ManualCamera : PlayerCamera, IControllable
         playerRef = Utils.getPlayerRef();
         focus = playerRef.transform;
         focusPoint = focus.position;
-        transform.localRotation = Quaternion.Euler(orbitAngles);
+
         orbitAngles = new Vector2(defaultVerticalAngle, 0f);
+        transform.localRotation = Quaternion.Euler(orbitAngles);
+        
     }
 
     void Update()
@@ -210,6 +214,7 @@ public class ManualCamera : PlayerCamera, IControllable
         {
             orbitAngles.y -= 360f;
         }
+        Debug.Log(orbitAngles);
     }
 
 
@@ -229,13 +234,14 @@ public class ManualCamera : PlayerCamera, IControllable
     bool autoRotation()
     {
         if (Time.unscaledTime - lastManualRotationTime < alignDelay)
-        return false;
+            return false;
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
         if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
         {
             return false;
         }
+
         float movementDeltaSqr = movement.sqrMagnitude;
         if (movementDeltaSqr < 0.000001f)
         {
@@ -262,5 +268,11 @@ public class ManualCamera : PlayerCamera, IControllable
         float angle = Mathf.Acos(direction.y) * Mathf.Rad2Deg;
         // (x < 0) => counterclockwise
         return direction.x < 0f ? 360f - angle : angle;
+    }
+
+    public void forceAlignToHorizontal(float iHorAngle)
+    {
+        orbitAngles = new Vector2(defaultVerticalAngle, iHorAngle);
+        transform.localRotation = Quaternion.Euler(orbitAngles);
     }
 }
