@@ -81,7 +81,7 @@ public class Ground : MonoBehaviour
         switch (GI.Type)
         {
             case EType.DESERT:
-                GI.DepthPerturbation.y = -1f *
+                GI.DepthPerturbation.y = -0.5f *
                                          ((Mathf.Sin(HitPosition.x * 0.1f) - 1) * 0.5f);
                 // TODO toffa : remove this and make it better
                 // find if we are in moving sands
