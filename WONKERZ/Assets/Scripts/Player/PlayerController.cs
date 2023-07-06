@@ -1,4 +1,5 @@
 using Schnibble;
+using static Schnibble.SchPhysics;
 using System.Collections.Specialized;
 using UnityEngine;
 
@@ -58,6 +59,14 @@ public class GroundState : FSMState, IControllable
         if (Entry.Inputs["Turbo"].Down)
         {
             player.useTurbo();
+        }
+
+        if (Entry.Inputs["Power1"].Down)
+        {
+            player.SetHandbrake(true);
+        } else
+        {
+            player.SetHandbrake(false);
         }
 
         if (player.flags[PlayerController.FJump])
@@ -380,11 +389,11 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         turbo.intervalElapsedTime += Time.deltaTime;
         if (turbo.intervalElapsedTime < turbo.timeInterval)
-            return;
+        return;
 
         var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
         if (nextTurboValue < 0)
-            return;
+        return;
 
         turbo.current = Mathf.Clamp(0, turbo.max, nextTurboValue);
 
@@ -440,7 +449,7 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             Rigidbody rb = child.GetComponent<Rigidbody>();
             if (!!rb)
-                dc.objects.Add(rb);
+            dc.objects.Add(rb);
         }
 
         dc.Activate(iSteer);
@@ -462,6 +471,16 @@ public class PlayerController : MonoBehaviour, IControllable
     public void Freeze() { isInMenu = true; rb.isKinematic = true; }
     public void UnFreeze() { isInMenu = false; rb.isKinematic = false; }
 
+    public void SetHandbrake(bool v) {
+        var rear = car.axles[(int)AxleType.rear];
+        rear.left.isHandbraked = v;
+        rear.right.isHandbraked = v;
+
+        var front = car.axles[(int)AxleType.front];
+        front.left.isHandbraked = v;
+        front.right.isHandbraked = v;
+
+    }
 
     /// =============== Game Logic ==================
     public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
@@ -486,12 +505,12 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
             nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
-        }
+            }
         cm.loseNuts(iDamage);
         rb.AddForce(repulseForce, ForceMode.Impulse);
 
         //stateMachine.ForceState(invulState);
-    }
+        }
 
     bool modifierCalled = false;
 
@@ -530,12 +549,12 @@ public class PlayerController : MonoBehaviour, IControllable
                     pc.setNextPower(4);
                 }
                 else
-                {
-                    pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
+                    {
+                        pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
                     pc.setNextPower(0);
-                }
+                    }
                 modifierCalled = true;
-            }
+                }
             else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
             {
                 pc.hideIndicators();
@@ -563,6 +582,6 @@ public class PlayerController : MonoBehaviour, IControllable
 
 
             pc.applyPowerEffectInInputs(Entry, this);
-        }
-    }
+}
+}
 }
