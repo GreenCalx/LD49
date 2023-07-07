@@ -79,6 +79,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 break;
         }
         currPanels = MAX_PANELS;
+        Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
+
         hasSS = false;
         respawnCalled = false;
         saveStateLoaded = false;
@@ -340,8 +342,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     public void loadLastCP(bool iFromDeath = false)
     {
-
-
         // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp != null)

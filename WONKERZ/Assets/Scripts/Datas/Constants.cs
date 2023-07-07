@@ -4,9 +4,9 @@ public struct Constants
 {
     // -- Tweaks --
     public const int EASY_N_PANELS      = Int32.MaxValue;
-    public const int MEDIUM_N_PANELS    = 2;
+    public const int MEDIUM_N_PANELS    = 3;
     public const int HARD_N_PANELS      = 0;
-    public const int IRONMAN_N_PANELS   = 0;
+    public const int IRONMAN_N_PANELS   = 3;
 
     // -- Debug vars --
     public const bool DBG_REPLAYDUMP = false;

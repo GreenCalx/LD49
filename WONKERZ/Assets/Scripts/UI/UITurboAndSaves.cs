@@ -30,7 +30,8 @@ public class UITurboAndSaves : MonoBehaviour
     public void updateAvailablePanels(int iVal)
     {
         int val = (iVal > 0) ? iVal : 0 ;
-        string str = (val < 999) ? val.ToString() : "∞";
+        
+        string str = (val < 999) ? val.ToString() : "inf";
 
         nAvailablePanels.text = str;
     }
