@@ -7,7 +7,7 @@ Shader "Sprites/Billboard"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "IgnoreProjector"="True" "DisableBatching" = "True"}
+        Tags { "RenderType"="Opaque"  "DisableBatching" = "True"}
 
         Pass
         {
@@ -65,6 +65,19 @@ Shader "Sprites/Billboard"
               mul(UNITY_MATRIX_MV, float4(0.0, 0.0, 0.0, 1.0))
               + float4(v.vertex.x, v.vertex.y, 0.0, 0.0)
                 );
+
+
+
+				o.vertex = UnityObjectToClipPos(v.vertex);
+				o.uv = v.uv.xy;
+
+				// billboard mesh towards camera
+				float3 vpos = mul((float3x3)unity_ObjectToWorld, v.vertex.xyz);
+				float4 worldCoord = float4(unity_ObjectToWorld._m03, unity_ObjectToWorld._m13, unity_ObjectToWorld._m23, 1);
+				float4 viewPos = mul(UNITY_MATRIX_V, worldCoord) + float4(vpos, 0);
+				float4 outPos = mul(UNITY_MATRIX_P, viewPos);
+
+				o.vertex = outPos;
 
                 return o;
             }
