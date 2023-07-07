@@ -8,6 +8,8 @@ public class UIDifficultyTextTab : UITextTab
 
     override public void select()
     {
+        UIDifficultyChoice p = Parent as UIDifficultyChoice;
+        p.chosen_difficulty = difficulty;
         base.select();
     }
 
