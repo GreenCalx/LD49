@@ -314,6 +314,63 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1001 &104429637
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_RootOrder
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.4799602
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.5242151
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224375, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7867509369595224376, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
+      propertyPath: m_Name
+      value: BombEffect 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 18d5880659e011c43aed66c9437dfdc9, type: 3}
 --- !u!1 &251689556
 GameObject:
   m_ObjectHideFlags: 0
@@ -2165,8 +2222,10 @@ MonoBehaviour:
       depthPerturbation: {x: 0, y: 0, z: 0}
       groundMarks: {fileID: 0}
       slipMarks: {fileID: 0}
-      emitter: {fileID: 0}
+      groundEmitter: {fileID: 0}
+      slipEmitter: {fileID: 0}
       objectToWorld: []
+      objectToWorldSlip: []
       cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
       meshTopCorner: {x: 0.5, y: 0.5, z: 0.5}
       meshBotCorner: {x: -0.5, y: -0.5, z: -0.5}
@@ -2175,6 +2234,7 @@ MonoBehaviour:
       tIdx: 0
       groundMarksMesh: {fileID: 0}
       groundMarksMaterial: {fileID: 2100000, guid: 902fb423f2793ba4b904204565f2fe87, type: 2}
+      groundMarksMaterialSlip: {fileID: 0}
       slipMarksMesh: {fileID: 0}
       cam: {fileID: 0}
 --- !u!4 &991841668
