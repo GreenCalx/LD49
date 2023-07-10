@@ -41,6 +41,7 @@ Shader "Custom/Sch-TimeDecal"
         [Toggle] _ZWrite ("zwrite", Float) = 1.0
         [Enum(UnityEngine.Rendering.CullMode)]_CullMode("CullMode", Float) = 2
         [Toggle] _Decal ("decal", Float) = 0
+        [IntRange] _DecalAffectOnlyID ("decal id filter", Range(0, 255)) = -1
 [Toggle] _DecalWriteNormal ("decalnormal", Float)=0
 [Toggle] _DecalWriteColor ("decalcolor", Float)=0
 [Toggle] _DecalWriteMaterial ("decalMaterial", Float) = 0
