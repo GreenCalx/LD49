@@ -16,54 +16,54 @@ MonoBehaviour:
     outlineDepth:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
-      threshold: 0.0001
-      width: 1
+      threshold: 0.00001
+      width: 3
       enableDistanceBlend: 1
       fadeStart: 0
       fadeStop: 300
-      distanceColor: {r: 1, g: 0.9060592, b: 0.06132078, a: 1}
+      distanceColor: {r: 0, g: 0, b: 0, a: 1}
     enableOutlineDepth: 1
     outlineNormal:
-      lightColor: {r: 0, g: 0, b: 0, a: 1}
+      lightColor: {r: 1, g: 0.8974021, b: 0.08962262, a: 0}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
-      threshold: 2.2
+      threshold: 0.000001
       width: 0.5
       enableDistanceBlend: 1
       fadeStart: 0
       fadeStop: 300
-      distanceColor: {r: 1, g: 0.79084766, b: 0, a: 1}
+      distanceColor: {r: 0, g: 0, b: 0, a: 1}
     enableOutlineNormal: 1
     outlineColor:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
-      threshold: 0.0001
+      threshold: 0.7
       width: 2
       enableDistanceBlend: 1
       fadeStart: 0
-      fadeStop: 300
-      distanceColor: {r: 1, g: 0.77873516, b: 0, a: 1}
+      fadeStop: 500
+      distanceColor: {r: 0, g: 0, b: 0, a: 1}
     enableOutlineColor: 1
     hatch:
-      maxSize: 0
-      minSize: 0
-      spaceSize: 0
-      lightPower: 0
-      blendPower: 0
+      maxSize: 0.1
+      minSize: 0.01
+      spaceSize: 0.1
+      lightPower: 0.01
+      blendPower: 50
     enableCrossHatch: 0
     useColoredTexture: 0
   outlineRamp: {fileID: 0}
   toonRamp:
     serializedVersion: 2
-    key0: {r: 0.5849056, g: 0.22588475, b: 0.08001069, a: 1}
-    key1: {r: 0.6981132, g: 0.47712308, b: 0.29307583, a: 1}
-    key2: {r: 0.9716981, g: 0.8532775, b: 0.7471075, a: 0}
+    key0: {r: 1, g: 1, b: 1, a: 1}
+    key1: {r: 1, g: 1, b: 1, a: 1}
+    key2: {r: 1, g: 1, b: 1, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4433
-    ctime1: 9638
+    ctime0: 0
+    ctime1: 65535
     ctime2: 65535
     ctime3: 0
     ctime4: 0
@@ -79,7 +79,7 @@ MonoBehaviour:
     atime6: 0
     atime7: 0
     m_Mode: 1
-    m_NumColorKeys: 3
+    m_NumColorKeys: 2
     m_NumAlphaKeys: 2
   toonRampColored: {fileID: 0}
   diffuseRampColored: {fileID: 0}
