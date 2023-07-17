@@ -30,7 +30,6 @@ public class UIStartTrack : MonoBehaviour
 
         float width = opacityRamp.width;
         Color newcolor = opacityRamp.GetPixel((int)(curr_time*width),0);
-        Debug.Log("alpha : " + newcolor.a);
         countdown_txt.alpha = newcolor.a;
     }
 

@@ -3,7 +3,7 @@ using Schnibble;
 
 public class DeathZone : MonoBehaviour
 {
-    public CheckPointManager checkPointManager;
+    private CheckPointManager checkPointManager;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +18,11 @@ public class DeathZone : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
+        if (checkPointManager==null)
+        {
+            checkPointManager = Access.CheckPointManager();
+        }
+
         if (Utils.colliderIsPlayer(iCol))
         {
             checkPointManager.loadLastCP();
@@ -26,7 +31,11 @@ public class DeathZone : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        this.Log(iCol.gameObject.name);
+        if (checkPointManager==null)
+        {
+            checkPointManager = Access.CheckPointManager();
+        }
+
         if (Utils.collisionIsPlayer(iCol))
         {
             checkPointManager.loadLastCP();

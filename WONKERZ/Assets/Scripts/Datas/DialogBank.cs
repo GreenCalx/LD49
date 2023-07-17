@@ -2,11 +2,17 @@ using System.Collections.Generic;
 
 public static class DialogBank
 {
-    public static readonly string[] TEST_DIALOG= 
+    public static readonly string[] INTRO_DIALOG= 
     {
-        "I've been here forever..."
+        "I've been here forever...",
     };
 
+    public static readonly string[] INTRO_CP_DIALOG= 
+    {
+        "It's your lucky day ! Ricky's been sent here to help you out !",
+        " I opened an exit portal on the other platform.",
+        "If you are stuck, press R/ DPad Down"
+    }; 
 
     private static List<string[]> bank;
 
@@ -14,7 +20,8 @@ public static class DialogBank
     {
         // load dialog in bank
         bank = new List<string[]>{
-             TEST_DIALOG 
+             INTRO_DIALOG,
+             INTRO_CP_DIALOG
              };
     }
 

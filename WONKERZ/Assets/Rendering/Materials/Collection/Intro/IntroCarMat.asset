@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dab695dd9159b674fa7860d1076f8bfd, type: 3}
-  m_Name: DefaultPlastic_SMALL
+  m_Name: IntroCarMat
   m_EditorClassIdentifier: 
   gpuParams:
     outlineDepth:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 1, g: 0.5971496, b: 0, a: 1}
+      shadowColor: {r: 0.9056604, g: 0.89563656, b: 0.24350302, a: 0.5882353}
       threshold: 0.0001
-      width: 1
+      width: 2
       enableDistanceBlend: 1
       fadeStart: 500
       fadeStop: 1000
@@ -25,47 +25,47 @@ MonoBehaviour:
     enableOutlineDepth: 1
     outlineNormal:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 1, g: 0.56078434, b: 0, a: 1}
-      threshold: 2
+      shadowColor: {r: 0.30494332, g: 0.26366144, b: 0.745283, a: 0.7607843}
+      threshold: 0.01
       width: 1
-      enableDistanceBlend: 0
-      fadeStart: 0
-      fadeStop: 0
+      enableDistanceBlend: 1
+      fadeStart: 1000
+      fadeStop: 2000
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
     enableOutlineNormal: 1
     outlineColor:
-      lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 1, g: 0.56078434, b: 0, a: 1}
-      threshold: 1
-      width: 1
+      lightColor: {r: 0, g: 0, b: 0, a: 0}
+      shadowColor: {r: 0, g: 0, b: 0, a: 0}
+      threshold: 0
+      width: 0
       enableDistanceBlend: 0
       fadeStart: 0
       fadeStop: 0
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
     enableOutlineColor: 0
     hatch:
-      maxSize: 0
-      minSize: 0
-      spaceSize: 0
-      lightPower: 0
-      blendPower: 0
-    enableCrossHatch: 0
+      maxSize: 0.03
+      minSize: 0.01
+      spaceSize: 0.01
+      lightPower: 0.7
+      blendPower: 0.2
+    enableCrossHatch: 1
     useColoredTexture: 0
   outlineRamp: {fileID: 0}
   toonRamp:
     serializedVersion: 2
-    key0: {r: 0, g: 0, b: 0, a: 1}
-    key1: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
+    key0: {r: 0.05660379, g: 0.05660379, b: 0.05660379, a: 1}
+    key1: {r: 0.5377358, g: 0.5377358, b: 0.5377358, a: 1}
     key2: {r: 1, g: 1, b: 1, a: 0}
-    key3: {r: 1, g: 1, b: 1, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
     key7: {r: 0, g: 0, b: 0, a: 0}
-    ctime0: 4433
-    ctime1: 34310
+    ctime0: 3470
+    ctime1: 15613
     ctime2: 65535
-    ctime3: 65535
+    ctime3: 0
     ctime4: 0
     ctime5: 0
     ctime6: 0
@@ -85,4 +85,4 @@ MonoBehaviour:
   diffuseRampColored: {fileID: 0}
   diffuseBRDF: {fileID: 0}
   diffuseBRDFColored: {fileID: 0}
-  brdfType: 0
+  brdfType: 1

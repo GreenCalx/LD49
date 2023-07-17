@@ -7,6 +7,7 @@ using Schnibble;
 // > TODO : save seen cinematics to init triggerrs accordingly
 public class CinematicTrigger : MonoBehaviour, IControllable
 {
+    public bool triggerAtStart = false;
     public bool triggerOnlyOnce = true;
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
@@ -25,7 +26,8 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         triggered = false;
         cinematicDone = false;
-        StartCinematic();
+        if (triggerAtStart)
+            StartCinematic();
     }
 
     // Update is called once per frame
@@ -42,28 +44,46 @@ public class CinematicTrigger : MonoBehaviour, IControllable
             EndCinematic();
     }
 
-    private void EndCinematic()
+    public void EndCinematic()
     {
+        if (freezePlayer)
+        {
+            Access.Player().UnFreeze();
+        }
+
         Utils.detachControllable<CinematicTrigger>(this);
-        cam.gameObject.SetActive(false);
+        
         LevelEntryUI leui = Access.LevelEntryUI();
         if (!!leui)
         {
             leui.gameObject.SetActive(false);
         }
-        cam.end();
+        if (!!cam)
+        {
+            cam.gameObject.SetActive(false);
+            cam.end();
+        }
+
         if (triggerOnlyOnce)
             Destroy(gameObject);
         cinematicDone = true;
     }
 
-    private void StartCinematic()
+    public void StartCinematic()
     {
+        if (freezePlayer)
+        {
+            Access.Player().Freeze();
+        }
+
         Utils.attachControllable<CinematicTrigger>(this);
         
         triggered = true;
-        cam.gameObject.SetActive(true);
-        cam.launch();
+        if (!!cam)
+        {
+            cam.gameObject.SetActive(true);
+            cam.launch();
+        }
 
         // if is a level entry cinematic, display the right UI
         if (isLevelEntryCinematic)

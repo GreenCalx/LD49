@@ -87,7 +87,7 @@ public class CheckPoint : AbstractCameraPoint
             cpm.notifyCP(this.gameObject, collectMod == CollectiblesManager.COLLECT_MOD.HEAVEN);
 
             TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
-            if (!!tt)
+            if (!!tt && !!tt.trickUI)
             {
                 Access.TrackManager().addToScore(tt.storedScore);
                 tt.storedScore = 0;

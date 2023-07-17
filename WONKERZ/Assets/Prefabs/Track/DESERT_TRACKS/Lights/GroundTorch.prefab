@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6915018611507501831}
   - component: {fileID: 4550965810793717206}
-  - component: {fileID: 2998191870016654922}
+  - component: {fileID: 450688745263995838}
   m_Layer: 0
   m_Name: TorchLight
   m_TagString: Untagged
@@ -46,7 +46,7 @@ Light:
   m_Shape: 0
   m_Color: {r: 0.8773585, g: 0.41766554, b: 0, a: 1}
   m_Intensity: 1.5
-  m_Range: 100
+  m_Range: 200
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -95,7 +95,7 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &2998191870016654922
+--- !u!114 &450688745263995838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,7 +112,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.9
+      value: 0.92
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -120,7 +120,7 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 1
+      time: 5
       value: 1
       inSlope: 0
       outSlope: 0
@@ -470,43 +470,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 2685813607939564924, guid: 5872ad4a8e4d3924aa71b39e43e41e0f, type: 3}
---- !u!114 &9175312511871834347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8343023427739835178}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 271a1f7eb3a3e914b95f7f8416f5dbc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  AC:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  target_light: {fileID: 4550965810793717206}
 --- !u!4 &8683941969287807376 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5872ad4a8e4d3924aa71b39e43e41e0f, type: 3}

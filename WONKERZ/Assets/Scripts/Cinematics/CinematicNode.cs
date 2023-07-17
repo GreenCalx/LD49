@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class CinematicNode : MonoBehaviour
 {
     private float elapsedTime = 0f;
-    private bool  nodeActive = false;
+    public bool  nodeActive = false;
 
 
     [System.Serializable] public class CineEvent : UnityEvent<float, float, float> {}
