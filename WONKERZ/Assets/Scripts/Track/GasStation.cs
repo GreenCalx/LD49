@@ -96,7 +96,6 @@ public class GasStation : MonoBehaviour, IControllable
     void OnDestroy()
     {
         Utils.detachControllable<GasStation>(this);
-        Access.CheckPointManager().playerInGasStation = false;
     }
 
     void changeLightsColor(Color iColor)

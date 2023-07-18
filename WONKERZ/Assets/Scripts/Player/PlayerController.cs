@@ -504,16 +504,17 @@ public class PlayerController : MonoBehaviour, IControllable
         Vector3 repulseDir = contactPoint + contactNormal;
         repulseForce = -repulseDir * iRepulsionForce;
 
-        for (int i = 0; i < n_nuts; i++)
+        int availableNuts = (n_nuts >= iDamage) ? iDamage : n_nuts;
+        for (int i = 0; i < availableNuts; i++)
         {
             GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
             nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
-            }
+        }
         cm.loseNuts(iDamage);
         rb.AddForce(repulseForce, ForceMode.Impulse);
 
         //stateMachine.ForceState(invulState);
-        }
+    }
 
     bool modifierCalled = false;
 

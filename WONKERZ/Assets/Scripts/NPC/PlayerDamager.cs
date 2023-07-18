@@ -6,17 +6,19 @@ using Schnibble;
 public class PlayerDamager : MonoBehaviour
 {
     public int damageOnCollide = 99;
+    private readonly float delayBetweenDamages = 0.2f;
+    private float elapsedTimeSinceLastDamage = 0f;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        elapsedTimeSinceLastDamage = delayBetweenDamages;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
+        elapsedTimeSinceLastDamage += Time.fixedDeltaTime;
     }
 
     void OnCollisionEnter(Collision iCol)
@@ -25,7 +27,7 @@ public class PlayerDamager : MonoBehaviour
         if (Utils.collisionIsPlayer(iCol))
         {
             ContactPoint cp = iCol.contacts[0];
-            Access.Player().takeDamage(damageOnCollide, cp.point, cp.normal);
+            tryDoDamage(cp.point, cp.normal);
         }
     }
 
@@ -33,7 +35,34 @@ public class PlayerDamager : MonoBehaviour
     {
         if (!!Utils.colliderIsPlayer(iCol))
         {
-            Access.Player().takeDamage(damageOnCollide, transform.position, transform.forward);
+            tryDoDamage(transform.position, transform.forward);
         }
+    }
+
+    void OnCollisionStay(Collision iCol)
+    {
+        
+        if (Utils.collisionIsPlayer(iCol))
+        {
+            ContactPoint cp = iCol.contacts[0];
+            tryDoDamage(cp.point, cp.normal);
+        }
+    }
+
+    void OnTriggerStay(Collider iCol)
+    {
+        if (!!Utils.colliderIsPlayer(iCol))
+        {
+            tryDoDamage(transform.position, transform.forward);
+        }
+    }
+
+    private void tryDoDamage(Vector3 iDamageOrigin, Vector3 iDamageDir)
+    {
+        if (elapsedTimeSinceLastDamage < delayBetweenDamages)
+            return;
+
+        Access.Player().takeDamage(damageOnCollide, iDamageOrigin, iDamageDir);
+        elapsedTimeSinceLastDamage = 0f;
     }
 }
