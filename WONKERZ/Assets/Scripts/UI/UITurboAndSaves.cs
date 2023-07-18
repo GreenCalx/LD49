@@ -16,7 +16,7 @@ public class UITurboAndSaves : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        updateTurboBar(Access.CollectiblesManager().turboValueAtStart);
+        updateTurboBar();
         updateLastCPTriggered("x");
         cpImageFilled.fillAmount = 0f;
     }
@@ -41,9 +41,10 @@ public class UITurboAndSaves : MonoBehaviour
 
     }
 
-    public void updateTurboBar(float turboValue)
+    public void updateTurboBar()
     {
-        turboBar.fillAmount = turboValue;
+        PlayerController pc = Access.Player();
+        turboBar.fillAmount = pc.turbo.current / pc.turbo.max ;
     }
 
     public void updateLastCPTriggered(string iTxt)

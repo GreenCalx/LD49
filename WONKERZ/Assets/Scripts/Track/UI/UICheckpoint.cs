@@ -9,6 +9,8 @@ public class UICheckpoint : MonoBehaviour
     public TMPro.TextMeshProUGUI cp_text;
     public TMPro.TextMeshProUGUI cp_name_textval;
     public TMPro.TextMeshProUGUI cp_time_textval;
+
+    public TMPro.TextMeshProUGUI convertTxt;
     
     public Image pompistImage;
     public TMPro.TextMeshProUGUI idOfLastCPTriggered;

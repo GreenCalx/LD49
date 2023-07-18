@@ -1,7 +1,15 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
-public class GasStation : MonoBehaviour
+public class GasStation : MonoBehaviour, IControllable
 {
+    [Header("NutConvertAnim")]
+    public Transform convertNutsDestination;
+    public GameObject nutsRef;
+    public AnimationCurve heightCurve;
+
+    [Header("Params")]
     public Animator animator;
 
     public Color LightColorOnDeactivated;
@@ -18,18 +26,77 @@ public class GasStation : MonoBehaviour
     private string animatorActivationState = "ActivateStation";
 
     public bool bypassNutsCost = false;
+    private bool convertNuts = false;
 
     // Start is called before the first frame update
     void Start()
     {
         nutConversionElapsed = 99f;
         changeLightsColor(LightColorOnDeactivated);
+        convertNuts = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (convertNuts)
+        {
+            if (bypassNutsCost)
+            {
+                Access.Player().turbo.current = 1f;
+                Access.UITurboAndSaves().updateTurboBar();
+                return;
+            }
+            nutConversionElapsed += Time.deltaTime;
+            if (nutConversionElapsed > nutConversionInterval)
+            {
+                bool convertSuccess = Access.CollectiblesManager().tryConvertNutToTurbo();
+                nutConversionElapsed = 0f;
+                if (convertSuccess)
+                {
+                    if (!IsPumpingGas)
+                    {
+                        animator.SetBool(animatorParm, true);
+                        IsPumpingGas = true;
+                    }
+                    StartCoroutine(nutsConvertAnim(Instantiate(nutsRef)));
+                }
+                else if (!convertSuccess && IsPumpingGas)
+                {
+                    animator.SetBool(animatorParm, false);
+                    IsPumpingGas = false;
+                }
+            }
+        }
+    }
 
+    IEnumerator nutsConvertAnim(GameObject convertedNut)
+    {
+        convertedNut.transform.position = Access.Player().transform.position;
+        Vector3 start = convertedNut.transform.position;
+        Vector3 end = convertNutsDestination.transform.position;
+        Vector3 initScale = convertedNut.transform.localScale;
+
+        for (float time = 0f; time < 1f; time += Time.deltaTime)
+        {
+            convertedNut.transform.position  = Vector3.Lerp( start, end, time)
+                                            + Vector3.up * heightCurve.Evaluate(time);
+            convertedNut.transform.localScale  = Vector3.Lerp( initScale, Vector3.zero, time);
+            yield return null;
+        }
+
+        Destroy(convertedNut.gameObject);
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+        convertNuts = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue > 0;
+    }
+
+    void OnDestroy()
+    {
+        Utils.detachControllable<GasStation>(this);
+        Access.CheckPointManager().playerInGasStation = false;
     }
 
     void changeLightsColor(Color iColor)
@@ -54,27 +121,14 @@ public class GasStation : MonoBehaviour
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            if (bypassNutsCost)
+            UICheckpoint uicp = Access.UICheckpoint();
+            if (!!uicp)
             {
-                Access.CollectiblesManager().currentTurbo = 1f;
-                Access.UITurboAndSaves().updateTurboBar(Access.CollectiblesManager().currentTurbo);
-                return;
-            }
-            nutConversionElapsed += Time.deltaTime;
-            if (nutConversionElapsed > nutConversionInterval)
-            {
-                bool convertSuccess = Access.CollectiblesManager().tryConvertNutToTurbo();
-                nutConversionElapsed = 0f;
-                if (convertSuccess && !IsPumpingGas)
-                {
-                    animator.SetBool(animatorParm, true);
-                    IsPumpingGas = true;
-                }
-                else if (!convertSuccess && IsPumpingGas)
-                {
-                    animator.SetBool(animatorParm, false);
-                    IsPumpingGas = false;
-                }
+                uicp.convertTxt.gameObject.SetActive(true);
+                string str = "Press " + "<PUT PANEL KEY>" + " to convert";
+                uicp.convertTxt.text = str;
+                Utils.attachControllable<GasStation>(this);
+                Access.CheckPointManager().playerInGasStation = true;
             }
         }
     }
@@ -83,6 +137,14 @@ public class GasStation : MonoBehaviour
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
+            UICheckpoint uicp = Access.UICheckpoint();
+            if (!!uicp)
+            {
+                uicp.convertTxt.gameObject.SetActive(false);
+                Utils.detachControllable<GasStation>(this);
+                Access.CheckPointManager().playerInGasStation = false;
+            }
+
             if (IsPumpingGas)
             {
                 IsPumpingGas = false;

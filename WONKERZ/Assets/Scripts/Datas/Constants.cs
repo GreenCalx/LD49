@@ -59,7 +59,7 @@ public struct Constants
     public const string INPUT_UIUPDOWN = "UIUpDown";
     public const string INPUT_START = "Start";
     public const string INPUT_SAVESTATES = "SaveStates";
-    public const string INPUT_TURBO = "Start";
+    public const string INPUT_TURBO = "Turbo";
     public const string INPUT_CAMERACHANGE = "CameraChange";
     public static readonly string[] INPUT_AXIS = {INPUT_ACCEL, INPUT_TURN, INPUT_SAVESTATES}; // No cam input innit atm
     public static readonly string[] INPUT_BTNS = {INPUT_JUMP, INPUT_CANCEL, INPUT_TURBO, INPUT_START, INPUT_CAMERACHANGE};

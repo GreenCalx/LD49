@@ -183,5 +183,9 @@ public class Access
     {
         return cache.getObject<UIWonkerzBar>(Constants.GO_PLAYERUI, true);
     }
+    public static UICheckpoint UICheckpoint()
+    {
+        return cache.getObject<UICheckpoint>(Constants.GO_PLAYERUI, true);
+    }
 
 }

@@ -251,8 +251,8 @@ public class CollectiblesManager : MonoBehaviour
     public List<AbstractCollectible> allCollectiblesInCurrStage;
 
     ///
-    [HideInInspector]
-    public float currentTurbo;
+    // [HideInInspector]
+    // public float currentTurbo;
 
     void Awake()
     {
@@ -267,7 +267,7 @@ public class CollectiblesManager : MonoBehaviour
         jar.init();
         //loadJars();
 
-        currentTurbo = turboValueAtStart;
+        // currentTurbo = turboValueAtStart;
     }
 
     public void resetInfCollectibles()
@@ -293,11 +293,12 @@ public class CollectiblesManager : MonoBehaviour
         if (jar.collectedNuts <= 0)
             return false;
 
-        Access.Player().turbo.current = Mathf.Clamp(0, Access.Player().turbo.max, Access.Player().turbo.current + nutTurboConvertValue);
+        PlayerController pc = Access.Player();
+        pc.turbo.current = Mathf.Clamp(pc.turbo.current + nutTurboConvertValue, 0f, pc.turbo.max);
 
         jar.collectedNuts--;
 
-        Access.UITurboAndSaves().updateTurboBar(currentTurbo);
+        Access.UITurboAndSaves().updateTurboBar();
         Access.UISpeedAndLifePool().updateLifePool();
 
         return true;
@@ -355,8 +356,8 @@ public class CollectiblesManager : MonoBehaviour
         {
             if (collectMod == COLLECT_MOD.HELL)
             {
-                currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
-                Access.UITurboAndSaves().updateTurboBar(currentTurbo);
+                // currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
+                // Access.UITurboAndSaves().updateTurboBar(currentTurbo);
             }
             else
             {

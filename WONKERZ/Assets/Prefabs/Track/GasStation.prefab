@@ -462,6 +462,37 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1861611713031766750
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9029969311481577697}
+  m_Layer: 14
+  m_Name: ConvertedNutConvertDestination
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9029969311481577697
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1861611713031766750}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.3, y: 6.83, z: -5.51}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6788487132516729715}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2783390687739905747
 GameObject:
   m_ObjectHideFlags: 0
@@ -1269,6 +1300,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86cdf030f5e85d24d91f567951e0c8e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  convertNutsDestination: {fileID: 9029969311481577697}
+  nutsRef: {fileID: 5378957466281616729, guid: a1c54eddebf798f4083720d38151370a, type: 3}
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   animator: {fileID: 921531826}
   LightColorOnDeactivated: {r: 1, g: 0.08614111, b: 0, a: 1}
   LightColorOnActivated: {r: 0.5137255, g: 1, b: 0, a: 1}
@@ -1347,6 +1404,7 @@ Transform:
   - {fileID: 1059113460141730822}
   - {fileID: 4686770361287295303}
   - {fileID: 6636901134402121920}
+  - {fileID: 9029969311481577697}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

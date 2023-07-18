@@ -40,6 +40,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private bool playerIsFrozen = false;
     private bool anyKeyPressed = false;
 
+    public bool playerInGasStation = false;
+
     void Start()
     {
         if (checkpoints.Count <= 0)
@@ -111,10 +113,13 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         if (ss_save_or_load > 0) // SAVE
         {
-            if (elapsedSinceLastSS >= ss_latch)
+            if (!playerInGasStation)
             {
-                putSaveStateDown();
-                elapsedSinceLastSS = 0f;
+                if (elapsedSinceLastSS >= ss_latch)
+                {
+                    putSaveStateDown();
+                    elapsedSinceLastSS = 0f;
+                }
             }
             return;
         } else if ((ss_save_or_load < 0)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL

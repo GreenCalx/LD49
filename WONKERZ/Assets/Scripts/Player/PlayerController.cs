@@ -393,13 +393,14 @@ public class PlayerController : MonoBehaviour, IControllable
         if (turbo.intervalElapsedTime < turbo.timeInterval)
         return;
 
-        var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
-        if (nextTurboValue < 0)
-        return;
+        // var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
+        // if (nextTurboValue < 0)
+        // return;
+        float nextTurboValue = turbo.current - turbo.consumptionPerTick;
 
-        turbo.current = Mathf.Clamp(0, turbo.max, nextTurboValue);
+        turbo.current = Mathf.Clamp(nextTurboValue, 0f, turbo.max);
 
-        Access.UITurboAndSaves().updateTurboBar(turbo.current);
+        Access.UITurboAndSaves().updateTurboBar();
 
         Vector3 turboDir = transform.forward.normalized;
         Debug.DrawRay(transform.position, turboDir, Color.yellow, 4, false);
