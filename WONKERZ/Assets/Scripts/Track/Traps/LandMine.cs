@@ -50,6 +50,7 @@ public class LandMine : MonoBehaviour
         if (!!explosionEffect)
         {
             GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+            explosion.transform.localScale = new Vector3(explosionRange, explosionRange, explosionRange) * 1.5f;
             explosion.GetComponent<ExplosionEffect>().runEffect();
         }
 

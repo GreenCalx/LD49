@@ -135,6 +135,7 @@ MonoBehaviour:
   inertiaTensor: {x: 3000, y: 8000, z: 8000}
   inertiaTensorRotation: {x: 0, y: 0, z: 0}
   centerOfMass: {fileID: 4336036469478515849}
+  centerOfMassInitial: {x: 0, y: 0, z: 0}
   dragCoeff: 0
   downForceCoeff: 0
   maxSteeringAngle_deg: 19.2
@@ -782,6 +783,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2966540010634319501}
     m_Modifications:
+    - target: {fileID: 203806311797976544, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 203806311797976544, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 1041071239945571293, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -844,6 +853,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5754794406877809570, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5809302447052317859, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7357973849973574679, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}

@@ -17,13 +17,17 @@ public class GroundState : FSMState, IControllable
             player.TryJump();
             player.flags[PlayerController.FJump] = !player.TouchGround();
             // apply jump correction
-            var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
-            torque = player.car.transform.TransformDirection(torque);
-            player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
+            if (!player.TouchGround()) {
+                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
+                torque = player.car.transform.TransformDirection(torque);
+                player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
+            }
+            else {
+                player.SetCarCenterOfMass();
+            }
             // reset jump correction
             player.jump.diRoll = 0;
             player.jump.diPitch = 0;
-
         }
     }
 
@@ -482,7 +486,10 @@ public class PlayerController : MonoBehaviour, IControllable
         var front = car.axles[(int)AxleType.front];
         front.left.isHandbraked = v;
         front.right.isHandbraked = v;
+    }
 
+    public void SetCarCenterOfMass() {
+        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRoll * 2f, 0f, jump.diPitch * 3f);
     }
 
     /// =============== Game Logic ==================
@@ -531,35 +538,35 @@ public class PlayerController : MonoBehaviour, IControllable
             // modifier now used for torque control
             //if (Entry.Inputs["Modifier"].Down)
             //{
-                //Vector2 mouse_mod = new Vector2(Entry.Inputs["Power_MouseX"].AxisValue, Entry.Inputs["Power_MouseY"].AxisValue);
-                //pc.showUI(true);
-                //if (Entry.Inputs["Power1"].Down || (mouse_mod.x > 0))
-                //{ // BallPower
-                    //pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
-                    //pc.setNextPower(1);
-                //}
-                //else if (Entry.Inputs["Power2"].Down || (mouse_mod.y > 0))
-                //{ // WaterPower
-                    //pc.setNextPower(2);
-                    //pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
-                //}
-                //else if (Entry.Inputs["Power3"].Down || (mouse_mod.y < 0))
-                //{ // PlanePower
-                    //pc.showIndicator(PowerController.PowerWheelPlacement.UP);
-                    //pc.setNextPower(3);
-                //}
-                //else if (Entry.Inputs["Power4"].Down || (mouse_mod.x < 0))
-                //{ // SpiderPower
-                    //pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
-                    //pc.setNextPower(4);
-                //}
-                //else
-                    //{
-                        //pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
-                    //pc.setNextPower(0);
-                    //}
-                //modifierCalled = true;
-                //}
+            //Vector2 mouse_mod = new Vector2(Entry.Inputs["Power_MouseX"].AxisValue, Entry.Inputs["Power_MouseY"].AxisValue);
+            //pc.showUI(true);
+            //if (Entry.Inputs["Power1"].Down || (mouse_mod.x > 0))
+            //{ // BallPower
+            //pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
+            //pc.setNextPower(1);
+            //}
+            //else if (Entry.Inputs["Power2"].Down || (mouse_mod.y > 0))
+            //{ // WaterPower
+            //pc.setNextPower(2);
+            //pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
+            //}
+            //else if (Entry.Inputs["Power3"].Down || (mouse_mod.y < 0))
+            //{ // PlanePower
+            //pc.showIndicator(PowerController.PowerWheelPlacement.UP);
+            //pc.setNextPower(3);
+            //}
+            //else if (Entry.Inputs["Power4"].Down || (mouse_mod.x < 0))
+            //{ // SpiderPower
+            //pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
+            //pc.setNextPower(4);
+            //}
+            //else
+            //{
+            //pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
+            //pc.setNextPower(0);
+            //}
+            //modifierCalled = true;
+            //}
             //else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
             //{
             //pc.hideIndicators();
@@ -587,6 +594,6 @@ public class PlayerController : MonoBehaviour, IControllable
 
 
             pc.applyPowerEffectInInputs(Entry, this);
-}
-}
+        }
+    }
 }
