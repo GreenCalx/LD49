@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 public class CollectibleWONKERZ : AbstractCollectible
 {
@@ -6,6 +8,8 @@ public class CollectibleWONKERZ : AbstractCollectible
 
     public LETTERS currLetter;
     public float yRotationSpeed = 1f;
+
+    public TrackEvent wonkerzCollectedEvent;
 
     // Start is called before the first frame update
     void Start()
@@ -31,5 +35,15 @@ public class CollectibleWONKERZ : AbstractCollectible
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
         Access.UIWonkerzBar().display();
+
+        
+        // check if all letters are collected
+        foreach (LETTERS l in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+        {
+            if (!Access.CollectiblesManager().hasWONKERZLetter(l, Access.TrackManager().launchedTrackName))
+                return;
+        }
+        // all letters collected !
+        wonkerzCollectedEvent.setSolved();
     }
 }

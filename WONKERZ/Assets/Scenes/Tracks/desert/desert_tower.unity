@@ -2162,6 +2162,52 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 296180437230908054, guid: 2bacc5b5f2d144045a7bcc529e41226d, type: 3}
   m_PrefabInstance: {fileID: 915144754}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &95639500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 95639501}
+  - component: {fileID: 95639502}
+  m_Layer: 0
+  m_Name: WonkerzLettersEvent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &95639501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95639500}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1521585496}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &95639502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95639500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42d23a8ea7a13747804bfabc5b39980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventID: Desert WONKERZ
+  isSolved: 0
 --- !u!1 &96242503 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 333e915a964500740a5b5a9765a77eff, type: 3}
@@ -20121,6 +20167,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 173.76
       objectReference: {fileID: 0}
+    - target: {fileID: 3843873415767956635, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
+    - target: {fileID: 4058462760805642313, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
+    - target: {fileID: 5953119036735241385, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
     - target: {fileID: 6381927996664418098, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 268.46
@@ -20145,6 +20203,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -222.5
       objectReference: {fileID: 0}
+    - target: {fileID: 6909284960768128368, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
     - target: {fileID: 7723398553083669276, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
       propertyPath: m_LocalScale.x
       value: 12
@@ -20229,6 +20291,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7828874003750344692, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
     - target: {fileID: 7979659735327723268, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 259
@@ -20241,6 +20307,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -14.38
       objectReference: {fileID: 0}
+    - target: {fileID: 8414198604707683937, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
+    - target: {fileID: 8534591200293391015, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
+      propertyPath: wonkerzCollectedEvent
+      value: 
+      objectReference: {fileID: 95639502}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77263526586e25a4dad1f17f6e5c070c, type: 3}
 --- !u!4 &766797866 stripped
@@ -34623,6 +34697,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 766797866}
+  - {fileID: 95639501}
   m_Father: {fileID: 797710671}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -39204,7 +39279,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e42d23a8ea7a13747804bfabc5b39980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventID: MimicPot1
+  eventID: Desert Pot
   isSolved: 0
 --- !u!1 &1749397096
 GameObject:
