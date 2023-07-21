@@ -45,11 +45,15 @@ public class MaterialToonShaderParams : ScriptableObject
         public int enableCrossHatch;
         // use color or uniform textures for ramp, etc...
         public int useColoredTexture;
+        public Color rimColor;
+        public float rimPower;
+        public float rimMultiplier;
     };
 
     public static int SchnibbleCustomGPUDataGPUStride = SchnibbleCustomOutlineGPUStride * 3
                                                         + SchnibbleCrossHatchDataGPUStride * 1
-                                                        + sizeof(int) * 5;
+                                                        + sizeof(int) * 5
+                                                        + sizeof(float) * 6;
     public SchnibbleCustomGPUData gpuParams;
 
     public static int SchTextureW = 256;
