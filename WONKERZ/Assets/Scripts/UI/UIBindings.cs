@@ -63,10 +63,18 @@ public class UIBindings : UIPanelTabbed
         this.tabs.Clear();
     }
 
-    public void SetBinding(KeyCode code, string key, bool isNegativeAxis=false){
-        if (!isNegativeAxis)
-            InputSettings.Mapping[key].Positive[1] = (int)code;
+    public void SetBinding(int code, Device device, string key, bool isNegativeAxis = false)
+    {
+        if (device == Device.Mouse || device == Device.Keyboard)
+        {
+            if (!isNegativeAxis)
+            InputSettings.Mapping[key].Positive[1] = code;
+            else
+            InputSettings.Mapping[key].Negative[1] = code;
+        }
         else
-            InputSettings.Mapping[key].Negative[1] = (int)code;
+        {
+            InputSettings.Mapping[key].Positive[0] = code;
+        }
     }
-}
+    }
