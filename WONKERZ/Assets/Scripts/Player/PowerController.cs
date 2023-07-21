@@ -7,7 +7,7 @@ public class PowerController : MonoBehaviour
 {
     public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
 
-    public GameObject ballPowerObject;
+    public GameObject turboParticles;
 
     public List<ICarPower> powers;
     public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
@@ -22,7 +22,7 @@ public class PowerController : MonoBehaviour
         powers = new List<ICarPower>()
         {
             new NeutralCarPower(),
-            new BallCarPower(ballPowerObject),
+            new TurboCarPower(turboParticles),
             new WaterCarPower(),
             new PlaneCarPower(),
             new SpiderCarPower()
@@ -33,8 +33,10 @@ public class PowerController : MonoBehaviour
     void Start()
     {
         showUI(false);
+        
         // Load Unlocked powers
         // unlock everything in the meantime
+        CollectiblesManager CM = Access.CollectiblesManager();
         foreach (ICarPower cp in powers)
         {
             unlockedPowers.Add(cp, true);

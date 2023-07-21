@@ -43,63 +43,43 @@ public class NeutralCarPower : ICarPower
     }
 }
 
-public class BallCarPower : ICarPower
+public class TurboCarPower : ICarPower
 {
+    public GameObject turboParticlesRef;
+    public GameObject turboParticlesInst;
+
     public string name { get; set; }
-    public GameObject modelObjectRef;
 
-    private GameObject modelObjectInst;
-
-    public BallCarPower(GameObject iModelObject)
+    public TurboCarPower(GameObject iTurboParticles)
     {
-        name = "BallPower";
-        modelObjectRef = iModelObject;
+        name = "TurboPower";
+        turboParticlesRef = iTurboParticles;
     }
     public void applyDirectEffect()
     {
         PlayerController player = Access.Player();
 
-        modelObjectInst = GameObject.Instantiate(modelObjectRef);
-        modelObjectInst.transform.position = player.transform.position;
-        modelObjectInst.transform.rotation = player.transform.rotation;
+        turboParticlesInst = GameObject.Instantiate(turboParticlesRef);
+        turboParticlesInst.transform.position = player.transform.position;
+        turboParticlesInst.transform.rotation = player.transform.rotation;
 
-        Rigidbody player_rb = player.car.rb;
-        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
-        if (model_rb && player_rb)
-        {
-            //model_rb.velocity = player_rb.velocity;
-            model_rb.AddForce(player_rb.velocity, ForceMode.VelocityChange);
-        }
+        turboParticlesInst.GetComponent<ParticleSystem>()?.Play();
     }
     public void onRefresh()
     {
         PlayerController cc = Access.Player();
-        cc.transform.position = modelObjectInst.transform.position;
-        cc.transform.rotation = modelObjectInst.transform.rotation;
-
-        Rigidbody player_rb = cc.GetComponent<Rigidbody>();
-        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
-        if (model_rb && player_rb)
-        {
-            //model_rb.velocity = player_rb.velocity;
-            player_rb.velocity = model_rb.velocity;
-        }
+        cc.transform.position = turboParticlesInst.transform.position;
+        cc.transform.rotation = turboParticlesInst.transform.rotation;
     }
+
     public void onDisableEffect()
     {
-        PlayerController cc = Access.Player();
-        Rigidbody player_rb = cc.GetComponent<Rigidbody>();
-        Rigidbody model_rb = modelObjectInst.GetComponent<Rigidbody>();
-        if (model_rb && player_rb)
-        {
-            //model_rb.velocity = player_rb.velocity;
-            player_rb.velocity = model_rb.velocity;
-        }
-        GameObject.Destroy(modelObjectInst);
+        GameObject.Destroy(turboParticlesInst);
     }
+
     public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
     {
-        this.Log("Ball Input effects");
+        this.Log("Turbo Input effects");
         // No motor
     }
     public bool turnOffTriggers()
