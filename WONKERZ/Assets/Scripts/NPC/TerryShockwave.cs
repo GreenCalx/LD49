@@ -31,7 +31,7 @@ public class TerryShockwave : MonoBehaviour
 
     private IEnumerator spreadWave(TerryShockwave iTS)
     {
-        for (float time = 0f; time < shockwaveDuration; time += Time.fixedDeltaTime)
+        for (float time = 0f; time < shockwaveDuration; time += Time.deltaTime)
         {
             iTS.transform.localScale += shockwaveScaleStep * shockwaveSpeed;
             iTS.transform.position += new Vector3(0, -1 * YPosOverTime.Evaluate(time/shockwaveDuration), 0);
