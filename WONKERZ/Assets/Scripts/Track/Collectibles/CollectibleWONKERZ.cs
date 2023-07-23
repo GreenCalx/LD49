@@ -5,11 +5,14 @@ using System;
 public class CollectibleWONKERZ : AbstractCollectible
 {
     public enum LETTERS { W, O, N, K, E, R, Z }
+    
 
     public LETTERS currLetter;
     public float yRotationSpeed = 1f;
 
     public TrackEvent wonkerzCollectedEvent;
+    public AudioClip onCollect_SFX;
+    public AudioClip onAllLetters_SFX;
 
     // Start is called before the first frame update
     void Start()
@@ -31,6 +34,8 @@ public class CollectibleWONKERZ : AbstractCollectible
 
     protected override void OnCollect()
     {
+        Schnibble.Utils.SpawnAudioSource( onCollect_SFX, transform);
+
         gameObject.SetActive(false);
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
@@ -44,6 +49,7 @@ public class CollectibleWONKERZ : AbstractCollectible
                 return;
         }
         // all letters collected !
+        Schnibble.Utils.SpawnAudioSource( onAllLetters_SFX, transform);
         wonkerzCollectedEvent.setSolved();
     }
 }

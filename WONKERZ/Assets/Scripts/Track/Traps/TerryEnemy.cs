@@ -11,6 +11,7 @@ public class TerryEnemy : Trap
     public GameObject shockwaveTorusRef;
     public Vector3 shockwavePosOffset;
 
+    public AudioClip SFX_Stomp;
     public ParticleSystem PS_TerryDust;
 
     private GameObject shockwaveTorusInst;
@@ -39,6 +40,7 @@ public class TerryEnemy : Trap
             }
             if (iCooldownPercent >= 0.8f)
             {
+                Schnibble.Utils.SpawnAudioSource( SFX_Stomp, transform);
                 shockwaveTorusInst = Instantiate(shockwaveTorusRef);
                 shockwaveTorusInst.transform.position = transform.position + shockwavePosOffset;
                 TerryShockwave ts = shockwaveTorusInst.GetComponent<TerryShockwave>();
