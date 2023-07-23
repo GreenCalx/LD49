@@ -39,4 +39,9 @@ public class UITitleScreen : UIPanelTabbed
     public void quitGame(){
         Schnibble.Utils.ExitGame();
     }
+
+    public void launchDemo()
+    {
+        Access.SceneLoader().loadScene(Constants.SN_DESERT_TOWER);
+    }
 }
