@@ -17,6 +17,10 @@ public class StartLine : MonoBehaviour
     public bool enable_tricks = false;
     public bool is_rdy_to_launch = true;
 
+    public AudioSource audioSource;
+    public AudioClip countDownSFX0;
+    public AudioClip countDownSFX1;
+
     [Header("Debug")]
     public bool bypassCountdown = false;
 
@@ -70,11 +74,28 @@ public class StartLine : MonoBehaviour
     {
         iPC.Freeze();
 
+        audioSource.clip = countDownSFX0;
+        audioSource.Play(0);
+
         while (countdownElapsedTime < 3f)
         {
+            if (countdownElapsedTime >= 1f && countdownElapsedTime < 1.1f) {
+                audioSource.clip = countDownSFX0;
+                audioSource.Play(0);
+            }
+            if (countdownElapsedTime >= 2f && countdownElapsedTime < 2.1f)
+            {
+                audioSource.clip = countDownSFX0;
+                audioSource.Play(0);
+            }
+            
             UIStartTrackInst.updateDisplay(countdownElapsedTime);
             yield return new WaitForSeconds(0.1f);
         }
+
+        audioSource.clip = countDownSFX1;
+        audioSource.Play(0);
+
         UIStartTrackInst.updateDisplay(countdownElapsedTime);
         launchTrack();
         iPC.UnFreeze();

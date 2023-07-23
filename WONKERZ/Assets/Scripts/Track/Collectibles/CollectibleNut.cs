@@ -27,6 +27,9 @@ public class CollectibleNut : AbstractCollectible
     private float travelTime;
     private float startTime;
 
+    public AudioClip onCollectSound;
+    public AudioSource audioSource;
+
     [Header("OnDamageTweaks")]
     public float yExpulsionSlope = 1.5f;
     public float playerExpulsionForceMul = 2f;
@@ -159,6 +162,7 @@ public class CollectibleNut : AbstractCollectible
                 return;
         }
 
+        Schnibble.Utils.SpawnAudioSource(onCollectSound, transform);
         // Effect on collect
         if (Access.CollectiblesManager().collectMod == CollectiblesManager.COLLECT_MOD.HELL)
         {

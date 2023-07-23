@@ -251,6 +251,8 @@ public class PlayerController : MonoBehaviour, IControllable
         public float diPitch;
         public float diRoll;
         public float diMaxForce;
+
+        public AudioClip[] sounds;
     }
     [Header("Jump")]
     public Jump jump;
@@ -301,6 +303,8 @@ public class PlayerController : MonoBehaviour, IControllable
     private GameObject planeInstance;
 
     public Rigidbody rb;
+
+    public AudioSource audioSource;
 
     void Awake()
     {
@@ -357,6 +361,7 @@ public class PlayerController : MonoBehaviour, IControllable
         float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression / springCompressionTime);
         springCompVal = Mathf.Min(1, springCompVal);
 
+
         float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression / springCompressionTime));
 
         jumpDecal.SetAnimationTime(springJumpFactor);
@@ -377,7 +382,11 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             float springCompVal = springElapsedCompression / springCompressionTime;
             springCompVal = Mathf.Min(1, springCompVal);
-
+        if (springCompVal > 0.5f)
+{
+    audioSource.clip = jump.sounds[0];
+    audioSource.Play(0);
+}
             float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
 
             foreach (var axle in car.axles)
