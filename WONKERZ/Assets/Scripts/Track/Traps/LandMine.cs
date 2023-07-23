@@ -17,6 +17,7 @@ public class LandMine : MonoBehaviour
     private float elapsedTimeBeforeExplosion = 0f;
 
     private bool isTriggered = false;
+    public AudioClip boomSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,9 @@ public class LandMine : MonoBehaviour
             explosion.transform.localScale = new Vector3(explosionRange, explosionRange, explosionRange) * 1.5f;
             explosion.GetComponent<ExplosionEffect>().runEffect();
         }
+
+        // SFX
+        Schnibble.Utils.SpawnAudioSource(boomSFX, transform);
 
         // if player is around, do damage and push away
         if (!!playerDetector)

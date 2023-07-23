@@ -20,6 +20,8 @@ public class MimicPot : MonoBehaviour
     private bool inReversedPath = false;
 
     private TrackEvent trackEvent;
+    public AudioClip breakSFX;
+
 
     // Start is called before the first frame update
     void Start()
@@ -177,6 +179,9 @@ public class MimicPot : MonoBehaviour
         if (!!mr)
             mr.enabled = false;
         Destroy(mc.gameObject);
+
+        // Play SFX
+        Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
 
         // Explode mimic's butt
         List<MeshRenderer> mrs = new List<MeshRenderer>(mimicVersionInst.GetComponentsInChildren<MeshRenderer>());
