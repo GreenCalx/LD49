@@ -34,8 +34,6 @@ public class CollectibleWONKERZ : AbstractCollectible
 
     protected override void OnCollect()
     {
-        Schnibble.Utils.SpawnAudioSource( onCollect_SFX, transform);
-
         gameObject.SetActive(false);
         //TODO : persist collected status
         Access.CollectiblesManager().applyCollectEffect(this);
@@ -46,9 +44,12 @@ public class CollectibleWONKERZ : AbstractCollectible
         foreach (LETTERS l in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
         {
             if (!Access.CollectiblesManager().hasWONKERZLetter(l, Access.TrackManager().launchedTrackName))
+            {
+                Schnibble.Utils.SpawnAudioSource( onCollect_SFX, transform); // normal SFX
                 return;
+            }
         }
-        // all letters collected !
+        // all letters collected ! special SFX
         Schnibble.Utils.SpawnAudioSource( onAllLetters_SFX, transform);
         wonkerzCollectedEvent.setSolved();
     }

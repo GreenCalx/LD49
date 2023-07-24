@@ -17,7 +17,7 @@ public class LandMine : MonoBehaviour
     private float elapsedTimeBeforeExplosion = 0f;
 
     private bool isTriggered = false;
-    public AudioClip boomSFX;
+    public AudioSource boomSFX;
 
     // Start is called before the first frame update
     void Start()

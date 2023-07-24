@@ -1,8 +1,10 @@
 using UnityEngine;
+using Schnibble;
 
 public class CageKeyCollectible : AbstractCollectible
 {
     public string trackname = "";
+    public AudioSource keyCollect_SFX;
     void Start()
     {
         if (Access.CollectiblesManager().hasCageKey(trackname))
@@ -13,6 +15,7 @@ public class CageKeyCollectible : AbstractCollectible
 
     protected override void OnCollect()
     {
+        Schnibble.Utils.SpawnAudioSource(keyCollect_SFX, transform);
         Access.CollectiblesManager().applyCollectEffect(this);
         Destroy(gameObject);
     }
