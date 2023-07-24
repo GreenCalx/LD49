@@ -25,9 +25,7 @@ public class GroundState : FSMState, IControllable
             else {
                 player.SetCarCenterOfMass();
             }
-            // reset jump correction
-            player.jump.diRoll = 0;
-            player.jump.diPitch = 0;
+
         }
     }
 
@@ -80,8 +78,10 @@ public class GroundState : FSMState, IControllable
             var x = Entry.Inputs["Turn"].AxisValue;
             var y = Entry.Inputs["UIUpDown"].AxisValue;
 
-            player.jump.diRoll += x;
-            player.jump.diPitch += y;
+            player.jump.diRollUnscaled = x;
+            player.jump.diPitchUnscaled = y;
+            player.jump.diRoll += x * Time.deltaTime;
+            player.jump.diPitch += y * Time.deltaTime;
         }
     }
 
@@ -250,6 +250,8 @@ public class PlayerController : MonoBehaviour, IControllable
         // di
         public float diPitch;
         public float diRoll;
+        public float diPitchUnscaled;
+        public float diRollUnscaled;
         public float diMaxForce;
 
         public AudioClip[] sounds;
@@ -499,7 +501,8 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void SetCarCenterOfMass() {
-        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRoll * 2f, 0f, jump.diPitch * 3f);
+        Debug.Log(jump.diRollUnscaled); 
+        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * 2f, 0f, jump.diPitchUnscaled * 3f);
     }
 
     /// =============== Game Logic ==================
@@ -539,6 +542,11 @@ public class PlayerController : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         // Every states controls
+                    // reset jump correction
+            jump.diRoll = 0;
+            jump.diPitch = 0;
+            jump.diRollUnscaled = 0;
+            jump.diPitchUnscaled = 0;
 
         // power controller update
         PowerController pc = GetComponent<PowerController>();

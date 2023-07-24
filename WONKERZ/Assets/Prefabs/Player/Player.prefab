@@ -80,7 +80,9 @@ MonoBehaviour:
     value: 10
     diPitch: 0
     diRoll: 0
-    diMaxForce: 0.1
+    diPitchUnscaled: 0
+    diRollUnscaled: 0
+    diMaxForce: 10
     sounds:
     - {fileID: 8300000, guid: 1d15a2153cb7aee40839ca9edacfb461, type: 3}
   turbo:
@@ -139,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overrideInertia: 1
-  linearInertia: 2000
+  linearInertia: 20000
   inertiaTensor: {x: 3000, y: 8000, z: 8000}
   inertiaTensorRotation: {x: 0, y: 0, z: 0}
   centerOfMass: {fileID: 4336036469478515849}
