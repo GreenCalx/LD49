@@ -19,7 +19,7 @@ public class BreakableObject : MonoBehaviour
     public bool swallowBreak;
     public UnityEvent OnBreakFunc;
 
-    public AudioClip breakSFX;
+    public AudioSource breakSFX;
 
     // Start is called before the first frame update
     void Start()
@@ -62,8 +62,7 @@ public class BreakableObject : MonoBehaviour
                 { tryBreak(Access.Player()); }
                 OnBreakFunc.Invoke();
 
-                // SFX
-                Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
+                
             } 
             else { tryBreak(Access.Player()); }
         }
@@ -98,6 +97,8 @@ public class BreakableObject : MonoBehaviour
         {
             breakWall(rch.point);
             elapsedTimeSinceBreak = 0f;
+            // SFX
+            Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
             isBroken = true;
         }
     }

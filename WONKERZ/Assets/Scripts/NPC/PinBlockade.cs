@@ -8,7 +8,7 @@ using Schnibble;
 // X/Z Angles PID   : Stays up
 public class PinBlockade : PIDController
 {
-    public AudioClip collideSFX;
+    public AudioSource collideSFX;
 
     public bool is_NavAgent = false;
     public string navAgentMaskName = "Walkable";

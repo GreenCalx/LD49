@@ -27,8 +27,7 @@ public class CollectibleNut : AbstractCollectible
     private float travelTime;
     private float startTime;
 
-    public AudioClip onCollectSound;
-    public AudioSource audioSource;
+    public AudioSource onCollectSound;
 
     [Header("OnDamageTweaks")]
     public float yExpulsionSlope = 1.5f;

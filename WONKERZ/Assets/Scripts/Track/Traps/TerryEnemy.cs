@@ -11,7 +11,7 @@ public class TerryEnemy : Trap
     public GameObject shockwaveTorusRef;
     public Vector3 shockwavePosOffset;
 
-    public AudioClip SFX_Stomp;
+    public AudioSource SFX_Stomp;
     public ParticleSystem PS_TerryDust;
 
     private GameObject shockwaveTorusInst;

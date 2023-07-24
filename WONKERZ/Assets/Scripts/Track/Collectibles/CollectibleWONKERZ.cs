@@ -11,8 +11,8 @@ public class CollectibleWONKERZ : AbstractCollectible
     public float yRotationSpeed = 1f;
 
     public TrackEvent wonkerzCollectedEvent;
-    public AudioClip onCollect_SFX;
-    public AudioClip onAllLetters_SFX;
+    public AudioSource onCollect_SFX;
+    public AudioSource onAllLetters_SFX;
 
     // Start is called before the first frame update
     void Start()

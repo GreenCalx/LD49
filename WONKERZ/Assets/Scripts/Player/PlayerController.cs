@@ -384,6 +384,7 @@ public class PlayerController : MonoBehaviour, IControllable
             springCompVal = Mathf.Min(1, springCompVal);
         if (springCompVal > 0.5f)
 {
+   Debug.Log("jump sound");
     audioSource.clip = jump.sounds[0];
     audioSource.Play(0);
 }
