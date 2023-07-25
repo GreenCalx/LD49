@@ -384,12 +384,11 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             float springCompVal = springElapsedCompression / springCompressionTime;
             springCompVal = Mathf.Min(1, springCompVal);
-        if (springCompVal > 0.5f)
-{
-   Debug.Log("jump sound");
-    audioSource.clip = jump.sounds[0];
-    audioSource.Play(0);
-}
+            if (springCompVal > 0.5f)
+            {
+                audioSource.clip = jump.sounds[0];
+                audioSource.Play(0);
+            }
             float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
 
             foreach (var axle in car.axles)
