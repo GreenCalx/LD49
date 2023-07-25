@@ -13,6 +13,7 @@ public class Access
         private GameObject GO_PLAYER;
         private GameObject GO_UIGARAGE;
         private GameObject GO_UIPLAYER;
+        private GameObject GO_PHYSXMATMGR;
         /* IF WE WANT TO ECO GetComponent<> call..
                 public InputManager         IM;
                 public ResolutionManager    RM;
@@ -64,6 +65,9 @@ public class Access
             else if (iHolder == Constants.GO_PLAYERUI)
             {
                 handler = checkCacheObject(iHolder, ref GO_UIPLAYER);
+            } else if (iHolder == Constants.GO_PHYSXMATMGR)
+            {
+                handler = checkCacheObject(iHolder, ref GO_PHYSXMATMGR);
             }
             else
             {
@@ -85,6 +89,7 @@ public class Access
             GO_UIGARAGE = null;
             GO_SOUNDMANAGER = null;
             GO_UIPLAYER = null;
+            GO_PHYSXMATMGR = null;
         }
     }
 
@@ -186,6 +191,10 @@ public class Access
     public static UICheckpoint UICheckpoint()
     {
         return cache.getObject<UICheckpoint>(Constants.GO_PLAYERUI, true);
+    }
+    public static PhysicsMaterialManager PhysicsMaterialManager()
+    {
+        return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
     }
 
 }

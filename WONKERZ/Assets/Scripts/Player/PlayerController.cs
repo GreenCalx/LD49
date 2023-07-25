@@ -452,8 +452,10 @@ public class PlayerController : MonoBehaviour, IControllable
     public bool IsAlive()
     {
         CollectiblesManager cm = Access.CollectiblesManager();
-        int n_nuts = cm != null ? cm.getCollectedNuts() : 0;
-        return (n_nuts >= 0);
+        if (cm == null)
+            return true;
+
+        return (cm.getCollectedNuts() >= 0);
     }
 
     public void Kill(Vector3 iSteer = default(Vector3))

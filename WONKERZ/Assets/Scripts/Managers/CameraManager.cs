@@ -292,6 +292,9 @@ public class CameraManager : MonoBehaviour, IControllable
         active_camera.GetComponent<Camera>().enabled = true;
         active_camera.init();
 
+        PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
+        if (!!PMM)
+            PMM.SetCamera(active_camera.GetComponent<Camera>());
     }
 
     public bool interpolatePosition(Transform iStart, Transform iEnd)
