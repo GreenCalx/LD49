@@ -61,6 +61,8 @@ public struct Constants
     public const string INPUT_SAVESTATES = "SaveStates";
     public const string INPUT_TURBO = "Turbo";
     public const string INPUT_CAMERACHANGE = "CameraChange";
+    public const string INPUT_HANDBRAKE = "Handbrake";
+    public const string INPUT_WEIGHTCONTROL = "WeightControl";
     public static readonly string[] INPUT_AXIS = {INPUT_ACCEL, INPUT_TURN, INPUT_SAVESTATES}; // No cam input innit atm
     public static readonly string[] INPUT_BTNS = {INPUT_JUMP, INPUT_CANCEL, INPUT_TURBO, INPUT_START, INPUT_CAMERACHANGE};
 

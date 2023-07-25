@@ -111,7 +111,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         } else { saveStateLoaded = false; }
 
 
-        if (ss_save_or_load > 0) // SAVE
+        if (ss_save_or_load < 0) // SAVE
         {
             if (!playerInGasStation)
             {
@@ -122,7 +122,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 }
             }
             return;
-        } else if ((ss_save_or_load < 0)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
+        } else if ((ss_save_or_load > 0)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
         {
             if (!respawnCalled)
             {

@@ -45,25 +45,25 @@ public class GroundState : FSMState, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (Entry.Inputs["Jump"].Down)
+        if (Entry.Inputs[Constants.INPUT_JUMP].Down)
         {
             player.SetSpringSizeMinAndLock();
         }
         else
         {
-            if (Entry.Inputs["Jump"].IsUp)
+            if (Entry.Inputs[Constants.INPUT_JUMP].IsUp)
             {
                 player.jump.applyForceMultiplier = true;
             }
             player.ResetSpringSizeMinAndUnlock();
         }
 
-        if (Entry.Inputs["Turbo"].Down)
+        if (Entry.Inputs[Constants.INPUT_TURBO].Down)
         {
             player.useTurbo();
         }
 
-        if (Entry.Inputs["Power1"].Down)
+        if (Entry.Inputs[Constants.INPUT_HANDBRAKE].Down)
         {
             player.SetHandbrake(true);
         } else
@@ -73,10 +73,10 @@ public class GroundState : FSMState, IControllable
 
         // makes car torque control a power
         //if (player.flags[PlayerController.FJump])
-        if (Entry.Inputs["Modifier"].Down)
+        if (Entry.Inputs[Constants.INPUT_WEIGHTCONTROL].Down)
         {
-            var x = Entry.Inputs["Turn"].AxisValue;
-            var y = Entry.Inputs["UIUpDown"].AxisValue;
+            var x = Entry.Inputs[Constants.INPUT_TURN].AxisValue;
+            var y = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
 
             player.jump.diRollUnscaled = x;
             player.jump.diPitchUnscaled = y;
@@ -501,7 +501,7 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void SetCarCenterOfMass() {
-        Debug.Log(jump.diRollUnscaled); 
+        //Debug.Log(jump.diRollUnscaled); 
         car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * 2f, 0f, jump.diPitchUnscaled * 3f);
     }
 
