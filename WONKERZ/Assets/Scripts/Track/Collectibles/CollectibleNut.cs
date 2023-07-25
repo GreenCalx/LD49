@@ -153,7 +153,6 @@ public class CollectibleNut : AbstractCollectible
     {
         if (collected)
             return;
-        collected = true;
 
         if (spawnedFromDamage)
         {
@@ -184,8 +183,8 @@ public class CollectibleNut : AbstractCollectible
             }
         }
 
-        //gameObject.SetActive(false);
         Access.CollectiblesManager().applyCollectEffect(this);
+        collected = true;
         Destroy(gameObject);
     }
 }
