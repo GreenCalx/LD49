@@ -26,8 +26,8 @@ MonoBehaviour:
     outlineNormal:
       lightColor: {r: 1, g: 0.83911955, b: 0.023584902, a: 1}
       shadowColor: {r: 0.8584906, g: 0.47373566, b: 0.052643314, a: 1}
-      threshold: 0
-      width: 0.001
+      threshold: 1
+      width: 0.1
       enableDistanceBlend: 0
       fadeStart: 500
       fadeStop: 1000
@@ -49,8 +49,11 @@ MonoBehaviour:
       spaceSize: 0
       lightPower: 0.7
       blendPower: 0
-    enableCrossHatch: 1
+    enableCrossHatch: 0
     useColoredTexture: 0
+    rimColor: {r: 0, g: 1, b: 0.047595263, a: 1}
+    rimPower: 1.1
+    rimMultiplier: 2
   outlineRamp: {fileID: 0}
   toonRamp:
     serializedVersion: 2
