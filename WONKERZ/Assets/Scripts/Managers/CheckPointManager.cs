@@ -136,7 +136,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         if (respawnCalled) // ACTUAL LOAD
         {
-            if (ss_save_or_load >= 0f) // input released
+            if (ss_save_or_load <= 0f) // input released
             {
                 if (respawnButtonDownElapsed>=timeToForceCPLoad)
                 {
