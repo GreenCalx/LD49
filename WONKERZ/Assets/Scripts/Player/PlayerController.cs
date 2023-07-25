@@ -259,6 +259,9 @@ public class PlayerController : MonoBehaviour, IControllable
     [Header("Jump")]
     public Jump jump;
 
+    public float weightControlMaxX = 1;
+    public float weightControlMaxZ = 2;
+
     [System.Serializable]
     public struct Turbo
     {
@@ -452,7 +455,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         CollectiblesManager cm = Access.CollectiblesManager();
         if (cm == null)
-            return true;
+        return true;
 
         return (cm.getCollectedNuts() >= 0);
     }
@@ -502,8 +505,8 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void SetCarCenterOfMass() {
-        //Debug.Log(jump.diRollUnscaled); 
-        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * 2f, 0f, jump.diPitchUnscaled * 3f);
+        //Debug.Log(jump.diRollUnscaled);
+        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * weightControlMaxX, 0f, jump.diPitchUnscaled * weightControlMaxZ);
     }
 
     /// =============== Game Logic ==================
@@ -543,11 +546,11 @@ public class PlayerController : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         // Every states controls
-                    // reset jump correction
-            jump.diRoll = 0;
-            jump.diPitch = 0;
-            jump.diRollUnscaled = 0;
-            jump.diPitchUnscaled = 0;
+        // reset jump correction
+        jump.diRoll = 0;
+        jump.diPitch = 0;
+        jump.diRollUnscaled = 0;
+        jump.diPitchUnscaled = 0;
 
         // power controller update
         PowerController pc = GetComponent<PowerController>();
