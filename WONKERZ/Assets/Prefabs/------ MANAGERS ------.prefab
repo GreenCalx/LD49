@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 6406061366281777605}
   - component: {fileID: -1292285153376040016}
   - component: {fileID: 1844676545904051825}
+  - component: {fileID: -5754234224573047130}
   m_Layer: 0
   m_Name: ------ MANAGERS ------
   m_TagString: Untagged
@@ -121,7 +122,6 @@ MonoBehaviour:
   collectModCombo: 0
   jar: {fileID: 0}
   allCollectiblesInCurrStage: []
-  currentTurbo: 0
 --- !u!114 &610670227064521673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,16 +159,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultPBValue: 999999999
+  defaultHighScoreValue: 0
+  launchedTrackName: 
   track_score:
     track_time: 0
+    trick_score: 0
     selected_diff: 0
     track_name: 
     track_score_data:
       ResourcesPath: 
       loadedTrackScore:
         track_time: 0
+        trick_score: 0
         selected_diff: 0
         track_name: 
+  track_events: []
 --- !u!114 &-1292285153376040016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +187,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UICheckListItem: {fileID: 3423081358868100822, guid: c0652eb0d02881c41b123f9dcb437549, type: 3}
+  bountyMatrix:
+    bounty_unlock_matrix_data:
+      ResourcesPath: 
 --- !u!114 &1844676545904051825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -249,3 +257,15 @@ MonoBehaviour:
       carPart: 7
     - mesh: {fileID: 2951650304025065680, guid: 9df8198afb929f340a71a440011c0fc6, type: 3}
       carPart: 6
+--- !u!114 &-5754234224573047130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5fb59ec85cc7e4595db03a8125b58e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
