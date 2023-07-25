@@ -234,6 +234,7 @@ GameObject:
   - component: {fileID: 2905345888641411799}
   - component: {fileID: 7263607054727048301}
   - component: {fileID: 7715815326473191631}
+  - component: {fileID: 585710036227528163}
   m_Layer: 0
   m_Name: TorchLight
   m_TagString: Untagged
@@ -268,8 +269,8 @@ Light:
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 0.9433962, g: 0.7817882, b: 0.38714847, a: 1}
-  m_Intensity: 0.5
-  m_Range: 50
+  m_Intensity: 1
+  m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -325,7 +326,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9077691890162241091}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 271a1f7eb3a3e914b95f7f8416f5dbc5, type: 3}
   m_Name: 
@@ -355,6 +356,27 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   target_light: {fileID: 7263607054727048301}
+--- !u!95 &585710036227528163
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9077691890162241091}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bc81de8b6de628f48b8e1e0769ce7a89, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1444151994354208380
 PrefabInstance:
   m_ObjectHideFlags: 0
