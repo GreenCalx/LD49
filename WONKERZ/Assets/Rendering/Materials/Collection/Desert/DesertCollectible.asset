@@ -14,30 +14,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gpuParams:
     outlineDepth:
-      lightColor: {r: 0.62201357, g: 1, b: 0, a: 1}
+      lightColor: {r: 0, g: 0, b: 0, a: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
       threshold: 0.00001
-      width: 3
+      width: 1
       enableDistanceBlend: 1
       fadeStart: 0
       fadeStop: 300
       distanceColor: {r: 0, g: 0, b: 0, a: 1}
     enableOutlineDepth: 1
     outlineNormal:
-      lightColor: {r: 1, g: 0.8974021, b: 0.08962262, a: 0}
+      lightColor: {r: 0, g: 0, b: 0, a: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
-      threshold: 0.000001
+      threshold: 0.8
       width: 0.5
       enableDistanceBlend: 1
       fadeStart: 0
-      fadeStop: 300
+      fadeStop: 10
       distanceColor: {r: 0, g: 0, b: 0, a: 1}
-    enableOutlineNormal: 0
+    enableOutlineNormal: 1
     outlineColor:
-      lightColor: {r: 0.18697512, g: 1, b: 0, a: 1}
+      lightColor: {r: 0.16316223, g: 1, b: 0, a: 1}
       shadowColor: {r: 0, g: 0, b: 0, a: 1}
       threshold: 0
-      width: 1
+      width: 0.5
       enableDistanceBlend: 1
       fadeStart: 0
       fadeStop: 500
@@ -52,14 +52,14 @@ MonoBehaviour:
     enableCrossHatch: 0
     useColoredTexture: 0
     rimColor: {r: 0.035294294, g: 1, b: 0, a: 1}
-    rimPower: 1
+    rimPower: 1.5
     rimMultiplier: 4.39
   outlineRamp: {fileID: 0}
   toonRamp:
     serializedVersion: 2
     key0: {r: 1, g: 1, b: 1, a: 1}
     key1: {r: 1, g: 1, b: 1, a: 1}
-    key2: {r: 0.7830189, g: 0.7731696, b: 0.7731696, a: 0}
+    key2: {r: 0.7735849, g: 0.574107, b: 0.64129955, a: 0}
     key3: {r: 1, g: 1, b: 1, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
@@ -67,7 +67,7 @@ MonoBehaviour:
     key7: {r: 0, g: 0, b: 0, a: 0}
     ctime0: 0
     ctime1: 65535
-    ctime2: 44467
+    ctime2: 34744
     ctime3: 65535
     ctime4: 0
     ctime5: 0

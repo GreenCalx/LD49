@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 384985052665167889}
   - component: {fileID: 384985052665168108}
   - component: {fileID: 8215968377043512466}
-  - component: {fileID: 6936423344444419166}
   - component: {fileID: 367400099}
   - component: {fileID: 918681542}
-  m_Layer: 0
+  m_Layer: 22
   m_Name: HubCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -60,7 +59,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 1
-  far clip plane: 6000
+  far clip plane: 15000
   field of view: 70
   orthographic: 0
   orthographic size: 5
@@ -98,31 +97,25 @@ MonoBehaviour:
     speed: 1.35
     max: 100
   playerRef: {fileID: 0}
+  needButtonPressBeforeMove: 1
   autoAlign: 1
   focus: {fileID: 0}
   distance: 18
   focusRadius: 2
   focusCentering: 0.5
   rotationSpeed: 264
-  minVerticalAngle: -15
+  minVerticalAngle: -5
   maxVerticalAngle: 45
   defaultVerticalAngle: 10
   alignDelay: 0.8
   alignSmoothRange: 30
   obstructionMask:
     serializedVersion: 2
-    m_Bits: 2100983
+    m_Bits: 6295287
   jumpDelay: 0
   jumpMaxFocusRadius: 5
   jumpFocusRadiusStep: 0.1
---- !u!81 &6936423344444419166
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 384985052665167888}
-  m_Enabled: 1
+  lastManualRotationTime: 0
 --- !u!114 &367400099
 MonoBehaviour:
   m_ObjectHideFlags: 0
