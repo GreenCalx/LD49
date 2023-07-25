@@ -375,6 +375,7 @@ public class CollectiblesManager : MonoBehaviour
 
     public void subscribe(AbstractCollectible AC)
     {
+        allCollectiblesInCurrStage.RemoveAll(item => item == null);
         if (!allCollectiblesInCurrStage.Exists(x => x.gameObject.name == AC.gameObject.name))
             allCollectiblesInCurrStage.Add(AC);
     }
