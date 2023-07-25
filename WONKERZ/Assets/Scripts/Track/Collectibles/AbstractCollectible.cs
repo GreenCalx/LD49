@@ -7,7 +7,7 @@ public abstract class AbstractCollectible : MonoBehaviour
 
     protected abstract void OnCollect();
 
-    void OnTriggerEnter(Collider iCollider)
+    void OnTriggerStay(Collider iCollider)
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {

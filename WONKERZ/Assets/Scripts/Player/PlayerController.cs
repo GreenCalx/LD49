@@ -210,16 +210,15 @@ public class PlayerGeneralStates : PlayerFSM
         // -> dead
         FSMCondition aliveCondition = new PlayerAliveCondition();
         FSMTransition dieTransition = new DieTransition(aliveCondition, null, deadState);
+        FSMTransition aliveTransition = new FSMTransition(aliveCondition, aliveState, null);
 
         // we can die from any state
         this.globalTransitions.Add(dieTransition);
         this.globalTransitions.Add(new FSMNullTransition(initState));
         this.globalTransitions.Add(new FSMTransition(new PlayerInMenuCondition(), inMenuState, null));
 
-        aliveState.transitions.Add(new FSMTransition(aliveCondition, null, deadState));
-        deadState.transitions.Add(new FSMTransition(aliveCondition, aliveState, null));
-        inMenuState.transitions.Add(new FSMTransition(aliveCondition, null, deadState));
-        initState.transitions.Add(new FSMTransition(aliveCondition, aliveState, null));
+        deadState.transitions.Add(aliveTransition);
+        initState.transitions.Add(aliveTransition);
 
         ForceState(states[(int)States.Init]);
     }
@@ -292,6 +291,11 @@ public class PlayerController : MonoBehaviour, IControllable
     [Header("Turbo")]
     public Turbo turbo = new Turbo(5, .2f, 99, .02f, false, 0, 1);
 
+    [Header("Generics")]
+    [Range(0f,2f)]
+    public float invulnerabilityTimeAfterDamage;
+    private float elapsedTimeSinceLastDamage = 999;
+
     [Header("Grappin")]
     public bool IsHooked;
     // TODO toffa : remove this hardcoded object
@@ -341,6 +345,8 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         generalStates.Update();
         vehicleStates.Update();
+
+        elapsedTimeSinceLastDamage += Time.deltaTime;
     }
 
     void FixedUpdate()
@@ -455,7 +461,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         CollectiblesManager cm = Access.CollectiblesManager();
         if (cm == null)
-        return true;
+            return true;
 
         return (cm.getCollectedNuts() >= 0);
     }
@@ -463,7 +469,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public void Kill(Vector3 iSteer = default(Vector3))
     {
         GameObject dummy_player = Instantiate(onDeathClone, transform.position, transform.rotation);
-        Destroy(dummy_player.GetComponent<CarController>());
+        //Destroy(dummy_player.GetComponent<CarController>());
 
         // add dummy's suspension/ wheels to DC objects
         DeathController dc = dummy_player.GetComponent<DeathController>();
@@ -515,7 +521,8 @@ public class PlayerController : MonoBehaviour, IControllable
         //
         //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
         //return;
-
+        if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
+            return;
 
         // lose nuts
         CollectiblesManager cm = Access.CollectiblesManager();
@@ -537,6 +544,7 @@ public class PlayerController : MonoBehaviour, IControllable
         cm.loseNuts(iDamage);
         rb.AddForce(repulseForce, ForceMode.Impulse);
 
+        elapsedTimeSinceLastDamage = 0f;
         //stateMachine.ForceState(invulState);
     }
 
