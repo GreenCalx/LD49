@@ -1,5 +1,33 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6625022991509142038
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d65e486e4de6e5448a8fbb43dc8756a0, type: 3}
+  m_Name: Grain
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  colored:
+    overrideState: 1
+    value: 0
+  intensity:
+    overrideState: 1
+    value: 0.208
+  size:
+    overrideState: 1
+    value: 0.48
+  lumContrib:
+    overrideState: 0
+    value: 0.8
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16,6 +44,8 @@ MonoBehaviour:
   - {fileID: 2029366082217269276}
   - {fileID: 2298656601362177333}
   - {fileID: 9063237403322390210}
+  - {fileID: 3662851807736469944}
+  - {fileID: -6625022991509142038}
 --- !u!114 &2029366082217269276
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -28,7 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cb7e9e120078f43bce4f0b1be547a7, type: 3}
   m_Name: AmbientOcclusion
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   enabled:
     overrideState: 1
     value: 1
@@ -36,8 +66,8 @@ MonoBehaviour:
     overrideState: 0
     value: 1
   intensity:
-    overrideState: 1
-    value: 0.129
+    overrideState: 0
+    value: 4
   color:
     overrideState: 0
     value: {r: 0, g: 0, b: 0, a: 1}
@@ -55,7 +85,7 @@ MonoBehaviour:
     value: -12
   thicknessModifier:
     overrideState: 0
-    value: 1
+    value: 1.5
   directLightingStrength:
     overrideState: 0
     value: 0
@@ -83,27 +113,27 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.22
+    value: 5.71
   threshold:
     overrideState: 1
-    value: 12
+    value: 1.59
   softKnee:
     overrideState: 1
-    value: 1
+    value: 0.5
   clamp:
     overrideState: 1
-    value: 1
+    value: 2.18
   diffusion:
-    overrideState: 0
-    value: 5.7
+    overrideState: 1
+    value: 2.32
   anamorphicRatio:
     overrideState: 0
     value: 0.51
   color:
-    overrideState: 1
+    overrideState: 0
     value: {r: 0.14483397, g: 1.0936866, b: 0.08417318, a: 1}
   fastMode:
-    overrideState: 0
+    overrideState: 1
     value: 0
   dirtTexture:
     overrideState: 0
@@ -112,6 +142,50 @@ MonoBehaviour:
   dirtIntensity:
     overrideState: 0
     value: 14.61
+--- !u!114 &3662851807736469944
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40b924e2dad56384a8df2a1e111bb675, type: 3}
+  m_Name: Vignette
+  m_EditorClassIdentifier: 
+  active: 1
+  enabled:
+    overrideState: 1
+    value: 1
+  mode:
+    overrideState: 1
+    value: 0
+  color:
+    overrideState: 0
+    value: {r: 0, g: 0, b: 0, a: 1}
+  center:
+    overrideState: 0
+    value: {x: 0.5, y: 0.5}
+  intensity:
+    overrideState: 1
+    value: 0.43
+  smoothness:
+    overrideState: 1
+    value: 0.649
+  roundness:
+    overrideState: 1
+    value: 0.709
+  rounded:
+    overrideState: 0
+    value: 0
+  mask:
+    overrideState: 0
+    value: {fileID: 0}
+    defaultState: 1
+  opacity:
+    overrideState: 0
+    value: 1
 --- !u!114 &9063237403322390210
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -165,7 +239,7 @@ MonoBehaviour:
     value: 1
   temperature:
     overrideState: 1
-    value: 7.6
+    value: 13
   tint:
     overrideState: 0
     value: 0
@@ -173,11 +247,11 @@ MonoBehaviour:
     overrideState: 0
     value: {r: 1, g: 1, b: 1, a: 1}
   hueShift:
-    overrideState: 0
-    value: 11.1
+    overrideState: 1
+    value: -3
   saturation:
     overrideState: 1
-    value: 10.6
+    value: 6
   brightness:
     overrideState: 0
     value: 0
@@ -185,8 +259,8 @@ MonoBehaviour:
     overrideState: 1
     value: 0.14
   contrast:
-    overrideState: 0
-    value: 3.8
+    overrideState: 1
+    value: 7
   mixerRedOutRedIn:
     overrideState: 0
     value: 100
