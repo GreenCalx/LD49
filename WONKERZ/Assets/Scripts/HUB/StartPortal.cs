@@ -43,6 +43,7 @@ public class StartPortal : AbstractCameraPoint
 
         var states = Access.Player().vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+        Access.Player().UnFreeze();
 
         if (deleteAfterSpawn)
         {

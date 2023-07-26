@@ -341,6 +341,8 @@ public class PlayerController : MonoBehaviour, IControllable
         vehicleStates = new PlayerVehicleStates(this);
 
         Utils.attachControllable(this);
+
+        Freeze();
     }
 
     void OnDestroy()
@@ -505,8 +507,22 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public bool IsInMenu() { return isInMenu; }
-    public void Freeze() { isInMenu = true; rb.isKinematic = true; }
-    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; }
+    public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound(); }
+    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
+    private void MuteSound() {
+        foreach (var source in GetComponentsInChildren<AudioSource>())
+        {
+            source.mute = true;
+        }
+    }
+
+
+    private void UnMuteSound() {
+        foreach (var source in GetComponentsInChildren<AudioSource>())
+        {
+            source.mute = false;
+        }
+    }
 
     public void SetHandbrake(bool v) {
         var rear = car.axles[(int)AxleType.rear];
@@ -589,54 +605,54 @@ public class PlayerController : MonoBehaviour, IControllable
             //pc.showUI(true);
             //if (Entry.Inputs["Power1"].Down || (mouse_mod.x > 0))
             //{ // BallPower
-                //pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
-                //pc.setNextPower(1);
-                //}
-                //else if (Entry.Inputs["Power2"].Down || (mouse_mod.y > 0))
-                //{ // WaterPower
-                //pc.setNextPower(2);
-                //pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
-                //}
-                //else if (Entry.Inputs["Power3"].Down || (mouse_mod.y < 0))
-                //{ // PlanePower
-                //pc.showIndicator(PowerController.PowerWheelPlacement.UP);
-                //pc.setNextPower(3);
-                //}
-                //else if (Entry.Inputs["Power4"].Down || (mouse_mod.x < 0))
-                //{ // SpiderPower
-                //pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
-                //pc.setNextPower(4);
-                //}
-                //else
-                //{
-                //pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
-                //pc.setNextPower(0);
-                //}
-                //modifierCalled = true;
-                //}
-                //else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
-                //{
-                //pc.hideIndicators();
-                //pc.showUI(false);
-                //
-                //pc.tryTriggerPower();
-                //modifierCalled = false;
-                //}
+            //pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
+            //pc.setNextPower(1);
+            //}
+            //else if (Entry.Inputs["Power2"].Down || (mouse_mod.y > 0))
+            //{ // WaterPower
+            //pc.setNextPower(2);
+            //pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
+            //}
+            //else if (Entry.Inputs["Power3"].Down || (mouse_mod.y < 0))
+            //{ // PlanePower
+            //pc.showIndicator(PowerController.PowerWheelPlacement.UP);
+            //pc.setNextPower(3);
+            //}
+            //else if (Entry.Inputs["Power4"].Down || (mouse_mod.x < 0))
+            //{ // SpiderPower
+            //pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
+            //pc.setNextPower(4);
+            //}
+            //else
+            //{
+            //pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
+            //pc.setNextPower(0);
+            //}
+            //modifierCalled = true;
+            //}
+            //else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
+            //{
+            //pc.hideIndicators();
+            //pc.showUI(false);
+            //
+            //pc.tryTriggerPower();
+            //modifierCalled = false;
+            //}
 
 
-                // Specific states control
+            // Specific states control
 
-                var generalInputs = (generalStates.GetState() as IControllable);
-                if (generalInputs != null)
-                {
-                    generalInputs.ProcessInputs(Entry);
-                }
+            var generalInputs = (generalStates.GetState() as IControllable);
+            if (generalInputs != null)
+            {
+                generalInputs.ProcessInputs(Entry);
+            }
 
 
-                var vehicleInputs = (vehicleStates.GetState() as IControllable);
-                if (vehicleInputs != null)
-                {
-vehicleInputs.ProcessInputs(Entry);
+            var vehicleInputs = (vehicleStates.GetState() as IControllable);
+            if (vehicleInputs != null)
+            {
+                vehicleInputs.ProcessInputs(Entry);
             }
 
 
