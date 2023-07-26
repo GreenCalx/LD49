@@ -322,6 +322,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public Rigidbody rb;
 
     public AudioSource audioSource;
+    public AudioClip damageSound;
 
     void Awake()
     {
@@ -546,6 +547,9 @@ public class PlayerController : MonoBehaviour, IControllable
         //return;
         if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
         return;
+
+        audioSource.clip = damageSound;
+        audioSource.Play();
 
         // lose nuts
         CollectiblesManager cm = Access.CollectiblesManager();
