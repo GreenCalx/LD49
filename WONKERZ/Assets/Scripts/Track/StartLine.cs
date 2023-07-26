@@ -15,7 +15,10 @@ public class StartLine : MonoBehaviour
     private float countdownElapsedTime = 0f;
 
     public bool enable_tricks = false;
-    public bool is_rdy_to_launch = true;
+
+    public float countdown_delay = 1f;
+    private float countdown_delay_current = 0f;
+    public bool is_rdy_to_launch = false;
 
     public AudioSource audioSource;
     public AudioClip countDownSFX0;
@@ -114,19 +117,28 @@ public class StartLine : MonoBehaviour
 
     void OnTriggerStay(Collider iCol)
     {
-        if ((Utils.colliderIsPlayer(iCol))&& is_rdy_to_launch)
+        if ((Utils.colliderIsPlayer(iCol)))
         {
-            if (bypassCountdown) // debug
+            if (!is_rdy_to_launch)
             {
-                Access.CollectiblesManager().resetInfCollectibles();
-                Scene currentScene = SceneManager.GetActiveScene();
-                Access.TrackManager().launchTrack(currentScene.name);
-                if (enable_tricks)
-                    activateTricks();
-                return;
+                countdown_delay_current += Time.deltaTime;
+                is_rdy_to_launch = countdown_delay_current >= countdown_delay;
+                Access.Player().Freeze();
             }
+            else
+            {
+                if (bypassCountdown) // debug
+                {
+                    Access.CollectiblesManager().resetInfCollectibles();
+                    Scene currentScene = SceneManager.GetActiveScene();
+                    Access.TrackManager().launchTrack(currentScene.name);
+                    if (enable_tricks)
+                    activateTricks();
+                    return;
+                }
 
-            launchCountdown();
+                launchCountdown();
+            }
         }
     }
 
