@@ -49,7 +49,7 @@ public static class BountiesData
         new BountyArray.TrackEventBounty( 0, 9, "Desert WONKERZ", "Get all the WONKERZ letters in one run in the Desert", new CosmeticElement("wheel_metal", COLORIZABLE_CAR_PARTS.WHEELS, "WheelColorMetal", ""), new BountyArray.EventTriggerConstraint(Constants.SN_DESERT_TOWER, "Desert WONKERZ") ),
         
         new BountyArray.TrackScoreBounty( 1, 0, "default", "default", new CosmeticElement(), new BountyArray.TrackScoreConstraint(Constants.SN_JUNKYARD_TRACK, DIFFICULTIES.EASY, new BountyArray.TimeConstraint(1,0) ) ),
-        new BountyArray.TrackScoreBounty( 1, 1, "Desert", "test skin for car", new CosmeticElement("carskin1", COLORIZABLE_CAR_PARTS.MAIN, "", "Skin1"), new BountyArray.TrackScoreConstraint(Constants.SN_GROTTO_TRACK, DIFFICULTIES.EASY, new BountyArray.TimeConstraint(5,0) ) ),
+        new BountyArray.TrackScoreBounty( 1, 1, "Sawed ways", "Trick over the saws in the desert", new CosmeticElement("carskin1", COLORIZABLE_CAR_PARTS.MAIN, "", "Skin1"), new BountyArray.EventTriggerConstraint(Constants.SN_DESERT_TOWER, "Sawed Ways" ) ),
         new BountyArray.TrackScoreBounty( 1, 2, "default", "default", new CosmeticElement(), new BountyArray.TrackScoreConstraint(Constants.SN_JUNKYARD_TRACK, DIFFICULTIES.EASY, new BountyArray.TimeConstraint(1,0) ) ),
         new BountyArray.TrackScoreBounty( 1, 3, "default", "default", new CosmeticElement(), new BountyArray.TrackScoreConstraint(Constants.SN_JUNKYARD_TRACK, DIFFICULTIES.EASY, new BountyArray.TimeConstraint(1,0) ) ),
         new BountyArray.TrackScoreBounty( 1, 4, "default", "default", new CosmeticElement(), new BountyArray.TrackScoreConstraint(Constants.SN_JUNKYARD_TRACK, DIFFICULTIES.EASY, new BountyArray.TimeConstraint(1,0) ) ),

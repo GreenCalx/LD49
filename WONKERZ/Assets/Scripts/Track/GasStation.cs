@@ -124,7 +124,7 @@ public class GasStation : MonoBehaviour, IControllable
             if (!!uicp)
             {
                 uicp.convertTxt.gameObject.SetActive(true);
-                string str = "Press " + "<PUT PANEL KEY>" + " to convert";
+                string str = Access.InputManager().GetInputName(Constants.INPUT_SAVESTATES, true) + " to convert nuts into fuel";
                 uicp.convertTxt.text = str;
                 Utils.attachControllable<GasStation>(this);
                 Access.CheckPointManager().playerInGasStation = true;
