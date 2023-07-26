@@ -123,7 +123,13 @@ public class PinBlockade : PIDController
             {
                 // Poll a new position
 
-                destination = AINavigation.GoInRandomDirection(transform, jumpRange, navAgentMaskName);
+                int max_tries = 3;
+                int n_tries = 0;
+                while ((destination == Vector3.zero) && (n_tries < max_tries))
+                {
+                    destination = AINavigation.GoInRandomDirection(transform, jumpRange, navAgentMaskName);
+                    n_tries++;
+                }
                 
                 if (destination==Vector3.zero)
                 {   // Had no destination + no destination available
@@ -236,7 +242,6 @@ public class PinBlockade : PIDController
             if (!!iCol.gameObject.GetComponentInParent<SandWorm>())
             {
                 StopAllCoroutines();
-
                 is_NavAgent = false;
                 Destroy(agent);
                 rb.constraints = RigidbodyConstraints.None;
