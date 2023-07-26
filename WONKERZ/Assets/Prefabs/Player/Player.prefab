@@ -82,11 +82,13 @@ MonoBehaviour:
     diRoll: 0
     diPitchUnscaled: 0
     diRollUnscaled: 0
-    diMaxForce: 10
+    diMaxForce: 3.7
     sounds:
     - {fileID: 8300000, guid: 1d15a2153cb7aee40839ca9edacfb461, type: 3}
-  weightControlMaxX: 1
-  weightControlMaxZ: 2
+  weightControlMaxX: 1.64
+  weightControlMaxZ: 2.83
+  weightIndicator: {fileID: 6873781378212382420}
+  weightIndicatorHeight: 2
   turbo:
     infinite: 0
     strength: 5
@@ -350,9 +352,9 @@ MonoBehaviour:
       audioSource: {fileID: 8386465186156503149}
       renderer: {fileID: 2947087820023265174, guid: 124ef9b2560e36e45a609734d697bbbc, type: 3}
       debugSlipX: {fileID: 1963117250134512042}
-      slipX: 0
+      slipX: 1
       debugSlipY: {fileID: 7618946176625801960}
-      slipY: 0
+      slipY: 1
       physicsSubSteps: 10
     left:
       collider: {fileID: 6142174457915794250}
@@ -444,9 +446,9 @@ MonoBehaviour:
       audioSource: {fileID: 8298548267865723279}
       renderer: {fileID: 2947087820023265174, guid: 124ef9b2560e36e45a609734d697bbbc, type: 3}
       debugSlipX: {fileID: 1982834024157839669}
-      slipX: 0
+      slipX: 1
       debugSlipY: {fileID: 2928644417937621357}
-      slipY: 0
+      slipY: 1
       physicsSubSteps: 10
     isSteerable: 1
     hasAntiRollBar: 0
@@ -544,9 +546,9 @@ MonoBehaviour:
       audioSource: {fileID: 784944618089189551}
       renderer: {fileID: 2947087820023265174, guid: 124ef9b2560e36e45a609734d697bbbc, type: 3}
       debugSlipX: {fileID: 4395426975357876760}
-      slipX: 0
+      slipX: 1
       debugSlipY: {fileID: 2992556735420046297}
-      slipY: 0
+      slipY: 1
       physicsSubSteps: 10
     left:
       collider: {fileID: 6142174457915794250}
@@ -638,9 +640,9 @@ MonoBehaviour:
       audioSource: {fileID: 3624256315320323754}
       renderer: {fileID: 2947087820023265174, guid: 124ef9b2560e36e45a609734d697bbbc, type: 3}
       debugSlipX: {fileID: 7953811600080302533}
-      slipX: 0
+      slipX: 1
       debugSlipY: {fileID: 5474880064324729484}
-      slipY: 0
+      slipY: 1
       physicsSubSteps: 10
     isSteerable: 0
     hasAntiRollBar: 0
@@ -1296,10 +1298,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2690567132756888247, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-      propertyPath: indicator
-      value: 
-      objectReference: {fileID: 6873781378212382420}
     - target: {fileID: 2809020612273451129, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

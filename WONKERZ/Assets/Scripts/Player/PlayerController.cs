@@ -26,6 +26,12 @@ public class GroundState : FSMState, IControllable
                 player.SetCarCenterOfMass();
             }
 
+            // very bad design for now.
+            var weightIndPos = player.car.centerOfMassInitial + new Vector3( player.jump.diRollUnscaled * player.weightControlMaxX,
+                player.weightIndicatorHeight,
+                player.jump.diPitchUnscaled * player.weightControlMaxZ);
+
+            player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
         }
     }
 
@@ -260,6 +266,8 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public float weightControlMaxX = 1;
     public float weightControlMaxZ = 2;
+    public GameObject weightIndicator;
+    public float weightIndicatorHeight;
 
     [System.Serializable]
     public struct Turbo
@@ -511,7 +519,6 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void SetCarCenterOfMass() {
-        //Debug.Log(jump.diRollUnscaled);
         car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * weightControlMaxX, 0f, jump.diPitchUnscaled * weightControlMaxZ);
     }
 
