@@ -18,9 +18,9 @@ public class GroundState : FSMState, IControllable
             player.flags[PlayerController.FJump] = !player.TouchGround();
             // apply jump correction
             if (!player.TouchGround()) {
-                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitch, 0, -player.jump.diMaxForce * player.jump.diRoll);
+                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled, 0, -player.jump.diMaxForce * player.jump.diRollUnscaled);
                 torque = player.car.transform.TransformDirection(torque);
-                player.car.rb.AddTorque(torque, ForceMode.VelocityChange);
+                player.car.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
             }
             else {
                 player.SetCarCenterOfMass();
@@ -86,8 +86,8 @@ public class GroundState : FSMState, IControllable
 
             player.jump.diRollUnscaled = x;
             player.jump.diPitchUnscaled = y;
-            player.jump.diRoll += x * Time.deltaTime;
-            player.jump.diPitch += y * Time.deltaTime;
+            player.jump.diRoll += x; //* Time.deltaTime;
+            player.jump.diPitch += y; //* Time.deltaTime;
         }
     }
 
