@@ -71,7 +71,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
                 sceneToLoad = Constants.SN_TITLE;
                 break;
         }
-        SceneManager.LoadScene(sceneToLoad, LoadSceneMode.Single);
+        Access.SceneLoader().loadScene(sceneToLoad);
     }
 
     public void OnCameraToggleChange(bool value)
