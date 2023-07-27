@@ -85,15 +85,14 @@ public class BreakableObject : MonoBehaviour
         if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }
 
-        float dist = Vector3.Distance(transform.position, cc.transform.position);
-        if (dist > breakDistance)
-        {  return; }
-
+        //float dist = Vector3.Distance(transform.position, cc.transform.position);
+        //if (dist > breakDistance)
+        //{  return; }
 
         Vector3 dir =  transform.position - cc.transform.position;
         
         RaycastHit rch;
-        if (Physics.Raycast(transform.position, dir, out rch));
+        if (Physics.Raycast(transform.position, dir, out rch))
         {
             breakWall(rch.point);
             elapsedTimeSinceBreak = 0f;
