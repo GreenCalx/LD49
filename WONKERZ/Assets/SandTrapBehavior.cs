@@ -45,6 +45,9 @@ public class SandTrapBehavior : MonoBehaviour
 
     void OnTriggerEnter(Collider c)
     {
+        if (!Utils.colliderIsPlayer(c))
+            return;
+
         if (focused) return;
 
         focus = c.gameObject;
@@ -57,6 +60,9 @@ public class SandTrapBehavior : MonoBehaviour
 
     void OnTriggerExit(Collider c)
     {
+        if (!Utils.colliderIsPlayer(c))
+            return;
+            
         focus = null;
         focused = false;
 
