@@ -23,7 +23,7 @@ public class WonkerDecal : MonoBehaviour
 
     public void SetAnimationTime(float t)
     {
-        decalRenderer.mat.SetFloat("_AnimationTime", t);             
+        decalRenderer.decalMat.SetFloat("_AnimationTime", t);
     }
 
     void Update()

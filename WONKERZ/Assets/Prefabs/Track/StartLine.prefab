@@ -44,18 +44,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  fillDepthMesh: {fileID: 4300000, guid: 19d5825c19ca31a4393a411946dc9aa7, type: 2}
-  mat: {fileID: 2100000, guid: 65423dd517ab50f4683b1fefe53a196d, type: 2}
-  matDepth: {fileID: 2100000, guid: 943d87b219ee337408c1691b1361267c, type: 2}
   cam: {fileID: 0}
-  postDecalMesh: {fileID: 0}
+  decalMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  decalMat: {fileID: 2100000, guid: 65423dd517ab50f4683b1fefe53a196d, type: 2}
   writeColor: 1
   writeNormal: 0
-  writeMaterial: 1
-  writeDepth: 0
+  writeMaterial: 0
   writeEmission: 0
   writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
 --- !u!1 &295665395308603536
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,27 +307,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 38.045883, y: 26.376724, z: 39.556488}
   m_Center: {x: 17.837944, y: -13.951637, z: -2.611881e-14}
---- !u!114 &3297850741469796744
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2354457486734527576}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95080551634069e4eacab4f67f7eb3b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIStartTrackRef: {fileID: 2580187054484874808, guid: 71c6a957176b18748a0dda663788da12, type: 3}
-  startLineCrossed_SFX: {fileID: 9165910095701678069}
-  destroyOnActivation: 1
-  enable_tricks: 1
-  is_rdy_to_launch: 1
-  audioSource: {fileID: 1788768878}
-  countDownSFX0: {fileID: 8300000, guid: dd0e7c6ddc4f2244eafd2e4a410fb80b, type: 3}
-  countDownSFX1: {fileID: 8300000, guid: 4b2bb011e68dc70458b1fffcbe8ee86b, type: 3}
-  bypassCountdown: 0
 --- !u!82 &1788768878
 AudioSource:
   m_ObjectHideFlags: 0
@@ -424,6 +403,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3297850741469796744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2354457486734527576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95080551634069e4eacab4f67f7eb3b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIStartTrackRef: {fileID: 2580187054484874808, guid: 71c6a957176b18748a0dda663788da12, type: 3}
+  startLineCrossed_SFX: {fileID: 9165910095701678069}
+  destroyOnActivation: 1
+  enable_tricks: 1
+  countdown_delay: 1
+  is_rdy_to_launch: 1
+  audioSource: {fileID: 1788768878}
+  countDownSFX0: {fileID: 8300000, guid: dd0e7c6ddc4f2244eafd2e4a410fb80b, type: 3}
+  countDownSFX1: {fileID: 8300000, guid: 4b2bb011e68dc70458b1fffcbe8ee86b, type: 3}
+  bypassCountdown: 0
 --- !u!4 &3163609621963364066 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e3474af5881914343badb026bad13e11, type: 3}
