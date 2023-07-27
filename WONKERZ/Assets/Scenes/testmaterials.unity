@@ -391,7 +391,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &251689557
 Transform:
   m_ObjectHideFlags: 0
@@ -400,7 +400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 251689556}
   m_LocalRotation: {x: -0.004349578, y: -0.25589147, z: -0.00007827036, w: 0.9666958}
-  m_LocalPosition: {x: -14.2, y: 11.3, z: 16.2}
+  m_LocalPosition: {x: -14.2, y: 10.6, z: 16.2}
   m_LocalScale: {x: 5.74, y: 5.74, z: 5.74}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -419,18 +419,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  fillDepthMesh: {fileID: 4300000, guid: 19d5825c19ca31a4393a411946dc9aa7, type: 2}
-  mat: {fileID: 2100000, guid: eca7ab85727d6d042b6711c5f17b9c1d, type: 2}
-  matDepth: {fileID: 2100000, guid: 943d87b219ee337408c1691b1361267c, type: 2}
   cam: {fileID: 375750631}
-  postDecalMesh: {fileID: 0}
+  decalMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  decalMat: {fileID: 2100000, guid: eca7ab85727d6d042b6711c5f17b9c1d, type: 2}
   writeColor: 0
   writeNormal: 1
   writeMaterial: 0
-  writeDepth: 0
   writeEmission: 0
   writeMatID: 0
+  writeDepth: 1
+  fillMesh: {fileID: 4300000, guid: 19d5825c19ca31a4393a411946dc9aa7, type: 2}
+  fillMeshMat: {fileID: 2100000, guid: b21c918bdf3738349a0652ea73ae98ce, type: 2}
+  postDecalMesh: {fileID: 0}
 --- !u!1 &271723129
 GameObject:
   m_ObjectHideFlags: 0
@@ -1202,6 +1202,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6157524333882233464, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
+      propertyPath: decalMat
+      value: 
+      objectReference: {fileID: 2100000, guid: bb57facec59fad34b920ec2540be095f, type: 2}
+    - target: {fileID: 6157524333882233464, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
+      propertyPath: decalMesh
+      value: 
+      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+    - target: {fileID: 6157524333882233464, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
+      propertyPath: writeColor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6342026700655515274, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1968,7 +1980,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &759400693
 Transform:
   m_ObjectHideFlags: 0
@@ -2004,7 +2016,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5ad3fa84abd297848a3c7f70a7b9e42f, type: 2}
+  - {fileID: 2100000, guid: b21c918bdf3738349a0652ea73ae98ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2252,12 +2264,15 @@ MonoBehaviour:
       slipMarks: {fileID: 0}
       groundEmitter: {fileID: 0}
       slipEmitter: {fileID: 0}
+      groundSound: {fileID: 0}
+      slipSound: {fileID: 0}
       objectToWorld: []
       objectToWorldSlip: []
       cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
       meshTopCorner: {x: 0.5, y: 0.5, z: 0.5}
       meshBotCorner: {x: -0.5, y: -0.5, z: -0.5}
       meshCenter: {x: 0, y: 0, z: 0}
+      bufferName: Marks
       vIdx: 0
       tIdx: 0
       groundMarksMesh: {fileID: 0}
@@ -2275,12 +2290,15 @@ MonoBehaviour:
       slipMarks: {fileID: 0}
       groundEmitter: {fileID: 0}
       slipEmitter: {fileID: 0}
+      groundSound: {fileID: 0}
+      slipSound: {fileID: 0}
       objectToWorld: []
       objectToWorldSlip: []
       cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
       meshTopCorner: {x: 0.5, y: 0.5, z: 0.5}
       meshBotCorner: {x: -0.5, y: -0.5, z: -0.5}
       meshCenter: {x: 0, y: 0, z: 0}
+      bufferName: Marks
       vIdx: 0
       tIdx: 0
       groundMarksMesh: {fileID: 0}
@@ -2791,18 +2809,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  fillDepthMesh: {fileID: 0}
-  mat: {fileID: 2100000, guid: 4d56d634e036efa42a76fbb6c090b4ad, type: 2}
-  matDepth: {fileID: 0}
   cam: {fileID: 375750631}
-  postDecalMesh: {fileID: 0}
+  decalMesh: {fileID: 0}
+  decalMat: {fileID: 0}
   writeColor: 1
   writeNormal: 1
   writeMaterial: 1
-  writeDepth: 0
   writeEmission: 0
   writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
 --- !u!1 &1289174459
 GameObject:
   m_ObjectHideFlags: 0
@@ -3761,18 +3779,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  fillDepthMesh: {fileID: 0}
-  mat: {fileID: 2100000, guid: 4d56d634e036efa42a76fbb6c090b4ad, type: 2}
-  matDepth: {fileID: 0}
   cam: {fileID: 375750631}
-  postDecalMesh: {fileID: 0}
+  decalMesh: {fileID: 0}
+  decalMat: {fileID: 0}
   writeColor: 0
   writeNormal: 0
   writeMaterial: 0
-  writeDepth: 0
   writeEmission: 1
   writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
 --- !u!1001 &1735879133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4121,7 +4139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9186775506258258963, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -28.6
       objectReference: {fileID: 0}
     - target: {fileID: 9186775506258258963, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -4129,7 +4147,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9186775506258258963, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -68.1
+      value: 29.5
       objectReference: {fileID: 0}
     - target: {fileID: 9186775506258258963, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: m_LocalRotation.w
@@ -4296,7 +4314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1867102455
 Transform:
   m_ObjectHideFlags: 0
@@ -4749,18 +4767,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  fillDepthMesh: {fileID: 0}
-  mat: {fileID: 2100000, guid: f4c9ae1c4e1e18044a1e763bdb08fe30, type: 2}
-  matDepth: {fileID: 0}
   cam: {fileID: 375750631}
-  postDecalMesh: {fileID: 0}
+  decalMesh: {fileID: 0}
+  decalMat: {fileID: 0}
   writeColor: 0
   writeNormal: 0
   writeMaterial: 0
-  writeDepth: 0
   writeEmission: 0
   writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
 --- !u!1001 &7361463532577318950
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4819,6 +4837,10 @@ PrefabInstance:
     - target: {fileID: 7361463533422656871, guid: 66bba2274d896494695180ef7a007fc0, type: 3}
       propertyPath: m_Name
       value: Fourmillion
+      objectReference: {fileID: 0}
+    - target: {fileID: 7361463533422656871, guid: 66bba2274d896494695180ef7a007fc0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66bba2274d896494695180ef7a007fc0, type: 3}
