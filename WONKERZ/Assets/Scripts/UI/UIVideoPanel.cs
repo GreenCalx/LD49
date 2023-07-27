@@ -12,6 +12,8 @@ public class UIVideoPanel : UIPanelTabbed
     public GameObject resolutionPanelElem;
     public GameObject screenModePanelElem;
 
+    public RectTransform resScrollView;
+
     public void UpdateCurrentResolutionText(){
         currentResolution.text = Screen.currentResolution.width + " x " + Screen.currentResolution.height + " @" + Screen.currentResolution.refreshRate;
     }
@@ -32,6 +34,7 @@ public class UIVideoPanel : UIPanelTabbed
 
 
             go.GetComponent<UIResolutionPanelElem>().idx = resolutionPanel.tabs.Count;
+            go.GetComponent<UIResolutionPanelElem>().resScrollView = resScrollView;
             resolutionPanel.tabs.Add(tab);
         }
     }
