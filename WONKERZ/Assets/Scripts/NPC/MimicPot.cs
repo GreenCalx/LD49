@@ -11,6 +11,9 @@ public class MimicPot : MonoBehaviour
     public float turnaroundDistThreshold = 10f;
     public float fragmentExplodeForce = 10f; 
     public float timeBeforeFragmentClean = 10f;
+    
+    public float invulTimeAfterTrigger = 0.5f;
+    private float elapsedInvulTimeAfterTrigger = 999f;
 
     private int pathIndex = -1;
     private GameObject mimicVersionInst;
@@ -21,7 +24,9 @@ public class MimicPot : MonoBehaviour
 
     private TrackEvent trackEvent;
     public AudioClip breakSFX;
+    public AudioSource mimicCompleteSFX;
 
+    public GameObject mimicBreakPS;
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +35,7 @@ public class MimicPot : MonoBehaviour
         trackEvent = GetComponent<TrackEvent>();
 
         mimicTriggered = false;
+        elapsedInvulTimeAfterTrigger = 999f;
 
         if (!agent.isOnNavMesh)
         {
@@ -48,6 +54,9 @@ public class MimicPot : MonoBehaviour
     {
         if (mimicTriggered)
         {
+            if (invulTimeAfterTrigger > elapsedInvulTimeAfterTrigger)
+            { elapsedInvulTimeAfterTrigger += Time.deltaTime; }
+
             Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow, 3f);
             if (!agent.isOnNavMesh)
             {
@@ -157,6 +166,8 @@ public class MimicPot : MonoBehaviour
             agent.enabled = true;
 
             mimicTriggered = true;
+            elapsedInvulTimeAfterTrigger = 0f;
+
             if ((agent==null) || (mimicPath==null))
             { Debug.LogError("Missing NavMeshAgent or Path on Mimic Pot."); Destroy(gameObject); }
             tryGoToNextPoint();
@@ -201,13 +212,31 @@ public class MimicPot : MonoBehaviour
         
             Destroy(rend.gameObject, timeBeforeFragmentClean);
         }
+
     }
 
     void OnCollisionEnter(Collision iCollision)
     {
+        if (!mimicTriggered)
+            return;
+        
+        if (invulTimeAfterTrigger > elapsedInvulTimeAfterTrigger)
+            return;
+
         if (Utils.collisionIsPlayer(iCollision))
         {
             trackEvent.setSolved();
+
+            if (!!mimicCompleteSFX)
+                Schnibble.Utils.SpawnAudioSource( mimicCompleteSFX, transform);
+
+            if (!!mimicBreakPS)
+            {
+                GameObject killPS = Instantiate(mimicBreakPS, transform.position, Quaternion.identity);
+                killPS.transform.localScale = new Vector3(5f, 5f, 5f) * 1.2f;
+                killPS.GetComponent<ExplosionEffect>().runEffect();
+            }
+            
             Destroy(gameObject);
         }
     }
