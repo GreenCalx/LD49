@@ -5,16 +5,17 @@ public class SandTrapBehavior : MonoBehaviour
 
     public ParticleSystem sandParticles;
     public ParticleSystem smokeParts;
-    public GameObject sandworm;
     bool focused;
     GameObject focus;
 
-    public Animator anim;
-    public Transform sandwormRoot;
+    public Animator trapAnim;
+    public Animator fourmillionAnim;
+    public Transform fourmillionRoot;
     public Material mat;
     public Material matIdle;
     public MeshRenderer renderer;
     public MeshFilter meshFilter;
+    [HideInInspector]
     public Mesh mesh;
     private Vector3[] vertices;
     public SchSandTrapRigidBody rb;
@@ -50,10 +51,12 @@ public class SandTrapBehavior : MonoBehaviour
 
         if (focused) return;
 
-        focus = c.gameObject;
-        focused = true;
         sandParticles.Play();
         smokeParts.Play();
+
+        focus = c.gameObject;
+        focused = true;
+
         mat.SetFloat("_AngleAnimationStop", Mathf.PI*2);
         renderer.sharedMaterial = mat;
     }
@@ -62,14 +65,16 @@ public class SandTrapBehavior : MonoBehaviour
     {
         if (!Utils.colliderIsPlayer(c))
             return;
-            
-        focus = null;
-        focused = false;
 
         sandParticles.Stop();
         smokeParts.Stop();
 
-        anim.Play("Fourmillion 0");
+        focus = null;
+        focused = false;
+
+
+
+        trapAnim.Play("Fourmillion 0");
         mat.SetFloat("_AngleAnimationStop", Mathf.PI*2);
         renderer.sharedMaterial = matIdle;
     }
@@ -77,7 +82,8 @@ public class SandTrapBehavior : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        anim.SetBool("Focus", focused);
+        trapAnim.SetBool("Focus", focused);
+        fourmillionAnim.SetBool("Focus", focused);
 
         var depth = (-depthPercent * maxDepth) / transform.lossyScale.z;
         if (vertices[vMid0].y != depth)
@@ -98,8 +104,12 @@ public class SandTrapBehavior : MonoBehaviour
             rb.MaxForce = maxForce;
 
             var focusPos = focus.transform.position;
-            focusPos.y = sandwormRoot.gameObject.transform.position.y;
-            sandwormRoot.gameObject.transform.LookAt(focusPos);
+            focusPos.y = fourmillionRoot.gameObject.transform.position.y;
+
+            var lookPos = Access.Player().transform.position - fourmillionRoot.position;
+            Quaternion lookRot = Quaternion.LookRotation(lookPos);
+            lookRot.eulerAngles =new Vector3(fourmillionRoot.rotation.eulerAngles.x, lookRot.eulerAngles.y, fourmillionRoot.rotation.eulerAngles.z);
+            fourmillionRoot.rotation = Quaternion.Slerp(fourmillionRoot.rotation, lookRot, Time.deltaTime * 1.5f);
 
             var dir = focus.transform.position - transform.position;
 
