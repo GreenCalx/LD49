@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Schnibble;
 
@@ -19,6 +20,8 @@ public class StartLine : MonoBehaviour
     public float countdown_delay = 1f;
     private float countdown_delay_current = 0f;
     public bool is_rdy_to_launch = false;
+
+    public CinematicTrigger entryCinematicTrigger;
 
     public AudioSource audioSource;
     public AudioClip countDownSFX0;
@@ -137,9 +140,28 @@ public class StartLine : MonoBehaviour
                     return;
                 }
 
-                launchCountdown();
+                if (entryCinematicTrigger!=null)
+                    launchCinematic();
+                else
+                    launchCountdown();
+                
             }
         }
+    }
+
+    public void launchCinematic()
+    {
+        StartCoroutine(playCinematic(this));
+    }
+
+    IEnumerator playCinematic(StartLine iSL)
+    {
+        yield return new WaitForSeconds(0.2f); // track Start delay
+
+        iSL.entryCinematicTrigger.StartCinematic();
+        while (!iSL.entryCinematicTrigger.cinematicDone)
+            yield return new WaitForSeconds(0.2f);
+        iSL.launchCountdown();
     }
 
     private void activateTricks()

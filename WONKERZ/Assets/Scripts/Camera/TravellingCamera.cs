@@ -33,6 +33,8 @@ public class TravellingCamera : CinematicCamera
     {
         elapsedTime = 0f;
         pathIterator = 0;
+
+
         if (startLocation == null)
         {
             startLocation = new GameObject("PATH_START").transform;
@@ -40,7 +42,6 @@ public class TravellingCamera : CinematicCamera
             startLocation.transform.position = transform.position;
             startLocation.transform.rotation = transform.rotation;
         }
-
         prevPathPoint = startLocation; // copy cam location for first LERP
         nextPathPoint = path[pathIterator];
     }

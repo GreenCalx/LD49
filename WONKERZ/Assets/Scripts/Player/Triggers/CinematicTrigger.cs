@@ -26,8 +26,8 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         triggered = false;
         cinematicDone = false;
-        if (triggerAtStart)
-            StartCinematic();
+        // if (triggerAtStart)
+        //     StartCinematic();
     }
 
     // Update is called once per frame
@@ -71,6 +71,10 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
     public void StartCinematic()
     {
+        if (!!triggered)
+            return;
+        triggered = true;
+        
         if (freezePlayer)
         {
             Access.Player().Freeze();
@@ -78,7 +82,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         Utils.attachControllable<CinematicTrigger>(this);
         
-        triggered = true;
+        
         if (!!cam)
         {
             cam.gameObject.SetActive(true);
@@ -111,7 +115,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         if (Utils.colliderIsPlayer(iCollider))
         {
-            StartCinematic();
+            //StartCinematic();
         }
     }
 }
