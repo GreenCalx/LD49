@@ -29,6 +29,9 @@ public class SandTrapBehavior : MonoBehaviour
     // 0-1 for maxdepth; is animated
     public float depthPercent = 0;
 
+    // below 1 slower, above faster
+    public float roatSpeedTowardsPlayer = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -109,7 +112,7 @@ public class SandTrapBehavior : MonoBehaviour
             var lookPos = Access.Player().transform.position - fourmillionRoot.position;
             Quaternion lookRot = Quaternion.LookRotation(lookPos);
             lookRot.eulerAngles =new Vector3(fourmillionRoot.rotation.eulerAngles.x, lookRot.eulerAngles.y, fourmillionRoot.rotation.eulerAngles.z);
-            fourmillionRoot.rotation = Quaternion.Slerp(fourmillionRoot.rotation, lookRot, Time.deltaTime * 1.5f);
+            fourmillionRoot.rotation = Quaternion.Slerp(fourmillionRoot.rotation, lookRot, Time.deltaTime * roatSpeedTowardsPlayer);
 
             var dir = focus.transform.position - transform.position;
 
