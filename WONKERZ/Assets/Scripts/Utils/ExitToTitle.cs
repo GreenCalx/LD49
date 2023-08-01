@@ -19,8 +19,8 @@ public class ExitToTitle : MonoBehaviour, IControllable
     {
         if (enabler)
         {
-            if (Entry.Inputs["Cancel"].IsDown)
-                SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+            if (Entry.Inputs[GameInputsUtils.GetIdx("Cancel")].IsDown)
+            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
         }
     }
 

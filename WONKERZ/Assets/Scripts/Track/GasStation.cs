@@ -90,7 +90,7 @@ public class GasStation : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        convertNuts = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue > 0;
+        convertNuts = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].AxisValue > 0;
     }
 
     void OnDestroy()
@@ -124,7 +124,7 @@ public class GasStation : MonoBehaviour, IControllable
             if (!!uicp)
             {
                 uicp.convertTxt.gameObject.SetActive(true);
-                string str = Access.InputManager().GetInputName(Constants.INPUT_SAVESTATES, true) + " to convert nuts into fuel";
+                string str = Access.InputManager().GetInputName((int)GameInputsButtons.SaveStatesPlant, true) + " to convert nuts into fuel";
                 uicp.convertTxt.text = str;
                 Utils.attachControllable<GasStation>(this);
                 Access.CheckPointManager().playerInGasStation = true;

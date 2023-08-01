@@ -22,9 +22,9 @@ public class Hookable : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        hook.SetActive(Entry.Inputs["Grapin"].Down);
+        hook.SetActive(Entry.Inputs[(int) GameInputsButtons.Grapin].Down);
         if (!!ccPlayer)
-            ccPlayer.IsHooked = Entry.Inputs["Grapin"].Down;
+        ccPlayer.IsHooked = Entry.Inputs[(int) GameInputsButtons.Grapin].Down;
     }
 
     // Update is called once per frame

@@ -101,17 +101,18 @@ public class CheckPointManager : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         if (playerIsFrozen)
-            anyKeyPressed = Utils.checkAnyKeyPressed(Entry, true);
+        anyKeyPressed = Entry.IsAnyKeyDown();
 
-        var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
+        var plant = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].IsDown;
+        var load = Entry.Inputs[(int) GameInputsButtons.SaveStatesReturn].IsDown;
 
-        if (saveStateLoaded && (ss_save_or_load !=0))
+        if (saveStateLoaded && (plant||load))
         {
             return;
         } else { saveStateLoaded = false; }
 
 
-        if (ss_save_or_load < 0) // SAVE
+        if (plant) // SAVE
         {
             if (!playerInGasStation)
             {
@@ -122,7 +123,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 }
             }
             return;
-        } else if ((ss_save_or_load > 0)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
+        }
+        if ((load)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
         {
             if (!respawnCalled)
             {
@@ -136,7 +138,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
         if (respawnCalled) // ACTUAL LOAD
         {
-            if (ss_save_or_load <= 0f) // input released
+            if (!load) // input released
             {
                 if (respawnButtonDownElapsed>=timeToForceCPLoad)
                 {
@@ -150,7 +152,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 respawnCalled = false;
                 Access.UITurboAndSaves()?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
-            } else if (respawnButtonDownElapsed>=timeToForceCPLoad) 
+            } else if (respawnButtonDownElapsed>=timeToForceCPLoad)
             {
                 loadLastCP(false);
                 respawnButtonDownElapsed = 0f;

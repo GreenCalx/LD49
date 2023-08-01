@@ -72,7 +72,7 @@ public class CameraManager : MonoBehaviour, IControllable
     // Switch cameras between HUB cameras
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (Entry.Inputs["CameraChange"].IsDown)
+        if (Entry.Inputs[(int)GameInputsButtons.CameraChange].IsDown)
         {
             GameCamera.CAM_TYPE currType = active_camera.camType;
             GameCamera.CAM_TYPE nextType = GameCamera.CAM_TYPE.UNDEFINED;
@@ -81,7 +81,7 @@ public class CameraManager : MonoBehaviour, IControllable
             {
                 this.Log("Only 1 or less camera defined in the CameraManager for the rotation order. No cam switch can be made.");
                 return;
-            }
+        }
             for (int i = 0; i < rot_size; i++)
             {
                 if (cameraRotationOrder[i] == currType)
@@ -101,26 +101,26 @@ public class CameraManager : MonoBehaviour, IControllable
             if ((currType != nextType) && (nextType != GameCamera.CAM_TYPE.UNDEFINED))
             {
                 changeCamera(nextType);
-            }
-        }
-    }
+                }
+                }
+                }
 
-    // resets CameraManager status (active camera, etc..) upon new scene load
-    // Avoid bad transitions and such for now
-    // Might need to change if we decide to make a Spyro style entry in the level thru portals
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+            // resets CameraManager status (active camera, etc..) upon new scene load
+            // Avoid bad transitions and such for now
+            // Might need to change if we decide to make a Spyro style entry in the level thru portals
+            void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // refresh cameras and disable active_camera
         active_camera = null;
         cameras.Clear();
-    }
+        }
 
     // Find Camera from its type within current scene
     // Only one per CAM_TYPE is retrieved for now as we don't need more
     // Thus if we want to have multiple cameras for the hub, we'll need to update
     // this logic.
     private GameCamera findCameraInScene(GameCamera.CAM_TYPE iType)
-    {
+            {
         GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
         GameCamera retval = null;
 
@@ -132,9 +132,9 @@ public class CameraManager : MonoBehaviour, IControllable
                 retval = currcam;
                 break;
             }
-        }
+            }
         return retval;
-    }
+            }
 
     private List<GameCamera> findCamerasInScene(GameCamera.CAM_TYPE iType)
     {
@@ -147,22 +147,22 @@ public class CameraManager : MonoBehaviour, IControllable
             if (currcam.camType == iType)
             {
                 retval.Add(currcam);
-            }
-        }
+                }
+                }
         return retval;
-    }
+                }
 
     // Retrieves only the first found CAM_TYPE camera
     public void changeCamera(GameCamera.CAM_TYPE iNewCamType)
     {
         // 0 : Clean up nulls CameraType to free space for new ones
         var null_keys = cameras.Where(e => e.Value == null)
-                                .Select(e => e.Key)
+        .Select(e => e.Key)
                                 .ToList();
         foreach (var rm_me in null_keys)
         {
             cameras.Remove(rm_me);
-        }
+            }
 
         // 1 : Do I have a CAM_TYPE available ?
         nextCamera = null;
@@ -189,7 +189,7 @@ public class CameraManager : MonoBehaviour, IControllable
             }
             //  > Add it to mgr cams
             cameras.Add(iNewCamType, nextCamera);
-        }
+            }
         else
         {
             // cam already stored, retrieve it for transition
@@ -201,15 +201,15 @@ public class CameraManager : MonoBehaviour, IControllable
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
             if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
-                initTransition(nextCamera);
+            initTransition(nextCamera);
             else
-                operateCameraSwitch(nextCamera);
+            operateCameraSwitch(nextCamera);
         }
         else
         {
             operateCameraSwitch(nextCamera);
         }
-    }
+            }
 
     public void changeCamera(CinematicCamera iCineCam)
     {
@@ -224,9 +224,9 @@ public class CameraManager : MonoBehaviour, IControllable
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
             if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
-                initTransition(nextCamera);
+            initTransition(nextCamera);
             else
-                operateCameraSwitch(nextCamera);
+            operateCameraSwitch(nextCamera);
         }
         else
         {
@@ -250,7 +250,7 @@ public class CameraManager : MonoBehaviour, IControllable
             ToonPipeline transition_tp = transitionCameraInst.GetComponent<ToonPipeline>();
             transition_tp.mgr       = active_tp.mgr;
             transition_tp.mainLight = active_tp.mainLight;
-        }
+            }
 
         transitionCameraInst.transform.position = active_camera.transform.position;
         transitionCameraInst.transform.rotation = active_camera.transform.rotation;
@@ -269,14 +269,14 @@ public class CameraManager : MonoBehaviour, IControllable
         active_camera.gameObject.SetActive(true);
         active_camera.enabled = true;
         active_camera.GetComponent<Camera>().enabled = true;
-    }
+        }
 
     public void endTransition()
     {
         inTransition = false;
         Destroy(findCameraInScene(GameCamera.CAM_TYPE.TRANSITION).gameObject);
         Destroy(transitionStart.gameObject);
-    }
+        }
 
     public void operateCameraSwitch(GameCamera iNewCam)
     {
@@ -285,7 +285,7 @@ public class CameraManager : MonoBehaviour, IControllable
             active_camera.gameObject.SetActive(false);
             active_camera.enabled = false;
             active_camera.GetComponent<Camera>().enabled = false;
-        }
+            }
         active_camera = iNewCam;
         active_camera.gameObject.SetActive(true);
         active_camera.enabled = true;
@@ -294,25 +294,25 @@ public class CameraManager : MonoBehaviour, IControllable
 
         PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
         if (!!PMM)
-            PMM.SetCamera(active_camera.GetComponent<Camera>());
-    }
+        PMM.SetCamera(active_camera.GetComponent<Camera>());
+        }
 
     public bool interpolatePosition(Transform iStart, Transform iEnd)
     {
         float s = transiTime / transitionDuration;
         //s = s*s*(3f-2f*s); // smoothstep formula
         active_camera.transform.position = Vector3.Lerp(
-                                iStart.position,
-                                iEnd.position,
-                                s);
+            iStart.position,
+            iEnd.position,
+            s);
         active_camera.transform.rotation = Quaternion.Lerp(
-                                        iStart.rotation,
-                                        iEnd.rotation,
-                                        s);
+            iStart.rotation,
+            iEnd.rotation,
+            s);
         transiTime += Time.deltaTime;
 
         return transiTime < transitionDuration;
-    }
+        }
 
     // Returns true when transition is done, false otherwise
     public bool transition(Transform iStart, Transform iEnd)
@@ -327,7 +327,7 @@ public class CameraManager : MonoBehaviour, IControllable
             this.LogWarn("CameraManager::Tried to transition from/to null Transform. Forcing transition quit.");
             endTransition();
             return true;
-        }
+            }
 
         if (!interpolatePosition(iStart, iEnd))
         {
@@ -335,9 +335,9 @@ public class CameraManager : MonoBehaviour, IControllable
             active_camera.transform.rotation = iEnd.rotation;
             endTransition();
             return true;
-        }
+            }
         return false;
-    }
+            }
 
     public void moveActiveCameraTo(Vector3 iTransform)
     {
@@ -353,13 +353,13 @@ public class CameraManager : MonoBehaviour, IControllable
             ToonPipeline deathcam_tp = deathCamInst.GetComponent<ToonPipeline>();
             deathcam_tp.mgr       = active_tp.mgr;
             deathcam_tp.mainLight = active_tp.mainLight;
-        }
+            }
         deathCamInst.transform.position = active_camera.transform.position;
         deathCamInst.transform.rotation = active_camera.transform.rotation;
 
         deathCamInst.GetComponent<CinematicCamera>().launch();
         StartCoroutine(endDeathCam());
-    }
+        }
     private IEnumerator endDeathCam()
     {
         yield return new WaitForSeconds(deathCamDuration);

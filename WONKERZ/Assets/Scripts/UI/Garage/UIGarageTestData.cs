@@ -14,7 +14,7 @@ public class SerializableInputData
     public InputManager.InputData buildInputData()
     {
         InputManager.InputData retval = new InputManager.InputData();
-        retval.Inputs = Inputs;
+        // retval.Inputs = Inputs;
         retval.NumberOfFramesIsSame = NumberOfFramesIsSame;
         return retval;
     }
@@ -27,7 +27,7 @@ public class SerializableInputData
         }
         set
         {
-            Inputs = value.Inputs;
+            //   Inputs = value.Inputs;
             NumberOfFramesIsSame = value.NumberOfFramesIsSame;
         }
     }

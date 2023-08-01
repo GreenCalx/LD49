@@ -19,8 +19,8 @@ public class grapintest : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        Player.IsHooked = Entry.Inputs["Grapin"].Down;
-        grapin.SetActive(Entry.Inputs["Grapin"].Down);
+        Player.IsHooked = Entry.Inputs[(int) GameInputsButtons.Grapin].Down;
+        grapin.SetActive(Entry.Inputs[(int) GameInputsButtons.Grapin].Down);
     }
 
     // Update is called once per frame

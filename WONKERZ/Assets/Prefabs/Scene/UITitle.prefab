@@ -432,8 +432,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -657,8 +659,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -854,8 +858,10 @@ MonoBehaviour:
   copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 0
   isActivated: 0
@@ -1101,8 +1107,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   selector_latch: 0.2
@@ -1303,8 +1311,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -1588,8 +1598,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   selector_latch: 0
@@ -1900,8 +1912,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -2123,8 +2137,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   selector_latch: 0.2
@@ -2137,11 +2153,10 @@ MonoBehaviour:
   navigationMode: 1
   currentResolution: {fileID: 972532261}
   currentScreenMode: {fileID: 394774872}
-  resolutionPanel: {fileID: 757941154}
+  resolutionPanel: {fileID: 4231993939702653438}
   screenModePanel: {fileID: 934655969}
   resolutionPanelElem: {fileID: 2729112295564431852, guid: a3d97c7a84efd364a9d6057af352d62e, type: 3}
   screenModePanelElem: {fileID: 0}
-  resScrollView: {fileID: 6402924426859806411}
 --- !u!222 &707670239
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2186,11 +2201,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 757941151}
-  - component: {fileID: 757941154}
   - component: {fileID: 757941153}
   - component: {fileID: 757941152}
   - component: {fileID: 757941155}
   - component: {fileID: 5424275167999070270}
+  - component: {fileID: 4231993939702653438}
   m_Layer: 5
   m_Name: PResolution
   m_TagString: Untagged
@@ -2218,119 +2233,6 @@ RectTransform:
   m_AnchoredPosition: {x: 7.8, y: 0}
   m_SizeDelta: {x: 729.8892, y: 781.13}
   m_Pivot: {x: 0.5, y: 1}
---- !u!114 &757941154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 757941150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 707670237}
-  onSelect:
-    m_PersistentCalls:
-      m_Calls: []
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  onDeselect:
-    m_PersistentCalls:
-      m_Calls: []
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  onActivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 757941150}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 656957776831018883}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 757941154}
-        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
-        m_MethodName: activate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onDeactivate:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 757941150}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 656957776831018883}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 757941154}
-        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
-        m_MethodName: deactivate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
-  inputMgr: {fileID: 0}
-  inputActivate: 
-  inputVert: 
-  inputHori: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  selector_latch: 0.2
-  cancelDeactivatePanel: 1
-  tabs: []
-  navigationMode: 1
 --- !u!222 &757941153
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2406,6 +2308,123 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 2
   m_VerticalFit: 2
+--- !u!114 &4231993939702653438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757941150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4414f06bf0dce648880fe5bee7ea020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Parent: {fileID: 707670237}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  selected_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls: []
+  deselected_color: {r: 0, g: 0, b: 0, a: 0}
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 757941150}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 656957776831018883}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 4231993939702653438}
+        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: activate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  activated_color: {r: 0, g: 0, b: 0, a: 0}
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 757941150}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 656957776831018883}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4231993939702653438}
+        m_TargetAssemblyTypeName: UIPanelTabbed, Assembly-CSharp
+        m_MethodName: deactivate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  activator: {fileID: 0}
+  copyColorFromParent: 1
+  copyInputsFromParent: 1
+  inputMgr: {fileID: 0}
+  inputActivate: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
+  inputCancel: 
+  inheritsInputMgr: 1
+  selector_latch: 0.2
+  cancelDeactivatePanel: 1
+  tabs: []
+  navigationMode: 0
+  scrollView: {fileID: 6402924426859806411}
+  scrollContent: {fileID: 757941151}
 --- !u!1 &837058976
 GameObject:
   m_ObjectHideFlags: 0
@@ -2662,8 +2681,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   selector_latch: 0.2
@@ -2781,12 +2802,14 @@ MonoBehaviour:
   copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 0
   isActivated: 0
-  toActivate: {fileID: 757941154}
+  toActivate: {fileID: 0}
   text: {fileID: 972532261}
 --- !u!222 &972532262
 CanvasRenderer:
@@ -3061,8 +3084,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   selector_latch: 0.2
@@ -3229,8 +3254,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -3594,12 +3621,14 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
-  toActivate: {fileID: 757941154}
+  toActivate: {fileID: 4231993939702653438}
   text: {fileID: 1247808685}
 --- !u!222 &1247808686
 CanvasRenderer:
@@ -3839,8 +3868,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -4422,8 +4453,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -4690,8 +4723,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -5376,8 +5411,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -5856,8 +5893,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -6068,8 +6107,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -6637,8 +6678,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -6833,9 +6876,11 @@ MonoBehaviour:
   copyInputsFromParent: 0
   inputMgr: {fileID: 0}
   inputActivate: Jump
-  inputVert: UIUpDown
-  inputHori: UILeftRight
-  inputCancel: Cancel
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  inputCancel: UICancel
   inheritsInputMgr: 0
   selector_latch: 0.2
   cancelDeactivatePanel: 0
@@ -7198,8 +7243,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0
@@ -7410,8 +7457,10 @@ MonoBehaviour:
   copyInputsFromParent: 1
   inputMgr: {fileID: 0}
   inputActivate: 
-  inputVert: 
-  inputHori: 
+  inputUp: 
+  inputDown: 
+  inputLeft: 
+  inputRight: 
   inputCancel: 
   inheritsInputMgr: 1
   isActivated: 0

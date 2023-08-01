@@ -42,16 +42,16 @@ public class UIGaragePickableTest : UITextTab
     {
         base.ProcessInputs(Entry);
 
-        if (Entry.Inputs[Constants.INPUT_CAMERACHANGE].IsDown)
+        if (Entry.Inputs[(int)GameInputsButtons.CameraChange].IsDown)
         {
             setModeRecord();
             activate();
-            
-        } else if (Entry.Inputs[Constants.INPUT_JUMP].IsDown) {
+
+        } else if (Entry.Inputs[(int)GameInputsButtons.Jump].IsDown) {
             setModeReplay();
             activate();
         }
-        
+
     }
 
     public void setModeReplay()
@@ -78,7 +78,7 @@ public class UIGaragePickableTest : UITextTab
         }
         last_launch_failed = false;
         txt_load_status.gameObject.SetActive(false);
-        
+
         if ( Access.TestManager().testMode ==  UIGarageTestManager.MODE.RECORD )
         {
             txt_record.gameObject.SetActive(true);
@@ -93,7 +93,7 @@ public class UIGaragePickableTest : UITextTab
         base.deactivate();
 
         if (!last_launch_failed) // dont display load error if test launch was a success
-            txt_load_status.gameObject.SetActive(false);
+        txt_load_status.gameObject.SetActive(false);
         SaveAndLoad.datas.Remove(test_data);
 
         txt_record.gameObject.SetActive(false);

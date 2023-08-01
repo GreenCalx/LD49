@@ -34,7 +34,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (Entry.Inputs[Constants.INPUT_START].IsDown)
+        if (Entry.Inputs[(int) GameInputsButtons.UIStart].IsDown)
         {
             tracknameText.text = SceneManager.GetActiveScene().name;
             updateTrackDetails();

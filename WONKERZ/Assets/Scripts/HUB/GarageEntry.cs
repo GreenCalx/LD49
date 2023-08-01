@@ -29,8 +29,8 @@ public class GarageEntry : MonoBehaviour, IControllable
     {
         if (detector.playerInRange)
         {
-            if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
-                openGarage();
+            if (Entry.Inputs[(int)GameInputsButtons.Jump].IsDown)
+            openGarage();
         }
     }
 

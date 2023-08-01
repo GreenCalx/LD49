@@ -51,7 +51,7 @@ public class ManualCamera : PlayerCamera, IControllable
         initial_FOV = cam.fieldOfView;
         jumpStartTime = 0f;
         baseFocusRadius = focusRadius;
-        
+
     }
     private void Start()
     {
@@ -68,7 +68,7 @@ public class ManualCamera : PlayerCamera, IControllable
         input = Vector3.zero;
         if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
         {
-            input = new Vector2(Entry.Inputs["CameraY"].AxisValue, Entry.Inputs["CameraX"].AxisValue);
+            input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue, Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue);
         }
     }
 
@@ -80,7 +80,7 @@ public class ManualCamera : PlayerCamera, IControllable
 
         orbitAngles = new Vector2(defaultVerticalAngle, 0f);
         transform.localRotation = Quaternion.Euler(orbitAngles);
-        
+
     }
 
     void Update()
@@ -233,7 +233,7 @@ public class ManualCamera : PlayerCamera, IControllable
     bool autoRotation()
     {
         if (Time.unscaledTime - lastManualRotationTime < alignDelay)
-            return false;
+        return false;
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
         if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player

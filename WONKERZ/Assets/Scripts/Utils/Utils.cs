@@ -78,22 +78,4 @@ public static partial class Utils
     {
         return !!colliderIsPlayer(iCollision.collider);
     }
-
-    public static bool checkAnyKeyPressed(InputManager.InputData Entry, bool iAxis)
-    {
-        if (iAxis)
-        {
-            foreach(string axis in Constants.INPUT_AXIS)
-            {
-                if (Entry.Inputs[axis].AxisValue != 0)
-                    return true;
-            }
-        }
-        foreach(string btn in Constants.INPUT_BTNS)
-        {
-            if (Entry.Inputs[btn].IsDown)
-                return true;
-        }
-        return false;
-    }
 }

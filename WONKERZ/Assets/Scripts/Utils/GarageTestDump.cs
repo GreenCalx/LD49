@@ -46,14 +46,14 @@ public class GarageTestDump
     public static string formatInputData(IM.InputData data)
     {
         string retval = "";
-        foreach (KeyValuePair<string, IM.InputState> kvp in data.Inputs)
-        {
-            retval += kvp.Key;
-            retval += inputXValueSeparator;
-            retval += formatInputState(kvp.Value);
+        //foreach (KeyValuePair<string, IM.InputState> kvp in data.Inputs)
+        //{
+        //    retval += kvp.Key;
+        //    retval += inputXValueSeparator;
+        //    retval += formatInputState(kvp.Value);
 
-            retval += inputXinputSeparator;
-        }
+        //    retval += inputXinputSeparator;
+        //}
         return retval;
     }
 

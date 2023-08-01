@@ -3,7 +3,7 @@ using System;
 public struct Constants
 {
     public const int MajorVersion = 0;
-    public const int MinorVersion = 0;
+    public const int MinorVersion = 1;
     // -- Tweaks --
     public const int EASY_N_PANELS      = Int32.MaxValue;
     public const int MEDIUM_N_PANELS    = 3;
@@ -53,21 +53,6 @@ public struct Constants
 
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";
-
-    // -- Inputs --
-    public const string INPUT_ACCEL = "Accelerator";
-    public const string INPUT_TURN = "Turn";
-    public const string INPUT_JUMP = "Jump";
-    public const string INPUT_CANCEL = "Cancel";
-    public const string INPUT_UIUPDOWN = "UIUpDown";
-    public const string INPUT_START = "Start";
-    public const string INPUT_SAVESTATES = "SaveStates";
-    public const string INPUT_TURBO = "Turbo";
-    public const string INPUT_CAMERACHANGE = "CameraChange";
-    public const string INPUT_HANDBRAKE = "Handbrake";
-    public const string INPUT_WEIGHTCONTROL = "WeightControl";
-    public static readonly string[] INPUT_AXIS = {INPUT_ACCEL, INPUT_TURN, INPUT_SAVESTATES}; // No cam input innit atm
-    public static readonly string[] INPUT_BTNS = {INPUT_JUMP, INPUT_CANCEL, INPUT_TURBO, INPUT_START, INPUT_CAMERACHANGE};
 
     // -- Resources paths --
     public const string RES_ICON_BLANK = "Icons/UI_InputBlank";

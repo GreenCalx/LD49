@@ -35,11 +35,11 @@ public class PNJDialog : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (is_talkable && Entry.Inputs["Jump"].IsDown)
+        if (is_talkable && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
         {
             talk();
         }
-        else if (dialog_ongoing && Entry.Inputs["Cancel"].IsDown)
+        else if (dialog_ongoing && Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
         {
             end_dialog();
         }
@@ -60,15 +60,15 @@ public class PNJDialog : MonoBehaviour, IControllable
             __loaded_dialog_ui = ui_go.GetComponent<UIDialog>();
             curr_dialog_index = 0;
             if (!!__animator)
-                __animator.SetBool(__animator_talk_parm, true);
+            __animator.SetBool(__animator_talk_parm, true);
         }
 
         if (__loaded_dialog_ui == null)
-            return false;
+        return false;
 
         if (!__loaded_dialog_ui.message_is_displayed() &&
-              __loaded_dialog_ui.has_a_message_to_display())
-            __loaded_dialog_ui.force_display();
+            __loaded_dialog_ui.has_a_message_to_display())
+        __loaded_dialog_ui.force_display();
         else
         {
             if (__loaded_dialog_ui.overflows)
@@ -110,7 +110,7 @@ public class PNJDialog : MonoBehaviour, IControllable
         curr_dialog_index = 0;
 
         if (!!__animator)
-            __animator.SetBool(__animator_talk_parm, false);
+        __animator.SetBool(__animator_talk_parm, false);
     }
 
 }

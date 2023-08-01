@@ -40,8 +40,8 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (!isSkippable)
             return;
 
-        if (Utils.checkAnyKeyPressed(Entry, false))
-            EndCinematic();
+        if (Entry.IsAnyKeyDown())
+        EndCinematic();
     }
 
     public void EndCinematic()

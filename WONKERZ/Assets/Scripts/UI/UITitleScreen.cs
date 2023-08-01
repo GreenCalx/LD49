@@ -18,7 +18,7 @@ public class UITitleScreen : UIPanelTabbed
     protected override void ProcessInputs(InputManager.InputData entry){
         base.ProcessInputs(entry);
 
-        if (entry.Inputs[inputCancel].IsDown)
+        if (entry.Inputs[GameInputsUtils.GetIdx(inputCancel)].IsDown)
         {
             // propose to quit to desktop
             confirmExitPanel.onActivate?.Invoke();

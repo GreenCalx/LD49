@@ -40,11 +40,11 @@ public class TalkBox : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
 
-        if (is_talkable && Entry.Inputs["Jump"].IsDown)
+        if (is_talkable && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
         {
             talk();
         }
-        else if (is_in_dialog && Entry.Inputs["Cancel"].IsDown)
+        else if (is_in_dialog && Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
         {
             end_dialog();
         }
@@ -80,18 +80,18 @@ public class TalkBox : MonoBehaviour, IControllable
             curr_dialog_index = 0;
 
             if (!!animator)
-                animator.SetBool(c_animator_talk_parm, true);
+            animator.SetBool(c_animator_talk_parm, true);
 
             if (!!dialogCamera)
-                dialogCamera.launch();
+            dialogCamera.launch();
         }
 
         if (dialogUI_inst == null)
-            return;
+        return;
 
         if (!dialogUI_inst.message_is_displayed() &&
-              dialogUI_inst.has_a_message_to_display())
-            dialogUI_inst.force_display();
+            dialogUI_inst.has_a_message_to_display())
+        dialogUI_inst.force_display();
         else
         {
             if (dialogUI_inst.overflows)
@@ -130,13 +130,13 @@ public class TalkBox : MonoBehaviour, IControllable
     {
         is_in_dialog = false;
         if (!!dialogUI_inst)
-            Destroy(dialogUI_inst.gameObject);
+        Destroy(dialogUI_inst.gameObject);
         curr_dialog_index = 0;
 
         if (!!animator)
-            animator.SetBool(c_animator_talk_parm, false);
+        animator.SetBool(c_animator_talk_parm, false);
 
         if (!!dialogCamera)
-            dialogCamera.end();
+        dialogCamera.end();
     }
 }

@@ -58,7 +58,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         }
 
         float X = 0;
-        X = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
+        X = Entry.Inputs[(int) GameInputsButtons.UIUp].AxisValue;
         if (X < -0.2f)
         {
             currSelectedCPIndex = (currSelectedCPIndex <= 0) ? CPs.Count - 1 : currSelectedCPIndex - 1;
@@ -72,7 +72,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             TMP_selectedCP.text = CPs[currSelectedCPIndex];
         }
 
-        if (Entry.Inputs[Constants.INPUT_JUMP].IsDown)
+        if (Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
         {
             string selectedCP = CPs[currSelectedCPIndex];
             foreach (CheckPoint cp in eligibleCPs)
@@ -87,7 +87,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             }
         }
 
-        if (Entry.Inputs[Constants.INPUT_CANCEL].IsDown)
+        if (Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
         {
             deactivate();
             return;

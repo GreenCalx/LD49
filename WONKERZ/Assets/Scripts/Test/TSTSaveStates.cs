@@ -59,8 +59,8 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         }
         elapsedSinceLastSS = 0f;
         
-        var ss_save_or_load = Entry.Inputs[Constants.INPUT_SAVESTATES].AxisValue;
-        if (ss_save_or_load > 0) // SAVE
+        var plant = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].IsDown;
+        if (plant) // SAVE
         {
             CheckPointManager cpm = Access.CheckPointManager();
             if (cpm.currPanels<=0)
@@ -83,7 +83,8 @@ public class TSTSaveStates : MonoBehaviour, IControllable
                 saveStateMarkerInst.transform.rotation = ss_rot;
             }
         }
-        else if (ss_save_or_load < 0) // LOAD
+        var load = Entry.Inputs[(int)GameInputsButtons.SaveStatesReturn].IsDown;
+        if (load) // LOAD
         {
             loadState();
         }

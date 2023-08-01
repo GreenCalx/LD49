@@ -51,25 +51,25 @@ public class GroundState : FSMState, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        if (Entry.Inputs[Constants.INPUT_JUMP].Down)
+        if (Entry.Inputs[(int) GameInputsButtons.Jump].Down)
         {
             player.SetSpringSizeMinAndLock();
         }
         else
         {
-            if (Entry.Inputs[Constants.INPUT_JUMP].IsUp)
+            if (Entry.Inputs[(int) GameInputsButtons.Jump].IsUp)
             {
                 player.jump.applyForceMultiplier = true;
             }
             player.ResetSpringSizeMinAndUnlock();
         }
 
-        if (Entry.Inputs[Constants.INPUT_TURBO].Down)
+        if (Entry.Inputs[(int) GameInputsButtons.Turbo].Down)
         {
             player.useTurbo();
         }
 
-        if (Entry.Inputs[Constants.INPUT_HANDBRAKE].Down)
+        if (Entry.Inputs[(int) GameInputsButtons.Handbrake].Down)
         {
             player.SetHandbrake(true);
         } else
@@ -79,10 +79,10 @@ public class GroundState : FSMState, IControllable
 
         // makes car torque control a power
         //if (player.flags[PlayerController.FJump])
-        if (Entry.Inputs[Constants.INPUT_WEIGHTCONTROL].Down)
+        if (Entry.Inputs[(int) GameInputsButtons.WeightControl].Down)
         {
-            var x = Entry.Inputs[Constants.INPUT_TURN].AxisValue;
-            var y = Entry.Inputs[Constants.INPUT_UIUPDOWN].AxisValue;
+            var x = Entry.Inputs[(int) GameInputsAxis.Turn].AxisValue;
+            var y = Entry.Inputs[(int) GameInputsAxis.WeightY].AxisValue;
 
             player.jump.diRollUnscaled = x;
             player.jump.diPitchUnscaled = y;
