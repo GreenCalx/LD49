@@ -428,10 +428,11 @@ public class PlayerController : MonoBehaviour, IControllable
         if (turbo.intervalElapsedTime < turbo.timeInterval)
         return;
 
-        // var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
-        // if (nextTurboValue < 0)
-        // return;
-        float nextTurboValue = turbo.current - turbo.consumptionPerTick;
+        var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
+        if (nextTurboValue < 0)
+        {
+            return;
+        }
 
         turbo.current = Mathf.Clamp(nextTurboValue, 0f, turbo.max);
 
