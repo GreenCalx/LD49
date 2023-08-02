@@ -66,9 +66,10 @@ public class ManualCamera : PlayerCamera, IControllable
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
         input = Vector3.zero;
+        float multiplier = (InputSettings.InverseRSMapping) ? -1f : 1f;
         if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
         {
-            input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue, Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue);
+            input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue, Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue) * multiplier;
         }
     }
 
@@ -80,11 +81,6 @@ public class ManualCamera : PlayerCamera, IControllable
 
         orbitAngles = new Vector2(defaultVerticalAngle, 0f);
         transform.localRotation = Quaternion.Euler(orbitAngles);
-
-    }
-
-    void Update()
-    {
 
     }
 

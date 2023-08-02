@@ -81,7 +81,7 @@ public class GroundState : FSMState, IControllable
         //if (player.flags[PlayerController.FJump])
         if (Entry.Inputs[(int) GameInputsButtons.WeightControl].Down)
         {
-            var x = Entry.Inputs[(int) GameInputsAxis.Turn].AxisValue;
+            var x = Entry.Inputs[(int) GameInputsAxis.WeightX].AxisValue;
             var y = Entry.Inputs[(int) GameInputsAxis.WeightY].AxisValue;
 
             player.jump.diRollUnscaled = x;

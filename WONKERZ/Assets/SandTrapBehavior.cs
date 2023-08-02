@@ -83,7 +83,7 @@ public class SandTrapBehavior : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         trapAnim.SetBool("Focus", focused);
         fourmillionAnim.SetBool("Focus", focused);
