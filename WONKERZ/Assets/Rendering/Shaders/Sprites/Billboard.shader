@@ -4,11 +4,14 @@ Shader "Sprites/Billboard"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
+        _Cutoff("Cutoff", Range(0.0, 1.0)) = 0
         [IntRange]_MaterialID("MaterialID", Range(0,255)) = 0
     }
     SubShader
     {
         Tags { "RenderType"="Opaque"  "DisableBatching" = "True"}
+
+        AlphaTest Greater 0.5
 
         Pass
         {
@@ -18,6 +21,8 @@ Shader "Sprites/Billboard"
             }
 
             CGPROGRAM
+
+            #define _ALPHATEST_ON 1
 
             #define SCHNIBBLE_NO_VERT_TRANSFORM 1
             #define SCHNIBBLE_VERT vert

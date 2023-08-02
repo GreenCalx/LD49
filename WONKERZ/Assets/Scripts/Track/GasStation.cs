@@ -28,6 +28,8 @@ public class GasStation : MonoBehaviour, IControllable
     public bool bypassNutsCost = false;
     private bool convertNuts = false;
 
+    public UIGasStationAskCoinz askCoinz;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,7 +92,7 @@ public class GasStation : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
-        convertNuts = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].AxisValue > 0;
+        convertNuts = Entry.Inputs[(int) GameInputsButtons.GiveCoinsForTurbo].IsDown;
     }
 
     void OnDestroy()
@@ -124,11 +126,14 @@ public class GasStation : MonoBehaviour, IControllable
             if (!!uicp)
             {
                 uicp.convertTxt.gameObject.SetActive(true);
-                string str = Access.InputManager().GetInputName((int)GameInputsButtons.SaveStatesPlant, true) + " to convert nuts into fuel";
+                string str = GameInputsUtils.buttonsMapping[(int)GameInputsButtons.GiveCoinsForTurbo].joytickCode.ToString() + " to convert nuts into fuel";
                 uicp.convertTxt.text = str;
                 Utils.attachControllable<GasStation>(this);
                 Access.CheckPointManager().playerInGasStation = true;
             }
+
+            askCoinz.gameObject.SetActive(true);
+            askCoinz.animate = true;
         }
     }
 
@@ -150,6 +155,8 @@ public class GasStation : MonoBehaviour, IControllable
                 animator.SetBool(animatorParm, false);
             }
 
+            askCoinz.gameObject.SetActive(false);
+            askCoinz.animate = false;
         }
     }
 }
