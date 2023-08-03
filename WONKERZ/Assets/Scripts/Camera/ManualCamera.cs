@@ -69,9 +69,14 @@ public class ManualCamera : PlayerCamera, IControllable
         float multiplier = (InputSettings.InverseRSMapping) ? -1f : 1f;
         if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
         {
-            // input is cameraY, cameraX, because it represents the axis of rotation.
-            // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
-            input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue, Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue) * multiplier;
+            if (!(Entry.Inputs[(int)GameInputsButtons.WeightControl].Down
+                  && (GameInputsUtils.IsSame(GameInputsAxis.CameraX, GameInputsAxis.WeightX)
+                      || GameInputsUtils.IsSame(GameInputsAxis.CameraY, GameInputsAxis.WeightY))))
+            {
+                // input is cameraY, cameraX, because it represents the axis of rotation.
+                // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
+                input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue, -Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue) * multiplier;
+            }
         }
     }
 
