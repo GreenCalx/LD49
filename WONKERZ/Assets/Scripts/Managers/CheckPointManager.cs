@@ -131,7 +131,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 respawnCalled = true;
                 respawnButtonDownElapsed = 0f;
             }
-            respawnButtonDownElapsed += Time.fixedDeltaTime;
+            respawnButtonDownElapsed += Time.deltaTime;
             float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
             Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
         }
@@ -163,8 +163,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
         }
 
-        elapsedSinceLastSS += Time.fixedDeltaTime;
-        elapsedSinceLastSSLoad += Time.fixedDeltaTime;
+        elapsedSinceLastSS += Time.deltaTime;
+        elapsedSinceLastSSLoad += Time.deltaTime;
     }
 
     // Update is called once per frame
