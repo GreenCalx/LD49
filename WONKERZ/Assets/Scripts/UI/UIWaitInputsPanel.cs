@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UIWaitInputsPanel : UIPanelControlable
@@ -7,7 +5,8 @@ public class UIWaitInputsPanel : UIPanelControlable
     private bool wait = false;
     private float waitBeforeInputs = 0.5f;
     private float currentTime = 0f;
-    override protected void ProcessInputs(InputManager.InputData Entry) {
+    override protected void ProcessInputs(InputManager.InputData Entry)
+    {
         if (currentTime > waitBeforeInputs)
         {
             if (wait)
@@ -27,22 +26,25 @@ public class UIWaitInputsPanel : UIPanelControlable
                 //}
             }
         }
-        currentTime += Time.deltaTime;
+        currentTime += Time.unscaledDeltaTime;
     }
 
     // IMPORTANT toffa: needs to be done in update to be sure that we dont send
     // inputs back next frame.
-    void Update(){
+    void Update()
+    {
         if (!wait)
-        onDeactivate?.Invoke();
+            onDeactivate?.Invoke();
     }
 
-    public void WaitForInput(){
+    public void WaitForInput()
+    {
         wait = true;
         currentTime = 0f;
     }
 
-    public void SetParent(UIElement e){
+    public void SetParent(UIElement e)
+    {
         Parent = e;
     }
 }
