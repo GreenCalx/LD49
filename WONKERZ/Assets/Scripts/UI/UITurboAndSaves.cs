@@ -7,6 +7,7 @@ public class UITurboAndSaves : MonoBehaviour
 
     public Image            turboBar;
     public Image            cpImageFilled;
+    public GameObject turboRefilAnim;
 
     public TextMeshProUGUI nAvailablePanels;
     //public TextMeshProUGUI nPanelRespawn;
@@ -39,6 +40,11 @@ public class UITurboAndSaves : MonoBehaviour
     public void updatePanelOnRespawn()
     {
 
+    }
+
+    public void startTurboRefilAnim(bool v)
+    {
+        turboRefilAnim.SetActive(v);
     }
 
     public void updateTurboBar()
