@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 962065131756976017}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: -1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 553431542682768915}
@@ -87,6 +87,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: DustCityTunnelEntry
       objectReference: {fileID: 0}
+    - target: {fileID: 8379061592336002940, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 96485621c9d6b9b4c8fc80e9e1b30fce, type: 2}
+    - target: {fileID: 8379061592336002940, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: c25c2c0c8ae34b84fa060dc8360859be, type: 2}
+    - target: {fileID: 8379061592336002940, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0d82ce2342383b74cab40ca076069ef6, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
 --- !u!4 &553431542682768915 stripped
@@ -94,3 +106,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
   m_PrefabInstance: {fileID: 10298520693584376}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8294841102971722419 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -920523804099777717, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}
+  m_PrefabInstance: {fileID: 10298520693584376}
+  m_PrefabAsset: {fileID: 0}
+--- !u!64 &1145028646
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8294841102971722419}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6081586937477642318, guid: 0f787c92c6fe5944c9afe3d860b06af2, type: 3}

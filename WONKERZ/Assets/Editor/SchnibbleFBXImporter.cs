@@ -25,7 +25,7 @@ public class SchnibbleFBXImporter : AssetPostprocessor
 
         // Meshes
         importer.meshCompression = ModelImporterMeshCompression.Medium;
-        importer.isReadable = false;
+        //importer.isReadable = false;
         importer.meshOptimizationFlags = MeshOptimizationFlags.Everything;
         // todo toffa: make a function to generate automatically collider data
         // according to some naming in blender?
@@ -87,7 +87,6 @@ public class SchnibbleFBXImporter : AssetPostprocessor
 
     void AddCollider(Transform t)
     {
-        Debug.Log(t.name);
         var mr = t.gameObject.GetComponent<MeshRenderer>();
         if (!mr) return;
 
@@ -121,7 +120,6 @@ public class SchnibbleFBXImporter : AssetPostprocessor
     {
         foreach (string str in importedAssets)
         {
-            Debug.Log(str);
             if (str.EndsWith("fbx"))
             {
                 // try to find corresponding prefab
