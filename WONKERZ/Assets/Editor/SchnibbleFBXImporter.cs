@@ -62,12 +62,28 @@ public class SchnibbleFBXImporter : AssetPostprocessor
     readonly static string defaultSchnibbleErrorMaterial = "Materials/Sch-ErrorShader";
     Material OnAssignMaterialModel(Material source, Renderer rend)
     {
-        var m = Resources.Load<Material>(defaultSchnibbleErrorMaterial);
-        if (m == null)
+        var unityMaterials = AssetDatabase.FindAssets(source.name + " t:material");
+        if (unityMaterials.Length != 0)
         {
-            Debug.LogError("default material not found, will use StandardMaterial");
+            var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(unityMaterials[0]));
+            if (unityMaterials.Length > 1)
+            {
+                Debug.LogWarning("[Material] Found more than one material with name containing : " + source.name + " => using first possible one : " + mat.name);
+            }
+            return mat;
         }
-        return m;
+
+        var defaultMat = Resources.Load<Material>(defaultSchnibbleErrorMaterial);
+        if (defaultMat == null)
+        {
+            Debug.LogError("[Material] Default material not found, will use StandardMaterial");
+        }
+        else
+        {
+            Debug.LogWarning(" [Material] Material will be default one instead of : " + source.name);
+        }
+
+        return defaultMat;
     }
 
     void OnPostprocessModel(GameObject go)
@@ -116,45 +132,45 @@ public class SchnibbleFBXImporter : AssetPostprocessor
         }
     }
 
-    static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
-    {
-        foreach (string str in importedAssets)
-        {
-            if (str.EndsWith("fbx"))
+            static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
             {
-                // try to find corresponding prefab
-                if (!System.IO.File.Exists(str.Replace(".fbx", ".prefab")))
+                foreach (string str in importedAssets)
+                {
+                    if (str.EndsWith("fbx"))
+                    {
+                        // try to find corresponding prefab
+                        if (!System.IO.File.Exists(str.Replace(".fbx", ".prefab")))
                 {
                     // prefab does not exists, create one
                     var fbx = (GameObject)AssetDatabase.LoadAssetAtPath(str, typeof(GameObject));
-                    var prefab = (GameObject)PrefabUtility.InstantiatePrefab(fbx);
-                    var go = new GameObject();
-                    prefab.transform.parent = go.transform;
-                    if (fbx != null)
+                            var prefab = (GameObject)PrefabUtility.InstantiatePrefab(fbx);
+                            var go = new GameObject();
+                            prefab.transform.parent = go.transform;
+                            if (fbx != null)
+                            {
+                                PrefabUtility.SaveAsPrefabAssetAndConnect(go, str.Replace(".fbx", ".prefab"), InteractionMode.AutomatedAction, out bool success);
+                                if (!success)
                     {
-                        PrefabUtility.SaveAsPrefabAssetAndConnect(go, str.Replace(".fbx", ".prefab"), InteractionMode.AutomatedAction, out bool success);
-                        if (!success)
-                        {
-                            Debug.LogError("Could not create prefab from fbx");
-                        }
+                        Debug.LogError("Could not create prefab from fbx");
                     }
-                    GameObject.DestroyImmediate(go);
                 }
+                                GameObject.DestroyImmediate(go);
+            }
+                        }
+                        }
+                    foreach (string str in deletedAssets)
+                    {
+                        Debug.Log("Deleted Asset: " + str);
+                        }
+
+                    for (int i = 0; i < movedAssets.Length; i++)
+            {
+                Debug.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
+            }
+
+            if (didDomainReload)
+            {
+                Debug.Log("Domain has been reloaded");
             }
         }
-        foreach (string str in deletedAssets)
-        {
-            Debug.Log("Deleted Asset: " + str);
-        }
-
-        for (int i = 0; i < movedAssets.Length; i++)
-        {
-            Debug.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
-        }
-
-        if (didDomainReload)
-        {
-            Debug.Log("Domain has been reloaded");
-        }
     }
-}
