@@ -10,8 +10,15 @@ public static class DialogBank
     public static readonly string[] INTRO_CP_DIALOG= 
     {
         "It's your lucky day ! Ricky's been sent here to help you out !",
-        " I opened an exit portal on the other platform.",
-        "If you are stuck, press R/ DPad Down"
+        "Ernest warned me that you don't remember anything...",
+        "I've placed a few sign to refresh your memories. Read them carefully.",
+        "Press DPadUp to teleport back to me."
+    }; 
+
+    public static readonly string[] INTRO_CP2_DIALOG= 
+    {
+        "Well done ! I'll refuel your panels for free.",
+        "Don't forget that you can get up again by playing with LB for the ground control."
     }; 
 
     private static List<string[]> bank;
@@ -21,7 +28,8 @@ public static class DialogBank
         // load dialog in bank
         bank = new List<string[]>{
              INTRO_DIALOG,
-             INTRO_CP_DIALOG
+             INTRO_CP_DIALOG,
+             INTRO_CP2_DIALOG
              };
     }
 

@@ -103,6 +103,11 @@ public class PNJDialog : MonoBehaviour, IControllable
         }
     }
 
+    public bool dialogIsPlaying()
+    {
+        return dialog_ongoing;
+    }
+
     private void end_dialog()
     {
         dialog_ongoing = false;

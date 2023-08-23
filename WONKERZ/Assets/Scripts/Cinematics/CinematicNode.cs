@@ -20,7 +20,7 @@ public class CinematicNode : MonoBehaviour
         public float parm3;
     }
     public List<CinematicStep> nodeExecs;
-
+    
     void Awake()
     {
         elapsedTime = 0f;
@@ -58,5 +58,14 @@ public class CinematicNode : MonoBehaviour
             nodeExecs.RemoveAll( e => (e.delay <= elapsedTime) );
         }
         
+    }
+
+    public void forceQuit()
+    {
+        nodeActive = false;
+        foreach (Transform transform in transform.parent)
+        {
+            Destroy(transform.gameObject);
+        }
     }
 }

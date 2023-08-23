@@ -12,6 +12,7 @@ public class StartPortal : AbstractCameraPoint
     public bool enable_tricks = false;
     public bool deleteAfterSpawn = false;
     public GameCamera.CAM_TYPE camera_type;
+    public bool isTutorialStartPortal = false;
 
     [Header("Optionals")]
     public Transform facingPoint;
@@ -34,6 +35,11 @@ public class StartPortal : AbstractCameraPoint
         }
 
         init();
+
+        if (isTutorialStartPortal)
+        {
+            initTutorial();
+        }
     }
 
     void init()
@@ -48,6 +54,17 @@ public class StartPortal : AbstractCameraPoint
         if (deleteAfterSpawn)
         {
             Destroy(gameObject);
+        }
+    }
+
+    void initTutorial()
+    {
+        CheckPointManager cpm = Access.CheckPointManager();
+        TrackManager tm = Access.TrackManager();
+        if (!!cpm && !!tm)
+        {
+            tm.track_score.selected_diff = DIFFICULTIES.EASY;
+            cpm.init();
         }
     }
 

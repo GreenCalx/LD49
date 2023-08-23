@@ -20,12 +20,18 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public CinematicNode rootNode;
     public bool cinematicDone = false;
 
+    public float  timeToSkipCinematic = 2f;
+    private float elapsedSkipTime = 0f;
+
+    public GameObject skipUIRef;
+    private UICinematicSkip skipUIInst;
 
     // Start is called before the first frame update
     void Start()
     {
         triggered = false;
         cinematicDone = false;
+
         // if (triggerAtStart)
         //     StartCinematic();
     }
@@ -33,6 +39,10 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
+        if (isSkippable && triggered && !!skipUIInst)
+        {
+            skipUIInst.updateProgress( elapsedSkipTime / timeToSkipCinematic );
+        }
     }
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
@@ -40,16 +50,29 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (!isSkippable)
             return;
 
-        if (Entry.IsAnyKeyDown())
-        EndCinematic();
+        if (triggered)
+        {
+            if (Entry.Inputs[(int) GameInputsButtons.Jump].Down)
+            { elapsedSkipTime += Time.deltaTime; }
+            else
+            { elapsedSkipTime = 0f; }
+
+            if (elapsedSkipTime >= timeToSkipCinematic)    
+            { elapsedSkipTime = 0f; EndCinematic(); }
+        }
+
     }
 
     public void EndCinematic()
     {
+        Debug.Log("End Cinematic");
+
         if (freezePlayer)
         {
             Access.Player().UnFreeze();
         }
+
+        rootNode.forceQuit();
 
         Utils.detachControllable<CinematicTrigger>(this);
         
@@ -65,7 +88,11 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
 
         if (triggerOnlyOnce)
-            Destroy(gameObject);
+            Destroy(this as CinematicTrigger);
+        
+        if (!!skipUIInst)
+            Destroy(skipUIInst.gameObject);
+        
         cinematicDone = true;
     }
 
@@ -106,6 +133,11 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         {
             rootNode.execNode();
         }
+
+        if (isSkippable && !!skipUIRef)
+        {
+            skipUIInst = Instantiate(skipUIRef, transform.parent).GetComponent<UICinematicSkip>();
+        }
     }
 
     void OnTriggerStay(Collider iCollider)
@@ -115,7 +147,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         if (Utils.colliderIsPlayer(iCollider))
         {
-            //StartCinematic();
+            StartCinematic();
         }
     }
 }

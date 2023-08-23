@@ -44,6 +44,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void Start()
     {
+        init();
+    }
+
+    public void init()
+    {
         if (checkpoints.Count <= 0)
         {
             this.LogWarn("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
@@ -232,7 +237,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
         for (int i = 0; i < CPs.Length; i++)
         {
             CPs[i].subscribeToManager(this);
-            //checkpoints.Add( CPs[i].gameObject );
+            if (!checkpoints.Contains(CPs[i].gameObject))
+                checkpoints.Add( CPs[i].gameObject );
         }
     }
 
