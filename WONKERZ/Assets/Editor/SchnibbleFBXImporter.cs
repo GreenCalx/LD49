@@ -2,9 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 
 public class SchnibbleFBXImporter : AssetPostprocessor
 {
+    readonly static string kCollider = "_collider";
+    readonly static string kColliderMesh = "_collider_mesh";
+    readonly static string kColliderBox = "_collider_box";
+    readonly static string kColliderSphere = "_collider_sphere";
+    readonly static string kColliderCapsule = "_collider_capsule";
+    readonly static string kColliderMeshConvex = "_convex";
+    readonly static string kNoMesh = "_nomesh";
+
+    readonly static string defaultSchnibbleErrorMaterial = "Materials/Sch-ErrorShader";
+
     void OnPreprocessModel()
     {
         ModelImporter importer = assetImporter as ModelImporter;
@@ -59,7 +70,6 @@ public class SchnibbleFBXImporter : AssetPostprocessor
         importer.materialImportMode = ModelImporterMaterialImportMode.None;
     }
 
-    readonly static string defaultSchnibbleErrorMaterial = "Materials/Sch-ErrorShader";
     Material OnAssignMaterialModel(Material source, Renderer rend)
     {
         var unityMaterials = AssetDatabase.FindAssets(source.name + " t:material");
@@ -86,9 +96,61 @@ public class SchnibbleFBXImporter : AssetPostprocessor
         return defaultMat;
     }
 
+    readonly static string kPropertyCollider = "unity_collider";
+    readonly static string kPropertyShowMesh = "unity_showMesh";
     void OnPostprocessModel(GameObject go)
     {
-        RecursiveAddColliders(go.transform);
+        //RecursiveAddColliders(go.transform);
+        string[] extraUserPropertyNames =
+            {
+                kPropertyCollider,
+                kPropertyShowMesh,
+            };
+        ((ModelImporter)assetImporter).extraUserProperties = extraUserPropertyNames;
+    }
+
+    private void OnPostprocessGameObjectWithUserProperties(GameObject go, string[] propNames, object[] values)
+    {
+        var idx = 0;
+        foreach (var propName in propNames)
+        {
+            if (propName == kPropertyCollider)
+            {
+
+                var property = (string)values[idx];
+                if (property.Contains("mesh"))
+                {
+                    var c = go.AddComponent<MeshCollider>();
+                    c.convex = property.Contains("convex");
+                }
+                else if (property.Contains("box"))
+                {
+                    var c = go.AddComponent<BoxCollider>();
+                }
+                else if (property.Contains("sphere"))
+                {
+                    var c = go.AddComponent<SphereCollider>();
+                }
+            }
+
+            else if (propName == kPropertyShowMesh)
+            {
+                var val = (int)values[idx];
+
+
+                if (val == 0)
+                {
+                    var mr = go.GetComponent<MeshRenderer>();
+                    if (!mr) continue;
+                    GameObject.DestroyImmediate(mr);
+
+                    var mf = go.GetComponent<MeshFilter>();
+                    if (!mf) continue;
+                    GameObject.DestroyImmediate(mf);
+                }
+            }
+            idx++;
+        }
     }
 
     void RecursiveAddColliders(Transform go)
@@ -108,69 +170,92 @@ public class SchnibbleFBXImporter : AssetPostprocessor
 
 
         var name = t.name.ToLower();
-        if (name.Contains("collider_mesh"))
+        if (name.Contains(kColliderMesh))
         {
             var c = t.gameObject.AddComponent<MeshCollider>();
-            c.convex = name.Contains("_convex");
+            c.convex = name.Contains(kColliderMeshConvex);
         }
-        else if (name.Contains("collider_mesh"))
-        {
-            t.gameObject.AddComponent<MeshCollider>();
-        }
-        else if (name.Contains("collider_box"))
+        else if (name.Contains(kColliderBox))
         {
             var c = t.gameObject.AddComponent<BoxCollider>();
         }
-        else if (name.Contains("collider_sphere"))
+        else if (name.Contains(kColliderSphere))
         {
             var c = t.gameObject.AddComponent<SphereCollider>();
         }
 
-        if (name.Contains("_nomesh"))
+        if (name.Contains(kNoMesh))
         {
             mr.enabled = false;
         }
     }
 
-            static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
-            {
-                foreach (string str in importedAssets)
-                {
-                    if (str.EndsWith("fbx"))
-                    {
-                        // try to find corresponding prefab
-                        if (!System.IO.File.Exists(str.Replace(".fbx", ".prefab")))
+    // remove every parametric string in the fbx filename
+    static string CleanUpFilename(string filename)
+    {
+    //var name = filename.ToLower();
+        var name = filename;
+
+    name = name.Replace(kColliderMesh, "");
+    name = name.Replace(kColliderMeshConvex, "");
+    name = name.Replace(kColliderBox, "");
+    name = name.Replace(kColliderSphere, "");
+    name = name.Replace(kNoMesh, "");
+
+    return name;
+}
+
+    static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
+    {
+    foreach (string str in importedAssets)
+        {
+        // only apply to fbx files
+            if (str.EndsWith("fbx"))
+        {
+                var filepath = System.IO.Path.GetDirectoryName(str);
+                var prefabname = CleanUpFilename(System.IO.Path.GetFileName(str)).Replace(".fbx", ".prefab");
+                var prefabfullpath = System.IO.Path.Join(filepath, prefabname);
+                // try to find corresponding prefab
+                if (!System.IO.File.Exists(prefabfullpath))
                 {
                     // prefab does not exists, create one
                     var fbx = (GameObject)AssetDatabase.LoadAssetAtPath(str, typeof(GameObject));
-                            var prefab = (GameObject)PrefabUtility.InstantiatePrefab(fbx);
-                            var go = new GameObject();
-                            prefab.transform.parent = go.transform;
-                            if (fbx != null)
-                            {
-                                PrefabUtility.SaveAsPrefabAssetAndConnect(go, str.Replace(".fbx", ".prefab"), InteractionMode.AutomatedAction, out bool success);
-                                if (!success)
+                    if (fbx != null)
                     {
-                        Debug.LogError("Could not create prefab from fbx");
-                    }
-                }
-                                GameObject.DestroyImmediate(go);
-            }
-                        }
-                        }
-                    foreach (string str in deletedAssets)
-                    {
-                        Debug.Log("Deleted Asset: " + str);
-                        }
+                        var prefab = (GameObject)PrefabUtility.InstantiatePrefab(fbx);
 
-                    for (int i = 0; i < movedAssets.Length; i++)
-            {
-                Debug.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
-            }
+                        var go = new GameObject();
+                        prefab.transform.parent = go.transform;
+                        // make the parent selected in editor by default instead of the fbx!
+                        go.AddComponent<Selectable>();
 
-            if (didDomainReload)
-            {
-                Debug.Log("Domain has been reloaded");
-            }
-        }
+                        PrefabUtility.SaveAsPrefabAssetAndConnect(go, prefabfullpath, InteractionMode.AutomatedAction, out bool success);
+                        if (!success)
+                        {
+                            Debug.LogError("Could not create prefab from fbx");
+}
+                        GameObject.DestroyImmediate(go);
+}
+                    else
+{
+    Debug.LogError("Cannot find FBX file.");
     }
+    }
+    }
+}
+foreach (string str in deletedAssets)
+{
+    Debug.Log("Deleted Asset: " + str);
+}
+
+for (int i = 0; i < movedAssets.Length; i++)
+{
+    Debug.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
+}
+
+if (didDomainReload)
+{
+    Debug.Log("Domain has been reloaded");
+    }
+    }
+}
