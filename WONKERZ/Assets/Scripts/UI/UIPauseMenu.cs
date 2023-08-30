@@ -76,13 +76,13 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     public void OnCameraToggleChange(bool value)
     {
-        Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.HUB : GameCamera.CAM_TYPE.TRACK);
+        Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
     }
 
     public void GetCameraToggleValue(UICheckbox.UICheckboxValue value)
     {
         value.value = Access.CameraManager().active_camera ?
-            (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.HUB) :
+            (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.ORBIT) :
             false
             ;
     }

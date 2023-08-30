@@ -21,6 +21,24 @@ public static class DialogBank
         "Don't forget that you can get up again by playing with LB for the ground control."
     }; 
 
+    public static readonly string[] INTRO_CP3_DIALOG= 
+    {
+        "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
+        "I will re-assemble you at the last checkpoint, but your panels will be lost.",
+    }; 
+
+    public static readonly string[] INTRO_CP4_DIALOG= 
+    {
+        "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
+        "I will re-assemble you at the last checkpoint, but your panels will be lost.",
+    };
+
+    public static readonly string[] INTRO_CP5_DIALOG= 
+    {
+        "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
+        "I will re-assemble you at the last checkpoint, but your panels will be lost.",
+    };
+
     private static List<string[]> bank;
 
     static DialogBank()
@@ -29,7 +47,10 @@ public static class DialogBank
         bank = new List<string[]>{
              INTRO_DIALOG,
              INTRO_CP_DIALOG,
-             INTRO_CP2_DIALOG
+             INTRO_CP2_DIALOG,
+             INTRO_CP3_DIALOG,
+             INTRO_CP4_DIALOG,
+             INTRO_CP5_DIALOG
              };
     }
 

@@ -45,7 +45,6 @@ public class ManualCamera : PlayerCamera, IControllable
     /// Methods
     void Awake()
     {
-        camType = CAM_TYPE.HUB;
         cam = GetComponent<Camera>();
         Utils.attachControllable<ManualCamera>(this);
         initial_FOV = cam.fieldOfView;
@@ -86,7 +85,7 @@ public class ManualCamera : PlayerCamera, IControllable
         focus = playerRef.transform;
         focusPoint = focus.position;
 
-        orbitAngles = new Vector2(defaultVerticalAngle, 0f);
+        orbitAngles = new Vector2(defaultVerticalAngle, 180f);
         transform.localRotation = Quaternion.Euler(orbitAngles);
 
     }
@@ -239,7 +238,7 @@ public class ManualCamera : PlayerCamera, IControllable
         return false;
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
-        if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
+        if  (movement.y > 0) // backward movement -- we dont want to rotate the camera around the player
         {
             return false;
         }

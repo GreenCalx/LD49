@@ -6,8 +6,13 @@ using Schnibble;
 public class PlayerDamager : MonoBehaviour
 {
     public int damageOnCollide = 99;
+
+    [Range(0,50)]
+    public int optional_repulsion_force = 0;
     private readonly float delayBetweenDamages = 0.2f;
     private float elapsedTimeSinceLastDamage = 0f;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -62,7 +67,13 @@ public class PlayerDamager : MonoBehaviour
         if (elapsedTimeSinceLastDamage < delayBetweenDamages)
             return;
 
-        Access.Player().takeDamage(damageOnCollide, iDamageOrigin, iDamageDir);
+        if (optional_repulsion_force != 0)
+        {
+            Access.Player().takeDamage(damageOnCollide, iDamageOrigin, iDamageDir, optional_repulsion_force);
+        } else {
+            Access.Player().takeDamage(damageOnCollide, iDamageOrigin, iDamageDir);
+        }
+
         elapsedTimeSinceLastDamage = 0f;
     }
 }

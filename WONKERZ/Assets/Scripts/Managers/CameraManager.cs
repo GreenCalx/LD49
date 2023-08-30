@@ -81,7 +81,7 @@ public class CameraManager : MonoBehaviour, IControllable
             {
                 this.Log("Only 1 or less camera defined in the CameraManager for the rotation order. No cam switch can be made.");
                 return;
-        }
+            }
             for (int i = 0; i < rot_size; i++)
             {
                 if (cameraRotationOrder[i] == currType)
@@ -101,26 +101,26 @@ public class CameraManager : MonoBehaviour, IControllable
             if ((currType != nextType) && (nextType != GameCamera.CAM_TYPE.UNDEFINED))
             {
                 changeCamera(nextType);
-                }
-                }
-                }
+            }
+        }
+    }
 
-            // resets CameraManager status (active camera, etc..) upon new scene load
-            // Avoid bad transitions and such for now
-            // Might need to change if we decide to make a Spyro style entry in the level thru portals
-            void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // resets CameraManager status (active camera, etc..) upon new scene load
+    // Avoid bad transitions and such for now
+    // Might need to change if we decide to make a Spyro style entry in the level thru portals
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         // refresh cameras and disable active_camera
         active_camera = null;
         cameras.Clear();
-        }
+    }
 
     // Find Camera from its type within current scene
     // Only one per CAM_TYPE is retrieved for now as we don't need more
     // Thus if we want to have multiple cameras for the hub, we'll need to update
     // this logic.
     private GameCamera findCameraInScene(GameCamera.CAM_TYPE iType)
-            {
+    {
         GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
         GameCamera retval = null;
 
@@ -134,7 +134,7 @@ public class CameraManager : MonoBehaviour, IControllable
             }
             }
         return retval;
-            }
+    }
 
     private List<GameCamera> findCamerasInScene(GameCamera.CAM_TYPE iType)
     {
@@ -147,22 +147,20 @@ public class CameraManager : MonoBehaviour, IControllable
             if (currcam.camType == iType)
             {
                 retval.Add(currcam);
-                }
-                }
+            }
+        }
         return retval;
-                }
+    }
 
     // Retrieves only the first found CAM_TYPE camera
     public void changeCamera(GameCamera.CAM_TYPE iNewCamType)
     {
         // 0 : Clean up nulls CameraType to free space for new ones
-        var null_keys = cameras.Where(e => e.Value == null)
-        .Select(e => e.Key)
-                                .ToList();
+        var null_keys = cameras.Where(e => e.Value == null).Select(e => e.Key).ToList();
         foreach (var rm_me in null_keys)
         {
             cameras.Remove(rm_me);
-            }
+        }
 
         // 1 : Do I have a CAM_TYPE available ?
         nextCamera = null;
@@ -176,8 +174,6 @@ public class CameraManager : MonoBehaviour, IControllable
                 this.LogError("Failed to switch Camera. Selecting first of the list as fallback.");
                 if (cameras.Count > 0)
                 {
-                    //active_camera = cameras[0];
-                    //active_camera.gameObject.SetActive(true);
                     operateCameraSwitch(cameras[0]);
                     return;
                 }
@@ -224,9 +220,9 @@ public class CameraManager : MonoBehaviour, IControllable
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
             if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
-            initTransition(nextCamera);
+                initTransition(nextCamera);
             else
-            operateCameraSwitch(nextCamera);
+                operateCameraSwitch(nextCamera);
         }
         else
         {
@@ -285,17 +281,27 @@ public class CameraManager : MonoBehaviour, IControllable
             active_camera.gameObject.SetActive(false);
             active_camera.enabled = false;
             active_camera.GetComponent<Camera>().enabled = false;
-            }
+        }
+
+        if (active_camera!=null)
+        {
+            iNewCam.transform.position = active_camera.transform.position;
+            iNewCam.transform.rotation = active_camera.transform.rotation;
+        }
+
+
         active_camera = iNewCam;
         active_camera.gameObject.SetActive(true);
         active_camera.enabled = true;
         active_camera.GetComponent<Camera>().enabled = true;
+
         active_camera.init();
+
 
         PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
         if (!!PMM)
         PMM.SetCamera(active_camera.GetComponent<Camera>());
-        }
+    }
 
     public bool interpolatePosition(Transform iStart, Transform iEnd)
     {

@@ -12,7 +12,7 @@ public class FollowPlayer : PlayerCamera
     
     void Awake()
     {
-        camType = CAM_TYPE.TRACK;
+        camType = CAM_TYPE.OLD_TRACK;
         cam = GetComponent<Camera>();
         initial_FOV = cam.fieldOfView;
     }

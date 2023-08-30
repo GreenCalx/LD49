@@ -10,6 +10,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public FinishLine finishLine;
     public UICheckpoint ui_cp;
 
+    [HideInInspector]
+    public bool player_in_cinematic = false;
 
     private GameObject player;
     public GameObject Cam;
@@ -91,6 +93,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         hasSS = false;
         respawnCalled = false;
         saveStateLoaded = false;
+        player_in_cinematic = false;
     }
 
 
@@ -105,8 +108,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager.InputData Entry)
     {
+        if (player_in_cinematic)
+            return;
+
         if (playerIsFrozen)
-        anyKeyPressed = Entry.IsAnyKeyDown();
+            anyKeyPressed = Entry.IsAnyKeyDown();
 
         var plant = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].IsDown;
         var load = Entry.Inputs[(int) GameInputsButtons.SaveStatesReturn].IsDown;

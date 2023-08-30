@@ -6,7 +6,7 @@ public class CinematicCamera : GameCamera
 {
     public delegate int OnCinematicEnd();
 
-    public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.HUB;
+    public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.ORBIT;
     protected bool launched = false;
     void Awake()
     {

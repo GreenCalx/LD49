@@ -69,6 +69,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         if (freezePlayer)
         {
+            Access.CheckPointManager().player_in_cinematic = false;
             Access.Player().UnFreeze();
         }
 
@@ -105,6 +106,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (freezePlayer)
         {
             Access.Player().Freeze();
+            Access.CheckPointManager().player_in_cinematic = true;
         }
 
         Utils.attachControllable<CinematicTrigger>(this);
