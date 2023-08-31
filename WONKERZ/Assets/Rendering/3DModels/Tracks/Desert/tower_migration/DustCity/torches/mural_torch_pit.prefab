@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 611015011052247545}
   - component: {fileID: 7785384413505095781}
+  - component: {fileID: 5839732372253116907}
   m_Layer: 0
   m_Name: mural_torch_pit
   m_TagString: Untagged
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &5839732372253116907
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4549681435233012872}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: -0.0020886064, z: 0.10887611}
+  m_Size: 1.0000339
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.03507056
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5152486978848116585}
+  m_Enabled: 1
 --- !u!1001 &5726176522233175433
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,6 +151,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 788a8bcf80c5fb342a1596bb929fd8bd, type: 3}
+--- !u!23 &5152486978848116585 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 645765920525030112, guid: 788a8bcf80c5fb342a1596bb929fd8bd, type: 3}
+  m_PrefabInstance: {fileID: 5726176522233175433}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5259586749115316834 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 788a8bcf80c5fb342a1596bb929fd8bd, type: 3}

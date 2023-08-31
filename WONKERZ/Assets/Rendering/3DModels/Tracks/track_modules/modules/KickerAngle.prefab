@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 6121457717775544771}
   - component: {fileID: 8594430769771979232}
+  - component: {fileID: 6345476606217698831}
   m_Layer: 0
   m_Name: KickerAngle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6121457717775544771
 Transform:
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &6345476606217698831
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6072150282938588211}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0, z: 0}
+  m_Size: 1.0000305
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.018741345
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 5209787281962389731}
+  m_Enabled: 1
 --- !u!1001 &8337112658730547142
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,8 +149,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: KickerAngle
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: db69941f0c62e634dac43bf519f002e9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5677708209651563742, guid: db69941f0c62e634dac43bf519f002e9, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db69941f0c62e634dac43bf519f002e9, type: 3}
+--- !u!23 &5209787281962389731 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 4323383231890892581, guid: db69941f0c62e634dac43bf519f002e9, type: 3}
+  m_PrefabInstance: {fileID: 8337112658730547142}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8374978659797602349 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: db69941f0c62e634dac43bf519f002e9, type: 3}

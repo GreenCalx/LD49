@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5312668517595281411}
   - component: {fileID: 153816625976449768}
+  - component: {fileID: -4499141178675108821}
   m_Layer: 0
   m_Name: DoubleKicker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5312668517595281411
 Transform:
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &-4499141178675108821
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7665709361222965870}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 0.16666669, z: 0}
+  m_Size: 2.000061
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.018741345
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 635155516620664215}
+  m_Enabled: 1
 --- !u!1001 &2830989258754321353
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,8 +149,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: DoubleKicker
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 496acd5053b2830478d7ade89ae0c857, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 4597055865430252662, guid: 496acd5053b2830478d7ade89ae0c857, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 496acd5053b2830478d7ade89ae0c857, type: 3}
+--- !u!23 &635155516620664215 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -5793538798353480098, guid: 496acd5053b2830478d7ade89ae0c857, type: 3}
+  m_PrefabInstance: {fileID: 2830989258754321353}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2360740277045562402 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 496acd5053b2830478d7ade89ae0c857, type: 3}

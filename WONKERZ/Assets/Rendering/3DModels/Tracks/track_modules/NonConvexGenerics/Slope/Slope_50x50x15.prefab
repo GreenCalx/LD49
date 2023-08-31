@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6891166101098435475}
   - component: {fileID: 5208617831573885848}
+  - component: {fileID: 788472558418151560}
   m_Layer: 0
   m_Name: Slope_50x50x15
   m_TagString: Untagged
@@ -75,6 +76,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &788472558418151560
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5339947002577268492}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: -0.17372704, z: 1.7857151}
+  m_Size: 50.001583
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.031834014
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 2056252649819978}
+  m_Enabled: 1
 --- !u!1001 &3993307648473937212
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,6 +152,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a81fd40e6d19d4c4ea51b07294a3fdc0, type: 3}
+--- !u!23 &2056252649819978 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3993665928752626294, guid: a81fd40e6d19d4c4ea51b07294a3fdc0, type: 3}
+  m_PrefabInstance: {fileID: 3993307648473937212}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3522286991622197975 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a81fd40e6d19d4c4ea51b07294a3fdc0, type: 3}

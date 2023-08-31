@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7974421146702851451}
   - component: {fileID: 2966022559821060292}
+  - component: {fileID: 5555475389136134931}
   m_Layer: 0
   m_Name: RoundHoleCube_40x40x18
   m_TagString: Untagged
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &5555475389136134931
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7760581646721416272}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 2.9971113, z: 0}
+  m_Size: 40.00122
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.025817247
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 587992040316867518}
+  m_Enabled: 1
 --- !u!1001 &9196299166125663643
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,6 +151,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11f6508922f3b534b984570f6d911bcb, type: 3}
+--- !u!23 &587992040316867518 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -596965565571254747, guid: 11f6508922f3b534b984570f6d911bcb, type: 3}
+  m_PrefabInstance: {fileID: 9196299166125663643}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8652936760400626288 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 11f6508922f3b534b984570f6d911bcb, type: 3}

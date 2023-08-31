@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 3030086101847998779}
   - component: {fileID: 3043921630831470885}
+  - component: {fileID: 937017567722121110}
   m_Layer: 0
   m_Name: CubeLiftedCorner_40x40x8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &3030086101847998779
 Transform:
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &937017567722121110
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8869649173952102755}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 2.4487743, z: 0}
+  m_Size: 40.00122
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.07104441
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 6657425602850612074}
+  m_Enabled: 1
 --- !u!1001 &3014177644233615499
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,10 +149,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: CubeLiftedCorner_40x40x8
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0652c9e8f3e38b6458cbb5e0d5003f65, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974231811970351710, guid: 0652c9e8f3e38b6458cbb5e0d5003f65, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0652c9e8f3e38b6458cbb5e0d5003f65, type: 3}
 --- !u!4 &3341173830449794912 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0652c9e8f3e38b6458cbb5e0d5003f65, type: 3}
+  m_PrefabInstance: {fileID: 3014177644233615499}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &6657425602850612074 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 8482371331432090593, guid: 0652c9e8f3e38b6458cbb5e0d5003f65, type: 3}
   m_PrefabInstance: {fileID: 3014177644233615499}
   m_PrefabAsset: {fileID: 0}

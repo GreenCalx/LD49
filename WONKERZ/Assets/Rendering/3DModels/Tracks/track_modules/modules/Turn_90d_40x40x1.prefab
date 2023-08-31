@@ -10,12 +10,13 @@ GameObject:
   m_Component:
   - component: {fileID: 5215743923790962704}
   - component: {fileID: 8617436047547106272}
+  - component: {fileID: 1256316033770749453}
   m_Layer: 0
   m_Name: Turn_90d_40x40x1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5215743923790962704
 Transform:
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &1256316033770749453
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2821235959061415011}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -19.980484, y: 0.49999893, z: -20}
+  m_Size: 40.040283
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.03845922
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 1201855745521943689}
+  m_Enabled: 1
 --- !u!1001 &5442475970051286700
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129,8 +149,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Turn_90d_40x40x1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 31716345a933a6640b955a1c53a2afa3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7731219190738067559, guid: 31716345a933a6640b955a1c53a2afa3, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31716345a933a6640b955a1c53a2afa3, type: 3}
+--- !u!23 &1201855745521943689 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6569157984886759973, guid: 31716345a933a6640b955a1c53a2afa3, type: 3}
+  m_PrefabInstance: {fileID: 5442475970051286700}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5480096186230423879 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 31716345a933a6640b955a1c53a2afa3, type: 3}

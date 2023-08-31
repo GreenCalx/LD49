@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 178463891679389565}
   - component: {fileID: 5444274039451168147}
+  - component: {fileID: -8103903124241135655}
   m_Layer: 0
   m_Name: pyramlid_platform
   m_TagString: Untagged
@@ -74,6 +75,25 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!205 &-8103903124241135655
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4518869127679533965}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 1.507163, z: 0}
+  m_Size: 33.732086
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.029760817
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3523759380924258251}
+  m_Enabled: 1
 --- !u!1001 &6316318867288511504
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -131,6 +151,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 07fe6171bb45b7049abdd2b1d4628c3b, type: 3}
+--- !u!23 &3523759380924258251 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -1779208860357852197, guid: 07fe6171bb45b7049abdd2b1d4628c3b, type: 3}
+  m_PrefabInstance: {fileID: 6316318867288511504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &5774366745735803899 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 07fe6171bb45b7049abdd2b1d4628c3b, type: 3}
