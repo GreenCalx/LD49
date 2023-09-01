@@ -17,6 +17,7 @@ public class WilliamEnemy : MonoBehaviour
     public float guard_duration = 3f;
     public float lariat_target_reached_epsilon = 1f;
     public float idle_time_between_action = 2f;
+    public float idle_time_variance = 0.5f;
     [Header("Anim")]
     public string param_ATK = "ATTACK";
     public string param_GUARD = "GUARD";

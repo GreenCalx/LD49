@@ -26,7 +26,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1713736723}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.4900049}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -86,6 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4168503494825309899}
   - component: {fileID: 1845165048}
+  - component: {fileID: 1845165049}
   m_Layer: 0
   m_Name: balloon_panel
   m_TagString: Untagged
@@ -123,8 +124,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50847f4fa38286c4bbbacd6b597a9e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distFromPlayer: 10
+  speed: 1
+  distFromPlayer: 45
+  extraDistanceToMoveAgainWhenStopped: 5
+  enable_move: 1
   display: {fileID: 5468025351337560328}
+  splineWalker: {fileID: 1845165049}
+--- !u!114 &1845165049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608336687630213708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1655635d427ea940914e2a13e20c040, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spline: {fileID: 0}
+  mode: 0
+  duration: 70
+  lookForward: 0
+  progressOffset: 0
 --- !u!1 &2114211102126347813
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,7 +173,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114211102126347813}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.4900049}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -289,7 +311,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4978608778544280594}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0, y: 0, z: 0.64}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -301,7 +323,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.0201, y: 0.0718}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 25.728, y: 10.0902}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6331015178816996174
@@ -452,7 +474,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5023507810660279603}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -676,6 +698,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -611210741754714979, guid: a7ca243475f30f247a98d1a589eb7817, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: 234521096a3dac9409719ec0e1226255, type: 2}
     - target: {fileID: 919132149155446097, guid: a7ca243475f30f247a98d1a589eb7817, type: 3}
       propertyPath: m_Name
       value: balloon_panel
