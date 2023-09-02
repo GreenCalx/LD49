@@ -13,7 +13,8 @@ public class PNJDialog : MonoBehaviour, IControllable
     private AudioSource __audio_source;
 
     private bool is_talkable;
-    private bool dialog_ongoing;
+    [HideInInspector]
+    public bool dialog_ongoing;
     private string[] dialog;
     private int curr_dialog_index;
     private UIDialog __loaded_dialog_ui;

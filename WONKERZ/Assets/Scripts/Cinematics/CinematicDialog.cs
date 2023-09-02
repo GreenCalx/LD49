@@ -9,15 +9,20 @@ public class CinematicDialog : MonoBehaviour
     public float auto_talk_time = 5f;
 
     private float internalTimer = 0f;
+    
     private PNJDialog dialog;
 
+    public bool autoDialog = false;
     public bool dialogIsOver = false;
 
     public UnityEvent callbackOnDialogDone;
 
     public void playPNJDialog()
     {
-        StartCoroutine(autoTalk());
+        if (autoDialog)
+            StartCoroutine(autoTalk());
+        else
+            StartCoroutine(playerTalk());
     }
 
     public bool isDialogOver()
@@ -27,6 +32,21 @@ public class CinematicDialog : MonoBehaviour
 
     // -------------------------------------
     // COROUTINES
+
+    IEnumerator playerTalk()
+    {
+        dialogIsOver = false;
+
+        while (dialog.dialogIsPlaying())
+        {
+            yield return null;
+        }
+
+        dialogIsOver = true;
+        if (callbackOnDialogDone!=null)
+            callbackOnDialogDone.Invoke();
+    }
+
     IEnumerator autoTalk()
     {
         dialogIsOver = false;

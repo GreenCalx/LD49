@@ -6,17 +6,26 @@ using Schnibble;
 public class TutorialBalloon : MonoBehaviour
 {
     [Header("Init")]
-    public float speed = 1f;
-    public float distFromPlayer = 50f;
-    public float extraDistanceToMoveAgainWhenStopped = 5f;
     public bool enable_move = true;
     
     [Header("MAND")]
     public UIGenerativeTextBox display;
     private PlayerController player;
-    public SplineWalker splineWalker;
-
     private float elapsedTimeSinceStart = 0f;
+    public PlayerDetector playerDetector;
+
+    // ORBIT
+    [Header("ORBIT")]
+    [SerializeField] public Transform focus = default;
+    [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f, defaultVerticalAngle = 30f;
+    [SerializeField, Range(1f, 80f)] public float distance = 5f;
+    [SerializeField, Min(0f)] public float focusRadius = 1f;
+    [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
+    [SerializeField, Range(1f, 360f)] public float rotationSpeed = 90f;
+    [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
+    private Vector3 focusPoint, previousFocusPoint;
+    private Vector2 orbitAngles = new Vector2(45f, 0f);
+
     public void updateDisplay(List<UIGenerativeTextBox.UIGTBElement> iElems)
     {
         display.elements = iElems;
@@ -27,35 +36,107 @@ public class TutorialBalloon : MonoBehaviour
     void Start()
     {
         player = Access.Player();
+        
+        focus = player.gameObject.transform;
+        focusPoint = focus.position;
+
+        orbitAngles = new Vector2(defaultVerticalAngle, -90f);
+        transform.localRotation = Quaternion.Euler(orbitAngles);
+
         elapsedTimeSinceStart = 0f;
 
         facePlayer();
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if (enable_move)
+        if (!enable_move)
         {
-            float distanceCheck = distFromPlayer;  
-            if (Vector3.Distance(player.transform.position, transform.position) <= distFromPlayer)
+            if (playerDetector==null)
+                enable_move = true;
+            else
             {
-                splineWalker.enabled = true;
-            } else {
-                splineWalker.enabled = false;
+                enable_move = playerDetector.playerInRange;
+                if (!enable_move)
+                    return;
             }
-            //wiggle();
-            facePlayer();
+        }
+
+
+        UpdateFocusPoint();
+        Quaternion lookRotation;
+        if (autoRotation())
+        {
+            constrainAngles();
+            lookRotation = Quaternion.Euler(orbitAngles);
+        } else {
+            lookRotation = transform.localRotation;
+        }
+        Vector3 lookDirection = lookRotation * Vector3.forward;
+        Vector3 lookPosition = focusPoint - lookDirection * distance;
+        
+        transform.SetPositionAndRotation(lookPosition, lookRotation);
+    }
+
+    void UpdateFocusPoint()
+    {
+        previousFocusPoint = focusPoint;
+        Vector3 targetPoint = focus.position;
+
+        if (focusRadius > 0f)
+        {
+            float distance = Vector3.Distance(targetPoint, focusPoint);
+            float t = 1f;
+            if (distance > 0.01f && focusCentering > 0f)
+            { t = Mathf.Pow(1f - focusCentering, Time.unscaledDeltaTime); }
+            if (distance > focusRadius)
+            {
+                t = Mathf.Min(t, focusRadius / distance);
+            }
+            focusPoint = Vector3.Lerp(targetPoint, focusPoint, t);
+        }
+        else
+        {
+            focusPoint = targetPoint;
         }
     }
 
-    public void move()
+    void constrainAngles()
     {
-
+        orbitAngles.x = Mathf.Clamp(orbitAngles.x, minVerticalAngle, maxVerticalAngle);
+        if (orbitAngles.y < 0f)
+        {
+            orbitAngles.y += 360f;
+        }
+        else if (orbitAngles.y >= 360f)
+        {
+            orbitAngles.y -= 360f;
+        }
     }
 
-    public void stop()
+    bool autoRotation()
     {
-        
+        Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
+
+        float movementDeltaSqr = movement.sqrMagnitude;
+        if (movementDeltaSqr < 0.000001f)
+        {
+            return false;
+        }
+        float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
+        float deltaAbs = Mathf.Abs(Mathf.DeltaAngle(orbitAngles.y, headingAngle));
+        float rotationChange = rotationSpeed * Mathf.Min(Time.unscaledDeltaTime, movementDeltaSqr);
+        if (deltaAbs < alignSmoothRange)
+        {
+            rotationChange *= deltaAbs / alignSmoothRange;
+        }
+        else if (0f - deltaAbs < alignSmoothRange)
+        {
+            rotationChange *= (0f - deltaAbs) / alignSmoothRange;
+        }
+
+        orbitAngles.y = Mathf.MoveTowardsAngle(orbitAngles.y, headingAngle, rotationChange);
+        return true;
     }
 
     public void wiggle()
@@ -75,5 +156,10 @@ public class TutorialBalloon : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0.0f, rotationY, 0.0f);
     }
-
+    static float GetAngle(Vector2 direction)
+    {
+        float angle = Mathf.Acos(direction.y) * Mathf.Rad2Deg;
+        // (x < 0) => counterclockwise
+        return direction.x < 0f ? 360f - angle : angle;
+    }
 }
