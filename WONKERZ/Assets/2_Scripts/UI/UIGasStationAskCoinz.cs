@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class UIGasStationAskCoinz : MonoBehaviour
 {
-    public Texture2D texture;
-
     public float scaleAnimSpeed;
     public float scaleAnimSize;
 

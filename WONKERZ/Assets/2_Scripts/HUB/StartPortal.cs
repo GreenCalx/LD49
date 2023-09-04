@@ -64,6 +64,7 @@ public class StartPortal : AbstractCameraPoint
         if (!!cpm && !!tm)
         {
             tm.track_score.selected_diff = DIFFICULTIES.EASY;
+            tm.launchTrack(Constants.SN_INTRO);
             cpm.init();
         }
     }

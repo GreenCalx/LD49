@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PNJDialog : MonoBehaviour, IControllable
+public class PNJDialog : MonoBehaviour
 {
     // ID of the dialog to load ( cf. DialogBank )
     public int dialog_id;
@@ -13,7 +13,6 @@ public class PNJDialog : MonoBehaviour, IControllable
     private AudioSource __audio_source;
 
     private bool is_talkable;
-    [HideInInspector]
     public bool dialog_ongoing;
     private string[] dialog;
     private int curr_dialog_index;
@@ -32,18 +31,6 @@ public class PNJDialog : MonoBehaviour, IControllable
         __audio_source = GetComponent<AudioSource>();
 
         __animator = GetComponentInChildren<Animator>();
-    }
-
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
-    {
-        if (is_talkable && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
-        {
-            talk();
-        }
-        else if (dialog_ongoing && Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
-        {
-            end_dialog();
-        }
     }
 
     // Update is called once per frame
@@ -109,7 +96,7 @@ public class PNJDialog : MonoBehaviour, IControllable
         return dialog_ongoing;
     }
 
-    private void end_dialog()
+    public void end_dialog()
     {
         dialog_ongoing = false;
         Destroy(__loaded_dialog_ui.gameObject);

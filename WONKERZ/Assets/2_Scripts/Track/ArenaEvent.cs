@@ -10,11 +10,11 @@ public class ArenaEvent : MonoBehaviour
     public List<GameObject> monstersToKill;
     public UnityEvent triggerOnCompleted;
     public PlayerDetector playerDetector;
-
+    private TrackEvent trackEvent;
     // Start is called before the first frame update
     void Start()
     {
-        
+        trackEvent = GetComponent<TrackEvent>();
     }
 
     // Update is called once per frame
@@ -26,6 +26,7 @@ public class ArenaEvent : MonoBehaviour
             if (monstersToKill.Where(e => e != null).ToArray().Length == 0)
             {
                 triggerOnCompleted.Invoke();
+                trackEvent.setSolved();
                 Destroy(this);
             }
         } else {

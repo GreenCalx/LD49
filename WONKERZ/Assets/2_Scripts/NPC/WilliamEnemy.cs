@@ -133,8 +133,6 @@ public class WilliamEnemy : MonoBehaviour
             if (elapsed_time_in_lariat >= max_lariat_duration)
                 break;
             
-            Debug.Log("Remainin distance : " + Vector3.Distance(iAttacker.transform.position, lariat_destination));
-
             yield return null;
         }
 

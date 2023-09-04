@@ -1,19 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
-
+using TMPro;
+using Schnibble;
 
 public class UIDialog : MonoBehaviour
 {
+    [Header("MAND")]
+    public TextMeshProUGUI message;
+    public SplineDecorator header;
+    public TextMeshProUGUI headerLetterRef;
+
+
+    [Header("Tweaks")]
     public float wait_time_to_print_char = 0.1f;
     [HideInInspector]
     public string overflowing_text = "";
     [HideInInspector]
     public bool overflows = false;
 
-    private readonly string MESSAGE_GO_LABEL = "MESSAGE";
-    private readonly string HEADER_GO_LABEL = "HEADER";
-    private Text __message;
-    private Text __header;
 
     private string __msg_to_display;
     private int __msg_size;
@@ -25,14 +29,6 @@ public class UIDialog : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        Text[] ui_texts = GetComponentsInChildren<Text>();
-        foreach (Text t in ui_texts)
-        {
-            if (t.gameObject.name == HEADER_GO_LABEL)
-                __header = t;
-            else if (t.gameObject.name == MESSAGE_GO_LABEL)
-                __message = t;
-        }
         __msg_to_display = "";
         __curr_msg_index = 0;
         __text_fully_displayed = false;
@@ -47,7 +43,7 @@ public class UIDialog : MonoBehaviour
         {
             if (__curr_msg_index <= __msg_size)
             {
-                __message.text = __msg_to_display.Substring(0, __curr_msg_index);
+                message.text = __msg_to_display.Substring(0, __curr_msg_index);
                 __curr_msg_index++;
                 __text_fully_displayed = (__curr_msg_index > __msg_size);
             }
@@ -59,7 +55,7 @@ public class UIDialog : MonoBehaviour
 
     public void force_display()
     {
-        __message.text = __msg_to_display;
+        message.text = __msg_to_display;
         __curr_msg_index = __msg_size;
         __text_fully_displayed = true;
     }
@@ -76,9 +72,7 @@ public class UIDialog : MonoBehaviour
 
     public void display(string iHeader, string iText)
     {
-        if (!!__header)
-            __header.text = iHeader;
-
+        displayHeader(iHeader);
         __msg_to_display = iText;
         __msg_size = iText.Length;
         __curr_msg_index = 0;
@@ -86,13 +80,32 @@ public class UIDialog : MonoBehaviour
         __overflow_checked = false;
     }
 
+    private void displayHeader(string iHeaderTxt)
+    {
+        if (header==null)
+            return;
+        
+        header.items = new Transform[iHeaderTxt.Length];
+
+        for (int i=0; i < iHeaderTxt.Length; i++)
+        {
+            GameObject let = Instantiate(headerLetterRef.gameObject);
+            let.SetActive(true);
+            Debug.Log( i.ToString() + iHeaderTxt.Substring(i, 1));
+            let.GetComponent<TextMeshProUGUI>().text = iHeaderTxt.Substring(i, 1);
+            
+            header.items[i] = let.transform;
+        }
+        header.init();
+    }
+
     public void updateVerticalOverflow()
     {
         Canvas.ForceUpdateCanvases();
-        int n_visible = __message.cachedTextGenerator.characterCountVisible;
-        overflows = n_visible >= 0 ? n_visible < __msg_to_display.Length : false;
-        if (overflows)
-            overflowing_text = __msg_to_display.Substring(n_visible);
+        // int n_visible = message.cachedTextGenerator.characterCountVisible;
+        // overflows = n_visible >= 0 ? n_visible < __msg_to_display.Length : false;
+        // if (overflows)
+        //     overflowing_text = __msg_to_display.Substring(n_visible);
         __overflow_checked = true;
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(PNJDialog))]
-public class CinematicDialog : MonoBehaviour
+public class CinematicDialog : MonoBehaviour, IControllable
 {
     public float auto_talk_time = 5f;
 
@@ -30,13 +30,31 @@ public class CinematicDialog : MonoBehaviour
         return !!dialogIsOver;
     }
 
+    void OnDestroy()
+    {
+        Utils.detachControllable<CinematicDialog>(this);
+    }
+
+    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    {
+        if (!dialogIsOver && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
+        {
+            dialog.talk();
+        }
+        else if (Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
+        {
+            dialog.end_dialog();
+        }
+    }
+
     // -------------------------------------
     // COROUTINES
 
     IEnumerator playerTalk()
     {
         dialogIsOver = false;
-
+        Utils.attachControllable<CinematicDialog>(this);
+        dialog.talk();
         while (dialog.dialogIsPlaying())
         {
             yield return null;
@@ -45,6 +63,7 @@ public class CinematicDialog : MonoBehaviour
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
             callbackOnDialogDone.Invoke();
+        Utils.detachControllable<CinematicDialog>(this);
     }
 
     IEnumerator autoTalk()

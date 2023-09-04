@@ -227,6 +227,18 @@ PrefabInstance:
       propertyPath: checkpoint_name
       value: Panels
       objectReference: {fileID: 0}
+    - target: {fileID: 810577527895983838, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52fdd41a97f0ef041a1d08d11849d945, type: 2}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSize
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6788487130726195116, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_Name
       value: StationEntry4
@@ -282,6 +294,10 @@ PrefabInstance:
     - target: {fileID: 6788487132516729715, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025945786811854114, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Name
+      value: DialogImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
@@ -709,6 +725,7 @@ GameObject:
   m_Component:
   - component: {fileID: 144855319}
   - component: {fileID: 144855320}
+  - component: {fileID: 144855321}
   m_Layer: 0
   m_Name: Arena
   m_TagString: Untagged
@@ -783,6 +800,20 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
   playerDetector: {fileID: 413935189}
+--- !u!114 &144855321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144855318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42d23a8ea7a13747804bfabc5b39980, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventID: WelcomeToWonkerz
+  isSolved: 0
 --- !u!4 &185167662 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8640583544411729928, guid: e76dd09d63b37ca4f96879fd32eae2f3, type: 3}
@@ -1281,7 +1312,7 @@ Transform:
   - {fileID: 16707476}
   - {fileID: 1927400294}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &240177116
 PrefabInstance:
@@ -2176,6 +2207,7 @@ Transform:
   - {fileID: 1909316567}
   - {fileID: 366788541}
   - {fileID: 512987624}
+  - {fileID: 992421260}
   m_Father: {fileID: 974311694}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2626,6 +2658,18 @@ PrefabInstance:
       propertyPath: checkpoint_name
       value: Squeeze & Jump
       objectReference: {fileID: 0}
+    - target: {fileID: 810577527895983838, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52fdd41a97f0ef041a1d08d11849d945, type: 2}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSize
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6788487130726195116, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_Name
       value: StationEntry3
@@ -2747,7 +2791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 2
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -6471,7 +6515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 2
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -6783,13 +6827,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 992421259}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -64.1405, y: 135.1446, z: -420.4097}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1829719359}
-  m_RootOrder: 0
+  m_Father: {fileID: 403311457}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &992421261
 MonoBehaviour:
@@ -6804,7 +6848,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 5
-  autoDialog: 0
+  autoDialog: 1
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -7499,7 +7543,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1183236291
 GameObject:
@@ -7703,7 +7747,7 @@ Transform:
   - {fileID: 1259552310}
   - {fileID: 466342031}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1227805843
 PrefabInstance:
@@ -7718,7 +7762,7 @@ PrefabInstance:
       objectReference: {fileID: 413935189}
     - target: {fileID: 3075222600469525652, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: player_aim_error
-      value: 25
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5187101148811203604, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: m_RootOrder
@@ -8460,7 +8504,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9374,7 +9418,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 2
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -9918,7 +9962,7 @@ PrefabInstance:
       objectReference: {fileID: 413935189}
     - target: {fileID: 3075222600469525652, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: player_aim_error
-      value: 25
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 3075222600469525652, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: lariat_rot_per_sec
@@ -10422,7 +10466,7 @@ Transform:
   - {fileID: 2097474022}
   - {fileID: 827679443}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1589657771
 GameObject:
@@ -11214,7 +11258,7 @@ Transform:
   - {fileID: 1276131954}
   - {fileID: 15527322}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1708343175
 GameObject:
@@ -11283,7 +11327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 2
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -11835,38 +11879,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8640583544411729928, guid: e76dd09d63b37ca4f96879fd32eae2f3, type: 3}
   m_PrefabInstance: {fileID: 1824306107}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1829719358
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1829719359}
-  m_Layer: 0
-  m_Name: DIALOGS
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1829719359
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1829719358}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 80.3595, y: 141.6446, z: 130.5903}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 992421260}
-  m_Father: {fileID: 0}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1839241130
 GameObject:
   m_ObjectHideFlags: 0
@@ -12173,6 +12185,10 @@ PrefabInstance:
       propertyPath: checkpoint_name
       value: Weight Control
       objectReference: {fileID: 0}
+    - target: {fileID: 810577527895983838, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52fdd41a97f0ef041a1d08d11849d945, type: 2}
     - target: {fileID: 6788487130726195116, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_Name
       value: StationEntry2
@@ -12228,6 +12244,10 @@ PrefabInstance:
     - target: {fileID: 6788487132516729715, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025945786811854114, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Name
+      value: DialogImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
@@ -12314,7 +12334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 2
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
@@ -12668,6 +12688,18 @@ PrefabInstance:
       propertyPath: checkpoint_name
       value: Nuts & Damage
       objectReference: {fileID: 0}
+    - target: {fileID: 810577527895983838, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52fdd41a97f0ef041a1d08d11849d945, type: 2}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSize
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6788487130726195116, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_Name
       value: StationEntry5
@@ -12723,6 +12755,10 @@ PrefabInstance:
     - target: {fileID: 6788487132516729715, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025945786811854114, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Name
+      value: DialogImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
@@ -13581,6 +13617,22 @@ PrefabInstance:
       propertyPath: checkpoint_name
       value: Driftin'
       objectReference: {fileID: 0}
+    - target: {fileID: 810577527895983838, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 52fdd41a97f0ef041a1d08d11849d945, type: 2}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: texture
+      value: 
+      objectReference: {fileID: 2800000, guid: 3c9fc17636afb8141a58f370c6356dbe, type: 3}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSize
+      value: 1.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 968737977043626607, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: scaleAnimSpeed
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6788487132516729712, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_Name
       value: GasStation
@@ -13628,6 +13680,10 @@ PrefabInstance:
     - target: {fileID: 6788487132516729715, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9025945786811854114, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
+      propertyPath: m_Name
+      value: DialogImage
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 35b297526d4ccf14ea2b5c0b5bc16c1a, type: 3}
