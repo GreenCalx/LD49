@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4229114330094265845
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4229114330094265844}
+  - component: {fileID: 4229114330094265846}
+  - component: {fileID: 4229114330094265847}
+  m_Layer: 0
+  m_Name: TrajectoryDecal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4229114330094265844
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229114330094265845}
+  m_LocalRotation: {x: -0, y: -0, z: 0.30807146, w: 0.9513632}
+  m_LocalPosition: {x: -511.9, y: 16.8, z: -226.4}
+  m_LocalScale: {x: 136.37483, y: 10.79477, z: 21.751953}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 35.886}
+--- !u!114 &4229114330094265846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229114330094265845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  decalMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  decalMat: {fileID: 2100000, guid: 4b7721da4dc2ebc42962647cd20fb126, type: 2}
+  writeColor: 1
+  writeNormal: 0
+  writeMaterial: 0
+  writeEmission: 0
+  writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
+--- !u!114 &4229114330094265847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229114330094265845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decalRenderer: {fileID: 4229114330094265846}
+  cont: {fileID: 0}
