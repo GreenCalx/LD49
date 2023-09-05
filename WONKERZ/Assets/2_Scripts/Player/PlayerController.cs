@@ -457,6 +457,12 @@ public class PlayerController : MonoBehaviour, IControllable
         return false;
     }
 
+    private bool isTouchingWater = false;
+    public void SetTouchingWater(bool state)
+    {
+        isTouchingWater = state;
+    }
+
     public bool TouchGroundAll()
     {
         foreach (var a in car.axles)
@@ -471,9 +477,17 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public bool IsAlive()
     {
+        if (isTouchingWater && vehicleStates.GetState() != vehicleStates.states[(int)PlayerVehicleStates.States.Boat])
+        {
+            return false;
+        }
+
+
         CollectiblesManager cm = Access.CollectiblesManager();
         if (cm == null)
-        return true;
+        {
+            return true;
+        }
 
         return (cm.getCollectedNuts() >= 0);
     }
