@@ -6848,11 +6848,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   auto_talk_time: 5
-  autoDialog: 1
+  autoDialog: 0
   dialogIsOver: 0
   callbackOnDialogDone:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1724894528}
+        m_TargetAssemblyTypeName: CinematicTrigger, Assembly-CSharp
+        m_MethodName: EndCinematic
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &992421262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12622,25 +12634,6 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     delay: 5
-    parm1: 0
-    parm2: 0
-    parm3: 0
-  - func:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1724894528}
-          m_TargetAssemblyTypeName: CinematicTrigger, Assembly-CSharp
-          m_MethodName: EndCinematic
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    delay: 8
     parm1: 0
     parm2: 0
     parm3: 0

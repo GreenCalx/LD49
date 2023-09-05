@@ -79,11 +79,6 @@ public class CinematicDialog : MonoBehaviour, IControllable
             internalTimer = 0f;
         }
 
-        while (dialog.dialogIsPlaying())
-        {
-            yield return null;
-        }
-
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
             callbackOnDialogDone.Invoke();

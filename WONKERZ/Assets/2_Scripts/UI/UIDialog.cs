@@ -7,9 +7,9 @@ public class UIDialog : MonoBehaviour
 {
     [Header("MAND")]
     public TextMeshProUGUI message;
-    public SplineDecorator header;
-    public TextMeshProUGUI headerLetterRef;
+    public TextMeshProUGUI header;
 
+    public GameObject GoNextHandle;
 
     [Header("Tweaks")]
     public float wait_time_to_print_char = 0.1f;
@@ -17,7 +17,7 @@ public class UIDialog : MonoBehaviour
     public string overflowing_text = "";
     [HideInInspector]
     public bool overflows = false;
-
+    public bool keepGoNextTooltipVisible = true;
 
     private string __msg_to_display;
     private int __msg_size;
@@ -33,6 +33,8 @@ public class UIDialog : MonoBehaviour
         __curr_msg_index = 0;
         __text_fully_displayed = false;
         __overflow_checked = false;
+        if (keepGoNextTooltipVisible)
+            GoNextHandle.SetActive(true);
     }
 
     // Update is called once per frame
@@ -49,8 +51,17 @@ public class UIDialog : MonoBehaviour
             }
             __timer -= wait_time_to_print_char;
         }
-        if (message_is_displayed() && !__overflow_checked)
-            updateVerticalOverflow();
+        if (message_is_displayed())
+        {
+            GoNextHandle.SetActive(true);
+            if (!__overflow_checked)
+                updateVerticalOverflow();
+        }
+        else {
+            if (!keepGoNextTooltipVisible)
+                GoNextHandle.SetActive(false);
+        }
+            
     }
 
     public void force_display()
@@ -85,18 +96,7 @@ public class UIDialog : MonoBehaviour
         if (header==null)
             return;
         
-        header.items = new Transform[iHeaderTxt.Length];
-
-        for (int i=0; i < iHeaderTxt.Length; i++)
-        {
-            GameObject let = Instantiate(headerLetterRef.gameObject);
-            let.SetActive(true);
-            Debug.Log( i.ToString() + iHeaderTxt.Substring(i, 1));
-            let.GetComponent<TextMeshProUGUI>().text = iHeaderTxt.Substring(i, 1);
-            
-            header.items[i] = let.transform;
-        }
-        header.init();
+        header.text = iHeaderTxt;
     }
 
     public void updateVerticalOverflow()

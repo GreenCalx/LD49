@@ -125,15 +125,9 @@ public class GasStation : MonoBehaviour, IControllable
         if (Utils.isPlayer(iCollider.gameObject))
         {
             UICheckpoint uicp = Access.UICheckpoint();
-            if (!!uicp)
-            {
-                uicp.convertTxt.gameObject.SetActive(true);
-                string str = GameInputsUtils.buttonsMapping[(int)GameInputsButtons.GiveCoinsForTurbo].joytickCode.ToString() + " to convert nuts into fuel";
-                uicp.convertTxt.text = str;
-                Utils.attachControllable<GasStation>(this);
-                Access.CheckPointManager().playerInGasStation = true;
-            }
 
+            Utils.attachControllable<GasStation>(this);
+            Access.CheckPointManager().playerInGasStation = true;
             askCoinz.gameObject.SetActive(true);
             askCoinz.animate = true;
         }
@@ -143,14 +137,8 @@ public class GasStation : MonoBehaviour, IControllable
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            UICheckpoint uicp = Access.UICheckpoint();
-            if (!!uicp)
-            {
-                uicp.convertTxt.gameObject.SetActive(false);
-                Utils.detachControllable<GasStation>(this);
-                Access.CheckPointManager().playerInGasStation = false;
-            }
-
+            Utils.detachControllable<GasStation>(this);
+            Access.CheckPointManager().playerInGasStation = false;
             if (IsPumpingGas)
             {
                 IsPumpingGas = false;
