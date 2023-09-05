@@ -8,8 +8,6 @@ public class WonkerDecal : MonoBehaviour
 {
 
     public DecalRenderer decalRenderer;
-    public CarController cont;
-
     private CameraManager CM;
 
     void Start()
