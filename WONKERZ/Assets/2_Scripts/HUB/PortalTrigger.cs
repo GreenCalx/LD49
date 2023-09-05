@@ -3,13 +3,14 @@ using Schnibble;
 
 public class PortalTrigger : MonoBehaviour
 {
-    HUBPortal portal;
+    public HUBPortal portal;
     public bool isActive = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        portal = GetComponentInParent<HUBPortal>(true);
+        if (portal==null)
+            portal = GetComponentInParent<HUBPortal>(true);
     }
 
     // Update is called once per frame

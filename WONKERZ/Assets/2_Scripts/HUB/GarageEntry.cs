@@ -13,6 +13,8 @@ public class GarageEntry : MonoBehaviour, IControllable
     [HideInInspector]
     public PlayerController player;
 
+    public Camera garageCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,6 +48,8 @@ public class GarageEntry : MonoBehaviour, IControllable
         garageUI = Instantiate(garageUIRef);
         garageUI.name = Constants.GO_UIGARAGE;
 
+        garageCamera.gameObject.SetActive(true);
+
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         uig.onActivate.Invoke();
@@ -62,6 +66,8 @@ public class GarageEntry : MonoBehaviour, IControllable
     {
         if (!garageOpened)
             return;
+
+        garageCamera.gameObject.SetActive(false);
 
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);
