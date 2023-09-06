@@ -99,7 +99,8 @@ public class PNJDialog : MonoBehaviour
     public void end_dialog()
     {
         dialog_ongoing = false;
-        Destroy(__loaded_dialog_ui.gameObject);
+        if (!!__loaded_dialog_ui)
+            Destroy(__loaded_dialog_ui.gameObject);
         curr_dialog_index = 0;
 
         if (!!__animator)

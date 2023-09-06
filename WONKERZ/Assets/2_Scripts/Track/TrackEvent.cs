@@ -1,15 +1,22 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
 
+/**
+*  Interface with BountyArray 
+*  > To be referenced externally in track and set to solved
+* 
+*/
 public class TrackEvent : MonoBehaviour
 {
     public string eventID;
     public bool isSolved;
 
+
     void Start()
     {
+        Access.TrackManager().susbscribe(this); // for bounty check @BountyArray:194
         isSolved = false;
-        Access.TrackManager().susbscribe(this);
     }
 
     public void setSolved()
@@ -33,5 +40,4 @@ public class TrackEvent : MonoBehaviour
         // display bounty UI
         Access.UIBountyUnlocked().display(thisAsBounty);
     }
-
 }

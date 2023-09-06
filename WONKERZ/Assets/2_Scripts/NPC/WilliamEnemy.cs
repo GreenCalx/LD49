@@ -11,6 +11,7 @@ public class WilliamEnemy : MonoBehaviour
     public PlayerDetector playerDetector;
     public PlayerDetector weakSpot;
     public GameObject deathEffect;
+    public GameObject playerSpottedEffect;
 
     [Header("Tweaks")]
     public string navAgentMaskName = "Walkable";
@@ -26,6 +27,7 @@ public class WilliamEnemy : MonoBehaviour
     public string param_GUARD = "GUARD";
     public float death_effect_size = 8f;
     public float max_lariat_duration = 5f;
+    public float spottedMarkerDuration = 3f; 
     // AI
     private bool in_action = false;
     private bool playerAggroed = false;
@@ -44,6 +46,7 @@ public class WilliamEnemy : MonoBehaviour
         idle_timer = 0f;
         playerAggroed = false;
         in_action = false;
+        playerSpottedEffect.SetActive(false);
         updateCurrentIdleTime();
     }
 
@@ -85,6 +88,7 @@ public class WilliamEnemy : MonoBehaviour
     {
         if (lariat_destination!=Vector3.zero)
             return;
+        StartCoroutine(ShowSpottedMarker(this));
         StartCoroutine(LariatSpin(this, playerDetector.player.position));
     }
 
@@ -106,6 +110,21 @@ public class WilliamEnemy : MonoBehaviour
             StartCoroutine(LariatSpin(this, playerDetector.player.position));
         else
             StartCoroutine(Guard(this, playerDetector.player.position));
+    }
+
+    private IEnumerator ShowSpottedMarker(WilliamEnemy iSelf)
+    {
+        playerSpottedEffect.SetActive(true);
+        float show_elapsed = 0f;
+        float anim_freq = 1 / iSelf.spottedMarkerDuration;
+
+        while (show_elapsed < iSelf.spottedMarkerDuration)
+        {
+            show_elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        playerSpottedEffect.SetActive(false);
     }
 
     private IEnumerator LariatSpin(WilliamEnemy iAttacker, Vector3 iTarget)

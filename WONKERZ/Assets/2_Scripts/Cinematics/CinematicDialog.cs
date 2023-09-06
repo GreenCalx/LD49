@@ -32,6 +32,8 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
+        if (!dialogIsOver && !!dialog)
+            dialog.end_dialog();
         Utils.detachControllable<CinematicDialog>(this);
     }
 

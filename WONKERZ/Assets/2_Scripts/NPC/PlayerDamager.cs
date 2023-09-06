@@ -7,7 +7,7 @@ public class PlayerDamager : MonoBehaviour
 {
     public int damageOnCollide = 99;
 
-    [Range(0,50)]
+    [Range(0,500)]
     public int optional_repulsion_force = 0;
     private readonly float delayBetweenDamages = 0.2f;
     private float elapsedTimeSinceLastDamage = 0f;

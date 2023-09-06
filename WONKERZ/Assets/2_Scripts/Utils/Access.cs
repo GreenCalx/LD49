@@ -192,6 +192,12 @@ public class Access
     {
         return cache.getObject<UICheckpoint>(Constants.GO_PLAYERUI, true);
     }
+    
+    public static UITrackEvent UITrackEvent()
+    {
+        return cache.getObject<UITrackEvent>(Constants.GO_PLAYERUI, true);
+    }
+
     public static PhysicsMaterialManager PhysicsMaterialManager()
     {
         return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);

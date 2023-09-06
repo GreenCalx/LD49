@@ -12,7 +12,6 @@ public class TutorialBalloon : MonoBehaviour
     public UIGenerativeTextBox display;
     private PlayerController player;
     private float elapsedTimeSinceStart = 0f;
-    public PlayerDetector playerDetector;
 
     // ORBIT
     [Header("ORBIT")]
@@ -52,14 +51,9 @@ public class TutorialBalloon : MonoBehaviour
     {
         if (!enable_move)
         {
-            if (playerDetector==null)
-                enable_move = true;
-            else
-            {
-                enable_move = playerDetector.playerInRange;
-                if (!enable_move)
-                    return;
-            }
+            enable_move = Vector3.Distance(transform.position, focus.position) <= distance;
+            if (!enable_move)
+                return;
         }
 
 
