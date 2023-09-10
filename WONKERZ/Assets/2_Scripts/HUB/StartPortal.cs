@@ -63,7 +63,7 @@ public class StartPortal : AbstractCameraPoint
         TrackManager tm = Access.TrackManager();
         if (!!cpm && !!tm)
         {
-            tm.track_score.selected_diff = DIFFICULTIES.EASY;
+            tm.track_score.selected_diff = DIFFICULTIES.NONE;
             tm.launchTrack(Constants.SN_INTRO);
             cpm.init();
         }
