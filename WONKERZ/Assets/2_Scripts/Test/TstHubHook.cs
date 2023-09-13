@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 /**
 *   Loads Hub Scene to retrieve Player/Managers then loads back current scene
@@ -10,6 +11,10 @@ using UnityEngine.SceneManagement;
 
 public class TstHubHook : MonoBehaviour
 {
+    [Header("Reset game progress unique events")]
+    public bool resetGameProgressEvents = false;
+    public bool loadDebugGameProgress = true;
+
     private readonly string pivotScene = Constants.SN_TITLE;
     private string hookedScene = "";
     private bool killMe = false;
@@ -40,6 +45,12 @@ public class TstHubHook : MonoBehaviour
     {
         while (SceneManager.GetActiveScene().name != pivotScene)
         { yield return null; }
+
+        if (resetGameProgressEvents)
+            resetUniqueEvents();
+        if (loadDebugGameProgress)
+            loadGameProgress();
+
         Access.SceneLoader().loadScene(hookedScene);
 
         killMe = true;
@@ -57,6 +68,16 @@ public class TstHubHook : MonoBehaviour
         { yield return null; }
 
         Destroy(gameObject);
+    }
+
+    private void resetUniqueEvents()
+    {
+        Access.GameProgressSaveManager().ResetAndSave();
+    }
+
+    private void loadGameProgress()
+    {
+        Access.GameProgressSaveManager().Load();
     }
 
 }

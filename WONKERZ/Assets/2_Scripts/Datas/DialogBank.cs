@@ -46,6 +46,19 @@ public static class DialogBank
         "I will re-assemble you at the last checkpoint, but your planted panel will be lost.",
     };
 
+    public static readonly string[] ERNEST_DIALOG_0=
+    {
+        "You're finally awake!",
+        "I am Ernest, the last garagist left on this island.",
+        "This place used to be a paradise with a lot of life in it.",
+        "Since my 4 little brothers were abducted by the Great Compressor, it is slowly dying.",
+        "He didn't manage to catch me nor Ricky as we stayed hidden in the garage, waiting for help.",
+        "We need you to find them before the whole island turns into a junkyard.",
+        "They're all scattered in their respective worlds.",
+        "Try to find Pierre first, he used to run the prosperourous Dust City of Q'a.",
+        "Take the stone bridge and head into the portal that leads to his realm."
+    };
+
     private static List<string[]> bank;
 
     static DialogBank()
@@ -57,7 +70,8 @@ public static class DialogBank
              INTRO_CP2_DIALOG,
              INTRO_CP3_DIALOG,
              INTRO_CP4_DIALOG,
-             INTRO_CP5_DIALOG
+             INTRO_CP5_DIALOG,
+             ERNEST_DIALOG_0
              };
     }
 

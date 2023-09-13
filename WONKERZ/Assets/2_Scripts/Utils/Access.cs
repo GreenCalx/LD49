@@ -160,7 +160,10 @@ public class Access
     {
         return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
     }
-
+    public static GameProgressSaveManager GameProgressSaveManager()
+    {
+        return cache.getObject<GameProgressSaveManager>(Constants.GO_MANAGERS, false);
+    }
     public static UITurboAndSaves UITurboAndSaves()
     {
         return cache.getObject<UITurboAndSaves>(Constants.GO_PLAYERUI, true);

@@ -54,6 +54,9 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
     IEnumerator playerTalk()
     {
+        Access.UITurboAndSaves().gameObject.SetActive(false);
+        Access.UISpeedAndLifePool().gameObject.SetActive(false);
+
         dialogIsOver = false;
         Utils.attachControllable<CinematicDialog>(this);
         dialog.talk();
@@ -66,6 +69,9 @@ public class CinematicDialog : MonoBehaviour, IControllable
         if (callbackOnDialogDone!=null)
             callbackOnDialogDone.Invoke();
         Utils.detachControllable<CinematicDialog>(this);
+
+        Access.UITurboAndSaves().gameObject.SetActive(true);
+        Access.UISpeedAndLifePool().gameObject.SetActive(true);
     }
 
     IEnumerator autoTalk()

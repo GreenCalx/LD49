@@ -33,6 +33,8 @@ public class UITitleScreen : UIPanelTabbed
     public void launchLoadGame()
     {
         Access.CollectiblesManager().loadJars();
+        Access.GameProgressSaveManager().Load();
+
         Access.SceneLoader().loadScene(Constants.SN_HUB);
     }
 

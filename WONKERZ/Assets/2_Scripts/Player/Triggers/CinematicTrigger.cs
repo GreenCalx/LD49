@@ -2,16 +2,21 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using Schnibble;
+using System;
 
 // Triggers only once in current scene
 // > TODO : save seen cinematics to init triggerrs accordingly
 public class CinematicTrigger : MonoBehaviour, IControllable
 {
-    public bool triggerAtStart = false;
+    [Header("triggerOnceInScene")]
     public bool triggerOnlyOnce = true;
+    [Header("triggerOnceInGame")]
+    public string uniqueEventID = "";
+    [Header("tweaks")]
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
-
+    public float startDelayInSeconds = 0f;
+    private float elapsedDelayTime = 0f;
     private bool triggered = false;
 
     public bool freezePlayer = true;
@@ -31,9 +36,6 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         triggered = false;
         cinematicDone = false;
-
-        // if (triggerAtStart)
-        //     StartCinematic();
     }
 
     // Update is called once per frame
@@ -95,12 +97,26 @@ public class CinematicTrigger : MonoBehaviour, IControllable
             Destroy(skipUIInst.gameObject);
         
         cinematicDone = true;
+
+        if (!string.IsNullOrEmpty(uniqueEventID))
+            Access.GameProgressSaveManager().notifyUniqueEventDone(uniqueEventID);
     }
 
     public void StartCinematic()
     {
         if (!!triggered)
             return;
+
+        // already triggered at some point in the game
+        if (!string.IsNullOrEmpty(uniqueEventID))
+        {
+            if (Access.GameProgressSaveManager().IsUniqueEventDone(uniqueEventID))
+            {
+                triggered = true;
+                return;
+            }
+        }
+
         triggered = true;
         
         if (freezePlayer)
@@ -110,7 +126,6 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
 
         Utils.attachControllable<CinematicTrigger>(this);
-        
         
         if (!!cam)
         {
@@ -149,6 +164,11 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         if (Utils.colliderIsPlayer(iCollider))
         {
+            if ( elapsedDelayTime <= startDelayInSeconds )
+            {
+                elapsedDelayTime += Time.deltaTime;
+                return;
+            }
             StartCinematic();
         }
     }
