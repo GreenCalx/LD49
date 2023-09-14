@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using Schnibble;
 
 public class UIBindings : UIPanelTabbedScrollable
 {
@@ -11,80 +12,154 @@ public class UIBindings : UIPanelTabbedScrollable
     public GameObject childPrefab;
     public GameObject titlePrefab;
 
-    public UICheckbox inverseCamera;
+    public UICheckbox toggle;
 
     public UIWaitInputsPanel waitingForInput;
 
-    public void Create() {
-        var l1 = GameInputsUtils.uiMappingInfos.GetLength(0);
-        for (int i = 0; i < l1; ++i) {
-            var title = Instantiate(titlePrefab, layout.transform);
-            // todo : put in gameinputsutils or else
-            if (i == 0)
-            {
-                title.GetComponentInChildren<TMP_Text>().text = "Camera";
-                var go = Instantiate(inverseCamera, layout.transform);
-                go.gameObject.SetActive(true);
-                this.tabs.Add(go);
-            }
-            if (i == 1)
-            {
-                title.GetComponentInChildren<TMP_Text>().text = "General";
-            }
-            if (i == 2)
-            {
-                title.GetComponentInChildren<TMP_Text>().text = "Car";
-            }
-            if (i == 3)
-            {
-                title.GetComponentInChildren<TMP_Text>().text = "UI";
-            }
+    public void GetCameraMappingXValue(UICheckbox.UICheckboxValue v){
+        v.value = InputSettings.InverseCameraMappingX;
+    }
 
-            var l2 = GameInputsUtils.uiMappingInfos.GetLength(1);
-            for (int j = 0; j < l2; ++j)
-            {
-                var input = GameInputsUtils.uiMappingInfos[i, j] -1;
-                if (input < 0) break;
+    public void SetCameraMappingXValue(bool v){
+        InputSettings.InverseCameraMappingX = v;
+    }
 
-                var child = Instantiate(childPrefab, layout.transform);
-                var comp = child.GetComponent<UIBindingElement>();
 
-                comp.inputKey = input;
-                comp.name.GetComponent<TMP_Text>().text = GameInputsUtils.gameInputsDescription[input];
+    public void SetCameraMappingYValue(bool v){
+        InputSettings.InverseCameraMappingY = v;
+    }
 
-                var joystickCode = GameInputsUtils.IsAxis(input) ? GameInputsUtils.axisMapping[input][0].joytickCode : GameInputsUtils.buttonsMapping[input].joytickCode;
-                comp.binding.GetComponent<TMP_Text>().text = JoystickEnumUtils.GetButtonName(joystickCode);
-                comp.GetComponentInChildren<RawImage>().texture = JoystickEnumUtils.GetButtonImage(joystickCode);
-                comp.Parent = this;
+    public void GetCameraMappingYValue(UICheckbox.UICheckboxValue v){
+        v.value = InputSettings.InverseCameraMappingY;
+    }
 
-                var tab = comp.name.GetComponent<UITab>();
-                tab.Parent = this;
-                tab.init();
 
-                tab.toActivate = waitingForInput;
+    private void AddTitle(string title)
+    {
+        var titleGO = Instantiate(titlePrefab, layout.transform);
+        titleGO.GetComponentInChildren<TMP_Text>().text = title;
+    }
 
-                this.tabs.Add(tab);
-            }
+    private void AddInput(PlayerInputs.InputCode code)
+    {
+        GameInput input = inputMgr.controllers[0].controller.Get((int)code);
+
+
+        var child = Instantiate(childPrefab, layout.transform);
+        var comp = child.GetComponent<UIBindingElement>();
+
+        comp.inputKey = code;
+
+        comp.name.GetComponent<TMP_Text>().text = input.description;
+
+        var inputButton = input as GameInputButton;
+        if (inputButton != null)
+        {
+            comp.binding.GetComponent<TMP_Text>().text = Controller.XboxController.GetCodeName(inputButton.codePrimary);
+            comp.GetComponentInChildren<RawImage>().texture = Controller.XboxController.GetCodeDefaultTexture(inputButton.codePrimary);
         }
+
+        var inputAxis = input as GameInputAxis;
+        if (inputAxis != null)
+        {
+            comp.binding.GetComponent<TMP_Text>().text = Controller.XboxController.GetCodeName(inputAxis.inputPrimary.positive);
+            comp.GetComponentInChildren<RawImage>().texture = Controller.XboxController.GetCodeDefaultTexture(inputAxis.inputPrimary.positive);
+        }
+
+        comp.Parent = this;
+
+        var tab = comp.name.GetComponent<UITab>();
+        tab.Parent = this;
+        tab.init();
+
+        tab.toActivate = waitingForInput;
+
+        this.tabs.Add(tab);
+    }
+
+    public void Create() {
+
+        // fuck trying to "dynamically" create the ux
+        // create it by hand.
+        // this means any new input has to be added here.
+
+        AddTitle("Camera");
+
+        var go = Instantiate(toggle, layout.transform);
+        go.onValueChange.AddListener(SetCameraMappingXValue);
+        go.getValueFunc.AddListener(GetCameraMappingXValue);
+        go.gameObject.SetActive(true);
+        this.tabs.Add(go);
+
+        go = Instantiate(toggle, layout.transform);
+        go.onValueChange.AddListener(SetCameraMappingYValue);
+        go.getValueFunc.AddListener(GetCameraMappingYValue);
+        go.gameObject.SetActive(true);
+        this.tabs.Add(go);
+
+        AddInput(PlayerInputs.InputCode.CameraX);
+        AddInput(PlayerInputs.InputCode.CameraY);
+        AddInput(PlayerInputs.InputCode.CameraChange);
+        AddInput(PlayerInputs.InputCode.CameraReset);
+
+        AddTitle("General");
+
+        AddInput(PlayerInputs.InputCode.SaveStatesPlant);
+        AddInput(PlayerInputs.InputCode.SaveStatesReturn);
+        AddInput(PlayerInputs.InputCode.GiveCoinsForTurbo);
+
+        AddTitle("Car");
+
+        AddInput(PlayerInputs.InputCode.Accelerator);
+        AddInput(PlayerInputs.InputCode.Break);
+        AddInput(PlayerInputs.InputCode.Handbrake);
+        AddInput(PlayerInputs.InputCode.Turn);
+        AddInput(PlayerInputs.InputCode.Jump);
+        AddInput(PlayerInputs.InputCode.Turbo);
+
+        AddInput(PlayerInputs.InputCode.WeightControl);
+        AddInput(PlayerInputs.InputCode.WeightX);
+        AddInput(PlayerInputs.InputCode.WeightY);
+
+        AddTitle("UI");
+
+        AddInput(PlayerInputs.InputCode.UIUp);
+        AddInput(PlayerInputs.InputCode.UIDown);
+        AddInput(PlayerInputs.InputCode.UILeft);
+        AddInput(PlayerInputs.InputCode.UIRight);
+        AddInput(PlayerInputs.InputCode.UICancel);
+        AddInput(PlayerInputs.InputCode.UIValidate);
+        AddInput(PlayerInputs.InputCode.UIStart);
+
     }
 
     public void CleanUp() {
         for(int i=0; i<layout.transform.childCount; ++i){
             var go =layout.transform.GetChild(i).gameObject;
-            Destroy(go);
-        }
-        this.tabs.Clear();
+    Destroy(go);
     }
+    this.tabs.Clear();
+}
 
-    public void SetBinding(int code, Device device, int key, bool isNegativeAxis = false)
+public void SetBinding(Controller.InputCode code, PlayerInputs.InputCode key)
     {
-        if (key < (int)GameInputsAxis.Count)
+
+        var currentData = inputMgr.controllers[0].controller.Get((int)key);
+
+        var inputButton = currentData as GameInputButton;
+        if (inputButton != null)
         {
-            GameInputsUtils.ChangeInput( (GameInputsAxis)key, (XboxJoystickCode)code);
+            // can only be mapped to buttons
+            inputMgr.controllers[0].controller.ChangeInput((int)key, new GameInputButton(inputButton.name, inputButton.description, code, inputButton.codeSecondary));
         }
-        else
+
+        var inputAxis = currentData as GameInputAxis;
+        if (inputAxis != null)
         {
-            GameInputsUtils.ChangeInput((GameInputsButtons)key, (XboxJoystickCode)code);
+            // can only be mapped to axis
+            inputMgr.controllers[0].controller.ChangeInput((int)key, new GameInputAxis(inputAxis.name, inputAxis.description,
+                new GameInputAxis.Axis(code, inputAxis.inputPrimary.negative),
+                inputAxis.inputSecondary, inputAxis.settings));
         }
-    }
+}
 }

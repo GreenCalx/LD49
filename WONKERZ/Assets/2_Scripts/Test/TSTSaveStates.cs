@@ -51,7 +51,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         elapsedSinceLastSS += Time.deltaTime;
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if ( elapsedSinceLastSS < ss_latch)
         {
@@ -59,7 +59,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         }
         elapsedSinceLastSS = 0f;
         
-        var plant = Entry.Inputs[(int) GameInputsButtons.SaveStatesPlant].IsDown;
+        var plant = (Entry[(int) PlayerInputs.InputCode.SaveStatesPlant] as GameInputButton).GetState().down;
         if (plant) // SAVE
         {
             CheckPointManager cpm = Access.CheckPointManager();
@@ -83,7 +83,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
                 saveStateMarkerInst.transform.rotation = ss_rot;
             }
         }
-        var load = Entry.Inputs[(int)GameInputsButtons.SaveStatesReturn].IsDown;
+        var load = (Entry[(int)PlayerInputs.InputCode.SaveStatesReturn] as GameInputButton).GetState().down;
         if (load) // LOAD
         {
             loadState();

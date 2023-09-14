@@ -62,20 +62,22 @@ public class ManualCamera : PlayerCamera, IControllable
         Utils.detachControllable<ManualCamera>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        input = Vector3.zero;
-        float multiplier = (InputSettings.InverseRSMapping) ? -1f : 1f;
+        Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
+            InputSettings.InverseCameraMappingY ? -1f : 1f);
+
         if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
         {
-            if (!(Entry.Inputs[(int)GameInputsButtons.WeightControl].Down
-                  && (GameInputsUtils.IsSame(GameInputsAxis.CameraX, GameInputsAxis.WeightX)
-                      || GameInputsUtils.IsSame(GameInputsAxis.CameraY, GameInputsAxis.WeightY))))
-            {
                 // input is cameraY, cameraX, because it represents the axis of rotation.
-                // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
-                input = new Vector2(Entry.Inputs[(int)GameInputsAxis.CameraY].AxisValue, -Entry.Inputs[(int)GameInputsAxis.CameraX].AxisValue) * multiplier;
-            }
+            // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
+
+            var current = new Vector2(
+                (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
+                -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
+            current = Vector2.Scale(current, multiplier);
+
+            input.Add(current);
         }
     }
 
@@ -219,14 +221,18 @@ public class ManualCamera : PlayerCamera, IControllable
     }
 
 
-    private Vector2 input;
+    private SchMathf.AccumulatorV2 input;
     bool ManualRotation()
     {
         const float e = 0.001f;
-        if (input.x < -e || input.x > e || input.y < -e || input.y > e)
+
+        var inputAvg = input.average;
+        if (inputAvg.x < -e || inputAvg.x > e || inputAvg.y < -e || inputAvg.y > e)
         {
-            orbitAngles += rotationSpeed * Time.unscaledDeltaTime * input;
+            orbitAngles += rotationSpeed * Time.unscaledDeltaTime * inputAvg;
             lastManualRotationTime = Time.unscaledTime;
+
+            input.Reset();
             return true;
         }
         return false;

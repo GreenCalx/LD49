@@ -3,6 +3,7 @@ using Schnibble;
 
 public class UIGarageTestEnd : MonoBehaviour
 {
+    #if false
     private UIGarageTestManager uigtm;
     // Start is called before the first frame update
     void Start()
@@ -24,4 +25,5 @@ public class UIGarageTestEnd : MonoBehaviour
             uigtm.endTest(true);
         }
     }
+    #endif
 }

@@ -5,6 +5,8 @@ using static Schnibble.Utils;
 
 public class UIGarageTestManager : MonoBehaviour
 {
+
+    #if false
     public enum MODE { RECORD = 0, REPLAY = 1 };
     public MODE testMode;
 
@@ -20,7 +22,7 @@ public class UIGarageTestManager : MonoBehaviour
 
     // To avoid a latch where unity replays physx frames X times to catch up
     private bool replayReadyToStartNextUpdate = false;
-    private Queue<InputManager.InputData> replayQueue;
+    //private Queue<InputManager.InputData> replayQueue;
     private int frametowait = 0;
 
     // Start is called before the first frame update
@@ -200,4 +202,5 @@ public class UIGarageTestManager : MonoBehaviour
     {
         return (activeTest != null);
     }
+    #endif
 }

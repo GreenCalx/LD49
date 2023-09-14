@@ -263,7 +263,7 @@ public class CollectiblesManager : MonoBehaviour
     void Start()
     {
         collectModCombo = 0;
-        jar = new CollectibleJar();
+        jar = gameObject.AddComponent<CollectibleJar>();
         jar.init();
         //loadJars();
 

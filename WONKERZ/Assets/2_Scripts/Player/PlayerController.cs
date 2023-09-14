@@ -1,5 +1,6 @@
 using Schnibble;
 using static Schnibble.SchPhysics;
+using static Schnibble.SchMathf;
 using System.Collections.Specialized;
 using UnityEngine;
 
@@ -17,25 +18,56 @@ public class GroundState : FSMState, IControllable
             player.TryJump();
             player.flags[PlayerController.FJump] = !player.TouchGround();
             // apply jump correction
-            if (!player.TouchGround()) {
-                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled, 0, -player.jump.diMaxForce * player.jump.diRollUnscaled);
+            if (!player.TouchGround())
+            {
+                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
+                    0,
+                    -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
                 torque = player.car.transform.TransformDirection(torque);
                 player.car.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
             }
-            else {
+            else
+            {
                 player.SetCarCenterOfMass();
             }
 
             // very bad design for now.
-            var weightIndPos = player.car.centerOfMassInitial + new Vector3( player.jump.diRollUnscaled * player.weightControlMaxX,
+            var weightIndPos = player.car.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
                 player.weightIndicatorHeight,
-                player.jump.diPitchUnscaled * player.weightControlMaxZ);
+                player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
 
             player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
         }
     }
 
-    public GroundState(PlayerController player) : base("Car") { this.player = player; this.fixedActions.Add(new GeneralGroundAction()); }
+    private class UpdateWheelBasis : FSMAction
+    {
+        public override void Execute(FSMBase fsm)
+        {
+            var player = (fsm as PlayerFSM).GetPlayer();
+
+            foreach (var axle in player.car.axles)
+            {
+                if (axle.isSteerable)
+                {
+                    axle.right.basis = GetBasis(player.car.transform.up,
+                        Quaternion.AngleAxis(player.car.maxSteeringAngle_deg * player.turn.average, player.car.transform.up) * player.car.transform.forward);
+                }
+                else
+                {
+                    axle.right.basis = GetBasis(player.car.transform.up, player.car.transform.forward);
+                }
+                axle.left.basis = axle.right.basis;
+            }
+        }
+    }
+
+    public GroundState(PlayerController player) : base("Car")
+    {
+        this.player = player;
+        this.actions.Add(new UpdateWheelBasis());
+        this.fixedActions.Add(new GeneralGroundAction());
+    }
 
     public override void OnEnter(FSMBase fsm)
     {
@@ -49,48 +81,92 @@ public class GroundState : FSMState, IControllable
         (fsm as PlayerFSM).GetPlayer().DeactivateCar();
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        if (Entry.Inputs[(int) GameInputsButtons.Jump].Down)
+        var jumpButton = Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton;
+        if (jumpButton != null)
         {
-            player.SetSpringSizeMinAndLock();
-        }
-        else
-        {
-            if (Entry.Inputs[(int) GameInputsButtons.Jump].IsUp)
+            var jumpButtonState = jumpButton.GetState();
+            if (jumpButtonState.heldDown)
             {
-                player.jump.applyForceMultiplier = true;
+                player.SetSpringSizeMinAndLock();
             }
-            player.ResetSpringSizeMinAndUnlock();
+            else
+            {
+                if (jumpButtonState.up)
+                {
+                    player.jump.applyForceMultiplier = true;
+                }
+                player.ResetSpringSizeMinAndUnlock();
+            }
         }
 
-        if (Entry.Inputs[(int) GameInputsButtons.Turbo].Down)
+        var turboButton = Entry[(int)PlayerInputs.InputCode.Turbo] as GameInputButton;
+        if (turboButton != null)
         {
-            player.useTurbo();
+            if (turboButton.GetState().heldDown)
+            {
+                player.useTurbo();
+            }
         }
 
-        if (Entry.Inputs[(int) GameInputsButtons.Handbrake].Down)
+        var handbrakeButton = Entry[(int)PlayerInputs.InputCode.Handbrake] as GameInputButton;
+        if (handbrakeButton != null)
         {
-            player.SetHandbrake(true);
-        } else
-        {
-            player.SetHandbrake(false);
+            if (handbrakeButton.GetState().heldDown)
+            {
+                player.SetHandbrake(true);
+            }
         }
 
         // makes car torque control a power
-        //if (player.flags[PlayerController.FJump])
-        if (Entry.Inputs[(int) GameInputsButtons.WeightControl].Down)
+        var weightControlButton = (Entry[(int)PlayerInputs.InputCode.WeightControl] as GameInputButton);
+        if (weightControlButton != null)
         {
-            var x = Entry.Inputs[(int) GameInputsAxis.WeightX].AxisValue;
-            var y = Entry.Inputs[(int) GameInputsAxis.WeightY].AxisValue;
+            if (weightControlButton.GetState().heldDown)
+            {
+                var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
+                var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
 
-            player.jump.diRollUnscaled = x;
-            player.jump.diPitchUnscaled = y;
-            player.jump.diRoll += x; //* Time.deltaTime;
-            player.jump.diPitch += y; //* Time.deltaTime;
+                if (weightXAxis != null)
+                {
+                    player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
+                    player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
+                }
+
+
+                if (weightYAxis != null)
+                {
+                    player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
+                    player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
+                }
+            }
+        }
+
+        var accelerationAxis = Entry[(int)PlayerInputs.InputCode.Accelerator] as GameInputAxis;
+        if (accelerationAxis != null)
+        {
+            var acceleration = Mathf.Clamp01(accelerationAxis.GetState().valueSmooth);
+            if (acceleration != 0f)
+            player.car.currentRPM.Add(acceleration);
+        }
+
+        var breakAxis = Entry[(int)PlayerInputs.InputCode.Break] as GameInputAxis;
+        if (breakAxis != null)
+        {
+            var breaks = Mathf.Clamp01(breakAxis.GetState().valueSmooth);
+            if (breaks != 0f)
+            player.car.currentRPM.Add(-breaks);
+        }
+        // todo toffa : this is very weird...check this at some point
+
+        var turnAxis = Entry[(int)PlayerInputs.InputCode.Turn] as GameInputAxis;
+        if (turnAxis != null)
+        {
+            if (turnAxis.GetState().valueSmooth != 0f)
+            player.turn.Add(turnAxis.GetState().valueSmooth);
         }
     }
-
 };
 
 public class PlayerFSM : FSMBase
@@ -253,10 +329,10 @@ public class PlayerController : MonoBehaviour, IControllable
         public bool applyForceMultiplier;
         public float value;
         // di
-        public float diPitch;
-        public float diRoll;
-        public float diPitchUnscaled;
-        public float diRollUnscaled;
+        public Accumulator diPitch;
+        public Accumulator diRoll;
+        public Accumulator diPitchUnscaled;
+        public Accumulator diRollUnscaled;
         public float diMaxForce;
 
         public AudioClip[] sounds;
@@ -280,12 +356,12 @@ public class PlayerController : MonoBehaviour, IControllable
         public float current;
         public float max;
         public Turbo(float strength
-                         , float timeInterval
-                         , float intervalElapsedTime
-                         , float consumptionPerTick
-                         , bool infinite
-                         , float current
-                         , float max)
+                     , float timeInterval
+                     , float intervalElapsedTime
+                     , float consumptionPerTick
+                     , bool infinite
+                     , float current
+    , float max)
         {
             this.max = max;
             this.current = current;
@@ -300,7 +376,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public Turbo turbo = new Turbo(5, .2f, 99, .02f, false, 0, 1);
 
     [Header("Generics")]
-    [Range(0f,2f)]
+    [Range(0f, 2f)]
     public float invulnerabilityTimeAfterDamage;
     private float elapsedTimeSinceLastDamage = 999;
 
@@ -313,6 +389,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public GameObject carPrefab;
     public GameObject carInstance;
     public CarController car;
+    public Accumulator turn;
 
     public GameObject boatPrefab;
     private GameObject boatInstance;
@@ -323,6 +400,9 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public AudioSource audioSource;
     public AudioClip damageSound;
+
+    public InputManager inputMgr;
+    public PlayerController playerInst;
 
     void Awake()
     {
@@ -341,14 +421,22 @@ public class PlayerController : MonoBehaviour, IControllable
         generalStates = new PlayerGeneralStates(this);
         vehicleStates = new PlayerVehicleStates(this);
 
-        Utils.attachControllable(this);
-
         Freeze();
+    }
+
+    void Start()
+    {
+        if (inputMgr == null)
+        {
+            inputMgr = Access.PlayerInputsManager().player1;
+        }
+
+        inputMgr.Attach(this);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable(this);
+        inputMgr.Detach(this);
     }
 
     // Update is called once per frame
@@ -358,12 +446,18 @@ public class PlayerController : MonoBehaviour, IControllable
         vehicleStates.Update();
 
         elapsedTimeSinceLastDamage += Time.deltaTime;
+
     }
 
     void FixedUpdate()
     {
         generalStates.FixedUpdate();
         vehicleStates.FixedUpdate();
+
+        SetHandbrake(false);
+        turn.Reset();
+        jump.diRollUnscaled.Reset();
+        jump.diPitchUnscaled.Reset();
     }
 
     public WonkerDecal jumpDecal;
@@ -511,171 +605,131 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void ActivateCar()
+{
+    carInstance.SetActive(true);
+    Utils.attachControllable(car);
+}
+
+public void DeactivateCar()
+{
+    carInstance.SetActive(false);
+    Utils.detachControllable(car);
+}
+
+public bool IsInMenu() { return isInMenu; }
+public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound(); }
+public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
+private void MuteSound()
+{
+    foreach (var source in GetComponentsInChildren<AudioSource>())
     {
-        carInstance.SetActive(true);
-        Utils.attachControllable(car);
-    }
+        source.mute = true;
+}
+}
 
-    public void DeactivateCar()
+private void UnMuteSound()
+{
+    foreach (var source in GetComponentsInChildren<AudioSource>())
     {
-        carInstance.SetActive(false);
-        Utils.detachControllable(car);
-    }
+        source.mute = false;
+}
+}
 
-    public bool IsInMenu() { return isInMenu; }
-    public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound(); }
-    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
-    private void MuteSound() {
-        foreach (var source in GetComponentsInChildren<AudioSource>())
-        {
-            source.mute = true;
-        }
-    }
+public void SetHandbrake(bool v)
+{
+    var rear = car.axles[(int)AxleType.rear];
+    rear.left.isHandbraked = v;
+    rear.right.isHandbraked = v;
 
+    var front = car.axles[(int)AxleType.front];
+    front.left.isHandbraked = v;
+    front.right.isHandbraked = v;
+}
 
-    private void UnMuteSound() {
-        foreach (var source in GetComponentsInChildren<AudioSource>())
-        {
-            source.mute = false;
-        }
-    }
+public void SetCarCenterOfMass()
+{
+    car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
+}
 
-    public void SetHandbrake(bool v) {
-        var rear = car.axles[(int)AxleType.rear];
-        rear.left.isHandbraked = v;
-        rear.right.isHandbraked = v;
+/// =============== Game Logic ==================
+public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
+{
+    //
+    //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
+    //return;
+    if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
+    return;
 
-        var front = car.axles[(int)AxleType.front];
-        front.left.isHandbraked = v;
-        front.right.isHandbraked = v;
-    }
+    audioSource.clip = damageSound;
+    audioSource.Play();
 
-    public void SetCarCenterOfMass() {
-        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3( jump.diRollUnscaled * weightControlMaxX, 0f, jump.diPitchUnscaled * weightControlMaxZ);
-    }
+    // lose nuts
+    CollectiblesManager cm = Access.CollectiblesManager();
+    int n_nuts = cm.getCollectedNuts();
 
-    /// =============== Game Logic ==================
-    public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
+    Vector3 contactNormal = iDamageSourceNormal;
+    Vector3 contactPoint = iDamageSourcePoint;
+    Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
+
+    Vector3 repulseDir = contactPoint + contactNormal;
+    repulseForce = -repulseDir * iRepulsionForce;
+
+    int availableNuts = (n_nuts >= iDamage) ? iDamage : n_nuts;
+    for (int i = 0; i < availableNuts; i++)
     {
-        //
-        //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
-        //return;
-        if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
-        return;
-
-        audioSource.clip = damageSound;
-        audioSource.Play();
-
-        // lose nuts
-        CollectiblesManager cm = Access.CollectiblesManager();
-        int n_nuts = cm.getCollectedNuts();
-
-        Vector3 contactNormal = iDamageSourceNormal;
-        Vector3 contactPoint = iDamageSourcePoint;
-        Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
-
-        Vector3 repulseDir = contactPoint + contactNormal;
-        repulseForce = -repulseDir * iRepulsionForce;
-
-        int availableNuts = (n_nuts >= iDamage) ? iDamage : n_nuts;
-        for (int i = 0; i < availableNuts; i++)
-        {
-            GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
-            nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
-        }
-        cm.loseNuts(iDamage);
-        rb.AddForce(repulseForce, ForceMode.Impulse);
-
-        elapsedTimeSinceLastDamage = 0f;
-        //stateMachine.ForceState(invulState);
+        GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
+        nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
     }
+    cm.loseNuts(iDamage);
+    rb.AddForce(repulseForce, ForceMode.Impulse);
 
-    bool modifierCalled = false;
+    elapsedTimeSinceLastDamage = 0f;
+    //stateMachine.ForceState(invulState);
+}
+
+bool modifierCalled = false;
 
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+{
+    // dirty fix for respawn when slipping
+    foreach (var a in car.axles)
     {
-        // dirty fix for respawn when slipping
-        foreach (var a in car.axles)
-        {
-            a.right.slipX = 1;
-            a.right.slipY = 1;
+        a.right.slipX = 1;
+        a.right.slipY = 1;
 
 
-            a.left.slipX = 1;
-            a.left.slipY = 1;
-        }
-        // Every states controls
-        // reset jump correction
-        jump.diRoll = 0;
-        jump.diPitch = 0;
-        jump.diRollUnscaled = 0;
-        jump.diPitchUnscaled = 0;
-
-        // power controller update
-        PowerController pc = GetComponent<PowerController>();
-        if (!!pc)
-        {
-            // modifier inputs
-            // modifier now used for torque control
-            //if (Entry.Inputs["Modifier"].Down)
-            //{
-            //Vector2 mouse_mod = new Vector2(Entry.Inputs["Power_MouseX"].AxisValue, Entry.Inputs["Power_MouseY"].AxisValue);
-            //pc.showUI(true);
-            //if (Entry.Inputs["Power1"].Down || (mouse_mod.x > 0))
-            //{ // BallPower
-            //pc.showIndicator(PowerController.PowerWheelPlacement.LEFT);
-            //pc.setNextPower(1);
-            //}
-            //else if (Entry.Inputs["Power2"].Down || (mouse_mod.y > 0))
-            //{ // WaterPower
-            //pc.setNextPower(2);
-            //pc.showIndicator(PowerController.PowerWheelPlacement.DOWN);
-            //}
-            //else if (Entry.Inputs["Power3"].Down || (mouse_mod.y < 0))
-            //{ // PlanePower
-            //pc.showIndicator(PowerController.PowerWheelPlacement.UP);
-            //pc.setNextPower(3);
-            //}
-            //else if (Entry.Inputs["Power4"].Down || (mouse_mod.x < 0))
-            //{ // SpiderPower
-            //pc.showIndicator(PowerController.PowerWheelPlacement.RIGHT);
-            //pc.setNextPower(4);
-            //}
-            //else
-            //{
-            //pc.showIndicator(PowerController.PowerWheelPlacement.NEUTRAL);
-            //pc.setNextPower(0);
-            //}
-            //modifierCalled = true;
-            //}
-            //else if (modifierCalled && !Entry.Inputs["Modifier"].Down)
-            //{
-            //pc.hideIndicators();
-            //pc.showUI(false);
-            //
-            //pc.tryTriggerPower();
-            //modifierCalled = false;
-            //}
-
-
-            // Specific states control
-
-            var generalInputs = (generalStates.GetState() as IControllable);
-            if (generalInputs != null)
-            {
-                generalInputs.ProcessInputs(Entry);
-            }
-
-
-            var vehicleInputs = (vehicleStates.GetState() as IControllable);
-            if (vehicleInputs != null)
-            {
-                vehicleInputs.ProcessInputs(Entry);
-            }
-
-
-            pc.applyPowerEffectInInputs(Entry, this);
-        }
+        a.left.slipX = 1;
+        a.left.slipY = 1;
     }
+
+    // Specific states control
+
+    var generalInputs = (generalStates.GetState() as IControllable);
+    if (generalInputs != null)
+    {
+        generalInputs.ProcessInputs(currentMgr, Entry);
+    }
+
+
+    var vehicleInputs = (vehicleStates.GetState() as IControllable);
+    if (vehicleInputs != null)
+    {
+        vehicleInputs.ProcessInputs(currentMgr, Entry);
+    }
+
+
+
+    // to remove
+
+    if (Input.GetKeyDown(KeyCode.Space))
+    {
+        PlayerController pc = Instantiate(playerInst, transform.position, transform.rotation);
+        pc.inputMgr = Access.PlayerInputsManager().dualPlayers;
+
+        var states = pc.vehicleStates;
+        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+        Access.Player().UnFreeze();
+    }
+}
 }

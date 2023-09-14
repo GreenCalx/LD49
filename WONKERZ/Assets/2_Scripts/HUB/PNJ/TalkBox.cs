@@ -37,14 +37,14 @@ public class TalkBox : MonoBehaviour, IControllable
         Utils.detachControllable<TalkBox>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
 
-        if (is_talkable && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
+        if (is_talkable && (Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
         {
             talk();
         }
-        else if (is_in_dialog && Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
+        else if (is_in_dialog && (Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
         {
             end_dialog();
         }

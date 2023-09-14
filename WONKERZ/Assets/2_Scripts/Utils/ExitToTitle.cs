@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Schnibble;
 
 public class ExitToTitle : MonoBehaviour, IControllable
 {
@@ -15,11 +16,11 @@ public class ExitToTitle : MonoBehaviour, IControllable
         Utils.detachControllable<ExitToTitle>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (enabler)
         {
-            if (Entry.Inputs[GameInputsUtils.GetIdx("Cancel")].IsDown)
+            if ((Entry[PlayerInputs.GetIdx("Cancel")] as GameInputButton).GetState().down)
             SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
         }
     }

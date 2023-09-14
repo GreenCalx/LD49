@@ -46,7 +46,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         TMP_selectedCP.text = CPs[currSelectedCPIndex];
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (!isActivated)
             return;
@@ -57,8 +57,8 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             return;
         }
 
-        var godown = Entry.Inputs[(int) GameInputsButtons.UIDown].IsDown;
-        var goup = Entry.Inputs[(int) GameInputsButtons.UIUp].IsDown;
+        var godown = (Entry[(int) PlayerInputs.InputCode.UIDown] as GameInputButton).GetState().down;
+        var goup = (Entry[(int) PlayerInputs.InputCode.UIUp] as GameInputButton).GetState().down;
         if (godown)
         {
             currSelectedCPIndex = (currSelectedCPIndex <= 0) ? CPs.Count - 1 : currSelectedCPIndex - 1;
@@ -72,7 +72,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             TMP_selectedCP.text = CPs[currSelectedCPIndex];
         }
 
-        if (Entry.Inputs[(int) GameInputsButtons.UIValidate].IsDown)
+        if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
         {
             string selectedCP = CPs[currSelectedCPIndex];
             foreach (CheckPoint cp in eligibleCPs)
@@ -87,7 +87,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             }
         }
 
-        if (Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
+        if ((Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
         {
             deactivate();
             return;

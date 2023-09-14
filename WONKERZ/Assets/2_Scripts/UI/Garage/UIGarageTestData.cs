@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
 
+#if false
 [System.Serializable]
 public class SerializableInputData
 {
@@ -44,7 +45,7 @@ public class SerializableInputData
 public class SerializableInputState
 {
     public bool IsUp = false;
-    public bool IsDown = false;
+    public bool as GameInputButton).GetState().down = false;
     public bool Down = false;
     public bool IsAxis = false;
     public float AxisValue = 0f;
@@ -53,10 +54,10 @@ public class SerializableInputState
     {
         InputManager.InputState retval = new InputManager.InputState();
         retval.IsUp = IsUp;
-        retval.IsDown = IsDown;
-        retval.Down = Down;
+        retval as GameInputButton).GetState().down = as GameInputButton).GetState().down;
+        retvalas GameInputButton).GetState().heldDown = Down;
         retval.IsAxis = IsAxis;
-        retval.AxisValue = AxisValue;
+        retval as GameInputAxis).GetState().valueRaw = AxisValue;
         return retval;
     }
 
@@ -69,11 +70,11 @@ public class SerializableInputState
         set
         {
             IsUp = value.IsUp;
-            IsDown = value.IsDown;
-            Down = value.Down;
+            as GameInputButton).GetState().down = value as GameInputButton).GetState().down;
+            Down = valueas GameInputButton).GetState().heldDown;
             IsAxis = value.IsAxis;
-            AxisValue = value.AxisValue;
-        }
+            AxisValue = value as GameInputAxis).GetState().valueRaw;
+}
     }
     public static implicit operator InputManager.InputState(SerializableInputState inst)
     {
@@ -161,3 +162,5 @@ public class UIGarageTestData : MonoBehaviour, ISaveLoad
         //SaveAndLoad.datas.Remove(this);
     }
 }
+
+#endif

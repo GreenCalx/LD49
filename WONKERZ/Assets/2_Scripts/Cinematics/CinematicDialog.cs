@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using Schnibble;
 
 [RequireComponent(typeof(PNJDialog))]
 public class CinematicDialog : MonoBehaviour, IControllable
@@ -9,7 +10,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
     public float auto_talk_time = 5f;
 
     private float internalTimer = 0f;
-    
+
     private PNJDialog dialog;
 
     public bool autoDialog = false;
@@ -20,9 +21,9 @@ public class CinematicDialog : MonoBehaviour, IControllable
     public void playPNJDialog()
     {
         if (autoDialog)
-            StartCoroutine(autoTalk());
+        StartCoroutine(autoTalk());
         else
-            StartCoroutine(playerTalk());
+        StartCoroutine(playerTalk());
     }
 
     public bool isDialogOver()
@@ -37,13 +38,13 @@ public class CinematicDialog : MonoBehaviour, IControllable
         Utils.detachControllable<CinematicDialog>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        if (!dialogIsOver && Entry.Inputs[(int) GameInputsButtons.Jump].IsDown)
+        if (!dialogIsOver && (Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
         {
             dialog.talk();
         }
-        else if (Entry.Inputs[(int) GameInputsButtons.UICancel].IsDown)
+        else if ((Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
         {
             dialog.end_dialog();
         }
@@ -67,7 +68,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
-            callbackOnDialogDone.Invoke();
+        callbackOnDialogDone.Invoke();
         Utils.detachControllable<CinematicDialog>(this);
 
         Access.UITurboAndSaves().gameObject.SetActive(true);
@@ -83,19 +84,19 @@ public class CinematicDialog : MonoBehaviour, IControllable
             {
                 internalTimer += Time.deltaTime;
                 yield return null;
-            }
+                }
             internalTimer = 0f;
-        }
+                }
 
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
-            callbackOnDialogDone.Invoke();
-    }
+        callbackOnDialogDone.Invoke();
+        }
 
     // -------------------------------------
     // UNITY
     void Start()
-    {
+            {
         dialog = GetComponent<PNJDialog>();
     }
 }

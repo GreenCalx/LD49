@@ -70,9 +70,9 @@ public class CameraManager : MonoBehaviour, IControllable
     }
 
     // Switch cameras between HUB cameras
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        if (Entry.Inputs[(int)GameInputsButtons.CameraChange].IsDown)
+        if ((Entry[(int)PlayerInputs.InputCode.CameraChange] as GameInputButton).GetState().down)
         {
             GameCamera.CAM_TYPE currType = active_camera.camType;
             GameCamera.CAM_TYPE nextType = GameCamera.CAM_TYPE.UNDEFINED;
@@ -174,7 +174,7 @@ public class CameraManager : MonoBehaviour, IControllable
                 this.LogError("Failed to switch Camera. Selecting first of the list as fallback.");
                 if (cameras.Count > 0)
                 {
-                    operateCameraSwitch(cameras[0]);
+                    operateCameraSwitch(cameras.Values.GetEnumerator().Current);
                     return;
                 }
                 else

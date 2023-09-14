@@ -100,6 +100,11 @@ public class Access
         cache.invalidate();
     }
 
+    public static PlayerInputsManager PlayerInputsManager()
+    {
+        return cache.getObject<PlayerInputsManager>(Constants.GO_MANAGERS, false);
+    }
+
     public static InputManager InputManager()
     {
         return cache.getObject<InputManager>(Constants.GO_MANAGERS, false);

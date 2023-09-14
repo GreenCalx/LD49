@@ -47,19 +47,19 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (!isSkippable)
             return;
 
         if (triggered)
         {
-            if (Entry.Inputs[(int) GameInputsButtons.Jump].Down)
+            if ((Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
             { elapsedSkipTime += Time.deltaTime; }
             else
             { elapsedSkipTime = 0f; }
 
-            if (elapsedSkipTime >= timeToSkipCinematic)    
+            if (elapsedSkipTime >= timeToSkipCinematic)
             { elapsedSkipTime = 0f; EndCinematic(); }
         }
 

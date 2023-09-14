@@ -97,7 +97,7 @@ public class PowerController : MonoBehaviour
         }
     }
 
-    public void applyPowerEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyPowerEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
         if (currentPower != null)
         {

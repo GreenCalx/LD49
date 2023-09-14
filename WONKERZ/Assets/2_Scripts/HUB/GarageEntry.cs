@@ -27,11 +27,11 @@ public class GarageEntry : MonoBehaviour, IControllable
         Utils.detachControllable<GarageEntry>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (detector.playerInRange)
         {
-            if (Entry.Inputs[(int)GameInputsButtons.Jump].IsDown)
+            if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
             openGarage();
         }
     }

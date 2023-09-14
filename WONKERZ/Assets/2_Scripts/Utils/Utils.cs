@@ -10,15 +10,17 @@ public static partial class Utils
 
     public static void detachControllable<T>(T toDetach)
     {
-        InputManager IM = Access.InputManager();
+        //InputManager IM = Access.InputManager();
+        var IM = Access.PlayerInputsManager().all;
         if (!!IM)
-            IM.Detach(toDetach as IControllable);
+        IM.Detach(toDetach as IControllable);
         else
-            SchLog.LogWarn("InputManager is null. Failed to detach.");
+        SchLog.LogWarn("InputManager is null. Failed to detach.");
     }
     public static void detachUniqueControllable<T>(T toDetach)
     {
-        InputManager IM = Access.InputManager();
+        //InputManager IM = Access.InputManager();
+        var IM = Access.PlayerInputsManager().all;
         if (!!IM)
             IM.UnsetUnique(toDetach as IControllable);
         else
@@ -27,7 +29,8 @@ public static partial class Utils
 
     public static void attachControllable<T>(T toAttach)
     {
-        InputManager IM = Access.InputManager();
+        //InputManager IM = Access.InputManager();
+        var IM = Access.PlayerInputsManager().all;
         if (!!IM)
             IM.Attach(toAttach as IControllable);
         else
@@ -36,7 +39,8 @@ public static partial class Utils
 
     public static void attachUniqueControllable<T>(T toAttach)
     {
-        InputManager IM = Access.InputManager();
+        //InputManager IM = Access.InputManager();
+        var IM = Access.PlayerInputsManager().all;
         if (!!IM)
             IM.SetUnique(toAttach as IControllable);
         else

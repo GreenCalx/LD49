@@ -153,6 +153,7 @@ public static class SaveAndLoad
         return true;
     }
 
+    #if false
     public static bool loadGarageTest(string iFileName, UIGarageTestData target)
     {
         updateFileName(ref iFileName);
@@ -192,6 +193,7 @@ public static class SaveAndLoad
 
         return true;
     }
+    #endif
 
 
     public static bool loadCollectiblesJar(string iFileName, CollectiblesManager.CollectibleJar target)

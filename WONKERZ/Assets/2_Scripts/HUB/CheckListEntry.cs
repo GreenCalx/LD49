@@ -32,11 +32,11 @@ public class CheckListEntry : MonoBehaviour, IControllable
         Utils.detachControllable<CheckListEntry>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (detector.playerInRange)
         {
-            if (Entry.Inputs[(int)GameInputsButtons.Jump].IsDown)
+            if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
             open();
         }
     }

@@ -20,11 +20,11 @@ public class Hookable : MonoBehaviour, IControllable
         Utils.detachControllable<Hookable>(this);
     }
 
-    void IControllable.ProcessInputs(InputManager.InputData Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        hook.SetActive(Entry.Inputs[(int) GameInputsButtons.Grapin].Down);
+        hook.SetActive((Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown);
         if (!!ccPlayer)
-        ccPlayer.IsHooked = Entry.Inputs[(int) GameInputsButtons.Grapin].Down;
+        ccPlayer.IsHooked = (Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown;
     }
 
     // Update is called once per frame

@@ -1,29 +1,22 @@
 using UnityEngine;
+using Schnibble;
 
 public class UIWaitInputsPanel : UIPanelControlable
 {
     private bool wait = false;
     private float waitBeforeInputs = 0.5f;
     private float currentTime = 0f;
-    override protected void ProcessInputs(InputManager.InputData Entry)
+    override protected void ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
         if (currentTime > waitBeforeInputs)
         {
             if (wait)
             {
-                if (Entry.GetAnyKeyDown(out int code, out Device device))
+                if (currentMgr.GetAnyKeyDown(out Controller.InputCode code))
                 {
                     wait = false;
-                    (Parent as UIBindingElement).SetBinding(code, device);
+                    (Parent as UIBindingElement).SetBinding(code);
                 }
-                //var e = Event.current;
-                //if (e.isKey && e.type == EventType.KeyDown) {
-                //    if (e.keyCode != KeyCode.None)
-                //    {
-                //        wait = false;
-                //        (Parent as UIBindingElement).SetBinding(e.keyCode);
-                //    }
-                //}
             }
         }
         currentTime += Time.unscaledDeltaTime;
@@ -34,7 +27,7 @@ public class UIWaitInputsPanel : UIPanelControlable
     void Update()
     {
         if (!wait)
-            onDeactivate?.Invoke();
+        onDeactivate?.Invoke();
     }
 
     public void WaitForInput()

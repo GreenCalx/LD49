@@ -6,7 +6,6 @@ public class FollowPlayer : PlayerCamera
     public float LerpMult;
     public bool Active = true;
     public CheckPointManager CPM;
-    private Camera cam;
 
     // Start is called before the first frame update
     

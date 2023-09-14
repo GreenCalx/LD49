@@ -5,6 +5,7 @@ using Schnibble;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class UIGaragePickableTest : UITextTab
 {
+    #if false
     private UIGarageTestManager uigtm;
     private TextMeshProUGUI txt_elem;
     private bool last_launch_failed;
@@ -38,16 +39,16 @@ public class UIGaragePickableTest : UITextTab
         last_launch_failed = false;
     }
 
-    protected override void ProcessInputs(InputManager.InputData Entry)
+    protected override void ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        base.ProcessInputs(Entry);
+        base.ProcessInputs(currentMgr, Entry);
 
-        if (Entry.Inputs[(int)GameInputsButtons.CameraChange].IsDown)
+        if ((Entry[(int)PlayerInputs.InputCode.CameraChange] as GameInputButton).GetState().down)
         {
             setModeRecord();
             activate();
 
-        } else if (Entry.Inputs[(int)GameInputsButtons.Jump].IsDown) {
+        } else if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down) {
             setModeReplay();
             activate();
         }
@@ -100,5 +101,6 @@ public class UIGaragePickableTest : UITextTab
         txt_replay.gameObject.SetActive(false);
     }
 
+    #endif
 
 }

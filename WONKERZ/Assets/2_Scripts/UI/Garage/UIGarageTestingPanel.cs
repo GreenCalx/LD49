@@ -4,6 +4,7 @@ using TMPro;
 
 public class UIGarageTestingPanel : UIGaragePanel
 {
+    #if false
     [Header("MANDATORY")]
     public TextMeshProUGUI txt_load_status;
 
@@ -61,4 +62,5 @@ public class UIGarageTestingPanel : UIGaragePanel
         base.deactivate();
         txt_load_status.gameObject.SetActive(false);
     }
+    #endif
 }

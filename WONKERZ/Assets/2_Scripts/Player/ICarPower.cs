@@ -8,7 +8,7 @@ public interface ICarPower
     public void applyDirectEffect();
 
     public void onRefresh();
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC);
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC);
 
     public bool turnOffTriggers();
     public void onDisableEffect();
@@ -33,7 +33,7 @@ public class NeutralCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
 
     }
@@ -77,7 +77,7 @@ public class TurboCarPower : ICarPower
         GameObject.Destroy(turboParticlesInst);
     }
 
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
         this.Log("Turbo Input effects");
         // No motor
@@ -109,7 +109,7 @@ public class WaterCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
         this.Log("Water Input effects");
     }
@@ -141,7 +141,7 @@ public class PlaneCarPower : ICarPower
     {
         //Access.Player().IsAircraft = false;
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
         this.Log("Plane Input effects");
     }
@@ -172,7 +172,7 @@ public class SpiderCarPower : ICarPower
     {
 
     }
-    public void applyEffectInInputs(InputManager.InputData iEntry, PlayerController iCC)
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
     {
         this.Log("Spider Input effects");
     }

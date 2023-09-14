@@ -6,10 +6,10 @@ public class UIInverseCameraCheckbox : UICheckbox
 {
     public void GetBoolValue(UICheckboxValue v)
     {
-        v.value = InputSettings.InverseRSMapping;
+        v.value = InputSettings.InverseCameraMappingX;
     }
     public void SetBoolValue(bool v)
     {
-        InputSettings.InverseRSMapping = v;
+        InputSettings.InverseCameraMappingX = v;
     }
 }

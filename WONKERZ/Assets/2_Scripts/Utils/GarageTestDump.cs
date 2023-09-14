@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using IM = InputManager;
+using IM = Schnibble.InputManager;
 using System.IO;
 using System.Text;
 
+#if false
 public class GarageTestDump
 {
     private static readonly string timeXinputsSeparator = "__";
@@ -63,9 +64,9 @@ public class GarageTestDump
         retval += inputStateStartSeparator;
 
         retval += "IsUp" + inputXValueSeparator + iIS.IsUp.ToString() + inputStateXinputeStateSeparator;
-        retval += "IsDown" + inputXValueSeparator + iIS.IsDown.ToString() + inputStateXinputeStateSeparator;
-        retval += "Down" + inputXValueSeparator + iIS.Down.ToString() + inputStateXinputeStateSeparator;
-        retval += "AxisValue" + inputXValueSeparator + iIS.AxisValue.ToString();
+        retval +=  as GameInputButton).GetState().down" + inputXValueSeparator + iIS as GameInputButton).GetState().down.ToString() + inputStateXinputeStateSeparator;
+        retval += "Down" + inputXValueSeparator + iISas GameInputButton).GetState().heldDown.ToString() + inputStateXinputeStateSeparator;
+        retval += "AxisValue" + inputXValueSeparator + iIS as GameInputAxis).GetState().valueRaw.ToString();
 
         retval += inputStateEndSeparator;
         return retval;
@@ -98,3 +99,5 @@ public class GarageTestDump
     }
 
 }
+
+#endif
