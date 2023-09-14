@@ -11,61 +11,87 @@ public static partial class Utils
     public static void detachControllable<T>(T toDetach)
     {
         //InputManager IM = Access.InputManager();
-        var IM = Access.PlayerInputsManager().all;
+        var pim = Access.PlayerInputsManager();
+        if (pim == null)
+        {
+            SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
+            return;
+        }
+
+        var IM = pim.all;
         if (!!IM)
         IM.Detach(toDetach as IControllable);
         else
         SchLog.LogWarn("InputManager is null. Failed to detach.");
     }
+
     public static void detachUniqueControllable<T>(T toDetach)
     {
         //InputManager IM = Access.InputManager();
-        var IM = Access.PlayerInputsManager().all;
+        var pim = Access.PlayerInputsManager();
+        if (pim == null)
+        {
+            SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
+            return;
+        }
+        var IM = pim.all;
         if (!!IM)
-            IM.UnsetUnique(toDetach as IControllable);
+        IM.UnsetUnique(toDetach as IControllable);
         else
-            SchLog.LogWarn("InputManager is null. Failed to detach unique.");
+        SchLog.LogWarn("InputManager is null. Failed to detach unique.");
     }
 
     public static void attachControllable<T>(T toAttach)
     {
         //InputManager IM = Access.InputManager();
-        var IM = Access.PlayerInputsManager().all;
+        var pim = Access.PlayerInputsManager();
+        if (pim == null)
+        {
+            SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
+            return;
+        }
+        var IM = pim.all;
         if (!!IM)
-            IM.Attach(toAttach as IControllable);
+        IM.Attach(toAttach as IControllable);
         else
-            SchLog.LogWarn("InputManager is null. Failed to attach.");
+        SchLog.LogWarn("InputManager is null. Failed to attach.");
     }
 
     public static void attachUniqueControllable<T>(T toAttach)
     {
         //InputManager IM = Access.InputManager();
-        var IM = Access.PlayerInputsManager().all;
+        var pim = Access.PlayerInputsManager();
+        if (pim == null)
+        {
+            SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
+            return;
+        }
+        var IM = pim.all;
         if (!!IM)
-            IM.SetUnique(toAttach as IControllable);
+        IM.SetUnique(toAttach as IControllable);
         else
-            SchLog.LogWarn("InputManager is null. Failed to attach unique.");
+        SchLog.LogWarn("InputManager is null. Failed to attach unique.");
     }
 
     public static bool isPlayer(GameObject iGO)
     {
         if (iGO.GetComponent<Dummy>()!=null)
-            return true;
+        return true;
 
         CarController direct_cc = iGO.GetComponent<CarController>();
         if (!!direct_cc)
-            return true;
+        return true;
         // can also be wheels
         CarColorizable carpart = iGO.GetComponent<CarColorizable>();
         if (!!carpart)
-            return true;
+        return true;
 
         if (iGO.transform.parent == null)
-            return false;
+        return false;
 
         CarController[] parent_cc = iGO.GetComponentsInParent<CarController>();
         if (parent_cc != null && parent_cc.Length>0)
-            return true;
+        return true;
 
         return false;
     }
@@ -73,9 +99,9 @@ public static partial class Utils
     public static bool colliderIsPlayer(Collider iCollider)
     {
         if (!!iCollider.transform.parent)
-            return !!iCollider.transform.parent.GetComponent<PlayerController>();
+        return !!iCollider.transform.parent.GetComponent<PlayerController>();
         else
-            return false;
+        return false;
     }
 
     public static bool collisionIsPlayer(Collision iCollision)

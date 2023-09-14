@@ -40,7 +40,7 @@ public class UIPauseMenu : MonoBehaviour, IControllable
             tracknameText.text = SceneManager.GetActiveScene().name;
             updateTrackDetails();
 
-            panel.inputMgr = Access.InputManager();
+            panel.inputMgr = Access.PlayerInputsManager().all;
             panel.onActivate.Invoke();
         }
     }
