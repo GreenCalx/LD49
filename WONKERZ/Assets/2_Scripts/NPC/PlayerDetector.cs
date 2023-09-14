@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Schnibble;
 
 public class PlayerDetector : MonoBehaviour
@@ -8,6 +9,10 @@ public class PlayerDetector : MonoBehaviour
 
     public Transform dummy;
     public bool dummyInRange = false;
+
+    [Header("Optionals")]
+    public UnityEvent callBackOnPlayerEnterRange;
+    public UnityEvent callbackOnPlayerExitRange;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +43,8 @@ public class PlayerDetector : MonoBehaviour
         {
             playerInRange = false;
             player = null;
+            if (callbackOnPlayerExitRange!=null)
+                callbackOnPlayerExitRange.Invoke();
         }
 
         Dummy d = iCollider.GetComponent<Dummy>();
@@ -57,6 +64,8 @@ public class PlayerDetector : MonoBehaviour
         {
             playerInRange = true;
             player = iCollider.transform;
+            if (callBackOnPlayerEnterRange!=null)
+                callBackOnPlayerEnterRange.Invoke();
         }
 
         Dummy d = iCollider.GetComponent<Dummy>();
