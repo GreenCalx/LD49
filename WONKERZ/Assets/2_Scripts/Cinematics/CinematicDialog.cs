@@ -55,8 +55,13 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
     IEnumerator playerTalk()
     {
-        Access.UITurboAndSaves().gameObject.SetActive(false);
-        Access.UISpeedAndLifePool().gameObject.SetActive(false);
+        UITurboAndSaves uiTurboAndSaveRef           = Access.UITurboAndSaves();
+        UISpeedAndLifePool uiSpeedAndLifepoolRef    = Access.UISpeedAndLifePool();
+
+        if (!!uiTurboAndSaveRef)
+            uiTurboAndSaveRef.gameObject.SetActive(false);
+        if (!!uiSpeedAndLifepoolRef)
+            uiSpeedAndLifepoolRef.gameObject.SetActive(false);
 
         dialogIsOver = false;
         Utils.attachControllable<CinematicDialog>(this);
@@ -68,11 +73,13 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
-        callbackOnDialogDone.Invoke();
+            callbackOnDialogDone.Invoke();
         Utils.detachControllable<CinematicDialog>(this);
 
-        Access.UITurboAndSaves().gameObject.SetActive(true);
-        Access.UISpeedAndLifePool().gameObject.SetActive(true);
+        if (!!uiTurboAndSaveRef)
+            uiTurboAndSaveRef.gameObject.SetActive(true);
+        if (!!uiTurboAndSaveRef)
+            uiSpeedAndLifepoolRef.gameObject.SetActive(true);
     }
 
     IEnumerator autoTalk()
@@ -90,7 +97,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
-        callbackOnDialogDone.Invoke();
+            callbackOnDialogDone.Invoke();
         }
 
     // -------------------------------------
