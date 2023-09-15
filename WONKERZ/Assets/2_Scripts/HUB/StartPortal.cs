@@ -53,7 +53,7 @@ public class StartPortal : AbstractCameraPoint
     {
         relocatePlayer();
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
-            Access.CameraManager().changeCamera(camera_type, false);
+            Access.CameraManager()?.changeCamera(camera_type, false);
 
         var states = Access.Player().vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
