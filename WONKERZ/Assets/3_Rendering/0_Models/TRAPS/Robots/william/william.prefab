@@ -49,6 +49,12 @@ MonoBehaviour:
   player: {fileID: 0}
   dummy: {fileID: 0}
   dummyInRange: 0
+  callBackOnPlayerEnterRange:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackOnPlayerExitRange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &596493632996892823
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -251,7 +257,7 @@ GameObject:
   - component: {fileID: 7070118856273443118}
   - component: {fileID: 3797740014180725034}
   m_Layer: 0
-  m_Name: PlayerDetector
+  m_Name: GuardPlayerDetector
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,6 +294,24 @@ MonoBehaviour:
   player: {fileID: 0}
   dummy: {fileID: 0}
   dummyInRange: 0
+  callBackOnPlayerEnterRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3075222600469525652}
+        m_TargetAssemblyTypeName: WilliamEnemy, Assembly-CSharp
+        m_MethodName: CallGuard
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callbackOnPlayerExitRange:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!135 &3797740014180725034
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -299,7 +323,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 100
+  m_Radius: 80
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8874412432809094886
 GameObject:
@@ -312,6 +336,7 @@ GameObject:
   - component: {fileID: 5187101148811203604}
   - component: {fileID: 1227805845}
   - component: {fileID: 3075222600469525652}
+  - component: {fileID: 3257668790218223130}
   m_Layer: 0
   m_Name: william
   m_TagString: Untagged
@@ -348,11 +373,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 60
-  m_Acceleration: 120
+  m_Speed: 30
+  m_Acceleration: 15
   avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_AngularSpeed: 40
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -372,8 +397,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2093366c3bc30bf419a647bc66a4fc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coordinator: {fileID: 0}
+  currStrategy: 0
+  agent: {fileID: 0}
   animator: {fileID: 2300977334515442154}
-  playerDetector: {fileID: 0}
   weakSpot: {fileID: 7363402154086574269}
   deathEffect: {fileID: 2331094284247211939, guid: 332b69c95161ddf41a5b13a3716c9e40, type: 3}
   playerSpottedEffect: {fileID: 2549232020026012570}
@@ -381,14 +408,30 @@ MonoBehaviour:
   lariat_rot_per_sec: 0.3
   guard_duration: 3
   lariat_target_reached_epsilon: 5
-  idle_time_between_action: 3
-  idle_time_variance: 0.5
+  idle_time_between_action: 4
+  idle_time_variance: 1
   player_aim_error: 5
   param_ATK: ATTACK
   param_GUARD: GUARD
   death_effect_size: 8
-  max_lariat_duration: 5
+  max_lariat_duration: 3
   spottedMarkerDuration: 3
+--- !u!208 &3257668790218223130
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8874412432809094886}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 4, y: 6.39, z: 4}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 6.34, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &7092147688957064003
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -497,7 +540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageOnCollide: 5
-  optional_repulsion_force: 200
+  optional_repulsion_force: 100
 --- !u!1 &3114314022618191245 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3939494477470079282, guid: 97101149526f978428590711d2f0b680, type: 3}
@@ -529,7 +572,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageOnCollide: 5
-  optional_repulsion_force: 200
+  optional_repulsion_force: 100
 --- !u!4 &7342811063695037608 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 97101149526f978428590711d2f0b680, type: 3}

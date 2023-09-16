@@ -18,7 +18,6 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     [Header("Mandatory")]
     public Text tracknameText;
-    public Text collectedNuts;
     public UIWonkerzBar wonkerzBar;
     public TextMeshProUGUI TMP_keyObtained;
     public TextMeshProUGUI TMP_cageOpened;
@@ -37,7 +36,8 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     {
         if ((Entry[(int) PlayerInputs.InputCode.UIStart] as GameInputButton).GetState().down)
         {
-            tracknameText.text = SceneManager.GetActiveScene().name;
+            if (!!tracknameText)
+                tracknameText.text = SceneManager.GetActiveScene().name;
             updateTrackDetails();
 
             panel.inputMgr = Access.PlayerInputsManager().all;
@@ -94,15 +94,23 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         CollectiblesManager cm = Access.CollectiblesManager();
 
         //collected wonkerz
-        foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+        if (!!wonkerzBar)
         {
-            wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
+            foreach(CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
+            {
+                wonkerzBar.updateLetter(let, cm.hasWONKERZLetter(let));
+            }
         }
 
+
         // key + cage status
-        string sceneName = SceneManager.GetActiveScene().name;
-        TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? Color.green : Color.red;
-        TMP_cageOpened.color  = (cm.hasGaragist(sceneName)) ? Color.green : Color.red;
+        if (!!TMP_keyObtained && !!TMP_cageOpened)
+        {
+            string sceneName = SceneManager.GetActiveScene().name;
+            TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? Color.green : Color.red;
+            TMP_cageOpened.color  = (cm.hasGaragist(sceneName)) ? Color.green : Color.red;
+        }
+
     }
 
     public void displayDebugPanel()
