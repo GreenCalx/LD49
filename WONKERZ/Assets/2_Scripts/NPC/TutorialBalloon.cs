@@ -7,6 +7,7 @@ public class TutorialBalloon : MonoBehaviour
 {
     [Header("Init")]
     public bool enable_move = true;
+    public bool disable_balloon_follow = false;
     
     [Header("MAND")]
     public UIGenerativeTextBox display;
@@ -49,13 +50,15 @@ public class TutorialBalloon : MonoBehaviour
 
     void LateUpdate()
     {
+        if (disable_balloon_follow)
+            return;
+
         if (!enable_move)
         {
             enable_move = Vector3.Distance(transform.position, focus.position) <= distance;
             if (!enable_move)
                 return;
         }
-
 
         UpdateFocusPoint();
         Quaternion lookRotation;

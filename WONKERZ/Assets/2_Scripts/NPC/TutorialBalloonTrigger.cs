@@ -9,6 +9,8 @@ public class TutorialBalloonTrigger : MonoBehaviour
     public TutorialBalloon tutorialBalloon;
     public List<UIGenerativeTextBox.UIGTBElement> elements;
     private bool triggered = false;
+    public bool disableBalloon = false;
+    public bool triggerOnce = false;
 
     void Update()
     {
@@ -17,8 +19,17 @@ public class TutorialBalloonTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider iCollider)
     {
-        if (triggered)
-            return;
+        if (triggerOnce)
+        {
+            if (triggered)
+                return;
+        }
+
+        if (disableBalloon)
+        {
+            tutorialBalloon.enable_move = false;
+            tutorialBalloon.disable_balloon_follow = true;
+        }
 
         if (Utils.colliderIsPlayer(iCollider))
         {

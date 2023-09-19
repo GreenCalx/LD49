@@ -13,7 +13,6 @@ public class WilliamEnemy : SchAIAgent
     public GameObject playerSpottedEffect;
 
     [Header("Tweaks")]
-    public string navAgentMaskName = "Walkable";
     public float lariat_rot_per_sec = 1f;
     public float guard_duration = 3f;
     public float lariat_target_reached_epsilon = 1f;
@@ -151,14 +150,23 @@ public class WilliamEnemy : SchAIAgent
         float rotSpeed = 360f / lariat_rot_per_sec;
         while( Vector3.Distance(iAttacker.transform.position, lariat_destination) > lariat_target_reached_epsilon)
         {
-            lariat_destination = iAttacker.coordinator.GetNextPosition(iAttacker);
+            lariat_destination = GetNextPositionFromCoordinator();
 
             if (!agent.SetDestination(lariat_destination))
             {
-                Debug.LogError("William : Failed to attack player");
+                // WHY ?
+                // Find if its because the destination is out of the navigated surface
+                // > If so, find the limit position on this surface aligned with computed prediction
+                // > Else, try to move randomly somewhere on the surface
+                lariat_destination = GetNextLimitPosition(lariat_destination);
+                if (!agent.SetDestination(lariat_destination))
+                {
+                    Debug.LogError("William : Failed to attack player");
+                }
             }
-
             iAttacker.transform.Rotate(0, rotSpeed * Time.deltaTime, 0, Space.Self);
+
+            // Limit time in lariat
             elapsed_time_in_lariat += Time.deltaTime;
             if (elapsed_time_in_lariat >= max_lariat_duration)
                 break;
@@ -166,6 +174,7 @@ public class WilliamEnemy : SchAIAgent
             yield return null;
         }
 
+        agent.ResetPath();
         animator.SetBool(param_ATK, false);
         lariat_destination = Vector3.zero;
         iAttacker.in_action = false;
@@ -180,6 +189,7 @@ public class WilliamEnemy : SchAIAgent
     {
         float timer = 0f;
         animator.SetBool(param_GUARD, true);
+        agent.ResetPath();
         while (timer < guard_duration)
         {
             timer += Time.deltaTime;
@@ -195,13 +205,12 @@ public class WilliamEnemy : SchAIAgent
 
     public void kill()
     {
-        StopAllCoroutines();
-        coordinator.UnSubscribe(this);
-
         GameObject explosion = Instantiate(deathEffect, transform.position, Quaternion.identity);
         explosion.transform.localScale = transform.localScale * death_effect_size;
         explosion.GetComponent<ExplosionEffect>().runEffect();
-
+        
+        ai_kill();
+        
         Destroy(gameObject);
     }
 }
