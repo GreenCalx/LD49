@@ -972,7 +972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368280, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368281, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: resetGameProgressEvents
@@ -8409,6 +8409,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 1308997897343825909, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1954773661192947880, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -8416,6 +8420,10 @@ PrefabInstance:
     - target: {fileID: 3515416579716334411, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 3793649576429813497, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4714386593514281554, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_Name
@@ -8429,6 +8437,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 5665398374003209319, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5725906886005547872, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -8436,6 +8448,10 @@ PrefabInstance:
     - target: {fileID: 7050977763038497925, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 7160333217488961686, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Convex
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7242809930184392104, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_RootOrder
@@ -8459,7 +8475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7242809930184392104, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 181.5
+      value: 179
       objectReference: {fileID: 0}
     - target: {fileID: 7242809930184392104, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8500,6 +8516,120 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7242809930184392104, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
   m_PrefabInstance: {fileID: 1174535264}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1174535266 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5856788717936531919, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+  m_PrefabInstance: {fileID: 1174535264}
+  m_PrefabAsset: {fileID: 0}
+--- !u!59 &1174535267
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174535266}
+  m_ConnectedBody: {fileID: 0}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 0, y: 1, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 0
+  m_Limits:
+    min: -90
+    max: 90
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 1
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
+--- !u!54 &1174535268
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174535266}
+  serializedVersion: 2
+  m_Mass: 0.0001
+  m_Drag: 0
+  m_AngularDrag: 0.005
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!1 &1174535269 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2012147943830481110, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+  m_PrefabInstance: {fileID: 1174535264}
+  m_PrefabAsset: {fileID: 0}
+--- !u!59 &1174535270
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174535269}
+  m_ConnectedBody: {fileID: 0}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 0, y: 1, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 0
+  m_Limits:
+    min: -90
+    max: 90
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 1
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
+--- !u!54 &1174535271
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1174535269}
+  serializedVersion: 2
+  m_Mass: 0.0001
+  m_Drag: 0
+  m_AngularDrag: 0.005
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1178381078
 GameObject:
   m_ObjectHideFlags: 0
@@ -15932,7 +16062,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8711022225248517722, guid: bfdaf0337850ca84584361e12da0543a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 215
+      value: 213.61
       objectReference: {fileID: 0}
     - target: {fileID: 8711022225248517722, guid: bfdaf0337850ca84584361e12da0543a, type: 3}
       propertyPath: m_LocalPosition.z
