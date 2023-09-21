@@ -39,6 +39,9 @@ public class PlayerDetector : MonoBehaviour
     // if player is out of range
     void OnTriggerExit(Collider iCollider)
     {
+        if (!playerInRange)
+            return;
+
         if (Utils.colliderIsPlayer(iCollider))
         {
             playerInRange = false;
@@ -60,6 +63,9 @@ public class PlayerDetector : MonoBehaviour
     //player in range, stop rolling
     void OnTriggerEnter(Collider iCollider)
     {
+        if (playerInRange)
+            return;
+
         if (Utils.colliderIsPlayer(iCollider))
         {
             playerInRange = true;

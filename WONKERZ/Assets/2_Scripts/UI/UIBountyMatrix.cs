@@ -14,10 +14,6 @@ public class UIBountyMatrix : UIPanelTabbed
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     override public void activate()
     {

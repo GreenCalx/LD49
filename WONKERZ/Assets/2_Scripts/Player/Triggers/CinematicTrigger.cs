@@ -31,11 +31,14 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public GameObject skipUIRef;
     private UICinematicSkip skipUIInst;
 
+    private List<InputManager> skipVotes = new List<InputManager>();
+
     // Start is called before the first frame update
     void Start()
     {
         triggered = false;
         cinematicDone = false;
+        skipVotes = new List<InputManager>(0);
     }
 
     // Update is called once per frame
@@ -43,7 +46,16 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         if (isSkippable && triggered && !!skipUIInst)
         {
+            Debug.Log("skip vote : " + skipVotes.Count);
+            if (skipVotes.Count > 0) {
+                elapsedSkipTime += Time.deltaTime;
+            } else {
+                elapsedSkipTime = 0f; Debug.Log("RAZA");
+            }
             skipUIInst.updateProgress( elapsedSkipTime / timeToSkipCinematic );
+
+            if (elapsedSkipTime >= timeToSkipCinematic)
+            { elapsedSkipTime = 0f; EndCinematic(); }
         }
     }
 
@@ -55,14 +67,16 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (triggered)
         {
             if ((Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
-            { elapsedSkipTime += Time.deltaTime; }
-            else
-            { elapsedSkipTime = 0f; }
-
-            if (elapsedSkipTime >= timeToSkipCinematic)
-            { elapsedSkipTime = 0f; EndCinematic(); }
+            { 
+                if (!skipVotes.Contains(currentMgr))
+                    skipVotes.Add(currentMgr);
+            }
+            else if ((Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().up)
+            { 
+                if (skipVotes.Contains(currentMgr))
+                    skipVotes.Remove(currentMgr);
+            }
         }
-
     }
 
     public void EndCinematic()

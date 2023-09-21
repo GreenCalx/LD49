@@ -10,6 +10,7 @@ using Schnibble;
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
 public class UIPauseMenu : MonoBehaviour, IControllable
 {
+    public GameObject UIHandle;
     public UISelectableElement panel;
     public UISelectableElement debugPanel;
 
@@ -17,10 +18,14 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public EXITABLE_SCENES sceneToLoadOnExit = EXITABLE_SCENES.SN_TITLE;
 
     [Header("Mandatory")]
-    public Text tracknameText;
+    public TextMeshProUGUI TMP_trackname;
     public UIWonkerzBar wonkerzBar;
     public TextMeshProUGUI TMP_keyObtained;
     public TextMeshProUGUI TMP_cageOpened;
+
+    [Header("Tweaks")]
+    public Color trackDetailValidated = Color.green;
+    public Color trackDetailPending = Color.red;
 
     void Awake()
     {
@@ -36,10 +41,11 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     {
         if ((Entry[(int) PlayerInputs.InputCode.UIStart] as GameInputButton).GetState().down)
         {
-            if (!!tracknameText)
-                tracknameText.text = SceneManager.GetActiveScene().name;
+            if (!!TMP_trackname)
+                TMP_trackname.text = SceneManager.GetActiveScene().name;
             updateTrackDetails();
 
+            UIHandle.SetActive(true);
             panel.inputMgr = Access.PlayerInputsManager().all;
             panel.onActivate.Invoke();
         }
@@ -107,8 +113,8 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         if (!!TMP_keyObtained && !!TMP_cageOpened)
         {
             string sceneName = SceneManager.GetActiveScene().name;
-            TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? Color.green : Color.red;
-            TMP_cageOpened.color  = (cm.hasGaragist(sceneName)) ? Color.green : Color.red;
+            TMP_keyObtained.color = (cm.hasCageKey(sceneName) ) ? trackDetailValidated : trackDetailPending;
+            TMP_cageOpened.color  = (cm.hasGaragist(sceneName)) ? trackDetailValidated : trackDetailPending;
         }
 
     }

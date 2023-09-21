@@ -16,6 +16,7 @@ public class UICinematicSkip : MonoBehaviour
 
     public void updateProgress(float iProgress)
     {
+        Debug.Log("update progress " + iProgress);
         float prog = Mathf.Clamp( iProgress, 0f,  1f);
         progressImage.fillAmount = prog;
     }
