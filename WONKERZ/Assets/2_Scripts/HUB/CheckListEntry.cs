@@ -9,7 +9,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
     public PlayerDetector detector;
 
     public CinematicCamera checkListZoomCamera;
-    public GameObject uiEnterHint;
+    public WonkerDecal interactibleZoneDecal;
 
     public float delayToShowUI = 0.5f;
 
@@ -21,6 +21,8 @@ public class CheckListEntry : MonoBehaviour, IControllable
     private Vector3 playerPositionWhenEntered;
     private Transform playerTransform;
 
+
+    private float elapsedInteractibleAnim = 0f;
     void Start()
     {
         playerInCheckList = false;
@@ -90,6 +92,13 @@ public class CheckListEntry : MonoBehaviour, IControllable
         {
             playerTransform.position = playerPositionWhenEntered;
         }
+
+        if (!detector.playerInRange)
+        {
+            //elapsedInteractibleAnim += Time.deltaTime;
+            interactibleZoneDecal.SetAnimationTime(1f);
+        }
+
     }
 
     private void showUI()
