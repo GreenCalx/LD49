@@ -10,19 +10,18 @@ public static class DialogBank
     public static readonly string[] INTRO_CP_DIALOG= 
     {
         "Hello there sleeping beauty...",
-        "It's your lucky day ! Ernest sent ME, RICKY, to help you out!",
-        "We found your rusted body on the shore and took you back to our garage.",
-        "Ernest is trying to fix your body while I invited myself here to fix your mind.",
-        "It seems like you've been out of order for a long while, thus I'll help you to get back on track.",
-        "Press DPadUp at anytime to teleport back to the last me you met.",
+        "I am Ricky, pumpist and sole purveyor of the mighty black tar fluid that runs in our pipes.",
+        "The headchef of the Garage, Ernest, found the wreckage of your body on the shoreline.",
+        "He hauled you back to the Garage and loaded this simulation to help you get back on track while he is twisting bolts.",
+        "I will be your guide along the track. ",
         "There is a few turns ahead. Turning can be quite tricky if you are at full speed. See you in a bit !"
     }; 
 
     public static readonly string[] INTRO_CP2_DIALOG= 
     {
-        "You can control the weight of your car when grounded or in air.",
+        "You can control the weight of your car when grounded or airborne.",
         "It helps getting over obstacles, land on your wheels or just regain balance.",
-        "You can also use it to get up on your own. It can be quite, tricky but you will eventually master it!" 
+        "Try to steer it front and back as the waves go in the next section. If done correctly, you won't need to accelerate at all."
     }; 
 
     public static readonly string[] INTRO_CP3_DIALOG= 
@@ -37,13 +36,15 @@ public static class DialogBank
     {
         "Some track sections can be quite long and deadly.",
         "Thus you can plant panels to save your current location and restart from that point at will.",
-        "The number of panels is unlimited here, so feel free to use them as much as you need to."
+        "The number of panels is unlimited here, so feel free to use them as much as you needs to.",
+        "You can also get up on your own by playing with your weight and springs. It can be quite tricky, but with practice you will master it!",
     };
 
     public static readonly string[] INTRO_CP5_DIALOG= 
     {
         "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
-        "I will re-assemble you at the last checkpoint, but your planted panel will be lost.",
+        "If you get killed, you will respawn at the last triggered Gas Station and the last planted panel will be lost.",
+        "The last section is a small arena where you need to defeat every enemies to move forward. Be patient and aim for the target."
     };
 
     public static readonly string[] ERNEST_DIALOG_0=
@@ -56,7 +57,7 @@ public static class DialogBank
         "Please find my brothers before the whole island turns into a junkyard for ever.",
         "Reunited, I am sure that we can put an end to this madness.",
         "Try to find Pierre first, he used to run the prosperous Dust City. He is a bit short-tempered, so don't take it personal if he shows some heat.",
-        "Take the stone bridge and head into the portal that leads to his city."
+        "Drive across the stone bridge and head into the portal that leads to his city."
     };
     public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO0=
     {
