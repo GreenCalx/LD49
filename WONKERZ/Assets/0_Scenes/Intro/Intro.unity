@@ -4750,6 +4750,7 @@ GameObject:
   - component: {fileID: 413935188}
   - component: {fileID: 413935189}
   - component: {fileID: 413935190}
+  - component: {fileID: 413935191}
   m_Layer: 14
   m_Name: ArenaPlayerDetector
   m_TagString: Untagged
@@ -4765,8 +4766,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 413935187}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1765.9, y: 231.40002, z: 191.94995}
-  m_LocalScale: {x: 6, y: 2, z: 6}
+  m_LocalPosition: {x: -1765.9, y: 183.2, z: 191.94995}
+  m_LocalScale: {x: 200, y: 731, z: 200}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 144855319}
@@ -4803,10 +4804,24 @@ BoxCollider:
   m_GameObject: {fileID: 413935187}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 50, y: 50, z: 50}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!64 &413935191
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 413935187}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6825667877028886056, guid: 85c93cc324831fa4d9006f048c654552, type: 3}
 --- !u!1 &420813312
 GameObject:
   m_ObjectHideFlags: 0
@@ -14510,6 +14525,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 144855319}
     m_Modifications:
+    - target: {fileID: 1174535268, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1174535271, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4714386593514281554, guid: d84457ab7b200734f9ac730bdc0310dc, type: 3}
       propertyPath: m_Name
       value: ArenaBuilding
@@ -15263,7 +15286,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5187101148811203604, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 209.73
+      value: 209.49
       objectReference: {fileID: 0}
     - target: {fileID: 5187101148811203604, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15981,7 +16004,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: af44664f7344f034fb6a0aace499f91a, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1001 &1284803588
 PrefabInstance:
@@ -18698,7 +18721,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5187101148811203604, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 209.73
+      value: 209.53
       objectReference: {fileID: 0}
     - target: {fileID: 5187101148811203604, guid: 8b6347b832c342e4796b4ae19af52790, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18888,14 +18911,11 @@ MonoBehaviour:
   tutorialBalloon: {fileID: 1845165048}
   elements:
   - img: {fileID: 0}
-    txt: Ricky's gas station is out of order
+    txt: Plant panels to save your progress
     linebreak: 0
   - img: {fileID: 0}
     txt: 
     linebreak: 1
-  - img: {fileID: 0}
-    txt: plant a panel
-    linebreak: 0
   disableBalloon: 0
   triggerOnce: 0
 --- !u!1 &1488793211
@@ -25974,7 +25994,7 @@ MonoBehaviour:
     txt: 
     linebreak: 0
   - img: {fileID: 0}
-    txt: to plant a panel
+    txt: plant a panel
     linebreak: 0
   - img: {fileID: 0}
     txt: 
@@ -25983,7 +26003,7 @@ MonoBehaviour:
     txt: 
     linebreak: 0
   - img: {fileID: 0}
-    txt: to respawn at last panel
+    txt: respawn at  panel
     linebreak: 0
   disableBalloon: 0
   triggerOnce: 0
