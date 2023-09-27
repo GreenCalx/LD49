@@ -41,6 +41,13 @@ public class LandMine : MonoBehaviour
             }
             elapsedTimeBeforeExplosion += Time.fixedDeltaTime;
             updateLandMineColor();
+        } else {
+            if (elapsedTimeBeforeExplosion > 0f)
+            {
+                elapsedTimeBeforeExplosion -= Time.fixedDeltaTime;
+                elapsedTimeBeforeExplosion = Mathf.Clamp(elapsedTimeBeforeExplosion, 0f, timeBeforeExplosion);
+                updateLandMineColor();
+            }
         }
 
     }
