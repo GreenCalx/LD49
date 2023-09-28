@@ -1,8 +1,8 @@
 using Schnibble;
-using static Schnibble.SchPhysics;
-using static Schnibble.SchMathf;
 using System.Collections.Specialized;
 using UnityEngine;
+using static Schnibble.SchMathf;
+using static Schnibble.SchPhysics;
 
 public class AirplaneState : FSMState, IControllable 
 {
@@ -60,25 +60,31 @@ public class GroundState : FSMState, IControllable
             player.TryJump();
             player.flags[PlayerController.FJump] = !player.TouchGround();
             // apply jump correction
-            if (!player.TouchGround())
-            {
-                var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
-                    0,
-                    -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
-                torque = player.car.transform.TransformDirection(torque);
-                player.car.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
-            }
-            else
-            {
-                player.SetCarCenterOfMass();
-            }
 
-            // very bad design for now.
-            var weightIndPos = player.car.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
-                player.weightIndicatorHeight,
-                player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
+            // IMPORTANT toffa : sometimes fixedUpdate could be called multiple times if the framerate dips.
+            // but it would take a value of 0 that is wrong because we reset at the end of the first fixedUpdate frame.
+            if (player.jump.diPitchUnscaled.count != 0 && player.jump.diRollUnscaled.count != 0)
+            {
+                if (!player.TouchGround())
+                {
+                    var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
+                        0,
+                        -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
+                    torque = player.car.transform.TransformDirection(torque);
+                    player.car.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                }
+                else
+                {
+                    player.SetCarCenterOfMass();
+                }
 
-            player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
+                // very bad design for now.
+                var weightIndPos = player.car.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
+                    player.weightIndicatorHeight,
+                    player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
+
+                player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
+            }
         }
     }
 
@@ -181,7 +187,7 @@ public class GroundState : FSMState, IControllable
         {
             var acceleration = Mathf.Clamp01(accelerationAxis.GetState().valueSmooth);
             if (acceleration != 0f)
-            player.car.currentRPM.Add(acceleration);
+                player.car.currentRPM.Add(acceleration);
         }
 
         var breakAxis = Entry[(int)PlayerInputs.InputCode.Break] as GameInputAxis;
@@ -189,7 +195,7 @@ public class GroundState : FSMState, IControllable
         {
             var breaks = Mathf.Clamp01(breakAxis.GetState().valueSmooth);
             if (breaks != 0f)
-            player.car.currentRPM.Add(-breaks);
+                player.car.currentRPM.Add(-breaks);
         }
         // todo toffa : this is very weird...check this at some point
 
@@ -197,7 +203,7 @@ public class GroundState : FSMState, IControllable
         if (turnAxis != null)
         {
             if (turnAxis.GetState().valueSmooth != 0f)
-            player.turn.Add(turnAxis.GetState().valueSmooth);
+                player.turn.Add(turnAxis.GetState().valueSmooth);
         }
 
         var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
@@ -501,6 +507,7 @@ public class PlayerController : MonoBehaviour, IControllable
         generalStates.FixedUpdate();
         vehicleStates.FixedUpdate();
 
+
         SetHandbrake(false);
         turn.Reset();
         jump.diRollUnscaled.Reset();
@@ -567,7 +574,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         turbo.intervalElapsedTime += Time.deltaTime;
         if (turbo.intervalElapsedTime < turbo.timeInterval)
-        return;
+            return;
 
         var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
         if (nextTurboValue < 0)
