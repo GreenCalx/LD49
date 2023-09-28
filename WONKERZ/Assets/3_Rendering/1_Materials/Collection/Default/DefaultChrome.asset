@@ -15,7 +15,7 @@ MonoBehaviour:
   gpuParams:
     outlineDepth:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 1, g: 0.5971496, b: 0, a: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 1}
       threshold: 0.00001
       width: 1
       enableDistanceBlend: 1
@@ -25,7 +25,7 @@ MonoBehaviour:
     enableOutlineDepth: 1
     outlineNormal:
       lightColor: {r: 0, g: 0, b: 0, a: 1}
-      shadowColor: {r: 0.4457547, g: 0.5943396, b: 0.5508623, a: 1}
+      shadowColor: {r: 0, g: 0, b: 0, a: 1}
       threshold: 3
       width: 1
       enableDistanceBlend: 0
@@ -42,7 +42,7 @@ MonoBehaviour:
       fadeStart: 0
       fadeStop: 0
       distanceColor: {r: 0, g: 0, b: 0, a: 0}
-    enableOutlineColor: 0
+    enableOutlineColor: 1
     hatch:
       maxSize: 0
       minSize: 0
@@ -51,6 +51,9 @@ MonoBehaviour:
       blendPower: 0
     enableCrossHatch: 0
     useColoredTexture: 0
+    rimColor: {r: 0, g: 0, b: 0, a: 0}
+    rimPower: 0
+    rimMultiplier: 0
   outlineRamp: {fileID: 0}
   toonRamp:
     serializedVersion: 2

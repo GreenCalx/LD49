@@ -128,6 +128,7 @@ public class SandTrapBehavior : MonoBehaviour
             //var v = Mathf.Sqrt(Mathf.Abs(g * x * x / (2 * (y - x*Mathf.Tan(angle))))) / Mathf.Cos(angle);
             var v = (xDiff / (Mathf.Sqrt(Mathf.Abs((2 * (yDiff - xDiff*Mathf.Tan(angle)))/g)) * Mathf.Cos(angle)));
             main.startSpeed = v;
+
         }
     }
 }
