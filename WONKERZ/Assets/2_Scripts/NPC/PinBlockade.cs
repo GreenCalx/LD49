@@ -6,17 +6,20 @@ using Schnibble;
 
 // Y Angle PID      : Follows target 
 // X/Z Angles PID   : Stays up
-public class PinBlockade : PIDController
+public class PinBlockade : SchAIAgent
 {
+    [Header("## PinBlockade")]
+    public Animator animator;
+    private const string anim_BlinkSpeedMul = "BlinkSpeedMul";
     public AudioSource collideSFX;
 
     public bool is_NavAgent = false;
-    public string navAgentMaskName = "Walkable";
 
     private Rigidbody rb;
     private bool freshOfCollision = true;
     private float life_lust_elapsed = 0f;
     private float life_lust_delay_elapsed = 0f;
+    private float pid_start_after_hit_elapsed = 0f;
 
     [SerializeField]
     PID controller;
@@ -33,7 +36,7 @@ public class PinBlockade : PIDController
     Transform target;
 
     public bool autoPowerFromMass = false;
-    public override float Power
+    public float Power
     {
         get
         {
@@ -48,12 +51,10 @@ public class PinBlockade : PIDController
     public float life_lust_factor = 25;
     public float life_lust_duration = 10f;
     public float life_lust_delay = 1f;
-
-    public bool carHitsLikeBallPower = true;
     public float onFirstHitPowerMultiplier = 10f;
+    public float delayAfterHitForPIDActivation = 1f;
 
     [Header("NavAgent Specs")]
-    private UnityEngine.AI.NavMeshAgent agent;
     private bool pinPIDBehaviourIsActive = true;
     public AnimationCurve heightCurve;
     public float jumpSpeed = 1f;
@@ -65,19 +66,10 @@ public class PinBlockade : PIDController
 
     private bool jump_done = true;
 
-    public override PID GetController()
-    {
-        return controller;
-    }
-
-    public override void SetTarget(int index)
-    {
-
-    }
-
     // Start is called before the first frame update
     void Start()
     {
+        ai_init();
         rb = GetComponent<Rigidbody>();
         freshOfCollision = true;
         if (autoPowerFromMass)
@@ -89,6 +81,7 @@ public class PinBlockade : PIDController
             agent = GetComponent<NavMeshAgent>();
             agent.enabled = true;
         }
+        animator.SetFloat(anim_BlinkSpeedMul, 3f);
     }
 
     void Update()
@@ -103,6 +96,7 @@ public class PinBlockade : PIDController
                 {
                     life_lust = false;
                     power = 0f;
+                    kill();
                 }
             }
         }
@@ -154,8 +148,8 @@ public class PinBlockade : PIDController
                 jumpsDoneInOnDirection++;
                 jump_done = false;
             }
-            StopAllCoroutines();
-            StartCoroutine(Jump(this,destination));
+            
+            LaunchAction(Jump(this,destination));
         }
     }
 
@@ -177,13 +171,14 @@ public class PinBlockade : PIDController
             yield return null;
         }
 
-        pinPIDBehaviourIsActive = true;
+        //pinPIDBehaviourIsActive = true;
         iJumper.agent.enabled = true;
         jump_done = true;
         if (NavMesh.SamplePosition(iJumper.transform.position, out NavMeshHit hit, 1f, iJumper.agent.areaMask))
         {
             //iJumper.agent.Warp(hit.position);
         }
+        iJumper.StopAction();
     }
 
     // Update is called once per frame
@@ -191,6 +186,15 @@ public class PinBlockade : PIDController
     {
         if (!pinPIDBehaviourIsActive)
             return;
+
+        
+        if (pid_start_after_hit_elapsed < delayAfterHitForPIDActivation)
+        {
+            pid_start_after_hit_elapsed += Time.fixedDeltaTime;
+            return;
+        }
+
+        animator.SetFloat(anim_BlinkSpeedMul, 1f);
 
         // PID X/Z : Stay up
         var targetUpDir = Vector3.up;
@@ -241,7 +245,8 @@ public class PinBlockade : PIDController
             // Sandworm uc
             if (!!iCol.gameObject.GetComponentInParent<SandWorm>())
             {
-                StopAllCoroutines();
+                ai_kill();
+
                 is_NavAgent = false;
                 Destroy(agent);
                 rb.constraints = RigidbodyConstraints.None;
@@ -251,12 +256,10 @@ public class PinBlockade : PIDController
             }
 
             // If player or ball add impact force/torque
-            BallPowerObject bpo = iCol.gameObject.GetComponent<BallPowerObject>();
             PlayerController pc = iCol.gameObject.GetComponent<PlayerController>();
-            if (!!bpo || !!pc)
+            if (!!pc)
             {
-                StopAllCoroutines();
-
+                ai_kill();
                 // Collision SFX
                 Schnibble.Utils.SpawnAudioSource(collideSFX, transform);
 
@@ -266,18 +269,13 @@ public class PinBlockade : PIDController
                     is_NavAgent = false;
                     agent.enabled = false;
                     pinPIDBehaviourIsActive = true;
+                    pid_start_after_hit_elapsed = 0f;
                 }
 
-                if (!!bpo)
-                {
-                    rb.AddForce(bpo.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(bpo.rb.velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    //life_lust = false;
-                } else if (carHitsLikeBallPower && !!pc)
+                if (!!pc)
                 {
                     rb.AddForce(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
                     rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    //life_lust = false;
                 }
                 if (life_lust)
                 {
@@ -293,8 +291,11 @@ public class PinBlockade : PIDController
 
     public void kill()
     {
-        StopAllCoroutines();
-        Destroy(gameObject);
+        ai_kill();
+        pinPIDBehaviourIsActive = false;
+        animator.SetFloat(anim_BlinkSpeedMul, 0f);
+
+       Destroy(this, 0.5f); // destroying only component, pins are for-everrrrrrrrrrrrrrr
     }
 
 }

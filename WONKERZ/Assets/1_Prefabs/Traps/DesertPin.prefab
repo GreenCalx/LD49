@@ -76,9 +76,9 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6125894891243856483}
   serializedVersion: 2
-  m_Mass: 50
-  m_Drag: 0.2
-  m_AngularDrag: 0
+  m_Mass: 0.1
+  m_Drag: 0.25
+  m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -96,9 +96,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53adedee0f67bc54fb20cdcc2706ac8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coordinator: {fileID: 0}
+  currStrategy: 0
+  agent: {fileID: 0}
+  navAgentMaskName: Walkable
+  canAggroPlayer: 0
+  animator: {fileID: 7384379707805057959}
   collideSFX: {fileID: -7767106260797607599, guid: 15a9398f43295374cba1b23ad7685394, type: 3}
   is_NavAgent: 1
-  navAgentMaskName: Walkable
   controller:
     proportionalGain: 5.5
     integralGain: 0
@@ -138,15 +143,15 @@ MonoBehaviour:
     integrationStored: 0
     velocity: 0
     derivativeInitialized: 0
-  power: 1000
+  power: 10
   target: {fileID: 0}
   autoPowerFromMass: 0
   life_lust: 1
   life_lust_factor: 10
   life_lust_duration: 10
   life_lust_delay: 2
-  carHitsLikeBallPower: 1
   onFirstHitPowerMultiplier: 10
+  delayAfterHitForPIDActivation: 1
   heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -277,5 +282,10 @@ PrefabInstance:
 --- !u!4 &5573448784276891783 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2495110921735235518, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+  m_PrefabInstance: {fileID: 8068396688375664441}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7384379707805057959 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 685147693332499614, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
   m_PrefabInstance: {fileID: 8068396688375664441}
   m_PrefabAsset: {fileID: 0}

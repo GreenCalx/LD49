@@ -85,7 +85,9 @@ public class PID
 
     public float UpdateAngle(float dt, float currentAngle, float targetAngle)
     {
-        if (dt <= 0) throw new ArgumentOutOfRangeException(nameof(dt));
+        if (dt <= 0)
+            return 0f;
+            
         float error = AngleDifference(targetAngle, currentAngle);
         errorLast = error;
 
