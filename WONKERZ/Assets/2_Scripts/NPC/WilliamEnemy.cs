@@ -10,6 +10,7 @@ public class WilliamEnemy : SchAIAgent
     public Animator animator;
     public PlayerDetector weakSpot;
     public GameObject deathEffect;
+    public GameObject deathGhostPSRef;
     public GameObject playerSpottedEffect;
     public PlayerDetector guardDetector;
 
@@ -193,6 +194,8 @@ public class WilliamEnemy : SchAIAgent
         GameObject explosion = Instantiate(deathEffect, transform.position, Quaternion.identity);
         explosion.transform.localScale = transform.localScale * death_effect_size;
         explosion.GetComponent<ExplosionEffect>().runEffect();
+
+        GameObject ghost = Instantiate(deathGhostPSRef, transform.position, Quaternion.identity);
         
         ai_kill();
         

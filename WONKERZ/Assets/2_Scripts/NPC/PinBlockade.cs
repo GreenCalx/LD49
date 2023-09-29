@@ -12,7 +12,7 @@ public class PinBlockade : SchAIAgent
     public Animator animator;
     private const string anim_BlinkSpeedMul = "BlinkSpeedMul";
     public AudioSource collideSFX;
-
+    public GameObject deathGhostPSRef;
     public bool is_NavAgent = false;
 
     private Rigidbody rb;
@@ -292,6 +292,9 @@ public class PinBlockade : SchAIAgent
     public void kill()
     {
         ai_kill();
+
+        GameObject ghost = Instantiate(deathGhostPSRef, transform.position, Quaternion.identity);
+
         pinPIDBehaviourIsActive = false;
         animator.SetFloat(anim_BlinkSpeedMul, 0f);
 
