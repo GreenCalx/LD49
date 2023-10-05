@@ -19,6 +19,8 @@ public class UIWorldSpaceHint : MonoBehaviour
     [Range(0f,5f)]
     public float scaleAnimSpeed = 1f;
 
+    public float rotationAlongFwdAxis = 0f;
+
     private Transform playerTransform;
     private Vector3 initScale;
     private Vector3 initPosition;
@@ -51,6 +53,12 @@ public class UIWorldSpaceHint : MonoBehaviour
         {
             var value = Mathf.Sin(Time.realtimeSinceStartup * animYMotionSpeed);
             transform.transform.position = initPosition + new Vector3(0, value, 0) * animYMotionRange;
+        }
+
+        if (rotationAlongFwdAxis != 0f)
+        {
+            float rot_step = rotationAlongFwdAxis * Time.deltaTime;
+            transform.RotateAround(transform.position, transform.forward, rot_step);
         }
         
     }

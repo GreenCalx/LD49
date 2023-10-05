@@ -20,19 +20,22 @@ public class CameraManager : MonoBehaviour, IControllable
     public bool inTransition = false;
 
     [Header("Tweaks")]
+    public float pressTimeToResetView = 0.01f;
     public float transitionDuration = 2f;
     public float deathCamDuration = 2f;
     public GameCamera.CAM_TYPE[] cameraRotationOrder;
 
-
+    [Header("Internals")]
     private Transform transitionStart = null;
     private Transform transitionEnd = null;
     private GameCamera nextCamera = null;
     private float transiTime = 0f;
     private GameObject transitionCameraInst;
     private GameObject deathCamInst;
+    private float elapsedTimeToResetCamView = 0f;
+    public List<CameraFocusable> focusables;
 
-    //public GameObject playerRef;
+    ///
     private static CameraManager inst;
 
     public static CameraManager Instance
@@ -48,6 +51,7 @@ public class CameraManager : MonoBehaviour, IControllable
         inTransition = false;
         SceneManager.sceneLoaded += OnSceneLoaded;
         Utils.attachControllable<CameraManager>(this);
+        focusables = new List<CameraFocusable>();
     }
 
     // Update is called once per frame
@@ -72,8 +76,16 @@ public class CameraManager : MonoBehaviour, IControllable
     // Switch cameras between HUB cameras
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        if ((Entry[(int)PlayerInputs.InputCode.CameraChange] as GameInputButton).GetState().down)
+        if ((Entry[(int)PlayerInputs.InputCode.CameraReset] as GameInputButton).GetState().down)
         {
+            elapsedTimeToResetCamView += Time.unscaledDeltaTime;
+            if (elapsedTimeToResetCamView > pressTimeToResetView)
+            {
+                active_camera.resetView();
+                elapsedTimeToResetCamView = 0f;
+            }
+
+        } else if ((Entry[(int)PlayerInputs.InputCode.CameraChange] as GameInputButton).GetState().up) {
             GameCamera.CAM_TYPE currType = active_camera.camType;
             GameCamera.CAM_TYPE nextType = GameCamera.CAM_TYPE.UNDEFINED;
             int rot_size = cameraRotationOrder.Length;
@@ -102,6 +114,8 @@ public class CameraManager : MonoBehaviour, IControllable
             {
                 changeCamera(nextType);
             }
+        } else {
+            elapsedTimeToResetCamView = 0f;
         }
     }
 
@@ -370,5 +384,16 @@ public class CameraManager : MonoBehaviour, IControllable
     {
         yield return new WaitForSeconds(deathCamDuration);
         deathCamInst.GetComponent<CinematicCamera>().end();
+    }
+
+    public void addFocusable(CameraFocusable iFocusable)
+    {
+        if (!focusables.Contains(iFocusable))
+            focusables.Add(iFocusable);
+    }
+
+    public void removeFocusable(CameraFocusable iFocusable)
+    {
+        focusables.Remove(iFocusable);
     }
 }

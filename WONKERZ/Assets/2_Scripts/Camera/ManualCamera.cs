@@ -15,6 +15,7 @@ public class ManualCamera : PlayerCamera, IControllable
 
     [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f, defaultVerticalAngle = 30f;
     [SerializeField, Min(0f)] public float alignDelay = 5f;
+    [SerializeField, Min(0f)] public float alignDelayWithSecondaryFocus = 0f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     [SerializeField] LayerMask obstructionMask = -1;
     [Header("Jump")]
@@ -57,6 +58,11 @@ public class ManualCamera : PlayerCamera, IControllable
         init();
     }
 
+    void Update()
+    {
+        updateSecondaryFocus();
+    }
+
     void OnDestroy()
     {
         Utils.detachControllable<ManualCamera>(this);
@@ -64,6 +70,7 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
+        // Camera manual movements
         Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
             InputSettings.InverseCameraMappingY ? -1f : 1f);
 
@@ -79,18 +86,71 @@ public class ManualCamera : PlayerCamera, IControllable
 
             input.Add(current);
         }
+
+        // Camera targeting
+        // set secondary focus
+        if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().heldDown)
+        {
+            if ((null==secondaryFocus)&& !focusInputLock) {
+                findFocus();
+                elapsedPressTimeToCancelSecondaryFocus = 0f;
+                focusInputLock = true;
+            } else {
+                elapsedPressTimeToCancelSecondaryFocus += Time.unscaledDeltaTime;
+                if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus)
+                {
+                    resetFocus();
+                    focusInputLock = true;
+                }
+
+                if (!!uISecondaryFocus)
+                { 
+                    if (!focusInputLock)
+                    {
+                        float ratio = elapsedPressTimeToCancelSecondaryFocus/pressTimeSecondaryFocus;
+                        if (ratio>0.2f)
+                            uISecondaryFocus.updateFillAmount(ratio);
+                    }
+                }
+            }
+        }
+        // poll for focus change
+        if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
+        {
+            if ((elapsedPressTimeToCancelSecondaryFocus) > 0f && (elapsedPressTimeToCancelSecondaryFocus <= pressTimeSecondaryFocus))
+            {
+                changeFocus();
+            } else if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) {
+                resetFocus();
+            }
+            focusInputLock = false;
+            elapsedPressTimeToCancelSecondaryFocus = 0f;
+            if (!!uISecondaryFocus)
+            { 
+                uISecondaryFocus.updateFillAmount(0f);            }
+        }
+
     }
 
+    // Game camera overrides
     public override void init()
     {
         playerRef = Utils.getPlayerRef();
         focus = playerRef.transform;
         focusPoint = focus.position;
 
-        orbitAngles = new Vector2(defaultVerticalAngle, 180f);
-        transform.localRotation = Quaternion.Euler(orbitAngles);
+        resetView();
 
     }
+
+    public override void resetView() 
+    { 
+        Debug.Log("Reset view");
+        orbitAngles = new Vector2(defaultVerticalAngle, 180f);
+        transform.localRotation = Quaternion.Euler(orbitAngles); 
+    }
+
+    // behavior
 
     void LateUpdate()
     {
@@ -131,6 +191,7 @@ public class ManualCamera : PlayerCamera, IControllable
         Vector3 castFrom = focus.position;
         Vector3 castLine = rectPosition - castFrom;
         float castDistance = castLine.magnitude;
+
         Vector3 castDirection = castLine / castDistance;
 
         // check if we hit something between camera and focuspoint
@@ -138,6 +199,11 @@ public class ManualCamera : PlayerCamera, IControllable
         {
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
+        }
+
+        // align with secondary focus
+        if (!!secondaryFocus)
+        {
 
         }
 
@@ -147,6 +213,7 @@ public class ManualCamera : PlayerCamera, IControllable
     void UpdateFocusPoint()
     {
         previousFocusPoint = focusPoint;
+
         Vector3 targetPoint = focus.position;
 
         if (focusRadius > baseFocusRadius)
@@ -240,14 +307,27 @@ public class ManualCamera : PlayerCamera, IControllable
 
     bool autoRotation()
     {
-        if (Time.unscaledTime - lastManualRotationTime < alignDelay)
-        return false;
+        if (null==secondaryFocus)
+            if (Time.unscaledTime - lastManualRotationTime < alignDelay)
+                return false;
+        else
+            if (Time.unscaledTime - lastManualRotationTime < alignDelayWithSecondaryFocus)
+                return false;
 
-        Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
-        if  (movement.y > 0) // backward movement -- we dont want to rotate the camera around the player
+        Vector2 movement = Vector2.zero;
+        if (null==secondaryFocus)
         {
-            return false;
+            movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
+            if  (movement.y > 0) // backward movement -- we dont want to rotate the camera around the player
+            {
+                return false;
+            }
         }
+        else {
+            movement = new Vector2( secondaryFocus.transform.position.x - focusPoint.x , secondaryFocus.transform.position.z - focusPoint.z);
+        }
+        
+
 
         float movementDeltaSqr = movement.sqrMagnitude;
         if (movementDeltaSqr < 0.000001f)

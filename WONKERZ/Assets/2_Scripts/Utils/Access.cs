@@ -179,6 +179,11 @@ public class Access
         return cache.getObject<UISpeedAndLifePool>(Constants.GO_PLAYERUI, true);
     }
 
+    public static UISecondaryFocus UISecondaryFocus()
+    {
+        return cache.getObject<UISecondaryFocus>(Constants.GO_PLAYERUI, true);
+    }
+
     public static UIBountyUnlocked UIBountyUnlocked()
     {
         return cache.getObject<UIBountyUnlocked>(Constants.GO_PLAYERUI, true);

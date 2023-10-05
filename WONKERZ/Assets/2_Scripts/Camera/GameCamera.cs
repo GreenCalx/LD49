@@ -53,4 +53,6 @@ public class GameCamera : MonoBehaviour
     }
 
     public virtual void init() { }
+
+    public virtual void resetView() { }
 }

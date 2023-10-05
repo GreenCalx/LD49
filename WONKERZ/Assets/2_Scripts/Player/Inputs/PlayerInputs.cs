@@ -35,11 +35,14 @@ public class Player0Inputs : PlayerInputs
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.CameraChange,
-            new GameInputButton("CameraSwitch", "Move camera views", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
-
+            new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
+        
+        controller.AddInput((int)InputCode.CameraFocus, 
+            new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
+        
         controller.AddInput((int)InputCode.CameraReset,
-            new GameInputButton("CameraReset", "Reset camera view behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
-
+            new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
+        
         // player : car
         controller.AddInput((int)InputCode.Accelerator,
             new GameInputAxis("Accelerator", "Car acceleration",
@@ -128,10 +131,13 @@ public class Player1Inputs : PlayerInputs
                     defaultAxisSettings));
 
             controller.AddInput((int)InputCode.CameraChange,
-                new GameInputButton("CameraSwitch", "Move camera views", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
+                new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
+
+            controller.AddInput((int)InputCode.CameraFocus, 
+                new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
 
             controller.AddInput((int)InputCode.CameraReset,
-                new GameInputButton("CameraReset", "Reset camera view behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
+                new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
 
             // misc : save
 
@@ -224,6 +230,7 @@ public class PlayerInputs
         // axis
         CameraChange,
         CameraReset,
+        CameraFocus,
         SaveStatesPlant,
         SaveStatesReturn,
         GiveCoinsForTurbo,
@@ -274,11 +281,13 @@ public class PlayerInputs
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.CameraChange,
-            new GameInputButton("CameraSwitch", "Move camera views", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
-
+            new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
+        
+        controller.AddInput((int)InputCode.CameraFocus, 
+            new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
+        
         controller.AddInput((int)InputCode.CameraReset,
-            new GameInputButton("CameraReset", "Reset camera view behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
-
+            new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
         // misc : save
 
         controller.AddInput((int)InputCode.SaveStatesPlant,
