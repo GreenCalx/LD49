@@ -9,10 +9,22 @@ public class UISecondaryFocus : MonoBehaviour
     [Header("Mandatory")]
     public RectTransform parentCanvasRect;
     public RectTransform selfRect;
+    [Header("Tweaks")]
+    public float rotSpeedAlongFwd = 1f;
+    [Range(0f,1f)] // from one point to twice the size
+    public float scaleAnimVariation = 0.1f;
+    [Range(0f,5f)]
+    public float scaleAnimSpeed = 0.5f;
     [Header("Internals")]
     public Camera cam;
     public Transform trackedObject;
     private Image img;
+    private Vector3 baseScale = Vector3.zero;
+
+    void Start()
+    {
+        baseScale = transform.localScale;
+    }
 
     public void trackObjectPosition(Transform iWorldTransform)
     {
@@ -28,7 +40,20 @@ public class UISecondaryFocus : MonoBehaviour
         float yPos = projectionOnCam.y * parentCanvasRect.sizeDelta.y - parentCanvasRect.sizeDelta.y*0.5f;
 
         Vector2 screenPos = new Vector2(xPos, yPos);
+
+        // TODO : If out of screen don't display the focus
         selfRect.anchoredPosition = screenPos;
+        
+        animate();
+    }
+
+    private void animate()
+    {
+        float rot_step = rotSpeedAlongFwd * Time.deltaTime;
+        transform.RotateAround(transform.position, transform.forward, rot_step);
+
+        var value = Mathf.Sin(Time.realtimeSinceStartup * scaleAnimSpeed);
+        transform.localScale = baseScale + new Vector3(value, value, value) * scaleAnimVariation;
     }
 
     public void setColor(Color iColor)

@@ -12,19 +12,20 @@ public class TutorialBalloon : MonoBehaviour
     [Header("MAND")]
     public UIGenerativeTextBox display;
     private PlayerController player;
-    private float elapsedTimeSinceStart = 0f;
+    public Transform self_ScreenForXYRot;
+    public Transform self_BallonAttachForYRot;
+
+
+    [Header("Internals")]
 
     // ORBIT
     [Header("ORBIT")]
+    public float stayInFrontSpeed = 1.0f;
     [SerializeField] public Transform focus = default;
-    [SerializeField, Range(-89f, 89f)] public float minVerticalAngle = -30f, maxVerticalAngle = 60f, defaultVerticalAngle = 30f;
     [SerializeField, Range(1f, 80f)] public float distance = 5f;
     [SerializeField, Min(0f)] public float focusRadius = 1f;
     [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
-    [SerializeField, Range(1f, 360f)] public float rotationSpeed = 90f;
-    [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     private Vector3 focusPoint, previousFocusPoint;
-    private Vector2 orbitAngles = new Vector2(45f, 0f);
 
     public void updateDisplay(List<UIGenerativeTextBox.UIGTBElement> iElems)
     {
@@ -39,13 +40,7 @@ public class TutorialBalloon : MonoBehaviour
         
         focus = player.gameObject.transform;
         focusPoint = focus.position;
-
-        orbitAngles = new Vector2(defaultVerticalAngle, -90f);
-        transform.localRotation = Quaternion.Euler(orbitAngles);
-
-        elapsedTimeSinceStart = 0f;
-
-        facePlayer();
+        //facePlayer();
     }
 
     void LateUpdate()
@@ -62,17 +57,16 @@ public class TutorialBalloon : MonoBehaviour
 
         UpdateFocusPoint();
         Quaternion lookRotation;
-        if (autoRotation())
-        {
-            constrainAngles();
-            lookRotation = Quaternion.Euler(orbitAngles);
-        } else {
-            lookRotation = transform.localRotation;
-        }
+        lookRotation = transform.localRotation;
+
         Vector3 lookDirection = lookRotation * Vector3.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;
-        
-        transform.SetPositionAndRotation(lookPosition, lookRotation);
+
+       
+        //transform.SetPositionAndRotation(lookPosition, lookRotation);
+
+        facePlayer();
+        //wiggle();
     }
 
     void UpdateFocusPoint()
@@ -98,65 +92,36 @@ public class TutorialBalloon : MonoBehaviour
         }
     }
 
-    void constrainAngles()
-    {
-        orbitAngles.x = Mathf.Clamp(orbitAngles.x, minVerticalAngle, maxVerticalAngle);
-        if (orbitAngles.y < 0f)
-        {
-            orbitAngles.y += 360f;
-        }
-        else if (orbitAngles.y >= 360f)
-        {
-            orbitAngles.y -= 360f;
-        }
-    }
-
-    bool autoRotation()
-    {
-        Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
-
-        float movementDeltaSqr = movement.sqrMagnitude;
-        if (movementDeltaSqr < 0.000001f)
-        {
-            return false;
-        }
-        float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
-        float deltaAbs = Mathf.Abs(Mathf.DeltaAngle(orbitAngles.y, headingAngle));
-        float rotationChange = rotationSpeed * Mathf.Min(Time.unscaledDeltaTime, movementDeltaSqr);
-        if (deltaAbs < alignSmoothRange)
-        {
-            rotationChange *= deltaAbs / alignSmoothRange;
-        }
-        else if (0f - deltaAbs < alignSmoothRange)
-        {
-            rotationChange *= (0f - deltaAbs) / alignSmoothRange;
-        }
-
-        orbitAngles.y = Mathf.MoveTowardsAngle(orbitAngles.y, headingAngle, rotationChange);
-        return true;
-    }
-
     public void wiggle()
     {
         Vector3 newPosition = transform.position;
 
-        elapsedTimeSinceStart += Time.deltaTime;
-        newPosition.y += Mathf.Sin(elapsedTimeSinceStart) * 0.005f;
+        newPosition.y += Mathf.Sin(Time.realtimeSinceStartup  * 0.5f);
 
         transform.position = newPosition;
     }
 
     private void facePlayer()
     {
+        PlayerController pc = Access.Player();
         Vector3 difference = player.transform.position - transform.position;
-        float rotationY = Mathf.Atan2(difference.x, difference.z) * Mathf.Rad2Deg;
 
-        transform.rotation = Quaternion.Euler(0.0f, rotationY, 0.0f);
-    }
-    static float GetAngle(Vector2 direction)
-    {
-        float angle = Mathf.Acos(direction.y) * Mathf.Rad2Deg;
-        // (x < 0) => counterclockwise
-        return direction.x < 0f ? 360f - angle : angle;
+        // position
+        Vector3 targetPos = player.transform.position + (player.transform.forward * distance);
+        if (pc.TouchGround())
+            targetPos.y = 0f;
+        transform.position = Vector3.MoveTowards(transform.position, targetPos, stayInFrontSpeed * Time.deltaTime);
+
+        Debug.DrawRay(player.transform.position, player.transform.forward * distance, Color.green);
+        Debug.DrawRay(targetPos, Vector3.up * 9999, Color.blue);
+
+        // sub body rots
+        float rotationY = Mathf.Atan2(difference.x, difference.z) * Mathf.Rad2Deg;
+        float rotationX = Mathf.Atan2(difference.z, difference.y) * Mathf.Rad2Deg - 90f;
+
+        //transform.rotation = Quaternion.Euler(0.0f, rotationY, 0.0f);
+        self_BallonAttachForYRot.localRotation = Quaternion.Euler(0f, rotationY, 0f);
+        self_ScreenForXYRot.localRotation = Quaternion.Euler(rotationX, rotationY, 0f);
+
     }
 }
