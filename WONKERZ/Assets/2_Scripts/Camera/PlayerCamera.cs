@@ -20,7 +20,7 @@ public class PlayerCamera : GameCamera
     public GameObject playerRef;
     [Header("Camera Focus")]
     public float secondaryFocusFindRange = 50f;
-    protected CameraFocusable secondaryFocus;
+    public CameraFocusable secondaryFocus;
     public float pressTimeSecondaryFocus = 1f;
     protected float elapsedPressTimeToCancelSecondaryFocus = 0f;
     protected bool focusInputLock = false;
@@ -130,6 +130,11 @@ public class PlayerCamera : GameCamera
         {
             resetFocus();
         }
+
+        if (secondaryFocus==null) // it died
+        {
+            changeFocus();
+        }
     }
 
     protected void changeFocus()
@@ -165,7 +170,9 @@ public class PlayerCamera : GameCamera
         // if every targetable in range were cycle thru
         // then cycle with the queue as long as there is
         // no new ppl in range
-        if (chosenOne==null)
+        if (chosenOne==null && (alreadyFocusedQ.Count==0))
+            resetFocus();
+        else if (chosenOne==null)
             secondaryFocus = alreadyFocusedQ.Dequeue();
         else
             secondaryFocus = chosenOne;
