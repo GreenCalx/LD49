@@ -21,7 +21,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private GameObject saveStateMarkerInst;
     private Vector3 ss_pos = Vector3.zero;
     private Quaternion ss_rot = Quaternion.identity;
-    private bool hasSS;
+    public bool hasSS;
     public int MAX_PANELS = 2;
     public int currPanels { get; set; }
 

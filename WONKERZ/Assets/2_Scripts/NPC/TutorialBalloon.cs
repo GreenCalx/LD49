@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Schnibble;
 
 public class TutorialBalloon : MonoBehaviour
@@ -34,6 +35,22 @@ public class TutorialBalloon : MonoBehaviour
     [SerializeField, Min(0f)] public float focusRadius = 1f;
     [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
     private Vector3 focusPoint, previousFocusPoint;
+
+    [Header("Internals")]
+    private TutorialBalloonTrigger _currTrigger;
+    public TutorialBalloonTrigger currTrigger
+    {
+        set
+        {
+            if (_currTrigger!=null)
+            { Utils.detachControllable<TutorialBalloonTrigger>(_currTrigger);}
+            _currTrigger = value;
+            if(_currTrigger!=null)
+                Utils.attachControllable<TutorialBalloonTrigger>(_currTrigger);
+        }
+
+        get { return _currTrigger; }
+    }
 
     public void updateDisplay(List<UIGenerativeTextBox.UIGTBElement> iElems)
     {

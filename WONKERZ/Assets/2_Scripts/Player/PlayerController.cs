@@ -491,7 +491,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public float springCompressionTime = 0.5f;
     public AnimationCurve jumpCompressionOverTime;
-    private float springElapsedCompression = 0f;
+    public float springElapsedCompression = 0f;
     public void TryJump()
     {
         if (jump.applyForceMultiplier)
