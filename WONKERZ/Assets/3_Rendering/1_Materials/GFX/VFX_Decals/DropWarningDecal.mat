@@ -7,13 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpeedLimit50DecalMaterial
+  m_Name: DropWarningDecal
   m_Shader: {fileID: 4800000, guid: b3e896281ef088645bc91ef51fccb5c7, type: 3}
   m_ValidKeywords:
-  - _NORMALMAP
+  - _ALPHATEST_ON
   m_InvalidKeywords:
   - _DECALWRITECOLOR_ON
-  - _DECALWRITENORMAL_ON
   - _DECAL_ON
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -26,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 458fecaf574470840bdf75e632b80379, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -46,7 +45,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 458fecaf574470840bdf75e632b80379, type: 3}
+        m_Texture: {fileID: 2800000, guid: e5660cbd4f9c3c64c8c925c9f9f8fafd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -67,7 +66,7 @@ Material:
     - _BumpScale: 1
     - _ColorMask0: 14
     - _ColorMask1: 0
-    - _ColorMask2: 15
+    - _ColorMask2: 0
     - _ColorMask3: 0
     - _CullMode: 2
     - _Cutoff: 0.5
@@ -77,7 +76,7 @@ Material:
     - _DecalWriteEmission: 0
     - _DecalWriteMaterial: 0
     - _DecalWriteMaterialID: 0
-    - _DecalWriteNormal: 1
+    - _DecalWriteNormal: 0
     - _DepthMask: 0
     - _DepthMaskRead: 0
     - _DetailNormalMapScale: 1
@@ -85,8 +84,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaterialID: 6
-    - _Metallic: 0.037
+    - _MaterialID: 7
+    - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -98,6 +97,6 @@ Material:
     - _ZWrite: 1
     - _Ztest: 2
     m_Colors:
-    - _Color: {r: 1, g: 0, b: 0, a: 1}
+    - _Color: {r: 1, g: 0.9401103, b: 0.30588233, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

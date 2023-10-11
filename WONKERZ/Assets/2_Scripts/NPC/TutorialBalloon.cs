@@ -19,6 +19,7 @@ public class TutorialBalloon : MonoBehaviour
     public Transform self_BallonAttachForYRot;
     public CameraFocusable self_camFocusPoint;
     public ConfigurableJoint self_jointToPlayer;
+    public TutorialPlayerAnchorPoint PlayerAnchorPoint;
 
     [Header("TWEAKS")]
     [Range(0f,10f)]
@@ -77,7 +78,9 @@ public class TutorialBalloon : MonoBehaviour
         // Focus & activated !
         
         // joint update
-        self_jointToPlayer.connectedBody = Access.Player().car.rb;
+        //self_jointToPlayer.connectedBody = Access.Player().car.rb;
+        PlayerAnchorPoint.trigger();
+        self_jointToPlayer.connectedBody = PlayerAnchorPoint.GetComponent<Rigidbody>();
         self_jointToPlayer.autoConfigureConnectedAnchor = false;
         updateAnchor(BALLOON_XANGLE.MIDDLE, BALLOON_YANGLE.UP);
 
@@ -86,6 +89,8 @@ public class TutorialBalloon : MonoBehaviour
 
     public void disable()
     {
+        if (null!=PlayerAnchorPoint)
+            PlayerAnchorPoint.delete();
         self_jointToPlayer.connectedBody = null;
         self_jointToPlayer.autoConfigureConnectedAnchor = true;
         enable_move = false;

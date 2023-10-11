@@ -10,7 +10,7 @@ public static class DialogBank
     public static readonly string[] INTRO_CP_DIALOG= 
     {
         "Hello there sleeping beauty...",
-        "I am Ricky, pumpist and sole purveyor of the mighty black tar fluid that runs in our pipes.",
+        "I am Ricky, sole purveyor of the mighty black tar fluid that runs in our pipes.",
         "The headchef of the Garage, Ernest, found the wreckage of your body on the shoreline.",
         "He hauled you back to the Garage and loaded this simulation to help you get back on track while he is twisting bolts.",
         "I will be your guide along the track. ",
