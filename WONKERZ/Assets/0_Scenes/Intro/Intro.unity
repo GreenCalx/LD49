@@ -654,6 +654,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 2
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -2546,6 +2548,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 1
+  BalloonYAngle: 0
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -2805,6 +2809,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -5011,6 +5017,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -5456,6 +5464,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -5560,6 +5570,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -11033,6 +11045,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -14116,6 +14130,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8919991749479847275, guid: 49c79922b64abc845a45b4342382c820, type: 3}
   m_PrefabInstance: {fileID: 749496091}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1106587678 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 608336687630213708, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+  m_PrefabInstance: {fileID: 1845165046}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1109502160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17080,6 +17099,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -19432,6 +19453,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -19588,6 +19611,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -19875,6 +19900,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -19955,6 +19982,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -23739,8 +23768,20 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: xangle
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: yangle
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
       propertyPath: distance
       value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: maxSpeed
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
       propertyPath: getOutTheWayAngle
@@ -23782,6 +23823,98 @@ PrefabInstance:
       propertyPath: m_Name
       value: balloon_panel
       objectReference: {fileID: 0}
+    - target: {fileID: 766904216615960397, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_Mass
+      value: 0.0000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 766904216615960397, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_YMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_ZMotion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_Anchor.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_Anchor.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_ProjectionAngle
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_SecondaryAxis.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_SecondaryAxis.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_LinearLimit.limit
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AngularYLimit.limit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_LinearLimitSpring.damper
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_LinearLimitSpring.spring
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_SlerpDrive.positionDamper
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_SlerpDrive.positionSpring
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AngularXDrive.maximumForce
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AngularXLimitSpring.damper
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AngularXLimitSpring.spring
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_LinearLimit.contactDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AutoConfigureConnectedAnchor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1535901283547608180, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_AngularYLimit.contactDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1690245220027791068, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -23789,6 +23922,10 @@ PrefabInstance:
     - target: {fileID: 2650418045580374147, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
       propertyPath: m_Sprite
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3220905426384678499, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
+      propertyPath: m_EnablePreprocessing
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4168503494825309899, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
       propertyPath: m_RootOrder
@@ -23904,12 +24041,108 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1845165048, guid: 9edb3afa9a6e2e84d977796b882da946, type: 3}
   m_PrefabInstance: {fileID: 1845165046}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1106587678}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 50847f4fa38286c4bbbacd6b597a9e62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!153 &1845165052
+ConfigurableJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106587678}
+  m_ConnectedBody: {fileID: 0}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: -273.9638, y: 25.49527, z: 753.4793}
+  serializedVersion: 2
+  m_SecondaryAxis: {x: 0, y: 1, z: 0}
+  m_XMotion: 2
+  m_YMotion: 2
+  m_ZMotion: 2
+  m_AngularXMotion: 2
+  m_AngularYMotion: 2
+  m_AngularZMotion: 2
+  m_LinearLimitSpring:
+    spring: 0
+    damper: 0
+  m_LinearLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularXLimitSpring:
+    spring: 0
+    damper: 0
+  m_LowAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_HighAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularYZLimitSpring:
+    spring: 0
+    damper: 0
+  m_AngularYLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularZLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_TargetPosition: {x: 0, y: 0, z: 0}
+  m_TargetVelocity: {x: 0, y: 0, z: 0}
+  m_XDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_YDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_ZDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
+  m_RotationDriveMode: 0
+  m_AngularXDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_AngularYZDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_SlerpDrive:
+    serializedVersion: 3
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+  m_ProjectionMode: 0
+  m_ProjectionDistance: 0.1
+  m_ProjectionAngle: 180
+  m_ConfiguredInWorldSpace: 0
+  m_SwapBodies: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1001 &1846328674
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25391,6 +25624,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -25533,6 +25768,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -26740,6 +26977,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 1
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0
@@ -27280,6 +27519,8 @@ MonoBehaviour:
   ValidationCond:
     m_PersistentCalls:
       m_Calls: []
+  BalloonXAngle: 1
+  BalloonYAngle: 0
   tutorialBalloon: {fileID: 1845165048}
   jump_pressed: 0
   weight_pressed: 0

@@ -19,6 +19,9 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     /// ---
     public UnityEvent ValidationCond;
 
+    public TutorialBalloon.BALLOON_XANGLE BalloonXAngle = TutorialBalloon.BALLOON_XANGLE.MIDDLE;
+    public TutorialBalloon.BALLOON_YANGLE BalloonYAngle = TutorialBalloon.BALLOON_YANGLE.MIDDLE;
+
     [Header("Internals")]
     public TutorialBalloon tutorialBalloon;
     public bool jump_pressed;
@@ -177,8 +180,7 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
 
         if (disableBalloon)
         {
-            tutorialBalloon.enable_move = false;
-            tutorialBalloon.disable_balloon_follow = true;
+            tutorialBalloon.disable();
         }
 
         if (Utils.colliderIsPlayer(iCollider))
@@ -186,6 +188,8 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
             tutorialBalloon.updateDisplay(elements);
             
             tutorialBalloon.currTrigger = this;
+            tutorialBalloon.updateAnchor(BalloonXAngle, BalloonYAngle);
+
             triggered = true;
         }
     }

@@ -6,6 +6,8 @@ using Schnibble;
 
 public class TutorialBalloon : MonoBehaviour
 {
+    public enum BALLOON_XANGLE { LEFT = 0, MIDDLE = 1, RIGHT = 2};
+    public enum BALLOON_YANGLE { UP = 0, MIDDLE = 1, DOWN = 2};
     [Header("Init")]
     public bool enable_move = true;
     public bool disable_balloon_follow = false;
@@ -16,27 +18,18 @@ public class TutorialBalloon : MonoBehaviour
     public Transform self_ScreenForXYRot;
     public Transform self_BallonAttachForYRot;
     public CameraFocusable self_camFocusPoint;
+    public ConfigurableJoint self_jointToPlayer;
 
     [Header("TWEAKS")]
     [Range(0f,10f)]
     public float wiggleSize = 0f;
-    public float getOutTheWayAngle = 10f;
-    public Vector3 axisOfOutOfTheWay ;
-    public Vector3 offsetWhenPlayerInAir = new Vector3(0f,5f,0f);
-    public Vector3 offsetWhenPlayerGrounded = new Vector3(0f,5f,0f);
-    public float extraDistanceToAvoidFuckingPlayer = 10f;
-
-    // ORBIT
-    [Header("ORBIT")]
-    [Range(0f,2f)]
-    public float stayInFrontSpeedFactor = 1.0f;
-    [SerializeField] public Transform focus = default;
+    public float maxSpeed = 40f;
+    public float xangle = 10f;
+    public float yangle = 10f;
     [SerializeField, Range(1f, 80f)] public float distance = 5f;
-    [SerializeField, Min(0f)] public float focusRadius = 1f;
-    [SerializeField, Range(0f, 1f)] public float focusCentering = 0.5f;
-    private Vector3 focusPoint, previousFocusPoint;
 
     [Header("Internals")]
+    public Rigidbody rb;
     private TutorialBalloonTrigger _currTrigger;
     public TutorialBalloonTrigger currTrigger
     {
@@ -62,9 +55,8 @@ public class TutorialBalloon : MonoBehaviour
     void Start()
     {
         player = Access.Player();
+        rb = GetComponent<Rigidbody>();
         
-        focus = player.gameObject.transform;
-        focusPoint = focus.position;
         //facePlayer();
         StartCoroutine(launchOnFocused());
         disable_balloon_follow = true;
@@ -82,61 +74,57 @@ public class TutorialBalloon : MonoBehaviour
         {
             yield return null;
         }
+        // Focus & activated !
+        
+        // joint update
+        self_jointToPlayer.connectedBody = Access.Player().car.rb;
+        self_jointToPlayer.autoConfigureConnectedAnchor = false;
+        updateAnchor(BALLOON_XANGLE.MIDDLE, BALLOON_YANGLE.UP);
+
         disable_balloon_follow = false;
+    }
+
+    public void disable()
+    {
+        self_jointToPlayer.connectedBody = null;
+        self_jointToPlayer.autoConfigureConnectedAnchor = true;
+        enable_move = false;
+        disable_balloon_follow = true;
+    }
+
+    public void updateAnchor(BALLOON_XANGLE iXAngle, BALLOON_YANGLE iYAngle)
+    {
+        float loc_xangle = 0f;
+        if (iXAngle == BALLOON_XANGLE.LEFT)
+        { loc_xangle = (-1) * xangle; }
+        else if (iXAngle == BALLOON_XANGLE.RIGHT)
+        { loc_xangle = xangle; }
+
+        float loc_yangle = 0f;
+        if (iYAngle == BALLOON_YANGLE.DOWN)
+        { loc_yangle = (-1) * yangle; }
+        else if (iYAngle == BALLOON_YANGLE.UP)
+        { loc_yangle = yangle; }
+
+        self_jointToPlayer.connectedAnchor = new Vector3(loc_xangle, loc_yangle, distance);
+    }
+
+    void FixedUpdate()
+    {
+        if (!!rb)
+        {
+            if (rb.velocity.magnitude > maxSpeed)
+            {
+                rb.velocity = rb.velocity.normalized * maxSpeed;
+            }
+        }
     }
 
     void LateUpdate()
     {
         facePlayer();
         
-        if (disable_balloon_follow)
-            return;
-
-        if (!enable_move)
-        {
-            Vector2 v2pos = new Vector2(transform.position.x, transform.position.z);
-            Vector2 v2fpos = new Vector2(focus.position.x, focus.position.z);
-            enable_move = Vector2.Distance(v2pos, v2fpos) <= distance;
-            if (!enable_move)
-                return;
-        }
-
-        UpdateFocusPoint();
-        Quaternion lookRotation;
-        lookRotation = transform.localRotation;
-
-        Vector3 lookDirection = lookRotation * Vector3.forward;
-        Vector3 lookPosition = focusPoint - lookDirection * distance;
-        
-       
-        //transform.SetPositionAndRotation(lookPosition, lookRotation);
-
-        stayInFrontOfPlayer();
-        
-        wiggle();
-    }
-
-    void UpdateFocusPoint()
-    {
-        previousFocusPoint = focusPoint;
-        Vector3 targetPoint = focus.position;
-
-        if (focusRadius > 0f)
-        {
-            float distance = Vector3.Distance(targetPoint, focusPoint);
-            float t = 1f;
-            if (distance > 0.01f && focusCentering > 0f)
-            { t = Mathf.Pow(1f - focusCentering, Time.unscaledDeltaTime); }
-            if (distance > focusRadius)
-            {
-                t = Mathf.Min(t, focusRadius / distance);
-            }
-            focusPoint = Vector3.Lerp(targetPoint, focusPoint, t);
-        }
-        else
-        {
-            focusPoint = targetPoint;
-        }
+        //wiggle();
     }
 
     public void wiggle()
@@ -165,28 +153,5 @@ public class TutorialBalloon : MonoBehaviour
         //transform.rotation = Quaternion.Euler(0.0f, rotationY, 0.0f);
         self_BallonAttachForYRot.localRotation = Quaternion.Euler(0f, rotationY, 0f);
         self_ScreenForXYRot.localRotation = Quaternion.Euler(look.x, rotationY, 0f);
-    }
-
-    private void stayInFrontOfPlayer()
-    {
-        PlayerController pc = Access.Player();
-        float playerspeed = pc.car.GetCurrentSpeed();
-        Vector3 difference = player.transform.position - transform.position;
-
-        // position
-        Vector3 targetPos = player.transform.position + (player.transform.forward * distance);
-
-        if (pc.TouchGround())
-            targetPos += offsetWhenPlayerGrounded;
-        else
-            targetPos += offsetWhenPlayerInAir;
-        
-        Debug.DrawRay(targetPos, Vector3.forward * 50, Color.red);
-        Debug.DrawRay(targetPos, Vector3.up * 50, Color.green);
-
-        //Vector3 outTheWayPos = Quaternion.AngleAxis(getOutTheWayAngle, axisOfOutOfTheWay) * targetPos;
-        //transform.position = Vector3.MoveTowards(transform.position, targetPos, playerspeed * stayInFrontSpeedFactor * Time.deltaTime);
-        transform.position = Vector3.MoveTowards(transform.position, targetPos, (playerspeed + stayInFrontSpeedFactor) * Time.deltaTime);
-
     }
 }
