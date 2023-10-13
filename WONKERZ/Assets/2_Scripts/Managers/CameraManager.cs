@@ -248,7 +248,7 @@ public class CameraManager : MonoBehaviour, IControllable
     {
         // disable active camera behaviour
         //active_camera.enabled = false;
-        //active_camera.gameObject.SetActive(false);
+        //active_camera.gameObject.SetActive(false);&
         Camera camcomp = active_camera.GetComponent<Camera>();
         camcomp.enabled = false;
 
@@ -395,5 +395,10 @@ public class CameraManager : MonoBehaviour, IControllable
     public void removeFocusable(CameraFocusable iFocusable)
     {
         focusables.Remove(iFocusable);
+        PlayerCamera as_playercam = (PlayerCamera)active_camera;
+        if (!!as_playercam)
+        {
+            as_playercam.OnFocusRemove(iFocusable);
+        }
     }
 }

@@ -18,7 +18,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     // SaveStates
     public GameObject saveStateMarkerRef;
-    private GameObject saveStateMarkerInst;
+    public GameObject saveStateMarkerInst;
     private Vector3 ss_pos = Vector3.zero;
     private Quaternion ss_rot = Quaternion.identity;
     public bool hasSS;

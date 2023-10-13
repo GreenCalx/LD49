@@ -84,7 +84,20 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         {
             if (cpm.hasSS)
             {
-                HappyValidation();
+                // Ensure SS is within trigger's box
+                Vector3 ss_pos = cpm.saveStateMarkerInst.transform.position;
+                
+                BoxCollider trigg_box = GetComponent<BoxCollider>();
+                Vector3 box_pos = trigg_box.transform.position;
+                Vector3 box_size = trigg_box.size;
+
+                if ((ss_pos.x < box_pos.x + box_size.x) && (ss_pos.x > box_pos.x - box_size.x))
+                {
+                    if ((ss_pos.z < box_pos.z + box_size.z) && (ss_pos.z > box_pos.z - box_size.z))
+                    {
+                        HappyValidation();
+                    }
+                }
             }
         }
     }

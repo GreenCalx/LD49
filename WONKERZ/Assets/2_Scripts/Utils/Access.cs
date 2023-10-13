@@ -104,12 +104,6 @@ public class Access
     {
         return cache.getObject<PlayerInputsManager>(Constants.GO_MANAGERS, false);
     }
-
-    public static InputManager InputManager()
-    {
-        return cache.getObject<InputManager>(Constants.GO_MANAGERS, false);
-    }
-
     public static CameraManager CameraManager()
     {
         return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);

@@ -61,6 +61,7 @@ public class ManualCamera : PlayerCamera, IControllable
     void Update()
     {
         updateSecondaryFocus();
+        Debug.DrawRay(focus.position, focus.forward*10, Color.blue);
     }
 
     void OnDestroy()
@@ -85,6 +86,12 @@ public class ManualCamera : PlayerCamera, IControllable
             current = Vector2.Scale(current, multiplier);
 
             input.Add(current);
+        }
+
+        // View reset
+        if ((Entry[(int)PlayerInputs.InputCode.CameraReset] as GameInputButton).GetState().down)
+        {
+            resetView();
         }
 
         // Camera targeting
@@ -127,7 +134,8 @@ public class ManualCamera : PlayerCamera, IControllable
             elapsedPressTimeToCancelSecondaryFocus = 0f;
             if (!!uISecondaryFocus)
             { 
-                uISecondaryFocus.updateFillAmount(0f);            }
+                uISecondaryFocus.updateFillAmount(0f);            
+            }
         }
 
     }
@@ -135,7 +143,7 @@ public class ManualCamera : PlayerCamera, IControllable
     // Game camera overrides
     public override void init()
     {
-        playerRef = Utils.getPlayerRef();
+        playerRef = Access.Player().gameObject;
         focus = playerRef.transform;
         focusPoint = focus.position;
 
@@ -146,8 +154,34 @@ public class ManualCamera : PlayerCamera, IControllable
     public override void resetView() 
     { 
         Debug.Log("Reset view");
-        orbitAngles = new Vector2(defaultVerticalAngle, 180f);
-        transform.localRotation = Quaternion.Euler(orbitAngles); 
+        
+        Vector2 fwd_angle = (focus.position + focus.forward).normalized * -1;
+        float headingAngle = GetAngle(fwd_angle);
+        
+        orbitAngles.y = headingAngle;
+        orbitAngles.x = defaultVerticalAngle;
+        constrainAngles();
+
+        Debug.Log(orbitAngles);
+        Quaternion lookRotation = Quaternion.Euler(orbitAngles);
+        Vector3 lookDirection = lookRotation * Vector3.forward;
+        Vector3 lookPosition = focusPoint - lookDirection * distance;
+
+        Vector3 rectOffset = lookDirection * cam.nearClipPlane;
+        Vector3 rectPosition = lookPosition + rectOffset;
+        Vector3 castFrom = focus.position;
+        Vector3 castLine = rectPosition - castFrom;
+        float castDistance = castLine.magnitude;
+
+        Vector3 castDirection = castLine / castDistance;
+
+        // check if we hit something between camera and focuspoint
+        if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
+        {
+            rectPosition = castFrom + castDirection * hit.distance;
+            lookPosition = rectPosition - rectOffset;
+        }
+        transform.SetPositionAndRotation(lookPosition, lookRotation);
     }
 
     // behavior
@@ -318,7 +352,7 @@ public class ManualCamera : PlayerCamera, IControllable
         if (null==secondaryFocus)
         {
             movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
-            if  (movement.y > 0) // backward movement -- we dont want to rotate the camera around the player
+            if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
             {
                 return false;
             }
@@ -361,5 +395,7 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         orbitAngles = new Vector2(defaultVerticalAngle, iHorAngle);
         transform.localRotation = Quaternion.Euler(orbitAngles);
+
+
     }
 }

@@ -6,7 +6,7 @@ public class UIGarage : UIGaragePanel
     protected override void Awake()
     {
         base.Awake();
-        inputMgr = Access.InputManager();
+        inputMgr = Access.PlayerInputsManager().player1;
     }
 
     override public void deactivate()

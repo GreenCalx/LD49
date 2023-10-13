@@ -91,8 +91,6 @@ public class PlayerCamera : GameCamera
             alreadyFocusedQ.Enqueue(secondaryFocus);
             showFocus(true);
         }
-
-        
     }
 
     protected void resetFocus()
@@ -121,7 +119,9 @@ public class PlayerCamera : GameCamera
     protected void updateSecondaryFocus()
     {
         if (null==secondaryFocus)
+        {
             return;
+        }
         
         // Check if distance is met, disable otherwise
         PlayerController p = Access.Player();
@@ -129,11 +129,6 @@ public class PlayerCamera : GameCamera
         if (Vector3.Distance(secondaryFocus.transform.position, p_pos) > secondaryFocusFindRange)
         {
             resetFocus();
-        }
-
-        if (secondaryFocus==null) // it died
-        {
-            changeFocus();
         }
     }
 
@@ -179,6 +174,15 @@ public class PlayerCamera : GameCamera
 
         alreadyFocusedQ.Enqueue(secondaryFocus);
         showFocus(true);
+    }
+
+    public void OnFocusRemove(CameraFocusable iFocusable)
+    {
+        if (secondaryFocus == iFocusable)
+        {
+            secondaryFocus = null;
+            changeFocus();
+        }
     }
 
 }

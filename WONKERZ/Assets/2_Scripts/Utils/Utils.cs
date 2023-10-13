@@ -8,7 +8,7 @@ public static partial class Utils
         return Access.Player().gameObject;
     }
 
-    public static void detachControllable<T>(T toDetach)
+    public static void detachControllable<T>(T toDetach, bool iPlayer1Only = false)
     {
         //InputManager IM = Access.InputManager();
         var pim = Access.PlayerInputsManager();
@@ -18,14 +18,14 @@ public static partial class Utils
             return;
         }
 
-        var IM = pim.all;
+        var IM = (iPlayer1Only ? pim.player1 : pim.all);
         if (!!IM)
         IM.Detach(toDetach as IControllable);
         else
         SchLog.LogWarn("InputManager is null. Failed to detach.");
     }
 
-    public static void detachUniqueControllable<T>(T toDetach)
+    public static void detachUniqueControllable<T>(T toDetach, bool iPlayer1Only = false)
     {
         //InputManager IM = Access.InputManager();
         var pim = Access.PlayerInputsManager();
@@ -34,14 +34,14 @@ public static partial class Utils
             SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
             return;
         }
-        var IM = pim.all;
+        var IM = (iPlayer1Only ? pim.player1 : pim.all);
         if (!!IM)
         IM.UnsetUnique(toDetach as IControllable);
         else
         SchLog.LogWarn("InputManager is null. Failed to detach unique.");
     }
 
-    public static void attachControllable<T>(T toAttach)
+    public static void attachControllable<T>(T toAttach, bool iPlayer1Only = false)
     {
         //InputManager IM = Access.InputManager();
         var pim = Access.PlayerInputsManager();
@@ -50,14 +50,14 @@ public static partial class Utils
             SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
             return;
         }
-        var IM = pim.all;
+        var IM = (iPlayer1Only ? pim.player1 : pim.all);
         if (!!IM)
         IM.Attach(toAttach as IControllable);
         else
         SchLog.LogWarn("InputManager is null. Failed to attach.");
     }
 
-    public static void attachUniqueControllable<T>(T toAttach)
+    public static void attachUniqueControllable<T>(T toAttach, bool iPlayer1Only = false)
     {
         //InputManager IM = Access.InputManager();
         var pim = Access.PlayerInputsManager();
@@ -66,7 +66,7 @@ public static partial class Utils
             SchLog.LogWarn("Probably trying to attach/detach inputs while the manager is not yet initialized.");
             return;
         }
-        var IM = pim.all;
+        var IM = (iPlayer1Only ? pim.player1 : pim.all);
         if (!!IM)
         IM.SetUnique(toAttach as IControllable);
         else

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 public class StartPortal : AbstractCameraPoint
 {
     [Header("Behaviour")]
+    public bool forceSinglePlayer = false;
     public bool enable_tricks = false;
     public bool deleteAfterSpawn = false;
     public GameCamera.CAM_TYPE camera_type;
@@ -24,6 +25,12 @@ public class StartPortal : AbstractCameraPoint
     // Start is called before the first frame updatezd
     void Start()
     {
+
+        if (forceSinglePlayer)
+        {
+            Access.Player().inputMgr = Access.PlayerInputsManager().player1;
+        }
+
         if (!bypassCinematic)
         {
             if (entryLevelCinematic!=null)
@@ -40,6 +47,7 @@ public class StartPortal : AbstractCameraPoint
         {
             initTutorial();
         }
+
     }
 
     void init()
