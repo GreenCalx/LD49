@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -395,10 +396,16 @@ public class CameraManager : MonoBehaviour, IControllable
     public void removeFocusable(CameraFocusable iFocusable)
     {
         focusables.Remove(iFocusable);
-        PlayerCamera as_playercam = (PlayerCamera)active_camera;
-        if (!!as_playercam)
+        try {
+            PlayerCamera as_playercam = (PlayerCamera)active_camera;
+            if (!!as_playercam)
+            {
+                as_playercam.OnFocusRemove(iFocusable);
+            }
+        } catch (InvalidCastException e )
         {
-            as_playercam.OnFocusRemove(iFocusable);
+            this.Log("removeFocusable called when active_camera is not a PlayerCamera.");
         }
+
     }
 }
