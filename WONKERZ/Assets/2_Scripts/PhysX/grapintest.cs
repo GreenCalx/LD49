@@ -9,12 +9,12 @@ public class grapintest : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        Utils.attachControllable<grapintest>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     private void OnDestroy()
     {
-        Utils.detachControllable<grapintest>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

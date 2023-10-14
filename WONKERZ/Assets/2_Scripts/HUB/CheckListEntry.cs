@@ -26,12 +26,12 @@ public class CheckListEntry : MonoBehaviour, IControllable
     void Start()
     {
         playerInCheckList = false;
-        Utils.attachControllable<CheckListEntry>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable<CheckListEntry>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
@@ -107,7 +107,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
         uiCheckList.SetActive(true);
 
         UIBountyMatrix uibm = uiCheckList.GetComponentInChildren<UIBountyMatrix>();
-        uibm.onActivate.Invoke();
+        //uibm.onActivate.Invoke();
         uibm.onDeactivate.AddListener(close);
     }
 

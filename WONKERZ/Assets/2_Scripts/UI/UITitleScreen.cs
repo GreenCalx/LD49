@@ -6,14 +6,18 @@ using Schnibble;
 public class UITitleScreen : UIPanelTabbed
 {
     public UIPanelTabbed confirmExitPanel;
-    void Start(){
+    
+    void Start()
+    {
+        inputMgr = Access.PlayerInputsManager().player1;
+
         activate();
         cancelDeactivatePanel = false;
     }
 
     void OnDestroy()
     {
-        deactivate();
+        //deactivate();
     }
     protected override void ProcessInputs(InputManager currentMgr, GameInput[] entry){
         base.ProcessInputs(currentMgr, entry);

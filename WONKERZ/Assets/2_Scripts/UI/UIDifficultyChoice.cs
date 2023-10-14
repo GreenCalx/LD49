@@ -19,6 +19,12 @@ public class UIDifficultyChoice : UIPanelTabbed
     public TextMeshProUGUI panelHintTxt;
     public TextMeshProUGUI cpHintTxt;
 
+    void Awake()
+    {
+        base.Awake();
+        inputMgr = Access.PlayerInputsManager().player1;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +36,7 @@ public class UIDifficultyChoice : UIPanelTabbed
             childUIToActivate.SetActive(true);
             Access.SceneLoader().lockScene();
             onActivate.Invoke();
+
         } else {
             Destroy(gameObject);
         }

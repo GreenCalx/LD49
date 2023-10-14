@@ -37,10 +37,10 @@ public class TutorialBalloon : MonoBehaviour
         set
         {
             if (_currTrigger!=null)
-            { Utils.detachControllable<TutorialBalloonTrigger>(_currTrigger);}
+            { Access.PlayerInputsManager().player1.Attach(_currTrigger as IControllable);}
             _currTrigger = value;
             if(_currTrigger!=null)
-                Utils.attachControllable<TutorialBalloonTrigger>(_currTrigger);
+                Access.PlayerInputsManager().player1.Detach(_currTrigger as IControllable);
         }
 
         get { return _currTrigger; }

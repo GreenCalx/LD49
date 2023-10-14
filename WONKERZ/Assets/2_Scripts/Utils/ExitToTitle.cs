@@ -8,12 +8,12 @@ public class ExitToTitle : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        Utils.attachControllable<ExitToTitle>(this);
+        Access.PlayerInputsManager().player1.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable<ExitToTitle>(this);
+        Access.PlayerInputsManager().player1.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -35,7 +36,12 @@ public class CinematicDialog : MonoBehaviour, IControllable
     {
         if (!dialogIsOver && !!dialog)
             dialog.end_dialog();
-        Utils.detachControllable<CinematicDialog>(this);
+        
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
@@ -64,7 +70,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
             uiSpeedAndLifepoolRef.gameObject.SetActive(false);
 
         dialogIsOver = false;
-        Utils.attachControllable<CinematicDialog>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
         dialog.talk();
         while (dialog.dialogIsPlaying())
         {
@@ -74,7 +80,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
             callbackOnDialogDone.Invoke();
-        Utils.detachControllable<CinematicDialog>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
 
         if (!!uiTurboAndSaveRef)
             uiTurboAndSaveRef.gameObject.SetActive(true);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
+using System;
 using static Schnibble.SchPhysics; // axles
 
 public class TutorialBalloonTrigger : MonoBehaviour, IControllable
@@ -43,7 +44,11 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Utils.detachControllable<TutorialBalloonTrigger>(this);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
@@ -175,7 +180,7 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     public void HappyValidation()
     {
         tutorialBalloon.updateDisplay(validationElements);
-        Utils.detachControllable<TutorialBalloonTrigger>(this);
+        Access.PlayerInputsManager().player1.Detach(this as IControllable);
         tutorialCompleted = true;
     }
     // -------------

@@ -15,17 +15,16 @@ public class InputButtonHighlighter : MonoBehaviour, IControllable
     public Color highlightColor;
 
     [Header("Internals")]
-    public float elapsedDelayTime;
     public bool highlight = false;
 
     void Start()
     {
-        Utils.attachControllable<InputButtonHighlighter>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable<InputButtonHighlighter>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     void Update()

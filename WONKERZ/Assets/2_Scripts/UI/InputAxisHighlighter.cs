@@ -26,7 +26,11 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Access.Player().inputMgr.Detach(this as IControllable);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void LateUpdate()

@@ -10,7 +10,10 @@ public class UIBountyMatrix : UIPanelTabbed
     // Start is called before the first frame update
     void Start()
     {
+        inputMgr = Access.PlayerInputsManager().player1;
+
         bountyMatrix = Access.BountyArray();
+        activate();
     }
 
     // Update is called once per frame

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.008085006, g: 0.009271556, b: 0.010996882, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -416,7 +416,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &633478535
 MonoBehaviour:
@@ -444,7 +444,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2461822761771495986, guid: f9b3ae4c960f9f941b70f5c58ed43a06, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2461822761771495986, guid: f9b3ae4c960f9f941b70f5c58ed43a06, type: 3}
       propertyPath: m_LocalPosition.x
@@ -584,7 +584,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &885122053
 GameObject:
@@ -682,7 +682,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 17.54}
 --- !u!1 &963194225
 GameObject:
@@ -774,6 +774,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camType: 7
   cam: {fileID: 963194227}
+--- !u!114 &1097663058 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 247255506, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+  m_PrefabInstance: {fileID: 4879215660910508712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fdea47870f0c684aa5841fa31d46e50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1953887952 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5027294951062732548, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+  m_PrefabInstance: {fileID: 4879215660910508712}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05252a25562730c4bb3c7c98896d0f40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1983547961
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -799,7 +821,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2966540010634319501, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2966540010634319501, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -932,7 +954,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5669364779857807237, guid: c12560650f6caab4f8ff2235a9b94717, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5669364779857807237, guid: c12560650f6caab4f8ff2235a9b94717, type: 3}
       propertyPath: m_LocalPosition.x
@@ -983,6 +1005,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 197377146, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+      propertyPath: Parent
+      value: 
+      objectReference: {fileID: 1097663058}
+    - target: {fileID: 247255506, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+      propertyPath: toggle
+      value: 
+      objectReference: {fileID: 1953887952}
+    - target: {fileID: 1031483505, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+      propertyPath: InputManagerSetter.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031483505, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+      propertyPath: InputManagerSetter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1031483505, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
+      propertyPath: InputManagerSetter.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1736255378, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1029,7 +1071,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4879215659557641974, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4879215659557641974, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
       propertyPath: m_AnchorMax.x

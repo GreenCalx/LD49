@@ -607,13 +607,13 @@ public class PlayerController : MonoBehaviour, IControllable
     public void ActivateCar()
 {
     carInstance.SetActive(true);
-    Utils.attachControllable(car);
+    Access.Player().inputMgr.Attach(car as IControllable);
 }
 
 public void DeactivateCar()
 {
     carInstance.SetActive(false);
-    Utils.detachControllable(car);
+    Access.Player().inputMgr.Detach(car as IControllable);
 }
 
 public bool IsInMenu() { return isInMenu; }

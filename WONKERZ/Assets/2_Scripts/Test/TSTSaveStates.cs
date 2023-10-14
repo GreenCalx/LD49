@@ -37,12 +37,12 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         nPanelUsed = 0;
         nPanelRespawn = 0;
         elapsedSinceLastSS = 0f;
-        Utils.attachControllable(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     // Update is called once per frame

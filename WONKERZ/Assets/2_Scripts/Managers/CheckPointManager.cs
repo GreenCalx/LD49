@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
@@ -64,7 +65,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         if (last_camerapoint == null)
             last_camerapoint = race_start.GetComponent<StartPortal>();
 
-        Utils.attachControllable<CheckPointManager>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
 
         // Init from difficulty
         switch (Access.TrackManager().track_score.selected_diff)
@@ -103,7 +104,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Utils.detachControllable<CheckPointManager>(this);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

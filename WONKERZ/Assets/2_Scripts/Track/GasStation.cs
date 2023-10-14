@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -100,7 +101,12 @@ public class GasStation : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Utils.detachControllable<GasStation>(this);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
+        
     }
 
     void changeLightsColor(Color iColor)
@@ -127,7 +133,7 @@ public class GasStation : MonoBehaviour, IControllable
         {
             UICheckpoint uicp = Access.UICheckpoint();
 
-            Utils.attachControllable<GasStation>(this);
+            Access.PlayerInputsManager().player1.Attach(this as IControllable);
             Access.CheckPointManager().playerInGasStation = true;
             askCoinz.gameObject.SetActive(true);
             askCoinz.animate = true;
@@ -138,7 +144,7 @@ public class GasStation : MonoBehaviour, IControllable
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            Utils.detachControllable<GasStation>(this);
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
             Access.CheckPointManager().playerInGasStation = false;
             if (IsPumpingGas)
             {

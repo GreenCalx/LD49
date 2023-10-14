@@ -19,12 +19,12 @@ public class GarageEntry : MonoBehaviour, IControllable
     void Start()
     {
         playerInGarage = false;
-        Utils.attachControllable<GarageEntry>(this);
+        Access.PlayerInputsManager().player1.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable<GarageEntry>(this);
+        Access.PlayerInputsManager().player1.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

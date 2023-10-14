@@ -10,14 +10,14 @@ public class Hookable : MonoBehaviour, IControllable
     // Start is called before the first frame update
     void Start()
     {
-        Utils.attachControllable<Hookable>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
         ccPlayer = null;
         hook.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        Utils.detachControllable<Hookable>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

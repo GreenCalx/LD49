@@ -46,11 +46,11 @@ public class CameraManager : MonoBehaviour, IControllable
 
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         inTransition = false;
         SceneManager.sceneLoaded += OnSceneLoaded;
-        Utils.attachControllable<CameraManager>(this);
+        Access.PlayerInputsManager().player1.Attach(this as IControllable);
         focusables = new List<CameraFocusable>();
     }
 
@@ -70,7 +70,7 @@ public class CameraManager : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Utils.detachControllable<CameraManager>(this);
+        Access.PlayerInputsManager().player1.Detach(this as IControllable);
     }
 
     // Switch cameras between HUB cameras

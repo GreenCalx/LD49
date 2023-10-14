@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using Schnibble;
 
 public class ManualCamera : PlayerCamera, IControllable
@@ -47,7 +48,8 @@ public class ManualCamera : PlayerCamera, IControllable
     void Awake()
     {
         cam = GetComponent<Camera>();
-        Utils.attachControllable<ManualCamera>(this);
+        //Utils.attachControllable<ManualCamera>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
         initial_FOV = cam.fieldOfView;
         jumpStartTime = 0f;
         baseFocusRadius = focusRadius;
@@ -66,7 +68,11 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void OnDestroy()
     {
-        Utils.detachControllable<ManualCamera>(this);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

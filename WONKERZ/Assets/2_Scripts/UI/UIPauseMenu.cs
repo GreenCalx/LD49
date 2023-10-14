@@ -27,14 +27,18 @@ public class UIPauseMenu : MonoBehaviour, IControllable
     public Color trackDetailValidated = Color.green;
     public Color trackDetailPending = Color.red;
 
-    void Awake()
+    void Start()
     {
-        Utils.attachControllable(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
-        Utils.detachControllable(this);
+        try{
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        } catch (NullReferenceException e) {
+            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+        }
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
@@ -46,8 +50,10 @@ public class UIPauseMenu : MonoBehaviour, IControllable
             updateTrackDetails();
 
             UIHandle.SetActive(true);
-            panel.inputMgr = Access.PlayerInputsManager().all;
+            panel.inputMgr = Access.Player().inputMgr;
+            //panel.inputMgr = Access.PlayerInputsManager().all;
             panel.onActivate.Invoke();
+            panel.activate();
         }
     }
 

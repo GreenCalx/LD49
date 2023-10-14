@@ -91,7 +91,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         rootNode.forceQuit();
 
-        Utils.detachControllable<CinematicTrigger>(this);
+        Access.Player().inputMgr.Detach(this as IControllable);
         
         LevelEntryUI leui = Access.LevelEntryUI();
         if (!!leui)
@@ -139,7 +139,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
             Access.CheckPointManager().player_in_cinematic = true;
         }
 
-        Utils.attachControllable<CinematicTrigger>(this);
+        Access.Player().inputMgr.Attach(this as IControllable);
         
         if (!!cam)
         {
