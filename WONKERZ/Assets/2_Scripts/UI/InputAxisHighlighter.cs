@@ -11,6 +11,9 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
     [Header("Tweaks")]
     public PlayerInputs.InputCode axis0;
     public PlayerInputs.InputCode axis1;
+    // If a button is needed to process axis0/axis1
+    public bool requiresTriggerModificator = false;
+    public PlayerInputs.InputCode optionalTriggerModif;
     public Color baseColor;
     public Color highlightColor;
     public float deadzone = 0.1f;
@@ -48,6 +51,12 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
         // {
         //     Debug.Log("IM_Player1");
         // }      
+        if (requiresTriggerModificator)
+        {
+            GameInputButton modifTrigg = Entry[(int)optionalTriggerModif] as GameInputButton;
+            if (modifTrigg.GetState().up)
+                return;
+        }
 
         GameInputAxis   inputAxis0   = Entry[(int)axis0] as GameInputAxis;
         GameInputAxis   inputAxis1   = Entry[(int)axis1] as GameInputAxis;
@@ -61,7 +70,7 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
                 return;
             }
         } 
-        if ((null!=inputAxis1) && !highlight)
+        if (null!=inputAxis1)
         {
             var axis_value = inputAxis1.GetState().valueSmooth;
             if ((axis_value>deadzone)||(axis_value<(-1*deadzone)))

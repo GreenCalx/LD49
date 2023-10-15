@@ -25,6 +25,7 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Min(0f)] float jumpFocusRadiusStep = 1f;
     /// Internals
     private Vector3 focusPoint, previousFocusPoint;
+    private float previousHeadingAngle;
     private Vector2 orbitAngles = new Vector2(45f, 0f);
     [HideInInspector]
     public float lastManualRotationTime;
@@ -163,14 +164,15 @@ public class ManualCamera : PlayerCamera, IControllable
         
         Vector2 fwd_angle = (focus.position + focus.forward).normalized * -1;
         float headingAngle = GetAngle(fwd_angle);
-        
-        orbitAngles.y = headingAngle;
+        previousHeadingAngle = headingAngle;
+        //orbitAngles.y = headingAngle;
+        orbitAngles.y = focus.eulerAngles.y;
         orbitAngles.x = defaultVerticalAngle;
-        constrainAngles();
+        //constrainAngles();
 
         Debug.Log(orbitAngles);
         Quaternion lookRotation = Quaternion.Euler(orbitAngles);
-        Vector3 lookDirection = lookRotation * Vector3.forward;
+        Vector3 lookDirection = lookRotation * focus.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;
 
         Vector3 rectOffset = lookDirection * cam.nearClipPlane;
@@ -358,10 +360,6 @@ public class ManualCamera : PlayerCamera, IControllable
         if (null==secondaryFocus)
         {
             movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);
-            if  (movement.y < 0) // backward movement -- we dont want to rotate the camera around the player
-            {
-                return false;
-            }
         }
         else {
             movement = new Vector2( secondaryFocus.transform.position.x - focusPoint.x , secondaryFocus.transform.position.z - focusPoint.z);
@@ -374,7 +372,12 @@ public class ManualCamera : PlayerCamera, IControllable
         {
             return false;
         }
+
         float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
+        if (!ValidateNewHeadingAngle(headingAngle))
+        { return false; }
+
+        previousHeadingAngle = headingAngle;
         float deltaAbs = Mathf.Abs(Mathf.DeltaAngle(orbitAngles.y, headingAngle));
         float rotationChange = rotationSpeed * Mathf.Min(Time.unscaledDeltaTime, movementDeltaSqr);
         if (deltaAbs < alignSmoothRange)
@@ -402,6 +405,19 @@ public class ManualCamera : PlayerCamera, IControllable
         orbitAngles = new Vector2(defaultVerticalAngle, iHorAngle);
         transform.localRotation = Quaternion.Euler(orbitAngles);
 
+    }
 
+    public bool ValidateNewHeadingAngle(float iNewHeadingAngle)
+    {
+        // We don't want camera to go in front of player when he is going backward
+        // Thus we don't accept any new angle with a delta around 180~
+        // For now its not working well
+        // TODO : Use Vector3.SignedAngle for a better result
+        if (Mathf.DeltaAngle(iNewHeadingAngle, previousHeadingAngle) >= 170f )
+        {
+            return false;
+        }
+
+        return true;
     }
 }
