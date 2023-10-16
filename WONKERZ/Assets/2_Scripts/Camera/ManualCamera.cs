@@ -19,6 +19,7 @@ public class ManualCamera : PlayerCamera, IControllable
     [SerializeField, Min(0f)] public float alignDelayWithSecondaryFocus = 0f;
     [SerializeField, Range(0f, 90f)] float alignSmoothRange = 45f;
     [SerializeField] LayerMask obstructionMask = -1;
+    [SerializeField, Range(0f, 180f)] public float camReverseDetectionThreshold = 140f;
     [Header("Jump")]
     [SerializeField, Min(0f)] float jumpDelay = 5f;
     [SerializeField, Min(0f)] float jumpMaxFocusRadius = 15f;
@@ -160,8 +161,6 @@ public class ManualCamera : PlayerCamera, IControllable
 
     public override void resetView() 
     { 
-        Debug.Log("Reset view");
-        
         Vector2 fwd_angle = (focus.position + focus.forward).normalized * -1;
         float headingAngle = GetAngle(fwd_angle);
         previousHeadingAngle = headingAngle;
@@ -374,8 +373,11 @@ public class ManualCamera : PlayerCamera, IControllable
         }
 
         float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
+        Debug.Log("Auto rotation heading angle : " + headingAngle);
         if (!ValidateNewHeadingAngle(headingAngle))
-        { return false; }
+        { 
+            return false; 
+        }
 
         previousHeadingAngle = headingAngle;
         float deltaAbs = Mathf.Abs(Mathf.DeltaAngle(orbitAngles.y, headingAngle));
@@ -413,7 +415,8 @@ public class ManualCamera : PlayerCamera, IControllable
         // Thus we don't accept any new angle with a delta around 180~
         // For now its not working well
         // TODO : Use Vector3.SignedAngle for a better result
-        if (Mathf.DeltaAngle(iNewHeadingAngle, previousHeadingAngle) >= 170f )
+        float deltaAngle = Mathf.DeltaAngle(iNewHeadingAngle, previousHeadingAngle);
+        if (( deltaAngle >= camReverseDetectionThreshold) || (deltaAngle <= -camReverseDetectionThreshold))
         {
             return false;
         }

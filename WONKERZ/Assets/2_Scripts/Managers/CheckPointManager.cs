@@ -15,7 +15,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public bool player_in_cinematic = false;
 
     private GameObject player;
-    public GameObject Cam;
 
     // SaveStates
     public GameObject saveStateMarkerRef;
@@ -192,8 +191,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     // Update is called once per frame
     void Update()
     {
-        refreshCameras();
-        }
+    }
 
     public void putSaveStateDown()
     {
@@ -217,20 +215,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 saveStateMarkerInst.transform.rotation = ss_rot;
                 }
                 }
-                }
-
-    private void refreshCameras()
-    {
-        if (Cam == null)
-        {
-            Cam = Access.CameraManager().active_camera.gameObject;
-            this.LogWarn("Camera Ref refreshed in CheckPointManager.");
-            foreach (GameObject cp in checkpoints)
-            {
-                cp.GetComponent<CheckPoint>().Cam = Cam.GetComponent<Camera>();
-                }
-                }
-                }
+    }
 
     private void findMultiCheckpoints()
     {
@@ -348,10 +333,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
             ManualCamera manual_cam = CM.active_camera.GetComponent<ManualCamera>();
             if (!!manual_cam)
             { // force realignement
-                manual_cam.forceAlignToHorizontal(respawnSource.rotation.eulerAngles.y);
-                }
-                }
-                }
+                manual_cam.resetView();
+            }
+        }
+    }
 
     public void loadLastSaveState()
     {
@@ -421,22 +406,4 @@ public class CheckPointManager : MonoBehaviour, IControllable
         StartCoroutine(waitInputToResume(pc));
         }
 
-    public void updateCamera()
-    {
-        // Update caemra too !
-        var Direction = Cam.transform.position - player.transform.position;
-        var F = player.transform.forward;
-        var DirectionForward = new Vector3(Direction.x * F.x, Direction.y * F.y, Direction.z * F.z);
-        if (Direction.y < 0)
-        {
-            // Camera is below player be sure it is on top
-            Cam.transform.position = player.transform.position + (player.transform.up * 1000);
-            }
-
-        if (DirectionForward.magnitude > 0)
-        {
-            // Camera is in front of player, bu sure it is behind
-            Cam.transform.position = player.transform.position + (player.transform.forward * -10000);
-        }
-        }
-    }
+}
