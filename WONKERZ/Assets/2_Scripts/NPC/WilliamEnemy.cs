@@ -30,9 +30,10 @@ public class WilliamEnemy : SchAIAgent
     public string param_DEATH = "DEATH";
     public string param_TAUNT = "TAUNT";
     public string param_SURPRISED = "SURPRISED";
+    [Header("Effects")]
     public float death_effect_size = 8f;
-
     public float spottedMarkerDuration = 3f; 
+
     // AI
 
     private Vector3 lariat_destination = Vector3.zero;
@@ -79,6 +80,7 @@ public class WilliamEnemy : SchAIAgent
 
         if (idle_timer < current_idle_time)
         {
+            facePlayer();
             idle_timer += Time.deltaTime;
             return;
         }
@@ -149,7 +151,7 @@ public class WilliamEnemy : SchAIAgent
                 // Find if its because the destination is out of the navigated surface
                 // > If so, find the limit position on this surface aligned with computed prediction
                 // > Else, try to move randomly somewhere on the surface
-                lariat_destination = GetNextLimitPosition(lariat_destination);
+                lariat_destination = GetNextLimitPosition(lariat_destination, 50f);
                 if (!agent.SetDestination(lariat_destination))
                 {
                     Debug.LogError("William : Failed to attack player");
@@ -183,7 +185,7 @@ public class WilliamEnemy : SchAIAgent
         while (timer < guard_duration)
         {
             timer += Time.deltaTime;
-            //iAttacker.transform.LookAt(iTarget);
+            facePlayer();
             yield return null;
         }
         iAttacker.IdleAnim();
@@ -196,11 +198,9 @@ public class WilliamEnemy : SchAIAgent
 
     public void kill()
     {
-        
+        ai_kill();
         DeathAnim();
         foreach(var damager in damagers) { Destroy(damager); }
-
-        ai_kill();
 
         GameObject explosion = Instantiate(deathEffect, transform.position, Quaternion.identity);
         explosion.transform.localScale = transform.localScale * death_effect_size;
@@ -208,8 +208,18 @@ public class WilliamEnemy : SchAIAgent
 
         GameObject ghost = Instantiate(deathGhostPSRef, transform.position, Quaternion.identity);
         
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 2f);
         Destroy(this);
+    }
+
+    public void facePlayer()
+    {
+        Vector3 target = Access.Player().transform.position - transform.position;
+        float rotSpeed = 2f * Time.deltaTime;
+        float maxRotMagDelta = 0f;
+
+        Vector3 newDir = Vector3.RotateTowards(transform.forward, target, rotSpeed, maxRotMagDelta);
+        transform.rotation = Quaternion.LookRotation(newDir);
     }
 
 
