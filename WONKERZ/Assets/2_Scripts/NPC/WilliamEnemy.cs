@@ -13,6 +13,7 @@ public class WilliamEnemy : SchAIAgent
     public GameObject deathGhostPSRef;
     public GameObject playerSpottedEffect;
     public PlayerDetector guardDetector;
+    public List<PlayerDamager> damagers;
 
     [Header("Tweaks")]
     public float max_lariat_duration = 5f;
@@ -26,6 +27,9 @@ public class WilliamEnemy : SchAIAgent
     [Header("Anim")]
     public string param_ATK = "ATTACK";
     public string param_GUARD = "GUARD";
+    public string param_DEATH = "DEATH";
+    public string param_TAUNT = "TAUNT";
+    public string param_SURPRISED = "SURPRISED";
     public float death_effect_size = 8f;
 
     public float spottedMarkerDuration = 3f; 
@@ -65,6 +69,7 @@ public class WilliamEnemy : SchAIAgent
         if (lariat_destination!=Vector3.zero)
             return;
         StartCoroutine(ShowSpottedMarker(this));
+        SurprisedAnim();
     }
 
     protected override void InAggro()
@@ -191,15 +196,20 @@ public class WilliamEnemy : SchAIAgent
 
     public void kill()
     {
+        
+        DeathAnim();
+        foreach(var damager in damagers) { Destroy(damager); }
+
+        ai_kill();
+
         GameObject explosion = Instantiate(deathEffect, transform.position, Quaternion.identity);
         explosion.transform.localScale = transform.localScale * death_effect_size;
         explosion.GetComponent<ExplosionEffect>().runEffect();
 
         GameObject ghost = Instantiate(deathGhostPSRef, transform.position, Quaternion.identity);
         
-        ai_kill();
-        
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
+        Destroy(this);
     }
 
 
@@ -208,17 +218,44 @@ public class WilliamEnemy : SchAIAgent
     {
         animator.SetBool(param_GUARD, true);
         animator.SetBool(param_ATK, false);
+        animator.SetBool(param_SURPRISED, false);
+        animator.SetBool(param_TAUNT, false);
     }
 
     public void IdleAnim()
     {
         animator.SetBool(param_GUARD, false);
         animator.SetBool(param_ATK, false);  
+        animator.SetBool(param_SURPRISED, false);
+        animator.SetBool(param_TAUNT, false);
     }
 
     public void LariatAnim()
     {
         animator.SetBool(param_GUARD, false);
         animator.SetBool(param_ATK, true);  
+        animator.SetBool(param_SURPRISED, false);
+        animator.SetBool(param_TAUNT, false);
+    }
+
+    public void DeathAnim()
+    {
+        animator.SetBool(param_DEATH, true);  
+    }
+
+    public void SurprisedAnim()
+    {
+        animator.SetBool(param_SURPRISED, true);
+        animator.SetBool(param_GUARD, false);
+        animator.SetBool(param_ATK, false);  
+        animator.SetBool(param_TAUNT, false);
+    }
+
+    public void TauntAnim()
+    {
+        animator.SetBool(param_TAUNT, true);
+        animator.SetBool(param_GUARD, false);
+        animator.SetBool(param_ATK, false);  
+        animator.SetBool(param_SURPRISED, false);
     }
 }
