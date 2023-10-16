@@ -101,6 +101,7 @@ public class UIBindings : UIPanelTabbedScrollable
         AddInput(PlayerInputs.InputCode.CameraY);
         AddInput(PlayerInputs.InputCode.CameraChange);
         AddInput(PlayerInputs.InputCode.CameraReset);
+        AddInput(PlayerInputs.InputCode.CameraControl);
 
         AddTitle("General");
 
@@ -117,7 +118,7 @@ public class UIBindings : UIPanelTabbedScrollable
         AddInput(PlayerInputs.InputCode.Jump);
         AddInput(PlayerInputs.InputCode.Turbo);
 
-        AddInput(PlayerInputs.InputCode.WeightControl);
+
         AddInput(PlayerInputs.InputCode.WeightX);
         AddInput(PlayerInputs.InputCode.WeightY);
 

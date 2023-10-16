@@ -56,10 +56,10 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         if (!triggered)
             return;
 
-        weight_pressed = ((Entry[(int)PlayerInputs.InputCode.WeightControl] as GameInputButton).GetState().heldDown);
+        weight_pressed = ((Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton).GetState().up);
         if (weight_pressed)
         { weight_pressed_elapsed += Time.deltaTime; }
-        if ((Entry[(int)PlayerInputs.InputCode.WeightControl] as GameInputButton).GetState().up)
+        if ((Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton).GetState().heldDown)
         { weight_pressed_elapsed = 0f; }
 
         jump_pressed = ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down);

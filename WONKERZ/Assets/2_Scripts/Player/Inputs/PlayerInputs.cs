@@ -64,7 +64,7 @@ public class Player0Inputs : PlayerInputs
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.Handbrake,
-            new GameInputButton("Handbrake","Handbrake to slip", new Controller.InputCode(Controller.JoystickButtonsCode.X), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("Handbrake","Handbrake to slip", new Controller.InputCode(Controller.JoystickButtonsCode.LB), new Controller.InputCode(KeyCode.F)));
 
 
         controller.AddInput((int)InputCode.Turbo,
@@ -129,6 +129,9 @@ public class Player1Inputs : PlayerInputs
                     new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightV), new Controller.InputCode(Controller.JoystickAxisCode.RightVNeg)),
                     new GameInputAxis.Axis(new Controller.InputCode(Controller.MouseCode.Cursor), new Controller.InputCode(Controller.MouseCode.Cursor)),
                     defaultAxisSettings));
+            
+            controller.AddInput((int)InputCode.CameraControl,
+            new GameInputButton("CameraControl", "Switch to Camera Control", new Controller.InputCode(Controller.JoystickButtonsCode.RB), new Controller.InputCode(KeyCode.F)));
 
             controller.AddInput((int)InputCode.CameraChange,
                 new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
@@ -156,20 +159,17 @@ public class Player1Inputs : PlayerInputs
                 new GameInputButton("Jump","Jump (maintainable)", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.F)));
 
 
-            controller.AddInput((int)InputCode.WeightControl,
-                new GameInputButton("WeightControl", "Car weight and aerials control", new Controller.InputCode(Controller.JoystickButtonsCode.LB), new Controller.InputCode(KeyCode.F)));
+        controller.AddInput((int)InputCode.WeightX,
+            new GameInputAxis("WeightX", "Car weight and aerials control roll left/right",
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightH), new Controller.InputCode(Controller.JoystickAxisCode.RightHNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
+                defaultAxisSettings));
 
-            controller.AddInput((int)InputCode.WeightX,
-                new GameInputAxis("WeightX", "Car weight and aerials control roll left/right",
-                    new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftH), new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg)),
-                    new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
-                    defaultAxisSettings));
-
-            controller.AddInput((int)InputCode.WeightY,
-                new GameInputAxis("WeightY", "Car weight and aerials control roll control/back",
-                    new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftV), new Controller.InputCode(Controller.JoystickAxisCode.LeftVNeg)),
-                    new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
-                    defaultAxisSettings));
+        controller.AddInput((int)InputCode.WeightY,
+            new GameInputAxis("WeightY", "Car weight and aerials control roll control/back",
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightV), new Controller.InputCode(Controller.JoystickAxisCode.RightVNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
+                defaultAxisSettings));
 
             // ux
 
@@ -234,11 +234,11 @@ public class PlayerInputs
         SaveStatesPlant,
         SaveStatesReturn,
         GiveCoinsForTurbo,
+        CameraControl,
         // player: car
         Handbrake,
         Jump,
         Turbo,
-        WeightControl,
         // ux
         UIUp,
         UIDown,
@@ -281,13 +281,16 @@ public class PlayerInputs
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.CameraChange,
-            new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
+            new GameInputButton("CameraSwitch", "Change camera", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
         
         controller.AddInput((int)InputCode.CameraFocus, 
             new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
         
         controller.AddInput((int)InputCode.CameraReset,
             new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
+
+        controller.AddInput((int)InputCode.CameraControl,
+            new GameInputButton("CameraControl", "Activate Manual Camera", new Controller.InputCode(Controller.JoystickButtonsCode.RB), new Controller.InputCode(KeyCode.F)));
         // misc : save
 
         controller.AddInput((int)InputCode.SaveStatesPlant,
@@ -321,7 +324,7 @@ public class PlayerInputs
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.Handbrake,
-            new GameInputButton("Handbrake","Handbrake to slip", new Controller.InputCode(Controller.JoystickButtonsCode.X), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("Handbrake","Handbrake to slip", new Controller.InputCode(Controller.JoystickButtonsCode.LB), new Controller.InputCode(KeyCode.F)));
 
 
         controller.AddInput((int)InputCode.Turbo,
@@ -332,18 +335,15 @@ public class PlayerInputs
             new GameInputButton("Jump","Jump (maintainable)", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.F)));
 
 
-        controller.AddInput((int)InputCode.WeightControl,
-            new GameInputButton("WeightControl", "Car weight and aerials control", new Controller.InputCode(Controller.JoystickButtonsCode.LB), new Controller.InputCode(KeyCode.F)));
-
         controller.AddInput((int)InputCode.WeightX,
             new GameInputAxis("WeightX", "Car weight and aerials control roll left/right",
-                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftH), new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightH), new Controller.InputCode(Controller.JoystickAxisCode.RightHNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
                 defaultAxisSettings));
 
         controller.AddInput((int)InputCode.WeightY,
             new GameInputAxis("WeightY", "Car weight and aerials control roll control/back",
-                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftV), new Controller.InputCode(Controller.JoystickAxisCode.LeftVNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightVNeg), new Controller.InputCode(Controller.JoystickAxisCode.RightV)),
                 new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
                 defaultAxisSettings));
 
