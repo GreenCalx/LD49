@@ -136,12 +136,16 @@ public class ManualCamera : PlayerCamera, IControllable
         // poll for focus change
         if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
         {
-            if ((elapsedPressTimeToCancelSecondaryFocus) > 0f && (elapsedPressTimeToCancelSecondaryFocus <= pressTimeSecondaryFocus))
+            if (!focusInputLock)
             {
-                changeFocus();
-            } else if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) {
-                resetFocus();
+                if ((elapsedPressTimeToCancelSecondaryFocus) > 0f && (elapsedPressTimeToCancelSecondaryFocus <= pressTimeSecondaryFocus))
+                {
+                    changeFocus();
+                } else if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) {
+                    resetFocus();
+                }
             }
+
             focusInputLock = false;
             elapsedPressTimeToCancelSecondaryFocus = 0f;
             if (!!uISecondaryFocus)
