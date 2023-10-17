@@ -89,7 +89,13 @@ public class UIPauseMenu : MonoBehaviour, IControllable
 
     public void OnCameraToggleChange(bool value)
     {
-        Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
+        //Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
+        // Disable auto rot of manual camera
+        ManualCamera mc = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+        if (!!mc)
+        {
+            mc.autoAlign = value;
+        }
     }
 
     public void GetCameraToggleValue(UICheckbox.UICheckboxValue value)

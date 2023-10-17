@@ -174,9 +174,6 @@ public class PlayerCosmeticsManager : MonoBehaviour
                     rend.material = mat; 
                     cc_color.materialName = iMatName;
                 }
-            
-            //if (!!pRend)
-            //    pRend.material = newmat;
             }
         }
     }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -33,6 +34,39 @@ public class DeathController : MonoBehaviour
         {
             rb.isKinematic = true;
             rb.detectCollisions = false;
+        
+            updateMeshFromPlayer(rb.gameObject);
+        }
+    }
+
+    public void updateMeshFromPlayer(GameObject iGO)
+    {
+        CarColorizable cc = iGO.GetComponent<CarColorizable>();
+        MeshRenderer mr = iGO.GetComponent<MeshRenderer>();
+        MeshFilter mf = iGO.GetComponent<MeshFilter>();
+
+        if (!!cc && !!mr && !!mf)
+        {
+            // Get Player ref  
+            GameObject p = Access.Player().gameObject;
+            MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
+            int n_parts = pRends.Length;
+            for (int i=0; i < n_parts; i++)
+            {
+                MeshFilter pfilt = pRends[i];
+                MeshRenderer prend = pfilt.gameObject.GetComponent<MeshRenderer>();
+                CarColorizable player_cc = pfilt.gameObject.GetComponent<CarColorizable>();
+                if (!!player_cc && !!prend)
+                {
+                    if (player_cc.part == cc.part)
+                    {
+                        mr.material     = prend.material;       // colorize
+                        mf.sharedMesh   = pfilt.sharedMesh;     // customize
+                        break;
+                    }
+                }
+            } 
+
         }
     }
 
@@ -40,13 +74,15 @@ public class DeathController : MonoBehaviour
     {
         foreach (var rb in objects)
         {
+            updateMeshFromPlayer(rb.gameObject);
+
             rb.isKinematic = false;
             rb.detectCollisions = true;
             rb.AddExplosionForce(force, transform.position, radius, upmodif);
             rb.AddForce(iSteer / 3, ForceMode.Acceleration);
         }
 
-        GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
+        //GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
 
         Time.timeScale = 0.5f;
         isStarted = true;

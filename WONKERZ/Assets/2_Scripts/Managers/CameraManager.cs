@@ -113,7 +113,7 @@ public class CameraManager : MonoBehaviour, IControllable
             }//! for
             if ((currType != nextType) && (nextType != GameCamera.CAM_TYPE.UNDEFINED))
             {
-                changeCamera(nextType);
+                changeCamera(nextType, true);
             }
         } else {
             elapsedTimeToResetCamView = 0f;
@@ -168,7 +168,7 @@ public class CameraManager : MonoBehaviour, IControllable
     }
 
     // Retrieves only the first found CAM_TYPE camera
-    public void changeCamera(GameCamera.CAM_TYPE iNewCamType)
+    public void changeCamera(GameCamera.CAM_TYPE iNewCamType, bool iTransitionCam)
     {
         // 0 : Clean up nulls CameraType to free space for new ones
         var null_keys = cameras.Where(e => e.Value == null).Select(e => e.Key).ToList();
@@ -208,6 +208,10 @@ public class CameraManager : MonoBehaviour, IControllable
         }
 
         // 2 : Deactivate active_camera
+        if (!iTransitionCam)
+        {
+            operateCameraSwitch(nextCamera);
+        }
 
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
@@ -220,9 +224,9 @@ public class CameraManager : MonoBehaviour, IControllable
         {
             operateCameraSwitch(nextCamera);
         }
-            }
+    }
 
-    public void changeCamera(CinematicCamera iCineCam)
+    public void changeCamera(CinematicCamera iCineCam, bool iTransitionCam)
     {
         if (iCineCam == null)
         {
@@ -230,6 +234,11 @@ public class CameraManager : MonoBehaviour, IControllable
         }
 
         nextCamera = iCineCam;
+        
+        if (!iTransitionCam)
+        {
+            operateCameraSwitch(nextCamera);
+        }
 
         // transition if previous camera was defined
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
@@ -287,7 +296,7 @@ public class CameraManager : MonoBehaviour, IControllable
         inTransition = false;
         Destroy(findCameraInScene(GameCamera.CAM_TYPE.TRANSITION).gameObject);
         Destroy(transitionStart.gameObject);
-        }
+    }
 
     public void operateCameraSwitch(GameCamera iNewCam)
     {
@@ -374,18 +383,30 @@ public class CameraManager : MonoBehaviour, IControllable
             ToonPipeline deathcam_tp = deathCamInst.GetComponent<ToonPipeline>();
             deathcam_tp.mgr       = active_tp.mgr;
             deathcam_tp.mainLight = active_tp.mainLight;
-            }
+        }
         deathCamInst.transform.position = active_camera.transform.position;
         deathCamInst.transform.rotation = active_camera.transform.rotation;
 
         deathCamInst.GetComponent<CinematicCamera>().launch();
         StartCoroutine(endDeathCam());
-        }
+    }
     private IEnumerator endDeathCam()
     {
         yield return new WaitForSeconds(deathCamDuration);
         deathCamInst.GetComponent<CinematicCamera>().end();
+        Destroy(deathCamInst.gameObject);
     }
+
+    public bool TryResetView()
+    {
+        if (active_camera!=null)
+        {
+            active_camera.resetView();
+            return true;
+        }
+        return false;
+    }
+
 
     public void addFocusable(CameraFocusable iFocusable)
     {

@@ -64,13 +64,13 @@ public class TravellingCamera : CinematicCamera
 
     public override void launch()
     {
-        CameraManager.Instance.changeCamera(this);
+        CameraManager.Instance.changeCamera(this, transitionIn);
         launched = true;
     }
 
     public override void end()
     {
-        CameraManager.Instance.changeCamera(camTypeOnFinish);
+        CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
         launched = false;
     }
 

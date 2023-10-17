@@ -387,12 +387,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
         if (iFromDeath)
         {
-            Access.CameraManager().launchDeathCam();
             Access.CollectiblesManager().jar.collectedNuts = 0;
             return;
-            }
-
-            }
+        }
+        Access.CameraManager().TryResetView();
+    }
 
     public void loadRaceStart()
     {

@@ -377,7 +377,7 @@ public class ManualCamera : PlayerCamera, IControllable
         }
 
         float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
-        Debug.Log("Auto rotation heading angle : " + headingAngle);
+
         if (!ValidateNewHeadingAngle(headingAngle))
         { 
             return false; 

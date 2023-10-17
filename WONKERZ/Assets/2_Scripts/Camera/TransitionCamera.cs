@@ -30,6 +30,6 @@ public class TransitionCamera : CinematicCamera
     public override void end()
     {
         launched = false;
-        CameraManager.Instance.changeCamera(camTypeOnFinish);
+        CameraManager.Instance.changeCamera(camTypeOnFinish, false);
     }
 }

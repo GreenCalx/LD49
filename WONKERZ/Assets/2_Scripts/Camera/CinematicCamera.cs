@@ -7,6 +7,8 @@ public class CinematicCamera : GameCamera
     public delegate int OnCinematicEnd();
 
     public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.ORBIT;
+    public bool transitionIn = true;
+    public bool transitionOut = true;
     protected bool launched = false;
     void Awake()
     {
@@ -31,13 +33,13 @@ public class CinematicCamera : GameCamera
 
     public virtual void launch()
     {
-        CameraManager.Instance.changeCamera(this);
+        CameraManager.Instance.changeCamera(this, transitionIn);
         launched = true;
     }
 
     public virtual void end()
     {
         launched = false;
-        CameraManager.Instance.changeCamera(camTypeOnFinish);
+        CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
     }
 }

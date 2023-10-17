@@ -588,15 +588,15 @@ public class PlayerController : MonoBehaviour, IControllable
 
         // add dummy's suspension/ wheels to DC objects
         DeathController dc = dummy_player.GetComponent<DeathController>();
-        dc.objects.Clear();
-        foreach (Transform child in dummy_player.transform)
-        {
-            Rigidbody rb = child.GetComponent<Rigidbody>();
-            if (!!rb)
-            dc.objects.Add(rb);
-        }
-
+        // dc.objects.Clear();
+        // foreach (Transform child in dummy_player.transform)
+        // {
+        //     Rigidbody rb = child.GetComponent<Rigidbody>();
+        //     if (!!rb)
+        //     dc.objects.Add(rb);
+        // }
         dc.Activate(iSteer);
+        Access.CameraManager().launchDeathCam();
     }
 
     public void ActivateCar()

@@ -11,7 +11,7 @@ public class UICamera : GameCamera
     // Start is called before the first frame update
     void Start()
     {
-        Access.CameraManager().changeCamera(camType);
+        Access.CameraManager().changeCamera(camType, true);
     }
 
     // Update is called once per frame
