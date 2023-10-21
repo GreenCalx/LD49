@@ -13,6 +13,7 @@ public class WilliamEnemy : SchAIAgent
     public GameObject deathGhostPSRef;
     public GameObject playerSpottedEffect;
     public PlayerDetector guardDetector;
+    public PlayerDetector directHitDetector;
     public List<PlayerDamager> damagers;
 
     [Header("Tweaks")]
@@ -20,6 +21,7 @@ public class WilliamEnemy : SchAIAgent
     public float lariat_rot_per_sec = 1f;
     public float lariat_target_reached_epsilon = 1f;
     public float guard_duration = 3f;
+    public float direct_hit_duration = 1.5f;
     public float idle_time_between_action = 2f;
     public float idle_time_variance = 0.5f;
     [Range(0f,50f)]
@@ -30,6 +32,7 @@ public class WilliamEnemy : SchAIAgent
     public string param_DEATH = "DEATH";
     public string param_TAUNT = "TAUNT";
     public string param_SURPRISED = "SURPRISED";
+    public string param_DHIT = "DIRECT_HIT";
     [Header("Effects")]
     public float death_effect_size = 8f;
     public float spottedMarkerDuration = 3f; 
@@ -86,7 +89,10 @@ public class WilliamEnemy : SchAIAgent
         }
 
         if (guardDetector.playerInRange)
-            CallGuard();
+            if (directHitDetector.playerInRange)
+                CallDirectHit();
+            else
+                CallGuard();
         else
             CallLariat();
     }
@@ -117,6 +123,31 @@ public class WilliamEnemy : SchAIAgent
     {
         Debug.Log(gameObject.name + " CallLariat");
         LaunchAction(LariatSpin(this, coordinator.playerDetector.player.position));
+    }
+
+    public void CallDirectHit()
+    {
+        Debug.Log(gameObject.name + " CallDirectHit");
+        LaunchAction(DirectHit(this, coordinator.playerDetector.player.position));
+    }
+
+    private IEnumerator DirectHit(WilliamEnemy iAttacker, Vector3 iTargetPos)
+    {
+        iAttacker.DirectHitAnim();
+        agent.isStopped = true;
+        float timer = 0f;
+        while (timer < guard_duration)
+        {
+            timer += Time.deltaTime;
+            facePlayer();
+            yield return null;
+        }
+        
+        updateCurrentIdleTime();
+        idle_timer = 0f;
+        iAttacker.StopAction();
+        iAttacker.IdleAnim();
+        agent.isStopped = false;
     }
 
     private IEnumerator ShowSpottedMarker(WilliamEnemy iSelf)
@@ -230,6 +261,7 @@ public class WilliamEnemy : SchAIAgent
         animator.SetBool(param_ATK, false);
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
+        animator.SetBool(param_DHIT, false);
     }
 
     public void IdleAnim()
@@ -238,6 +270,7 @@ public class WilliamEnemy : SchAIAgent
         animator.SetBool(param_ATK, false);  
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
+        animator.SetBool(param_DHIT, false);
     }
 
     public void LariatAnim()
@@ -246,6 +279,7 @@ public class WilliamEnemy : SchAIAgent
         animator.SetBool(param_ATK, true);  
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
+        animator.SetBool(param_DHIT, false);
     }
 
     public void DeathAnim()
@@ -259,6 +293,7 @@ public class WilliamEnemy : SchAIAgent
         animator.SetBool(param_GUARD, false);
         animator.SetBool(param_ATK, false);  
         animator.SetBool(param_TAUNT, false);
+        animator.SetBool(param_DHIT, false);
     }
 
     public void TauntAnim()
@@ -267,5 +302,16 @@ public class WilliamEnemy : SchAIAgent
         animator.SetBool(param_GUARD, false);
         animator.SetBool(param_ATK, false);  
         animator.SetBool(param_SURPRISED, false);
+        animator.SetBool(param_DHIT, false);
+    }
+
+    public void DirectHitAnim()
+    {
+        animator.SetBool(param_TAUNT, false);
+        animator.SetBool(param_GUARD, false);
+        animator.SetBool(param_ATK, false);  
+        animator.SetBool(param_SURPRISED, false); 
+
+        animator.SetBool(param_DHIT, true);
     }
 }

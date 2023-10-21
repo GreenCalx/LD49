@@ -9,7 +9,7 @@ public static class DialogBank
 
     public static readonly string[] INTRO_CP_DIALOG= 
     {
-        "Hello there sleeping beauty...",
+        "Hello there...",
         "I am Ricky, sole purveyor of the mighty black tar fluid that runs in our pipes.",
         "The headchef of the Garage, Ernest, found the wreckage of your body on the shoreline.",
         "He hauled you back to the Garage and loaded this simulation to help you get back on track while he is twisting bolts.",
@@ -19,17 +19,17 @@ public static class DialogBank
 
     public static readonly string[] INTRO_CP2_DIALOG= 
     {
-        "You can control the weight of your car when grounded or airborne.",
-        "It helps getting over obstacles, land on your wheels or just regain balance.",
-        "Try to steer it front and back as the waves go in the next section. If done correctly, you won't need to accelerate at all."
+        "You can compress your springs and lower your gravity center.",
+        "Upon release, you will jump automatically as the springs extends.",
+        "The longer you compressed them, the higher the jump.",
+        "When airborne, control the weight to land on your wheels.",
+        "Try to jump between waves in the next section to get used to it !"
     }; 
 
     public static readonly string[] INTRO_CP3_DIALOG= 
     {
-        "You can compress your springs to gain more grip by lowering your gravity center.",
-        "Upon release, you will jump automatically as the springs extends.",
-        "The more you compressed the springs, the higher the jump.",
-        "Although it hinders your capacity to climb obstacles or navigate hazardous terrain, it is useful to maintain speed on flat grounds."
+        "Weight can also be used grounded to keep balance or navigate on chaotic terrains.",
+        "Keep it pushed towards a steep surface you want to keep a grip on."
     }; 
 
     public static readonly string[] INTRO_CP4_DIALOG= 
