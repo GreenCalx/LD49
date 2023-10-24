@@ -12,6 +12,7 @@ public class PlayerDetector : MonoBehaviour
 
     [Header("Optionals")]
     public UnityEvent callBackOnPlayerEnterRange;
+    public UnityEvent callBackOnPlayerInRange;
     public UnityEvent callbackOnPlayerExitRange;
     // Start is called before the first frame update
     void Start()
@@ -29,11 +30,11 @@ public class PlayerDetector : MonoBehaviour
     void OnTriggerStay(Collider iCollider)
     {
         // If the player dies while in range
-        // if ((player!=null) && (player.GetComponent<PlayerController>()==null))
-        // {
-        //     playerInRange = false;
-        //     player = null;
-        // }
+        if (Utils.colliderIsPlayer(iCollider))
+        {
+            if (callBackOnPlayerInRange!=null)
+                callBackOnPlayerInRange.Invoke();
+        }
     }
 
     // if player is out of range
