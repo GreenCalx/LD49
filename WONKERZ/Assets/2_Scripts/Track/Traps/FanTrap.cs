@@ -26,25 +26,25 @@ public class FanTrap : MonoBehaviour
         
     }
 
+    private void updateAnimSpeed(float iSpeed)
+    {
+        foreach (AnimationState state in FanAnimator)
+        {
+            state.speed = iSpeed;
+        }
+    }
+
     public void Trigger(bool iState)
     {
         if (iState)
         {
             WindPS_Ref.Play();
             WindCollider.SetActive(true);
-            foreach (AnimationState state in FanAnimator)
-            {
-                state.speed = 1F;
-            }
-            
-            
+            updateAnimSpeed(1f);
         } else {
             WindPS_Ref.Stop();
             WindCollider.SetActive(false);
-            foreach (AnimationState state in FanAnimator)
-            {
-                state.speed = 0.2F;
-            }
+            updateAnimSpeed(0.1f);
         }
         isTriggered = iState;
     }

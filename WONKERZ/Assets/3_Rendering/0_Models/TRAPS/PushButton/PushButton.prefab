@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4888502695281814829}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: UpLimit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1303317883268188780}
   - component: {fileID: 8857997040450937548}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PushButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59,7 +59,7 @@ Transform:
   m_GameObject: {fileID: 3102562479290617045}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.9878614, y: 0.9878614, z: 0.9878614}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8049353799042906964}
@@ -116,7 +116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3240167229258983506}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: DownLimit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   - component: {fileID: 3255623849964493448}
   - component: {fileID: 1380306102294135676}
   - component: {fileID: 6094604270734014656}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: ButtonBottom
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +168,7 @@ Transform:
   m_GameObject: {fileID: 4394205624738277106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.5904284, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4888502695281814829}
@@ -237,18 +237,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5827c3dab80b474aa3a56e0d7b0b48b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonTopRB: {fileID: 1148398141343471094}
   self_topBtnRef: {fileID: 978378633336328150}
   self_topBtnLowLimit: {fileID: 3240167229258983506}
   self_topBtnUpLimit: {fileID: 4888502695281814829}
-  threshold: 0.5
-  force: 10
+  CollidersToIgnore:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  threshold: 0.8
+  force: 0.5
   isPressed: 0
   OnPressed:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnReleased:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: FanTrap, Assembly-CSharp
+        m_MethodName: Trigger
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!54 &1380306102294135676
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -291,7 +368,7 @@ GameObject:
   - component: {fileID: 3588175966875985583}
   - component: {fileID: 1148398141343471094}
   - component: {fileID: 3557580411550226874}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: ButtonTop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -307,7 +384,7 @@ Transform:
   m_GameObject: {fileID: 4612349396543220920}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1833295, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4888502695281814829}
@@ -372,7 +449,7 @@ Rigidbody:
   m_GameObject: {fileID: 4612349396543220920}
   serializedVersion: 2
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.1
   m_AngularDrag: 0.001
   m_UseGravity: 0
   m_IsKinematic: 0
@@ -401,7 +478,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8049353799042906964}
-  m_Layer: 12
+  m_Layer: 0
   m_Name: PushButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}

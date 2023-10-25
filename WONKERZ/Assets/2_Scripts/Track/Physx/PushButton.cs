@@ -5,10 +5,11 @@ using UnityEngine.Events;
 
 public class PushButton : MonoBehaviour
 {
-
+    public Rigidbody buttonTopRB;
     public Transform self_topBtnRef;
     public Transform self_topBtnLowLimit;
     public Transform self_topBtnUpLimit;
+    public Collider[] CollidersToIgnore;
     public float threshold;
     public float force = 10f;
     private float upperLowerDiff;
@@ -20,8 +21,19 @@ public class PushButton : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
-        Physics.IgnoreCollision(GetComponent<Collider>(), self_topBtnRef.GetComponent<Collider>());
+    { 
+        Collider localCollider = GetComponent<Collider>();
+        
+        if(!!localCollider)
+        {
+            Physics.IgnoreCollision( localCollider, self_topBtnRef.GetComponent<Collider>());
+            foreach (Collider singleCollider in CollidersToIgnore)
+            {
+                Physics.IgnoreCollision(localCollider, singleCollider);
+            }
+        }
+
+
         if (transform.eulerAngles != Vector3.zero)
         {
             Vector3 savedeAngle = transform.eulerAngles;
@@ -36,15 +48,15 @@ public class PushButton : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         self_topBtnRef.transform.localPosition = new Vector3(0, self_topBtnRef.localPosition.y, 0);
         self_topBtnRef.transform.localEulerAngles = new Vector3(0,0,0);
-        if (self_topBtnRef.position.y >= self_topBtnUpLimit.localPosition.y)
+        if (self_topBtnRef.localPosition.y >= 0) 
         {
-            self_topBtnRef.transform.position = new Vector3(self_topBtnRef.position.x, self_topBtnRef.position.y, self_topBtnRef.position.z);
+            self_topBtnRef.transform.position = new Vector3(self_topBtnUpLimit.position.x, self_topBtnUpLimit.position.y, self_topBtnUpLimit.position.z);
         } else {
-            self_topBtnRef.GetComponent<Rigidbody>().AddForce(self_topBtnRef.transform.up * force * Time.fixedDeltaTime);
+            buttonTopRB.AddForce(self_topBtnRef.transform.up * force * Time.deltaTime);
         }
 
         if (self_topBtnRef.localPosition.y <= self_topBtnLowLimit.localPosition.y)

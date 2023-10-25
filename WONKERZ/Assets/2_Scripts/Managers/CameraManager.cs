@@ -85,36 +85,6 @@ public class CameraManager : MonoBehaviour, IControllable
                 active_camera.resetView();
                 elapsedTimeToResetCamView = 0f;
             }
-
-        } else if ((Entry[(int)PlayerInputs.InputCode.CameraChange] as GameInputButton).GetState().up) {
-            GameCamera.CAM_TYPE currType = active_camera.camType;
-            GameCamera.CAM_TYPE nextType = GameCamera.CAM_TYPE.UNDEFINED;
-            int rot_size = cameraRotationOrder.Length;
-            if (rot_size <= 1)
-            {
-                this.Log("Only 1 or less camera defined in the CameraManager for the rotation order. No cam switch can be made.");
-                return;
-            }
-            for (int i = 0; i < rot_size; i++)
-            {
-                if (cameraRotationOrder[i] == currType)
-                {
-                    if ((i + 1) < rot_size)
-                    {
-                        nextType = cameraRotationOrder[i + 1];
-                        break;
-                    }
-                    else
-                    {
-                        nextType = cameraRotationOrder[0];
-                        break;
-                    }
-                }
-            }//! for
-            if ((currType != nextType) && (nextType != GameCamera.CAM_TYPE.UNDEFINED))
-            {
-                changeCamera(nextType, true);
-            }
         } else {
             elapsedTimeToResetCamView = 0f;
         }

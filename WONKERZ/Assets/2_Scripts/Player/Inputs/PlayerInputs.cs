@@ -269,19 +269,16 @@ public class PlayerInputs
         // misc camera
         controller.AddInput((int)InputCode.CameraX,
             new GameInputAxis("CameraX", "Move camera left or right",
-                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightH), new Controller.InputCode(Controller.JoystickAxisCode.RightHNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.DpadH), new Controller.InputCode(Controller.JoystickAxisCode.DpadHNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.MouseCode.Cursor), new Controller.InputCode(Controller.MouseCode.Cursor)),
                 defaultAxisSettings));
 
 
         controller.AddInput((int)InputCode.CameraY,
             new GameInputAxis("CameraY", "Move camera up or down",
-                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.RightV), new Controller.InputCode(Controller.JoystickAxisCode.RightVNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.DpadV), new Controller.InputCode(Controller.JoystickAxisCode.DpadVNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.MouseCode.Cursor), new Controller.InputCode(Controller.MouseCode.Cursor)),
                 defaultAxisSettings));
-
-        controller.AddInput((int)InputCode.CameraChange,
-            new GameInputButton("CameraSwitch", "Change camera", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
         
         controller.AddInput((int)InputCode.CameraFocus, 
             new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
@@ -289,19 +286,16 @@ public class PlayerInputs
         controller.AddInput((int)InputCode.CameraReset,
             new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
 
-        controller.AddInput((int)InputCode.CameraControl,
-            new GameInputButton("CameraControl", "Activate Manual Camera", new Controller.InputCode(Controller.JoystickButtonsCode.RB), new Controller.InputCode(KeyCode.F)));
         // misc : save
-
         controller.AddInput((int)InputCode.SaveStatesPlant,
-            new GameInputButtonFromAxis("SaveStatesPlant", "Plant save point", new Controller.InputCode(Controller.JoystickAxisCode.DpadV), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("SaveStatesPlant", "Plant save point", new Controller.InputCode(Controller.JoystickButtonsCode.Select), new Controller.InputCode(KeyCode.F)));
 
 
         controller.AddInput((int)InputCode.SaveStatesReturn,
-            new GameInputButtonFromAxis("SaveStatesReturn", "Return to save point", new Controller.InputCode(Controller.JoystickAxisCode.DpadVNeg), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("SaveStatesReturn", "Return to save point", new Controller.InputCode(Controller.JoystickButtonsCode.X), new Controller.InputCode(KeyCode.F)));
 
         controller.AddInput((int)InputCode.GiveCoinsForTurbo,
-            new GameInputButtonFromAxis("GiveCoinsForTurbo","Exchange coin at gas station", new Controller.InputCode(Controller.JoystickAxisCode.DpadH), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("GiveCoinsForTurbo","Exchange coin at gas station", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.F)));
 
         // player : car
         controller.AddInput((int)InputCode.Accelerator,
@@ -332,7 +326,7 @@ public class PlayerInputs
 
 
         controller.AddInput((int)InputCode.Jump,
-            new GameInputButton("Jump","Jump (maintainable)", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.F)));
+            new GameInputButton("Jump","Jump (maintainable)", new Controller.InputCode(Controller.JoystickButtonsCode.RB), new Controller.InputCode(KeyCode.F)));
 
 
         controller.AddInput((int)InputCode.WeightX,

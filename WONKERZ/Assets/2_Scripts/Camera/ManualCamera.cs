@@ -81,23 +81,17 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         // Camera manual movements
 
-        if ((Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton).GetState().heldDown)
+        Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
+            InputSettings.InverseCameraMappingY ? -1f : 1f);
+        if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
         {
-            Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
-                InputSettings.InverseCameraMappingY ? -1f : 1f);
-
-            if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
-            {
-                    // input is cameraY, cameraX, because it represents the axis of rotation.
-                // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
-
-                var current = new Vector2(
-                    (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
-                    -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
-                current = Vector2.Scale(current, multiplier);
-
-                input.Add(current);
-            }
+                // input is cameraY, cameraX, because it represents the axis of rotation.
+            // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
+            var current = new Vector2(
+                (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
+                -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
+            current = Vector2.Scale(current, multiplier);
+            input.Add(current);
         }
 
         // View reset
