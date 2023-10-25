@@ -66,12 +66,12 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
         if (triggered)
         {
-            if ((Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
+            if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
             { 
                 if (!skipVotes.Contains(currentMgr))
                     skipVotes.Add(currentMgr);
             }
-            else if ((Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().up)
+            else if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().up)
             { 
                 if (skipVotes.Contains(currentMgr))
                     skipVotes.Remove(currentMgr);

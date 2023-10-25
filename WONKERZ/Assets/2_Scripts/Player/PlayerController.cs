@@ -120,22 +120,18 @@ public class GroundState : FSMState, IControllable
         }
 
         // makes car torque control a power
-        var cameraModifierBtn = (Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton);
-        bool manualCam = (cameraModifierBtn!= null)&&(cameraModifierBtn.GetState().heldDown);
-        if (!manualCam) 
+
+        var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
+        var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
+        if (weightXAxis != null)
         {
-            var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
-            var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
-            if (weightXAxis != null)
-            {
-                player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
-                player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
-            }
-            if (weightYAxis != null)
-            {
-                player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
-                player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
-            }
+            player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
+            player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
+        }
+        if (weightYAxis != null)
+        {
+            player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
+            player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
         }
 
         var accelerationAxis = Entry[(int)PlayerInputs.InputCode.Accelerator] as GameInputAxis;

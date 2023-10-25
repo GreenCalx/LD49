@@ -130,9 +130,6 @@ public class Player1Inputs : PlayerInputs
                     new GameInputAxis.Axis(new Controller.InputCode(Controller.MouseCode.Cursor), new Controller.InputCode(Controller.MouseCode.Cursor)),
                     defaultAxisSettings));
             
-            controller.AddInput((int)InputCode.CameraControl,
-            new GameInputButton("CameraControl", "Switch to Camera Control", new Controller.InputCode(Controller.JoystickButtonsCode.RB), new Controller.InputCode(KeyCode.F)));
-
             controller.AddInput((int)InputCode.CameraChange,
                 new GameInputButton("CameraSwitch", "Change camera or keep pressed to reset view behind player", new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg), new Controller.InputCode(KeyCode.A)));
 
@@ -234,7 +231,7 @@ public class PlayerInputs
         SaveStatesPlant,
         SaveStatesReturn,
         GiveCoinsForTurbo,
-        CameraControl,
+        CameraFocusChange,
         // player: car
         Handbrake,
         Jump,
@@ -285,6 +282,13 @@ public class PlayerInputs
         
         controller.AddInput((int)InputCode.CameraReset,
             new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
+
+        controller.AddInput((int)InputCode.CameraFocusChange,
+                new GameInputAxis("CameraFocusChange","Change the current camera focus",                 
+                    new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.DpadH), new Controller.InputCode(Controller.JoystickAxisCode.DpadHNeg)),
+                    new GameInputAxis.Axis(new Controller.InputCode(KeyCode.O), new Controller.InputCode(KeyCode.L)),
+                    defaultAxisSettings));
+
 
         // misc : save
         controller.AddInput((int)InputCode.SaveStatesPlant,

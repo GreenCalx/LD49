@@ -48,7 +48,7 @@ public class UIGaragePickableTest : UITextTab
             setModeRecord();
             activate();
 
-        } else if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down) {
+        } else if ((Entry[(int)PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down) {
             setModeReplay();
             activate();
         }

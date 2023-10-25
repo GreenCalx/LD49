@@ -46,7 +46,7 @@ public class CinematicDialog : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        if (!dialogIsOver && (Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
+        if (!dialogIsOver && (Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
         {
             dialog.talk();
         }

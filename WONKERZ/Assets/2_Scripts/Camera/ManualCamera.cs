@@ -79,19 +79,21 @@ public class ManualCamera : PlayerCamera, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
-        // Camera manual movements
-
-        Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
-            InputSettings.InverseCameraMappingY ? -1f : 1f);
-        if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
+        // Camera manual movements if no focus
+        if (null==secondaryFocus)
         {
-                // input is cameraY, cameraX, because it represents the axis of rotation.
-            // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
-            var current = new Vector2(
-                (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
-                -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
-            current = Vector2.Scale(current, multiplier);
-            input.Add(current);
+            Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f,
+                InputSettings.InverseCameraMappingY ? -1f : 1f);
+            if (!needButtonPressBeforeMove || Input.GetMouseButton(0))
+            {
+                    // input is cameraY, cameraX, because it represents the axis of rotation.
+                // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
+                var current = new Vector2(
+                    (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
+                    -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
+                current = Vector2.Scale(current, multiplier);
+                input.Add(current);
+            }
         }
 
         // View reset
@@ -127,15 +129,31 @@ public class ManualCamera : PlayerCamera, IControllable
                 }
             }
         }
+
         // poll for focus change
+        elapsedTimeFocusChange += Time.deltaTime;
+        if ((null!=secondaryFocus)&&(elapsedTimeFocusChange >= focusChangeInputLatch))
+        {
+            var focus_change_val = ((Entry[(int)PlayerInputs.InputCode.CameraFocusChange] as GameInputAxis)).GetState().valueRaw;
+            if (focus_change_val > 0)
+            {
+                changeFocus();
+                elapsedTimeFocusChange = 0f;
+            }
+            else if (focus_change_val < 0)
+            {
+                changeFocus();
+                elapsedTimeFocusChange = 0f;
+            }
+        }
+
+        // poll for stop focus
         if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
         {
             if (!focusInputLock)
             {
-                if ((elapsedPressTimeToCancelSecondaryFocus) > 0f && (elapsedPressTimeToCancelSecondaryFocus <= pressTimeSecondaryFocus))
+                if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) 
                 {
-                    changeFocus();
-                } else if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) {
                     resetFocus();
                 }
             }

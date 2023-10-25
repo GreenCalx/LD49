@@ -22,7 +22,9 @@ public class PlayerCamera : GameCamera
     public float secondaryFocusFindRange = 50f;
     public CameraFocusable secondaryFocus;
     public float pressTimeSecondaryFocus = 1f;
+    public float focusChangeInputLatch = 0.2f;
     protected float elapsedPressTimeToCancelSecondaryFocus = 0f;
+    protected float elapsedTimeFocusChange = 0f;
     protected bool focusInputLock = false;
     private Queue<CameraFocusable> alreadyFocusedQ;
     protected UISecondaryFocus uISecondaryFocus;

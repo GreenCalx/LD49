@@ -101,7 +101,6 @@ public class UIBindings : UIPanelTabbedScrollable
         AddInput(PlayerInputs.InputCode.CameraY);
         AddInput(PlayerInputs.InputCode.CameraChange);
         AddInput(PlayerInputs.InputCode.CameraReset);
-        AddInput(PlayerInputs.InputCode.CameraControl);
 
         AddTitle("General");
 

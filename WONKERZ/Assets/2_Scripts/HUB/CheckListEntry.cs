@@ -38,7 +38,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
     {
         if (detector.playerInRange)
         {
-            if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
+            if ((Entry[(int)PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
             open();
         }
     }

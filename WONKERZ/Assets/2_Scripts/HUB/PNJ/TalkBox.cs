@@ -40,7 +40,7 @@ public class TalkBox : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
     {
 
-        if (is_talkable && (Entry[(int) PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down)
+        if (is_talkable && (Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
         {
             talk();
         }
