@@ -1,3 +1,4 @@
+using System; // InvaLidCastException
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -65,12 +66,23 @@ public class TutorialBalloon : MonoBehaviour
 
     IEnumerator launchOnFocused()
     {
-        PlayerCamera pc = (PlayerCamera)Access.CameraManager().active_camera;
+        GameCamera curr_cam = Access.CameraManager().active_camera;
+        PlayerCamera pc;
+        try {
+        pc = (PlayerCamera) curr_cam;
+        } catch (InvalidCastException e )
+        {
+            Debug.LogWarning("Failed to cast active_camera to a PlayerCamera. Try again.");
+            yield break;
+        }
         if (null==pc)
         {
             Debug.LogError("Wrong type of camera to launch tutorial balloon. Need a player camera.");
             yield break;
         }
+
+        Debug.Log("TutorialBalloon::launchOnFocused() : CamType is a Player Cam, waiting for focus...");
+
         while (pc.secondaryFocus != self_camFocusPoint)
         {
             yield return null;

@@ -30,6 +30,7 @@ public class UIDialog : MonoBehaviour
     void Awake()
     {
         __msg_to_display = "";
+        message.text = __msg_to_display;
         __curr_msg_index = 0;
         __text_fully_displayed = false;
         __overflow_checked = false;

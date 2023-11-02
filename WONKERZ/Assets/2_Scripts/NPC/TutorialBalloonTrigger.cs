@@ -151,6 +151,9 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     public void FocusValidationCond()
     {
         CameraManager cm = Access.CameraManager();
+        if (cm.active_camera==null)
+            return;
+
         PlayerCamera pCam = cm.active_camera.GetComponent<PlayerCamera>();
         if (!!pCam)
         {

@@ -189,7 +189,6 @@ public class ManualCamera : PlayerCamera, IControllable
         orbitAngles.x = defaultVerticalAngle;
         //constrainAngles();
 
-        Debug.Log(orbitAngles);
         Quaternion lookRotation = Quaternion.Euler(orbitAngles);
         Vector3 lookDirection = lookRotation * focus.forward;
         Vector3 lookPosition = focusPoint - lookDirection * distance;

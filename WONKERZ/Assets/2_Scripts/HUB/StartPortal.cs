@@ -25,6 +25,7 @@ public class StartPortal : AbstractCameraPoint
     // Start is called before the first frame updatezd
     void Start()
     {
+        init();
 
         if (forceSinglePlayer)
         {
@@ -37,11 +38,8 @@ public class StartPortal : AbstractCameraPoint
             {
                 relocatePlayer();
                 StartCoroutine(waitEntryLevelCinematic(Access.Player()));
-                return;
             }
         }
-
-        init();
 
         if (isTutorialStartPortal)
         {

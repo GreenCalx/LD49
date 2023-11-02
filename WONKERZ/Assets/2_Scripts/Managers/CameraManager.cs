@@ -53,6 +53,7 @@ public class CameraManager : MonoBehaviour, IControllable
         SceneManager.sceneLoaded += OnSceneLoaded;
         Access.PlayerInputsManager().player1.Attach(this as IControllable);
         focusables = new List<CameraFocusable>();
+        
     }
 
     // Update is called once per frame
@@ -186,9 +187,9 @@ public class CameraManager : MonoBehaviour, IControllable
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
             if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
-            initTransition(nextCamera);
+                initTransition(nextCamera);
             else
-            operateCameraSwitch(nextCamera);
+                operateCameraSwitch(nextCamera);
         }
         else
         {
@@ -226,24 +227,24 @@ public class CameraManager : MonoBehaviour, IControllable
 
     public void initTransition(GameCamera iNextCam)
     {
-        // disable active camera behaviour
-        //active_camera.enabled = false;
-        //active_camera.gameObject.SetActive(false);&
-        Camera camcomp = active_camera.GetComponent<Camera>();
-        camcomp.enabled = false;
+
+        if (iNextCam.gameObject == active_camera.gameObject)
+            return;
 
         // switch on intermediate transition camera
         if (transitionCameraInst == null)
         {
-            ToonPipeline active_tp = active_camera.GetComponent<ToonPipeline>();
             transitionCameraInst = Instantiate(transitionCameraRef);
-            ToonPipeline transition_tp = transitionCameraInst.GetComponent<ToonPipeline>();
-            transition_tp.mgr       = active_tp.mgr;
-            transition_tp.mainLight = active_tp.mainLight;
-            }
+            switchToonPipeline(active_camera.gameObject, transitionCameraInst);
+        }
 
         transitionCameraInst.transform.position = active_camera.transform.position;
         transitionCameraInst.transform.rotation = active_camera.transform.rotation;
+
+
+        active_camera.enabled = false;
+        active_camera.cam.enabled = false;
+        active_camera.gameObject.SetActive(false);
         active_camera = transitionCameraInst.GetComponent<CinematicCamera>();
 
         inTransition = true;
@@ -256,45 +257,50 @@ public class CameraManager : MonoBehaviour, IControllable
 
         transitionEnd = iNextCam.transform; // keep the end point dynamic
 
-        active_camera.gameObject.SetActive(true);
+        
         active_camera.enabled = true;
-        active_camera.GetComponent<Camera>().enabled = true;
-        }
+        active_camera.cam.enabled = true;
+        active_camera.gameObject.SetActive(true);
+    }
 
     public void endTransition()
     {
         inTransition = false;
-        Destroy(findCameraInScene(GameCamera.CAM_TYPE.TRANSITION).gameObject);
-        Destroy(transitionStart.gameObject);
+        GameCamera camToDestroy = findCameraInScene(GameCamera.CAM_TYPE.TRANSITION);
+        if (camToDestroy!=null)
+            Destroy(camToDestroy.gameObject);
+        if (transitionStart.gameObject!=null)
+            Destroy(transitionStart.gameObject);
     }
 
-    public void operateCameraSwitch(GameCamera iNewCam)
+    private void operateCameraSwitch(GameCamera iNewCam)
     {
+        if (inTransition)
+            return;
+
         if (active_camera != null)
         {
+            switchToonPipeline(active_camera.gameObject, iNewCam.gameObject);
+
             active_camera.gameObject.SetActive(false);
             active_camera.enabled = false;
-            active_camera.GetComponent<Camera>().enabled = false;
-        }
+            active_camera.cam.enabled = false;
 
-        if (active_camera!=null)
-        {
             iNewCam.transform.position = active_camera.transform.position;
             iNewCam.transform.rotation = active_camera.transform.rotation;
         }
 
-
         active_camera = iNewCam;
-        active_camera.gameObject.SetActive(true);
+        
         active_camera.enabled = true;
-        active_camera.GetComponent<Camera>().enabled = true;
+        active_camera.cam.enabled = true;
+        active_camera.gameObject.SetActive(true);
 
         active_camera.init();
 
-
         PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
         if (!!PMM)
-        PMM.SetCamera(active_camera.GetComponent<Camera>());
+            PMM.SetCamera(active_camera.cam);
     }
 
     public bool interpolatePosition(Transform iStart, Transform iEnd)
@@ -335,25 +341,36 @@ public class CameraManager : MonoBehaviour, IControllable
             active_camera.transform.rotation = iEnd.rotation;
             endTransition();
             return true;
-            }
+        }
         return false;
-            }
+    }
 
-    public void moveActiveCameraTo(Vector3 iTransform)
+    private void switchToonPipeline(GameObject prevCam, GameObject newCam)
     {
+        ToonPipeline prev_tp    = prevCam.GetComponent<ToonPipeline>();
+        ToonPipeline new_tp     = newCam.GetComponent<ToonPipeline>();
 
+        if ((prev_tp==null)||(new_tp==null))
+        {
+            Debug.LogError("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
+            return;
+        }
+
+        new_tp.mgr       = prev_tp.mgr;
+        new_tp.mainLight = prev_tp.mainLight;
+
+        new_tp.enabled = true;
+        new_tp.init();
     }
 
     public void launchDeathCam()
     {
-        if (deathCamInst == null)
-        {
-            ToonPipeline active_tp = active_camera.GetComponent<ToonPipeline>();
-            deathCamInst = Instantiate(deathCameraRef);
-            ToonPipeline deathcam_tp = deathCamInst.GetComponent<ToonPipeline>();
-            deathcam_tp.mgr       = active_tp.mgr;
-            deathcam_tp.mainLight = active_tp.mainLight;
-        }
+        if (deathCamInst!=null)
+            return;
+
+        deathCamInst = Instantiate(deathCameraRef);
+        switchToonPipeline(active_camera.gameObject, deathCamInst);
+
         deathCamInst.transform.position = active_camera.transform.position;
         deathCamInst.transform.rotation = active_camera.transform.rotation;
 
