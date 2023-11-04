@@ -360,7 +360,9 @@ public class CameraManager : MonoBehaviour, IControllable
         new_tp.mainLight = prev_tp.mainLight;
 
         new_tp.enabled = true;
-        new_tp.init();
+
+        if (!new_tp.init_done)
+            new_tp.init();
     }
 
     public void launchDeathCam()
