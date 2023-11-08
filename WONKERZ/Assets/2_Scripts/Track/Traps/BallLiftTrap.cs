@@ -28,7 +28,6 @@ public class BallLiftTrap : Trap
         GameObject newball = Instantiate(ballRef);
         newball.transform.position = spawnPoint.position;
         Resetable ballResetable = newball.GetComponent<Resetable>();
-        ballResetable.segmentMCP = ParentMCP;
     }
 
     public override void OnCharge(float iCooldownPercent)

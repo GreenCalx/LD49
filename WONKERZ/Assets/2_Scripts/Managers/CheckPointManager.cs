@@ -42,7 +42,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private bool playerIsFrozen = false;
     private bool anyKeyPressed = false;
 
+    [Header("Internals")]
     public bool playerInGasStation = false;
+    public List<Resetable> resetables = new List<Resetable>();
 
     void Start()
     {
@@ -157,36 +159,34 @@ public class CheckPointManager : MonoBehaviour, IControllable
     Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
     }
 
-    if (respawnCalled) // ACTUAL LOAD
-    {
-        if (!load) // input released
+        if (respawnCalled) // ACTUAL LOAD
         {
-            if (respawnButtonDownElapsed>=timeToForceCPLoad)
+            if (!load) // input released
             {
-                loadLastCP(false);
-                saveStateLoaded = true;
+                if (respawnButtonDownElapsed>=timeToForceCPLoad)
+                {
+                    loadLastCP(false);
+                    saveStateLoaded = true;
                 } else {
-                loadLastSaveState();
-                saveStateLoaded = true;
+                    loadLastSaveState();
+                    saveStateLoaded = true;
                 }
-            respawnButtonDownElapsed = 0f;
-            respawnCalled = false;
-            Access.UITurboAndSaves()?.updateCPFillImage(0f);
-            elapsedSinceLastSSLoad = 0f;
-            } else if (respawnButtonDownElapsed>=timeToForceCPLoad)
-        {
-            loadLastCP(false);
-            respawnButtonDownElapsed = 0f;
-            respawnCalled = false;
-            Access.UITurboAndSaves()?.updateCPFillImage(0f);
-            elapsedSinceLastSSLoad = 0f;
-            saveStateLoaded = true;
+                respawnButtonDownElapsed = 0f;
+                respawnCalled = false;
+                Access.UITurboAndSaves()?.updateCPFillImage(0f);
+                elapsedSinceLastSSLoad = 0f;
+            } else if (respawnButtonDownElapsed>=timeToForceCPLoad) {
+                loadLastCP(false);
+                respawnButtonDownElapsed = 0f;
+                respawnCalled = false;
+                Access.UITurboAndSaves()?.updateCPFillImage(0f);
+                elapsedSinceLastSSLoad = 0f;
+                saveStateLoaded = true;
             }
-            }
-
-    elapsedSinceLastSS += Time.deltaTime;
-        elapsedSinceLastSSLoad += Time.deltaTime;
         }
+        elapsedSinceLastSS += Time.deltaTime;
+        elapsedSinceLastSSLoad += Time.deltaTime;
+    }
 
     // Update is called once per frame
     void Update()
@@ -213,24 +213,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 saveStateMarkerInst = Instantiate(saveStateMarkerRef);
                 saveStateMarkerInst.transform.position = ss_pos;
                 saveStateMarkerInst.transform.rotation = ss_rot;
-                }
-                }
+            }
+        }
     }
-
-    private void findMultiCheckpoints()
-    {
-        MultiCheckPoint[] mcps = transform.parent.GetComponentsInChildren<MultiCheckPoint>();
-        checkpoints = new List<GameObject>();
-        foreach (MultiCheckPoint mcp in mcps)
-        {
-            CheckPoint[] cps = mcp.GetComponentsInChildren<CheckPoint>();
-            foreach (CheckPoint cp in cps)
-            {
-                cp.subscribeToManager(this);
-                checkpoints.Add(cp.gameObject);
-                }
-                }
-                }
 
     private void findCheckpoints()
     {
@@ -336,6 +321,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 manual_cam.resetView();
             }
         }
+
     }
 
     public void loadLastSaveState()
@@ -357,6 +343,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     public void loadLastCP(bool iFromDeath = false)
     {
+
+        resetRegisteredResetables();
+
         // relocate player
         CheckPoint as_cp = last_checkpoint.GetComponent<CheckPoint>();
         if (as_cp != null)
@@ -403,6 +392,26 @@ public class CheckPointManager : MonoBehaviour, IControllable
         as_sp.relocatePlayer();
         PlayerController pc = player.GetComponent<PlayerController>();
         StartCoroutine(waitInputToResume(pc));
-        }
+    }
 
+        // expected to be called by Resetables themselves
+    public void addResetable(Resetable iR)
+    {
+        if (!resetables.Contains(iR))
+            resetables.Add(iR);
+    }
+
+    public void removeResetable(Resetable iR)
+    {
+        if (resetables.Contains(iR))
+            resetables.Remove(iR);
+    }
+
+    private void resetRegisteredResetables()
+    {
+        foreach(Resetable r in resetables)
+        {
+            r.load();
+        }
+    }
 }

@@ -5,10 +5,10 @@ using UnityEngine.Events;
 
 public class PushButton : MonoBehaviour
 {
-    public Rigidbody buttonTopRB;
     public Transform self_topBtnRef;
     public Transform self_topBtnLowLimit;
     public Transform self_topBtnUpLimit;
+    public PlayerDetector triggerDetector;
     public Collider[] CollidersToIgnore;
     public float threshold;
     public float force = 10f;
@@ -50,41 +50,57 @@ public class PushButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        self_topBtnRef.transform.localPosition = new Vector3(0, self_topBtnRef.localPosition.y, 0);
-        self_topBtnRef.transform.localEulerAngles = new Vector3(0,0,0);
-        if (self_topBtnRef.localPosition.y >= 0) 
-        {
-            self_topBtnRef.transform.position = new Vector3(self_topBtnUpLimit.position.x, self_topBtnUpLimit.position.y, self_topBtnUpLimit.position.z);
-        } else {
-            buttonTopRB.AddForce(self_topBtnRef.transform.up * force * Time.deltaTime);
-        }
+        // self_topBtnRef.transform.localPosition = new Vector3(0, self_topBtnRef.localPosition.y, 0);
+        // self_topBtnRef.transform.localEulerAngles = new Vector3(0,0,0);
+        // if (self_topBtnRef.localPosition.y >= 0) 
+        // {
+        //     self_topBtnRef.transform.position = new Vector3(self_topBtnUpLimit.position.x, self_topBtnUpLimit.position.y, self_topBtnUpLimit.position.z);
+        // } else {
+        //     buttonTopRB.AddForce(self_topBtnRef.transform.up * force * Time.deltaTime);
+        // }
 
-        if (self_topBtnRef.localPosition.y <= self_topBtnLowLimit.localPosition.y)
-            self_topBtnRef.transform.position = new Vector3(self_topBtnLowLimit.position.x, self_topBtnLowLimit.position.y, self_topBtnLowLimit.position.z);
+        // if (self_topBtnRef.localPosition.y <= self_topBtnLowLimit.localPosition.y)
+        //     self_topBtnRef.transform.position = new Vector3(self_topBtnLowLimit.position.x, self_topBtnLowLimit.position.y, self_topBtnLowLimit.position.z);
 
-        isPressed = (Vector3.Distance(self_topBtnRef.position, self_topBtnLowLimit.position) < upperLowerDiff * threshold);
+        //isPressed = (Vector3.Distance(self_topBtnRef.position, self_topBtnLowLimit.position) < upperLowerDiff * threshold);
+
+        isPressed = triggerDetector.playerInRange;
 
         if (isPressed && prevPressedState != isPressed)
-            Pressed();
+        { Pressed(); prevPressedState = isPressed; }
         if (!isPressed && prevPressedState != isPressed)
-            Released();
+        { Released(); prevPressedState = isPressed; }
     }
 
-    void Pressed()
+    public void Pressed()
     {
-        prevPressedState = isPressed;
+        // if (isPressed)
+        //     return;
+
+        StartCoroutine(MoveTo(self_topBtnRef.transform, self_topBtnLowLimit.position));
+        isPressed = true;
         foreach (UnityEvent ev in OnPressed)
         {
             ev.Invoke();
         }
     }
 
-    void Released()
+    public void Released()
     {
-        prevPressedState = isPressed;
+        // if (!isPressed) 
+        //     return;
+
+        StartCoroutine(MoveTo(self_topBtnRef.transform, self_topBtnUpLimit.position));
+        isPressed = false;
         foreach (UnityEvent ev in OnReleased)
         {
             ev.Invoke();
         }
+    }
+
+    IEnumerator MoveTo(Transform toMove, Vector3 iDest)
+    {
+        toMove.position = iDest;
+        yield return null;
     }
 }

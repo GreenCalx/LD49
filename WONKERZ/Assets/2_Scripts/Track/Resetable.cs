@@ -4,9 +4,6 @@ using Schnibble;
 public class Resetable : MonoBehaviour
 {
 
-    [Header("SAVE_TRIGGER")]
-    public MultiCheckPoint segmentMCP;
-
     [Header("ToReset")]
     public bool transform_position;
     public bool transform_rotation;
@@ -22,11 +19,7 @@ public class Resetable : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (segmentMCP == null)
-        {
-            this.LogWarn("Missing parentCP on Resetable Item.");
-        }
-        segmentMCP.addResetable(this);
+        Access.CheckPointManager().addResetable(this);
         save();
     }
 
@@ -34,6 +27,11 @@ public class Resetable : MonoBehaviour
     void Update()
     {
 
+    }
+
+    void OnDestroy()
+    {
+        Access.CheckPointManager().removeResetable(this);
     }
 
     public void save()

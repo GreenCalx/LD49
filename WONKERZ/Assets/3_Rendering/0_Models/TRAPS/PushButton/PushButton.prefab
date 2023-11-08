@@ -30,6 +30,7 @@ Transform:
   m_Children:
   - {fileID: 978378633336328150}
   - {fileID: 3240167229258983506}
+  - {fileID: 4214706314811159055}
   m_Father: {fileID: 5432274954519807430}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -150,7 +151,6 @@ GameObject:
   - component: {fileID: 8319609400217389434}
   - component: {fileID: 169338915140604235}
   - component: {fileID: 3255623849964493448}
-  - component: {fileID: 1380306102294135676}
   - component: {fileID: 6094604270734014656}
   m_Layer: 0
   m_Name: ButtonBottom
@@ -237,10 +237,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5827c3dab80b474aa3a56e0d7b0b48b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonTopRB: {fileID: 1148398141343471094}
   self_topBtnRef: {fileID: 978378633336328150}
   self_topBtnLowLimit: {fileID: 3240167229258983506}
   self_topBtnUpLimit: {fileID: 4888502695281814829}
+  triggerDetector: {fileID: 298666597525320812}
   CollidersToIgnore:
   - {fileID: 0}
   - {fileID: 0}
@@ -326,22 +326,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
---- !u!54 &1380306102294135676
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4394205624738277106}
-  serializedVersion: 2
-  m_Mass: 999
-  m_Drag: 1
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 126
-  m_CollisionDetection: 1
 --- !u!65 &6094604270734014656
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -366,7 +350,6 @@ GameObject:
   - component: {fileID: 978378633336328150}
   - component: {fileID: 5904451535459987307}
   - component: {fileID: 3588175966875985583}
-  - component: {fileID: 1148398141343471094}
   - component: {fileID: 3557580411550226874}
   m_Layer: 0
   m_Name: ButtonTop
@@ -440,22 +423,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &1148398141343471094
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4612349396543220920}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0.1
-  m_AngularDrag: 0.001
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 0
-  m_CollisionDetection: 1
 --- !u!65 &3557580411550226874
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -501,3 +468,110 @@ Transform:
   m_Father: {fileID: 1303317883268188780}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8254969444219927957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4214706314811159055}
+  - component: {fileID: 5642036272262666923}
+  - component: {fileID: 298666597525320812}
+  m_Layer: 0
+  m_Name: ButtonPlayerDetector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4214706314811159055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8254969444219927957}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
+  m_LocalScale: {x: 1.1833295, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4888502695281814829}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &5642036272262666923
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8254969444219927957}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 31.690567, y: 5, z: 31.690567}
+  m_Center: {x: 0, y: -0.125, z: 0}
+--- !u!114 &298666597525320812
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8254969444219927957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1dda1437eb9914d8acb608135b131b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  player: {fileID: 0}
+  dummy: {fileID: 0}
+  dummyInRange: 0
+  callBackOnPlayerEnterRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3255623849964493448}
+        m_TargetAssemblyTypeName: PushButton, Assembly-CSharp
+        m_MethodName: Pressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callBackOnPlayerInRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3255623849964493448}
+        m_TargetAssemblyTypeName: PushButton, Assembly-CSharp
+        m_MethodName: Pressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callbackOnPlayerExitRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3255623849964493448}
+        m_TargetAssemblyTypeName: PushButton, Assembly-CSharp
+        m_MethodName: Released
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
