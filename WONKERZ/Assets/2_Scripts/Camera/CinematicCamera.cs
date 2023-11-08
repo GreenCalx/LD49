@@ -9,6 +9,7 @@ public class CinematicCamera : GameCamera
     public GameCamera.CAM_TYPE camTypeOnFinish = GameCamera.CAM_TYPE.ORBIT;
     public bool transitionIn = true;
     public bool transitionOut = true;
+    public bool exitToCamTypeOnFinish = true;
     protected bool launched = false;
     void Awake()
     {
@@ -40,6 +41,7 @@ public class CinematicCamera : GameCamera
     public virtual void end()
     {
         launched = false;
-        CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
+        if (exitToCamTypeOnFinish)
+            CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
     }
 }

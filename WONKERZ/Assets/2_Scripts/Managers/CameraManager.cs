@@ -241,7 +241,6 @@ public class CameraManager : MonoBehaviour, IControllable
         transitionCameraInst.transform.position = active_camera.transform.position;
         transitionCameraInst.transform.rotation = active_camera.transform.rotation;
 
-
         active_camera.enabled = false;
         active_camera.cam.enabled = false;
         active_camera.gameObject.SetActive(false);
@@ -289,6 +288,12 @@ public class CameraManager : MonoBehaviour, IControllable
             iNewCam.transform.position = active_camera.transform.position;
             iNewCam.transform.rotation = active_camera.transform.rotation;
         }
+
+        // Debug Cam switches below
+        string new_cam_name = ((iNewCam==null)?"null":iNewCam.gameObject.name);
+        string prev_cam_name = ((active_camera==null)?"null":active_camera.gameObject.name);
+        Debug.Log("CamSwitch : " +  new_cam_name  + " FROM " + prev_cam_name);
+
 
         active_camera = iNewCam;
         

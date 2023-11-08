@@ -51,7 +51,7 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         cam = GetComponent<Camera>();
         //Utils.attachControllable<ManualCamera>(this);
-        Access.Player().inputMgr.Attach(this as IControllable);
+        
         initial_FOV = cam.fieldOfView;
         jumpStartTime = 0f;
         baseFocusRadius = focusRadius;
@@ -171,6 +171,7 @@ public class ManualCamera : PlayerCamera, IControllable
     // Game camera overrides
     public override void init()
     {
+        Access.Player().inputMgr.Attach(this as IControllable);
         playerRef = Access.Player().gameObject;
         focus = playerRef.transform;
         focusPoint = focus.position;

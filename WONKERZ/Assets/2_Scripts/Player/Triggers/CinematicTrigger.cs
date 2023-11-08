@@ -46,11 +46,11 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         if (isSkippable && triggered && !!skipUIInst)
         {
-            Debug.Log("skip vote : " + skipVotes.Count);
+            //Debug.Log("skip vote : " + skipVotes.Count);
             if (skipVotes.Count > 0) {
                 elapsedSkipTime += Time.deltaTime;
             } else {
-                elapsedSkipTime = 0f; Debug.Log("RAZA");
+                elapsedSkipTime = 0f;
             }
             skipUIInst.updateProgress( elapsedSkipTime / timeToSkipCinematic );
 

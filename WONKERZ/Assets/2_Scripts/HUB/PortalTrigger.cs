@@ -27,6 +27,19 @@ public class PortalTrigger : MonoBehaviour
         if (!!Utils.colliderIsPlayer(iCollider) && !!portal)
         {
             portal.activatePortal();
+            isActive = false;
+        }
+    }
+
+    void OnTriggerStay(Collider iCollider)
+    {
+        if (!isActive)
+            return;
+
+        if (!!Utils.colliderIsPlayer(iCollider) && !!portal)
+        {
+            portal.activatePortal();
+            isActive = false;
         }
     }
 }

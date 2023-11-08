@@ -28,6 +28,7 @@ public struct Constants
     public const string SN_FINISH = "finishscene";
     public const string SN_HUB = "HUB";
     public const string SN_LOADING = "LoadingScene";
+    public const string SN_BGLOADING = "BackgroundLoadingScene";
     public const string SN_INTRO = "Intro";
     public const string SN_DESERT_TOWER = "desert_tower";
     public const string SN_GROTTO_TRACK = "GrottoTrack";

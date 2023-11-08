@@ -4,6 +4,7 @@ using Schnibble;
 public class HUBPortal : MonoBehaviour
 {
     public string PORTAL_SCENE_TARGET = "main";
+    public bool invisibleLoading = false;
 
     private bool is_loading = false;
     [HideInInspector]
@@ -32,7 +33,10 @@ public class HUBPortal : MonoBehaviour
         if (!is_loading)
         {
             is_loading = true;
-            Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET);
+            if (invisibleLoading)
+                Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET, false, Constants.SN_BGLOADING);
+            else
+                Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET);
         }
     }
 }

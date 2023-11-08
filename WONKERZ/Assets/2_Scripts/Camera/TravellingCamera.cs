@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.Events;
 /**
 *   Translates from start to each point of the path
 *   Start point is the camera position in the scene
@@ -17,7 +17,7 @@ public class TravellingCamera : CinematicCamera
     public Transform[] path;
     public TRAVEL_MODE mode = TRAVEL_MODE.SMOOTH;
     public float step_duration = 2f;
-
+    public UnityEvent callbackOnTravellingDone;
 
     private float elapsedTime;
     private Transform startLocation = null;
@@ -56,7 +56,7 @@ public class TravellingCamera : CinematicCamera
         if (step_duration < elapsedTime)
         {
             if (!moveNext())
-                end();
+            { end(); return; }
         }
 
         move();
@@ -70,7 +70,11 @@ public class TravellingCamera : CinematicCamera
 
     public override void end()
     {
-        CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
+        if (exitToCamTypeOnFinish)
+            CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
+        if (callbackOnTravellingDone!=null)
+            callbackOnTravellingDone.Invoke();
+        
         launched = false;
     }
 

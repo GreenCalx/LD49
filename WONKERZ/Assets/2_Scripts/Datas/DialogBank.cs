@@ -9,12 +9,14 @@ public static class DialogBank
 
     public static readonly string[] INTRO_CP_DIALOG= 
     {
-        "Hello there...",
-        "I am Ricky, sole purveyor of the mighty black tar fluid that runs in our pipes.",
-        "The headchef of the Garage, Ernest, found the wreckage of your body on the shoreline.",
-        "He hauled you back to the Garage and loaded this simulation to help you get back on track while he is twisting bolts.",
-        "I will be your guide along the track. ",
-        "There is a few turns ahead. Turning can be quite tricky if you are at full speed. See you in a bit !"
+        "Hello there",
+        "I am Ricky, purveyor of the black tar fluid that runs in our pipes.",
+        "Ernest found your wreckage on the shoreline. He hauled you back to the Garage.",
+        "He is wokring on your case right now. Don't worry you'll be fine. ",
+        "I will guide you through your recovery.",
+        "As you probably noticed, you have a thing over your car. This represents your weight.",
+        "You can move it around with the Left Joystick. It can be helpful in many ways.",
+        "First, it can help you in your turns. Try to steer the weight left as you turn left, and right as you turn right."
     }; 
 
     public static readonly string[] INTRO_CP2_DIALOG= 
@@ -22,20 +24,20 @@ public static class DialogBank
         "You can compress your springs and lower your gravity center.",
         "Upon release, you will jump automatically as the springs extends.",
         "The longer you compressed them, the higher the jump.",
-        "When airborne, control the weight to land on your wheels.",
+        "While airborne, control the weight to land back on your wheels.",
         "Try to jump between waves in the next section to get used to it !"
     }; 
 
     public static readonly string[] INTRO_CP3_DIALOG= 
     {
-        "Weight can also be used grounded to keep balance or navigate on chaotic terrains.",
-        "Keep it pushed towards a steep surface you want to keep a grip on."
+        "Weight can also be used to overcome high obstacles. Steer it back as you approach the target, then front to clear it.",
+        "Also, you can steer it towards a steep surface to keep a grip on it."
     }; 
 
     public static readonly string[] INTRO_CP4_DIALOG= 
     {
-        "Some track sections can be quite long and deadly.",
-        "Thus you can plant panels to save your current location and restart from that point at will.",
+        "Some track sections can be long and deadly.",
+        "Thus, you can plant panels to save your current location and restart from that point at will.",
         "The number of panels is unlimited here, so feel free to use them as much as you needs to.",
         "You can also get up on your own by playing with your weight and springs. It can be quite tricky, but with practice you will master it!",
     };
@@ -43,13 +45,13 @@ public static class DialogBank
     public static readonly string[] INTRO_CP5_DIALOG= 
     {
         "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
-        "If you get killed, you will respawn at the last triggered Gas Station and the last planted panel will be lost.",
-        "The last section is a small arena where you need to defeat every enemies to move forward. Be patient and aim for the target."
+        "If you get killed, you will respawn at the last triggered Gas Station. Your the last planted panel will be lost.",
+        "The last section is a small arena where you need to defeat every enemies. Be patient and aim for the target."
     };
 
     public static readonly string[] ERNEST_DIALOG_0=
     {
-        "You're finally awake !",
+        "Here you go ",
         "Welcome to Weavers Islands.I am Ernest, the last garagist.",
         "This place used to be a paradise filled with life. But when the Great Compressor arrived in his Junk fortress, everyone left promptly.",
         "My four brothers were abducted shortly after his arrival and locked into their respective realms. Ricky and I are the last living souls on this land.",
