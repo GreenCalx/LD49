@@ -18,7 +18,7 @@ public class SandTrapBehavior : MonoBehaviour
     [HideInInspector]
     public Mesh mesh;
     private Vector3[] vertices;
-    public SchSandTrapRigidBody rb;
+    public SchSandTrapRigidBodyBehaviour rb;
     public float maxForce;
 
     public float shootSpeedDamp = 0.5f;
@@ -46,7 +46,7 @@ public class SandTrapBehavior : MonoBehaviour
 
         mat.SetFloat("_AngleAnimationStart", 0);
         mat.SetFloat("_AngleAnimationStop", 0);
-        rb.MaxForce = 0f;
+        rb.rb.MaxForce = 0f;
         renderer.sharedMaterial = matIdle;
     }
 
@@ -107,7 +107,7 @@ public class SandTrapBehavior : MonoBehaviour
 
         if (focused)
         {
-            rb.MaxForce = maxForce;
+            rb.rb.MaxForce = maxForce;
 
             var focusPos = focus.transform.position;
             focusPos.y = fourmillionRoot.gameObject.transform.position.y;

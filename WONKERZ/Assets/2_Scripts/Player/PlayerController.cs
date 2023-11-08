@@ -519,8 +519,16 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         foreach (var axle in car.axles)
         {
-            axle.right.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
-            axle.left.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
+            var suspensionRight = axle.right.suspension;
+            suspensionRight.SetMinLength(car.springMin);
+            suspensionRight.SetMaxLength(car.springMax);
+            suspensionRight.SetRestLength(car.springRestPercent);
+
+
+            var suspensionLeft = axle.left.suspension;
+            suspensionLeft.SetMinLength(car.springMin);
+            suspensionLeft.SetMaxLength(car.springMax);
+            suspensionLeft.SetRestLength(car.springRestPercent);
         }
         car.overrideMaxSpring = false;
     }
@@ -537,8 +545,16 @@ public class PlayerController : MonoBehaviour, IControllable
         jumpDecal.SetAnimationTime(springJumpFactor);
         foreach (var axle in car.axles)
         {
-            axle.right.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
-            axle.left.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
+            var suspensionRight = axle.right.suspension;
+            suspensionRight.SetMinLength(car.springMin);
+            suspensionRight.SetMaxLength(springCompVal);
+            suspensionRight.SetRestLength(car.springRestPercent);
+
+
+            var suspensionLeft = axle.left.suspension;
+            suspensionLeft.SetMinLength(car.springMin);
+            suspensionLeft.SetMaxLength(springCompVal);
+            suspensionLeft.SetRestLength(car.springRestPercent);
         }
         car.overrideMaxSpring = true;
     }
@@ -561,8 +577,8 @@ public class PlayerController : MonoBehaviour, IControllable
 
             foreach (var axle in car.axles)
             {
-                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
-                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.GetAnchorA(), ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.GetAnchorA(), ForceMode.VelocityChange);
             }
             jump.applyForceMultiplier = false;
             springElapsedCompression = 0f;
@@ -574,7 +590,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         turbo.intervalElapsedTime += Time.deltaTime;
         if (turbo.intervalElapsedTime < turbo.timeInterval)
-            return;
+        return;
 
         var nextTurboValue = turbo.current - (turbo.infinite ? 0 : turbo.consumptionPerTick);
         if (nextTurboValue < 0)
