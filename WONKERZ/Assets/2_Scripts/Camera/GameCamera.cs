@@ -8,7 +8,8 @@ using UnityEngine;
 *               _ CinematicCamera ___ TravellingCamera
 *              /                 \___ CinematicCamera
 *             /                  \___ TransitionCamera
-*            / 
+             |                   \___ FollowObjectCamera
+*           | 
 * GameCamera
 *            \___ PlayerCamera ___ FollowPlayer(TRACK)
 *                             \___ ManualCamera(ORBIT)
