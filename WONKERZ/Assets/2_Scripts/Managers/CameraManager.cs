@@ -99,6 +99,9 @@ public class CameraManager : MonoBehaviour, IControllable
         // refresh cameras and disable active_camera
         active_camera = null;
         cameras.Clear();
+
+        // Set to init cam
+        changeCamera(GameCamera.CAM_TYPE.INIT, false);
     }
 
     // Find Camera from its type within current scene
@@ -182,6 +185,7 @@ public class CameraManager : MonoBehaviour, IControllable
         if (!iTransitionCam)
         {
             operateCameraSwitch(nextCamera);
+            return;
         }
 
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
@@ -285,8 +289,8 @@ public class CameraManager : MonoBehaviour, IControllable
             active_camera.enabled = false;
             active_camera.cam.enabled = false;
 
-            iNewCam.transform.position = active_camera.transform.position;
-            iNewCam.transform.rotation = active_camera.transform.rotation;
+            // iNewCam.transform.position = active_camera.transform.position;
+            // iNewCam.transform.rotation = active_camera.transform.rotation;
         }
 
         // Debug Cam switches below

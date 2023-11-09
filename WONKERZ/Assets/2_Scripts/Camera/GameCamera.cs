@@ -15,6 +15,7 @@ using UnityEngine;
 *                             \___ FlyCamera(FlyMode) TBD
 *                             \___ FPSCamera(FPS)
 *           \____ UICamera (UI)
+*           \____ InitCamera (INIT)
 *
 *
 */
@@ -32,8 +33,9 @@ public class GameCamera : MonoBehaviour
         TRANSITION=5,    // Camera used to transition between 2 cameras
                         // Is automatically cleaned by CameraManager on endTransition()
         FPS=6,           // FPS Camera used for looping and such places with limited vision
-        UI=7,
-        OLD_TRACK = 8
+        UI=7,           // UI Only
+        OLD_TRACK = 8,
+        INIT=9         // First loaded cam in a scene, Used to init transitive parameters/do controlled transition
     }
     [Header("GameCamera")]
     public CAM_TYPE camType = CAM_TYPE.UNDEFINED;
