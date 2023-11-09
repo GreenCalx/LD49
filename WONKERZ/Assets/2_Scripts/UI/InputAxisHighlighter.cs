@@ -27,7 +27,7 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
         Access.Player().inputMgr.Attach(this as IControllable);
     }
 
-    void OnDestroy()
+    void OnDisable()
     {
         try{
             Access.PlayerInputsManager().player1.Detach(this as IControllable);
