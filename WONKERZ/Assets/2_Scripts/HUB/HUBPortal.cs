@@ -34,7 +34,7 @@ public class HUBPortal : MonoBehaviour
         {
             is_loading = true;
             if (invisibleLoading)
-                Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET, false, Constants.SN_BGLOADING);
+                Access.SceneLoader().asyncPreWarm(PORTAL_SCENE_TARGET);
             else
                 Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET);
         }
