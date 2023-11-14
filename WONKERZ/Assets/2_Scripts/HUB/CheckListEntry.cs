@@ -31,7 +31,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Access.Player().inputMgr.Detach(this as IControllable);
+        Access.Player()?.inputMgr.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)

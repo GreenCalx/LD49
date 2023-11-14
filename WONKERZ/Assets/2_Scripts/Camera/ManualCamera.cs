@@ -429,6 +429,15 @@ public class ManualCamera : PlayerCamera, IControllable
 
     }
 
+    public void forceAngles(bool iForce, Vector2 forceAngle)
+    {
+        autoAlign = iForce;
+        if (!iForce)
+            return;
+        orbitAngles = forceAngle;
+        //transform.localRotation = Quaternion.Euler(orbitAngles);
+    }
+
     public bool ValidateNewHeadingAngle(float iNewHeadingAngle)
     {
         // We don't want camera to go in front of player when he is going backward

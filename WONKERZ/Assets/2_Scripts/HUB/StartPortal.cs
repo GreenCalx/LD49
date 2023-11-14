@@ -18,6 +18,8 @@ public class StartPortal : AbstractCameraPoint
     [Header("Optionals")]
     public Transform facingPoint;
     public CinematicTrigger entryLevelCinematic;
+    public GameObject UITransitionIN;
+    public bool doTransitionIN;
 
     [Header("Debug")]
     public bool bypassCinematic = true;
@@ -50,6 +52,9 @@ public class StartPortal : AbstractCameraPoint
 
     void init()
     {
+        if (doTransitionIN)
+            Instantiate(UITransitionIN);
+
         relocatePlayer();
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
             Access.CameraManager().changeCamera(camera_type, false);

@@ -1,10 +1,15 @@
 using UnityEngine;
 using Schnibble;
+using System.Collections.Generic;
+using System.Collections; 
 
 public class GarageEntry : MonoBehaviour, IControllable
 {
     public GameObject garageUIRef;
+    public List<GameObject> self_worldSpaceHints;
     public PlayerDetector detector;
+    public List<GameObject> garageDoors;
+    public float garageDoorsYDelta = 40f;
 
     private GameObject garageUI;
     private bool playerInGarage;
@@ -13,7 +18,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     [HideInInspector]
     public PlayerController player;
 
-    public Camera garageCamera;
+    public CinematicCamera garageCamera;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +29,7 @@ public class GarageEntry : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        Access.PlayerInputsManager()?.player1.Detach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
@@ -42,13 +47,33 @@ public class GarageEntry : MonoBehaviour, IControllable
         if (garageOpened)
             return;
 
+        foreach(GameObject go in garageDoors)
+        {
+            StartCoroutine(closeDoor(go));
+        }
+
         player = Access.Player();
 
         //Time.timeScale = 0; // pause
         garageUI = Instantiate(garageUIRef);
         garageUI.name = Constants.GO_UIGARAGE;
 
-        garageCamera.gameObject.SetActive(true);
+        //garageCamera.launch();
+        ManualCamera manCam = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+        if (manCam)
+        {
+            manCam.forceAngles(true, new Vector2(0f, 90f));
+        }
+
+        Access.UISpeedAndLifePool().gameObject.SetActive(false);
+        Access.UITurboAndSaves().gameObject.SetActive(false);
+
+        detector.enabled = false;
+        foreach(GameObject to_deactivate in self_worldSpaceHints)
+        {
+            to_deactivate.SetActive(false);
+        }
+        
 
         UIGarage uig = garageUI.GetComponent<UIGarage>();
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
@@ -67,11 +92,30 @@ public class GarageEntry : MonoBehaviour, IControllable
         if (!garageOpened)
             return;
 
-        garageCamera.gameObject.SetActive(false);
+        foreach(GameObject go in garageDoors)
+        {
+            StartCoroutine(openDoor(go));
+        }
+        
+        //garageCamera.end();
+        ManualCamera manCam = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+        if (manCam)
+        {
+            manCam.forceAngles(false, new Vector2(0f, 0f));
+            manCam.resetView();
+        }
 
         //Time.timeScale = 1; // unpause
         Destroy(garageUI);
 
+        Access.UISpeedAndLifePool().gameObject.SetActive(true);
+        Access.UITurboAndSaves().gameObject.SetActive(true);
+        
+        foreach(GameObject to_reactivate in self_worldSpaceHints)
+        {
+            to_reactivate.SetActive(false);
+        }
+        detector.enabled = true;
 
         if (!!player)
         player.UnFreeze();
@@ -87,5 +131,33 @@ public class GarageEntry : MonoBehaviour, IControllable
         SndMgr.SwitchClip("theme");
 
         garageOpened = false;
+    }
+
+    IEnumerator closeDoor(GameObject iGO)
+    {
+        Vector3 target_pos = iGO.transform.position + new Vector3(0f, garageDoorsYDelta, 0f);
+
+        float elapsedTime = 0;
+        float waitTime = 1.5f;
+        while (elapsedTime < waitTime)
+        {
+            iGO.transform.position = Vector3.Lerp(iGO.transform.position, target_pos, (elapsedTime / waitTime));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }  
+    }
+
+    IEnumerator openDoor(GameObject iGO)
+    {
+        Vector3 target_pos = iGO.transform.position - new Vector3(0f, garageDoorsYDelta, 0f);
+
+        float elapsedTime = 0;
+        float waitTime = 1.5f;
+        while (elapsedTime < waitTime)
+        {
+            iGO.transform.position = Vector3.Lerp(iGO.transform.position, target_pos, (elapsedTime / waitTime));
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }  
     }
 }
