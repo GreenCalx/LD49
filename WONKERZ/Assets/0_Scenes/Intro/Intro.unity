@@ -2386,7 +2386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368280, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368281, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: resetGameProgressEvents
@@ -20583,6 +20583,67 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3747161919559999698, guid: 835a5ae43a0cde64090fe6cddf907720, type: 3}
   m_PrefabInstance: {fileID: 1235836869}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1242501643
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1913745582}
+    m_Modifications:
+    - target: {fileID: 4903474098163162632, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: sharedProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: f1bdbf4a1eb6d95488e4dd7ef4409a6e, type: 2}
+    - target: {fileID: 4903474098163162633, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_Name
+      value: NeonVolumePP
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
 --- !u!1 &1252907129
 GameObject:
   m_ObjectHideFlags: 0
@@ -24438,6 +24499,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3747161919559999698, guid: 835a5ae43a0cde64090fe6cddf907720, type: 3}
   m_PrefabInstance: {fileID: 1418550827}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1419788804 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4903474098163162635, guid: 512f39702451590478ca3a06eebdc9d0, type: 3}
+  m_PrefabInstance: {fileID: 1242501643}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1423986079
 PrefabInstance:
@@ -31648,6 +31714,7 @@ Transform:
   m_Children:
   - {fileID: 814461939}
   - {fileID: 1111690918}
+  - {fileID: 1419788804}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -35721,6 +35788,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PORTAL_SCENE_TARGET: HUB
+  UITransitionOUT: {fileID: 0}
+  transitionOUT: 1
   invisibleLoading: 1
   activeClippingPortal: {fileID: 0}
 --- !u!1 &3323673338159974933
