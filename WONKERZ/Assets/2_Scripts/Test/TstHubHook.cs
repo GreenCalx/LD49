@@ -78,6 +78,7 @@ public class TstHubHook : MonoBehaviour
     private void loadGameProgress()
     {
         Access.GameProgressSaveManager().Load();
+        Access.CollectiblesManager().loadJars();
     }
 
 }

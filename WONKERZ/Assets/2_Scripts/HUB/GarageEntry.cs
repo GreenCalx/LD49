@@ -5,11 +5,17 @@ using System.Collections;
 
 public class GarageEntry : MonoBehaviour, IControllable
 {
+    [Header("Mand")]
     public GameObject garageUIRef;
     public List<GameObject> self_worldSpaceHints;
     public PlayerDetector detector;
+    [Header("Anims")]
     public List<GameObject> garageDoors;
     public float garageDoorsYDelta = 40f;
+    [Header("Lights")]
+    public GameObject sun;
+    public GameObject garageMainLight;
+    public List<GameObject> garageLights;
 
     private GameObject garageUI;
     private bool playerInGarage;
@@ -51,6 +57,7 @@ public class GarageEntry : MonoBehaviour, IControllable
         {
             StartCoroutine(closeDoor(go));
         }
+        turnOnLights();
 
         player = Access.Player();
 
@@ -96,6 +103,7 @@ public class GarageEntry : MonoBehaviour, IControllable
         {
             StartCoroutine(openDoor(go));
         }
+        turnOffLights();
         
         //garageCamera.end();
         ManualCamera manCam = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
@@ -160,4 +168,27 @@ public class GarageEntry : MonoBehaviour, IControllable
             yield return null;
         }  
     }
+
+    private void turnOffLights()
+    {
+        foreach (GameObject l in garageLights)
+        {
+            l.SetActive(false);
+        }
+        sun.SetActive(true);
+        // update toon pipeline mainLight?
+        Access.CameraManager().changeMainLight(sun.GetComponent<Light>());
+    }
+    private void turnOnLights()
+    {
+        foreach (GameObject l in garageLights)
+        {
+            l.SetActive(true);
+        }
+        sun.SetActive(false);
+
+        // update toon pipeline mainLight?
+        Access.CameraManager().changeMainLight(garageMainLight.GetComponent<Light>());
+    }
 }
+ 

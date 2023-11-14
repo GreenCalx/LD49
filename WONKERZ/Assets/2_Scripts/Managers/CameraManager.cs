@@ -427,4 +427,11 @@ public class CameraManager : MonoBehaviour, IControllable
         }
 
     }
+
+    public void changeMainLight(Light iLight)
+    {
+        ToonPipeline TP = active_camera.GetComponent<ToonPipeline>();
+        if (!!TP)
+            TP.mainLight = iLight;
+    }
 }
