@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5332818475350084332}
+  - component: {fileID: 3471006687655475773}
   m_Layer: 0
   m_Name: SwingingCutter
   m_TagString: Untagged
@@ -25,13 +26,54 @@ Transform:
   m_GameObject: {fileID: 5332818475350084323}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6232253, y: 0.6232253, z: 0.6232253}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2933412788484652555}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3471006687655475773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5332818475350084323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a98125502f715b4b83cfb77b434e436, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 0}
 --- !u!1001 &8721605999558307658
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87,28 +129,70 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3634531668056873975, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
---- !u!4 &2933412788484652555 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5889807886525239617, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
-  m_PrefabInstance: {fileID: 8721605999558307658}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3325208063033526873 stripped
+--- !u!1 &1793043213653031646 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: 6281639049286804755, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7055862155087713684, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
   m_PrefabInstance: {fileID: 8721605999558307658}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7871116069327716970
+--- !u!114 &1890121247102715041
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3325208063033526873}
+  m_GameObject: {fileID: 1793043213653031646}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928b834c699087e4899315b2fa683d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageOnCollide: 5
+  damageOnCollide: 10
+  optional_repulsion_force: 25
+--- !u!4 &2933412788484652555 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5889807886525239617, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
+  m_PrefabInstance: {fileID: 8721605999558307658}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4717353590210386958 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4070750943475528516, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
+  m_PrefabInstance: {fileID: 8721605999558307658}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &20117516405302627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717353590210386958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928b834c699087e4899315b2fa683d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageOnCollide: 10
+  optional_repulsion_force: 25
+--- !u!1 &5359176065528827091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3699355586648449945, guid: 9b145abb8e701d4429527a377577fbab, type: 3}
+  m_PrefabInstance: {fileID: 8721605999558307658}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &743937293461080521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5359176065528827091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e9a625c12fa77643b607fd3086fbc9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  amplitude: 0.5
+  speed: 1
+  phase: 0
+  timerForPhaseSwitch: 1
