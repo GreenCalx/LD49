@@ -7,7 +7,7 @@ public class PlayerDamager : MonoBehaviour
 {
     public int damageOnCollide = 99;
 
-    [Range(0,500)]
+    [Range(-500,500)]
     public int optional_repulsion_force = 0;
     private readonly float delayBetweenDamages = 0.2f;
     private float elapsedTimeSinceLastDamage = 0f;
@@ -40,6 +40,14 @@ public class PlayerDamager : MonoBehaviour
     {
         if (!!Utils.colliderIsPlayer(iCol))
         {
+            tryDoDamage(transform.position, transform.forward);
+        }
+    }
+
+    void OnParticleCollision(GameObject other)
+    {
+        if (Utils.isPlayer(other))
+        {   
             tryDoDamage(transform.position, transform.forward);
         }
     }

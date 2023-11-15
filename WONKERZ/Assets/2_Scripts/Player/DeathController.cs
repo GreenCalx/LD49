@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -94,7 +95,18 @@ public class DeathController : MonoBehaviour
         deathText = deathScreen.GetComponent<DeathUI>().deathText;
         Destroy(deathScreen, Access.CameraManager().deathCamDuration);
 
-        Destroy(gameObject, timeBeforeDeletion);
+        //Destroy(gameObject, timeBeforeDeletion);
+        StartCoroutine(SelfKill());
+    }
+
+    IEnumerator SelfKill()
+    {
+        yield return new WaitForSeconds(timeBeforeDeletion);
+        foreach (var rb in objects)
+        {
+            Destroy(rb.gameObject);
+        }
+        Destroy(gameObject, 0.1f);
     }
 
     public void Deactivate()
@@ -122,6 +134,7 @@ public class DeathController : MonoBehaviour
             var c = deathText.color;
             c.a = Mathf.SmoothStep(timeScale, 1f, Mathf.Clamp01(scalingTimerCurrent / scalingTimer));
             deathText.color = c;
+
         }
     }
 }

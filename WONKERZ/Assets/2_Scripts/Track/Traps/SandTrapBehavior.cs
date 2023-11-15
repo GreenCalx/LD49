@@ -21,6 +21,8 @@ public class SandTrapBehavior : MonoBehaviour
     public SchSandTrapRigidBody rb;
     public float maxForce;
 
+    public float shootSpeedDamp = 0.5f;
+
     private int vMid0 = 129;
     private int vMid1 = 163;
 
@@ -39,6 +41,7 @@ public class SandTrapBehavior : MonoBehaviour
         vertices = mesh.vertices;
 
         sandParticles.Stop();
+        smokeParts.gameObject.SetActive(true);
         smokeParts.Stop();
 
         mat.SetFloat("_AngleAnimationStart", 0);
@@ -96,7 +99,7 @@ public class SandTrapBehavior : MonoBehaviour
             mesh.vertices = vertices;
 
             var meshCollider = GetComponent<MeshCollider>();
-            meshCollider.sharedMesh = mesh;
+            //meshCollider.sharedMesh = mesh;
 
             var s = smokeParts.shape;
             s.position = new Vector3(0, depth, 0);
@@ -113,6 +116,7 @@ public class SandTrapBehavior : MonoBehaviour
             Quaternion lookRot = Quaternion.LookRotation(lookPos);
             lookRot.eulerAngles =new Vector3(fourmillionRoot.rotation.eulerAngles.x, lookRot.eulerAngles.y, fourmillionRoot.rotation.eulerAngles.z);
             fourmillionRoot.rotation = Quaternion.Slerp(fourmillionRoot.rotation, lookRot, Time.deltaTime * roatSpeedTowardsPlayer);
+            sandParticles.transform.rotation = fourmillionRoot.rotation;
 
             var dir = focus.transform.position - transform.position;
 
@@ -127,7 +131,7 @@ public class SandTrapBehavior : MonoBehaviour
             var main = sandParticles.main;
             //var v = Mathf.Sqrt(Mathf.Abs(g * x * x / (2 * (y - x*Mathf.Tan(angle))))) / Mathf.Cos(angle);
             var v = (xDiff / (Mathf.Sqrt(Mathf.Abs((2 * (yDiff - xDiff*Mathf.Tan(angle)))/g)) * Mathf.Cos(angle)));
-            main.startSpeed = v;
+            main.startSpeed = v * shootSpeedDamp;
 
         }
     }
