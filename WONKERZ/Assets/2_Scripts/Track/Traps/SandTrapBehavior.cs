@@ -96,7 +96,7 @@ public class SandTrapBehavior : MonoBehaviour
         {
             vertices[vMid0].y = -1+depth;
             vertices[vMid1].y = depth;
-            mesh.vertices = vertices;
+            //mesh.vertices = vertices;
 
             var meshCollider = GetComponent<MeshCollider>();
             //meshCollider.sharedMesh = mesh;
