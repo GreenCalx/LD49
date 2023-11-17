@@ -5,13 +5,10 @@ using System;
 
 public class GameProgressConditional : MonoBehaviour
 {
-    public string gameProgressEventID = "";
+    public UniqueEvents.UEVENTS gameProgressEventID;
 
     void Start()
     {
-        if (string.IsNullOrEmpty(gameProgressEventID))
-            return;
-
         if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
         {
             foreach(Transform t in transform)

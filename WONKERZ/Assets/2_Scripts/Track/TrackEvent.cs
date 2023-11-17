@@ -6,10 +6,13 @@ using Schnibble;
 *  Interface with BountyArray 
 *  > To be referenced externally in track and set to solved
 * 
+*   It can be local to the track, and mark a bounty realization if a UniqueEvent is attached
 */
 public class TrackEvent : MonoBehaviour
 {
     public string eventID;
+
+    public UniqueEvents.UEVENTS uniqueEventOnSolving  = UniqueEvents.UEVENTS.NONE;
     public bool isSolved;
 
 
@@ -21,8 +24,15 @@ public class TrackEvent : MonoBehaviour
 
     public void setSolved()
     {
+        if (isSolved)
+            return;
+
         isSolved = true;
 
+        // Notify Progress
+        Access.GameProgressSaveManager().notifyUniqueEventDone(uniqueEventOnSolving);
+
+        // Notify BountyMatrix
         BountyArray bountyArray = Access.BountyArray();
         BountyArray.AbstractBounty thisAsBounty;
         if (!bountyArray.findBountyFromName(eventID, out thisAsBounty))

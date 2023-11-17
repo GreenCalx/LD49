@@ -11,7 +11,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     [Header("triggerOnceInScene")]
     public bool triggerOnlyOnce = true;
     [Header("triggerOnceInGame")]
-    public string uniqueEventID = "";
+    public UniqueEvents.UEVENTS uniqueEventID;
     [Header("tweaks")]
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
@@ -112,8 +112,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         
         cinematicDone = true;
 
-        if (!string.IsNullOrEmpty(uniqueEventID))
-            Access.GameProgressSaveManager().notifyUniqueEventDone(uniqueEventID);
+        Access.GameProgressSaveManager().notifyUniqueEventDone(uniqueEventID);
     }
 
     public void StartCinematic()
@@ -122,7 +121,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
             return;
 
         // already triggered at some point in the game
-        if (!string.IsNullOrEmpty(uniqueEventID))
+        if (uniqueEventID != UniqueEvents.UEVENTS.NONE)
         {
             if (Access.GameProgressSaveManager().IsUniqueEventDone(uniqueEventID))
             {
@@ -130,6 +129,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
                 return;
             }
         }
+
 
         triggered = true;
         

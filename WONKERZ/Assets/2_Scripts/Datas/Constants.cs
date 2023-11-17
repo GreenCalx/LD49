@@ -14,7 +14,7 @@ public struct Constants
     public const bool DBG_REPLAYDUMP = false;
 
     // -- Paths --
-    public const string FD_SAVEFILES = "./savefiles/";
+    public const string FD_SAVEFILES = "/savefiles/";
     public const string unix_FD_SAVEFILES = "";
     public const string FD_BOUNTYMATRIX = "bountymatrix";
 

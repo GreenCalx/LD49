@@ -27,11 +27,8 @@ public static class SaveAndLoad
 
     private static void updateFileName(ref string iFileName)
     {
-        // CreateDirectory by default is readonly
-        // But i can't manage to call the right using somehow...
-        // TODO : Make the savefiles folder happen
-
-        fileName = Application.persistentDataPath + "/" + /*Constants.FD_SAVEFILES +*/ iFileName;
+        string path = Access.GameProgressSaveManager().profileDataFilePath;
+        fileName = Path.Combine(path, iFileName);
     }
 
     public static bool save(string iFileName)
@@ -40,6 +37,7 @@ public static class SaveAndLoad
 
         if (File.Exists(fileName))
         { File.Delete(fileName); }
+
         FileStream fs = new FileStream(fileName, FileMode.Create);
         BinaryFormatter formatter = new BinaryFormatter();
 

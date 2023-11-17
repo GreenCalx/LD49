@@ -326,7 +326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0
@@ -1783,6 +1783,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eventID: WelcomeToWonkerz
+  uniqueEventOnSolving: 1
   isSolved: 0
 --- !u!114 &144855322
 MonoBehaviour:
@@ -3864,6 +3865,10 @@ PrefabInstance:
     - target: {fileID: 7487887720664368280, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7487887720664368281, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
+      propertyPath: resetGameProgressEvents
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368286, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_RootOrder
@@ -6832,7 +6837,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0
@@ -7555,7 +7560,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7569391362262532276, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: bypassCinematic
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7569391362262532276, guid: 6ffc37b887822814abed6ff1fc9f4aa5, type: 3}
       propertyPath: deleteAfterSpawn
@@ -14987,7 +14992,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0.5
@@ -28291,7 +28296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0.5
@@ -28930,7 +28935,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0
@@ -30677,7 +30682,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0
@@ -32053,7 +32058,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 
+  uniqueEventID: 0
   isLevelEntryCinematic: 0
   isSkippable: 0
   startDelayInSeconds: 0
@@ -35785,7 +35790,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PORTAL_SCENE_TARGET: HUB
   UITransitionOUT: {fileID: 0}
-  transitionOUT: 1
+  transitionOUT: 0
   invisibleLoading: 1
   activeClippingPortal: {fileID: 0}
 --- !u!1 &3323673338159974933

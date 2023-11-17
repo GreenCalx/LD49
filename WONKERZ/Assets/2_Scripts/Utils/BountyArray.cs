@@ -150,8 +150,8 @@ public class BountyArray : MonoBehaviour
     public struct EventTriggerConstraint
     {
         public string track_name;
-        public string eventID;
-        public EventTriggerConstraint(string iTName, string iEventID)
+        public UniqueEvents.UEVENTS eventID;
+        public EventTriggerConstraint(string iTName, UniqueEvents.UEVENTS iEventID)
         {
             eventID     = iEventID;
             track_name  = iTName;
@@ -194,18 +194,19 @@ public class BountyArray : MonoBehaviour
         override public bool check()
         {
             // check etc
-            TrackManager TM = Access.TrackManager();
-            if (TM.launchedTrackName != etc.track_name)
-                return false;
+            // TrackManager TM = Access.TrackManager();
+            // if (TM.launchedTrackName != etc.track_name)
+            //     return false;
 
-            foreach( TrackEvent e in TM.track_events )
-            {
-                if (e.eventID == etc.eventID)
-                {
-                    return e.isSolved;
-                }
-            }
-            return false;
+            // foreach( TrackEvent e in TM.track_events )
+            // {
+            //     if (e.eventID == etc.eventID)
+            //     {
+            //         return e.isSolved;
+            //     }
+            // }
+            return Access.GameProgressSaveManager().IsUniqueEventDone(etc.eventID);
+            //return false;
         }
     }
 

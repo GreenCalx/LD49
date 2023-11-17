@@ -65,7 +65,8 @@ public class ManualCamera : PlayerCamera, IControllable
     void Update()
     {
         updateSecondaryFocus();
-        Debug.DrawRay(focus.position, focus.forward*10, Color.blue);
+        if (focus!=null)
+            Debug.DrawRay(focus.position, focus.forward*10, Color.blue);
     }
 
     void OnDestroy()
