@@ -608,8 +608,8 @@ public void DeactivateCar()
 }
 
 public bool IsInMenu() { return isInMenu; }
-public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound(); Debug.Log("Player Freeze"); }
-public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); Debug.Log("Player UnFreeze"); }
+public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound();  }
+public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
 private void MuteSound()
 {
     foreach (var source in GetComponentsInChildren<AudioSource>())

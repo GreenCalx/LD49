@@ -118,8 +118,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             return;
 
         if (playerIsFrozen)
-        anyKeyPressed = currentMgr.IsAnyKeyDown();
-
+            anyKeyPressed = currentMgr.IsAnyKeyDown();
 
         var plantButton = Entry[(int)PlayerInputs.InputCode.SaveStatesPlant] as GameInputButton;
         var loadButton = Entry[(int)PlayerInputs.InputCode.SaveStatesReturn] as GameInputButton;
@@ -154,9 +153,9 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 respawnCalled = true;
                 respawnButtonDownElapsed = 0f;
             }
-    respawnButtonDownElapsed += Time.deltaTime;
-            float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
-    Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
+                respawnButtonDownElapsed += Time.deltaTime;
+                float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
+                Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
     }
 
         if (respawnCalled) // ACTUAL LOAD
@@ -290,7 +289,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
         iPC.UnFreeze();
         playerIsFrozen = false;
-        }
+    }
 
     public void OnPlayerRespawn(Transform respawnSource)
     {

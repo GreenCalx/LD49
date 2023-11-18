@@ -379,7 +379,6 @@ public class ManualCamera : PlayerCamera, IControllable
         {
             if (!ValidateNewHeadingAngle(headingAngle))
             { 
-                Debug.Log("Manual Camera : not valid heading angle : " + headingAngle);
                 return false; 
             }
         }
