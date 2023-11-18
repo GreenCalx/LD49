@@ -17,6 +17,8 @@ public class ArenaEvent : MonoBehaviour
     public UnityEvent triggerOnCompleted;
     public PlayerDetector playerDetector;
     private TrackEvent trackEvent;
+    public Transform doorToOpenOnSuccess;
+    public Transform openedDoorPosition;
 
     [Header("UI")]
     public string eventName;
@@ -25,6 +27,8 @@ public class ArenaEvent : MonoBehaviour
 
     private int numberOfMonstersAtStart = 0;
     private int killedMonsters = 0;
+
+    private bool isOver = false;
     
     // Start is called before the first frame update
     void Start()
@@ -32,6 +36,7 @@ public class ArenaEvent : MonoBehaviour
         trackEvent = GetComponent<TrackEvent>();
         numberOfMonstersAtStart = monstersToKill.Count;
         killedMonsters = 0;
+        isOver = false;
     }
 
     private void updateHintStatus()
@@ -44,9 +49,28 @@ public class ArenaEvent : MonoBehaviour
         return killedMonsters.ToString()  + "/" + numberOfMonstersAtStart.ToString();
     }
 
+    IEnumerator openDoor(float iOpenTime)
+    {
+        float elapsedTime = 0f;
+        Vector3 dest = openedDoorPosition.position;
+        while (elapsedTime < iOpenTime)
+        {
+            doorToOpenOnSuccess.position = Vector3.Lerp(doorToOpenOnSuccess.position, dest, (elapsedTime / iOpenTime));
+            elapsedTime += Time.deltaTime;
+
+            // Yield here
+            yield return null;
+        } 
+        doorToOpenOnSuccess.position = dest;
+        yield return null;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (isOver)
+            return;
+
         if (launched)
         {
             updateHintStatus();
@@ -57,9 +81,11 @@ public class ArenaEvent : MonoBehaviour
             if (killedMonsters >= numberOfMonstersAtStart)
             {
                 Access.UITrackEvent().hide();
+                StartCoroutine(openDoor(4f));
                 triggerOnCompleted.Invoke();
                 trackEvent.setSolved();
-                Destroy(this);
+                Destroy(this, 5f);
+                isOver = true;
             }
 
         } else {

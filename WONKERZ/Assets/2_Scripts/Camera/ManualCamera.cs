@@ -105,33 +105,32 @@ public class ManualCamera : PlayerCamera, IControllable
 
         // Camera targeting
         // set secondary focus
-        if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().heldDown)
+        if (focusInputLock)
         {
-            if ((null==secondaryFocus)&& !focusInputLock) {
-                findFocus();
-                elapsedPressTimeToCancelSecondaryFocus = 0f;
-                focusInputLock = true;
-            } else {
-                elapsedPressTimeToCancelSecondaryFocus += Time.unscaledDeltaTime;
-                if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus)
+            if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
+            {
+                focusInputLock = false;
+            }
+        } else { // No input lock
+            // Y Pressed
+            if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().heldDown)
+            {
+                // start focus
+                if (null==secondaryFocus)
                 {
-                    resetFocus();
+                    findFocus();
+                    distance += camDistIncrease;
                     focusInputLock = true;
                 }
-
-                if (!!uISecondaryFocus)
-                { 
-                    if (!focusInputLock)
-                    {
-                        float ratio = elapsedPressTimeToCancelSecondaryFocus/pressTimeSecondaryFocus;
-                        if (ratio>0.2f)
-                            uISecondaryFocus.updateFillAmount(ratio);
-                    }
+                else // stop focus
+                {
+                    resetFocus();
+                    distance -= camDistIncrease;
+                    focusInputLock = true;
                 }
             }
         }
 
-        // poll for focus change
         elapsedTimeFocusChange += Time.deltaTime;
         if ((null!=secondaryFocus)&&(elapsedTimeFocusChange >= focusChangeInputLatch))
         {
@@ -145,25 +144,6 @@ public class ManualCamera : PlayerCamera, IControllable
             {
                 changeFocus();
                 elapsedTimeFocusChange = 0f;
-            }
-        }
-
-        // poll for stop focus
-        if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
-        {
-            if (!focusInputLock)
-            {
-                if (elapsedPressTimeToCancelSecondaryFocus > pressTimeSecondaryFocus) 
-                {
-                    resetFocus();
-                }
-            }
-
-            focusInputLock = false;
-            elapsedPressTimeToCancelSecondaryFocus = 0f;
-            if (!!uISecondaryFocus)
-            { 
-                uISecondaryFocus.updateFillAmount(0f);            
             }
         }
 
@@ -395,9 +375,13 @@ public class ManualCamera : PlayerCamera, IControllable
 
         float headingAngle = GetAngle(movement / Mathf.Sqrt(movementDeltaSqr));
 
-        if (!ValidateNewHeadingAngle(headingAngle))
-        { 
-            return false; 
+        if (null==secondaryFocus)
+        {
+            if (!ValidateNewHeadingAngle(headingAngle))
+            { 
+                Debug.Log("Manual Camera : not valid heading angle : " + headingAngle);
+                return false; 
+            }
         }
 
         previousHeadingAngle = headingAngle;

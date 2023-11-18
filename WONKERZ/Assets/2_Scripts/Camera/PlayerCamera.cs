@@ -21,9 +21,9 @@ public class PlayerCamera : GameCamera
     [Header("Camera Focus")]
     public float secondaryFocusFindRange = 50f;
     public CameraFocusable secondaryFocus;
-    public float pressTimeSecondaryFocus = 1f;
     public float focusChangeInputLatch = 0.2f;
-    protected float elapsedPressTimeToCancelSecondaryFocus = 0f;
+    public float camDistIncrease = 0f;
+    public float camFOVIncrease = 0f;
     protected float elapsedTimeFocusChange = 0f;
     protected bool focusInputLock = false;
     private Queue<CameraFocusable> alreadyFocusedQ;
@@ -124,7 +124,7 @@ public class PlayerCamera : GameCamera
         {
             return;
         }
-        
+
         // Check if distance is met, disable otherwise
         PlayerController p = Access.Player();
         Vector3 p_pos = p.transform.position;

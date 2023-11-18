@@ -7,15 +7,23 @@ public class GameProgressConditional : MonoBehaviour
 {
     public UniqueEvents.UEVENTS gameProgressEventID;
 
+    [Header("Behaviors on EventID")]
+    public bool destroyOnStart = true;
+
     void Start()
     {
-        if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+        if (destroyOnStart)
         {
-            foreach(Transform t in transform)
+            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
             {
-                Destroy(t.gameObject);
+                foreach(Transform t in transform)
+                {
+                    Destroy(t.gameObject);
+                }
+                Destroy(gameObject);
             }
-            Destroy(gameObject);
         }
     }
+
+
 }
