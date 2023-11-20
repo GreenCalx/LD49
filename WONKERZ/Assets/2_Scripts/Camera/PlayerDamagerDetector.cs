@@ -70,7 +70,6 @@ public class PlayerDamagerDetector : MonoBehaviour
     void OnTriggerStay(Collider iCollider)
     {
         PlayerDamager pd = iCollider.gameObject.GetComponent<PlayerDamager>();
-        Debug.Log(iCollider.gameObject.name);
         if (!!pd)
         {
             if (!damagersInRange.Contains(pd))

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 using Schnibble;
 
@@ -10,7 +11,12 @@ public class DeathController : MonoBehaviour
     [Header("Mandatory")]
     public GameObject deathUIRef;
 
+    [Header("Auto")]
+    public bool cloneFromPlayer;
+    public List<Rigidbody> bodies;
+    [Header("Manual")]
     public List<Rigidbody> objects;
+    [Header("Tweaks")]
     public float force;
     public float radius;
     public float upmodif;
@@ -25,11 +31,18 @@ public class DeathController : MonoBehaviour
 
     public GameObject deathScreen;
     public TMP_Text deathText;
+
+    private UnityEvent eventOnDeath;
+    private Vector3 killingBlowDirection = Vector3.zero;
+
     // Start is called before the first frame update
     void Start()
     {
         if (isStarted)
             return;
+
+        // if (cloneFromPlayer)
+        //     PlayerCloneFactory.GetInstance().GetDeathClone();
 
         foreach (var rb in objects)
         {
@@ -71,17 +84,27 @@ public class DeathController : MonoBehaviour
         }
     }
 
-    public void Activate(Vector3 iSteer = default(Vector3))
+    public void explodeBodies()
     {
-        foreach (var rb in objects)
-        {
-            updateMeshFromPlayer(rb.gameObject);
+        bodies = new List<Rigidbody>(GetComponentsInChildren<Rigidbody>());
 
+        foreach( Rigidbody rb in bodies)
+        {
             rb.isKinematic = false;
             rb.detectCollisions = true;
             rb.AddExplosionForce(force, transform.position, radius, upmodif);
-            rb.AddForce(iSteer / 3, ForceMode.Acceleration);
+            rb.AddForce(killingBlowDirection / 3, ForceMode.Acceleration);
         }
+    }
+
+    public void Activate(Vector3 iSteer = default(Vector3))
+    {
+        eventOnDeath = new UnityEvent();
+        eventOnDeath.AddListener(explodeBodies);
+        killingBlowDirection = iSteer;
+        if (cloneFromPlayer)
+            StartCoroutine(PlayerCloneFactory.GetInstance().SpawnDeathClone(transform, eventOnDeath));
+
 
         //GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
 

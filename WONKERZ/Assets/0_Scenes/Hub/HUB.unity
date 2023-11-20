@@ -8197,6 +8197,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5897554fb78f5b41b5606dbbbb21b42, type: 3}
+--- !u!1 &1046923528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1046923529}
+  m_Layer: 0
+  m_Name: MountainIsland
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1046923529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046923528}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1095201980}
+  m_Father: {fileID: 3534851235532167623}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1062602067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8490,6 +8522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameProgressEventID: 2
+  destroyOnStart: 1
 --- !u!1 &1088857646
 GameObject:
   m_ObjectHideFlags: 0
@@ -8573,6 +8606,68 @@ SpriteMask:
   m_BackSortingOrder: 0
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &1095201979
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1046923529}
+    m_Modifications:
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5490286460952863800, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+      propertyPath: m_Name
+      value: island_MOUNTAIN
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+--- !u!4 &1095201980 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 87275280836899115, guid: 69c80a6ec8399134b9f8e6d7dbb59a02, type: 3}
+  m_PrefabInstance: {fileID: 1095201979}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1099963629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12955,7 +13050,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368280, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368281, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: loadDebugGameProgress
@@ -23481,6 +23576,7 @@ Transform:
   - {fileID: 1069513518}
   - {fileID: 850131694}
   - {fileID: 637321688}
+  - {fileID: 1046923529}
   m_Father: {fileID: 2033071072}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
