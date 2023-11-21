@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public class CheckPointManager : MonoBehaviour, IControllable
 {
@@ -64,7 +65,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
         if (last_camerapoint == null)
-            last_camerapoint = race_start.GetComponent<StartPortal>();
+        last_camerapoint = race_start.GetComponent<StartPortal>();
 
         Access.Player().inputMgr.Attach(this as IControllable);
 
@@ -112,16 +113,16 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (player_in_cinematic)
-            return;
+        return;
 
         if (playerIsFrozen)
             anyKeyPressed = currentMgr.IsAnyKeyDown();
 
-        var plantButton = Entry[(int)PlayerInputs.InputCode.SaveStatesPlant] as GameInputButton;
-        var loadButton = Entry[(int)PlayerInputs.InputCode.SaveStatesReturn] as GameInputButton;
+        var plantButton = Entry.Get((int)PlayerInputs.InputCode.SaveStatesPlant) as GameInputButton;
+        var loadButton = Entry.Get((int)PlayerInputs.InputCode.SaveStatesReturn) as GameInputButton;
 
         var plant = false;
         var load = false;
@@ -135,17 +136,17 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
 
         if (plant) // SAVE
+        {
+            if (!playerInGasStation)
             {
-                if (!playerInGasStation)
+                if (elapsedSinceLastSS >= ss_latch)
                 {
-                    if (elapsedSinceLastSS >= ss_latch)
-                    {
-                        putSaveStateDown();
-                        elapsedSinceLastSS = 0f;
-                    }
+                    putSaveStateDown();
+                    elapsedSinceLastSS = 0f;
                 }
-            return;
             }
+            return;
+        }
         if ((load)&&(elapsedSinceLastSSLoad>ss_latch)) // LOAD CALL
         {
             if (!respawnCalled)
@@ -153,10 +154,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 respawnCalled = true;
                 respawnButtonDownElapsed = 0f;
             }
-                respawnButtonDownElapsed += Time.deltaTime;
-                float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
-                Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
-    }
+            respawnButtonDownElapsed += Time.deltaTime;
+            float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
+            Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
+        }
 
         if (respawnCalled) // ACTUAL LOAD
         {
@@ -197,7 +198,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         if (currPanels>0)
         {
             if (!Access.Player().TouchGroundAll())
-                return;
+            return;
 
             currPanels -= 1;
             ss_pos = player.transform.position;
@@ -208,7 +209,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
-                    Destroy(saveStateMarkerInst);
+                Destroy(saveStateMarkerInst);
                 saveStateMarkerInst = Instantiate(saveStateMarkerRef);
                 saveStateMarkerInst.transform.position = ss_pos;
                 saveStateMarkerInst.transform.rotation = ss_rot;
@@ -224,16 +225,16 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             CPs[i].subscribeToManager(this);
             if (!checkpoints.Contains(CPs[i].gameObject))
-                checkpoints.Add( CPs[i].gameObject );
+            checkpoints.Add( CPs[i].gameObject );
         }
-        }
+    }
 
     public bool subscribe(GameObject iCP)
     {
         if (iCP.GetComponent<CheckPoint>() && !checkpoints.Exists(x => x.gameObject.name == iCP.gameObject.name))
         { checkpoints.Add(iCP); return true; }
         return false;
-        }
+    }
 
     public void notifyCP(GameObject iGO, bool setAsLastCPTriggered)
     {
@@ -241,10 +242,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
         if (!!cp)
         {
             if (last_checkpoint == iGO)
-                return;
+            return;
 
             if (!setAsLastCPTriggered)
-                return;
+            return;
 
             last_checkpoint = iGO;
             last_camerapoint = cp;
@@ -252,19 +253,19 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
             hasSS = false;
             if (!!saveStateMarkerInst)
-                Destroy(saveStateMarkerInst);
+            Destroy(saveStateMarkerInst);
 
             Access.UITurboAndSaves()?.updateLastCPTriggered(cp.id.ToString());
             Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
             if (!!ui_cp)
             {
                 ui_cp.displayCP(cp);
-        }
-
-    }
-        else
-            this.LogWarn("CheckPointManager: Input GO is not a checkpoint.");
             }
+
+        }
+        else
+        this.LogWarn("CheckPointManager: Input GO is not a checkpoint.");
+    }
 
     public void notifyGasStation(GasStation iGasStation)
     {
@@ -286,7 +287,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             iPC.rb.velocity = Vector3.zero;
             yield return null;
-            }
+        }
         iPC.UnFreeze();
         playerIsFrozen = false;
     }
@@ -299,7 +300,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         {
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
-            }
+        }
 
         // invalidate trick
         TrickTracker tt = player.GetComponent<TrickTracker>();
@@ -308,7 +309,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             tt.end_line(true);
             tt.storedScore = 0;
             tt.trickUI.displayTricklineScore(0);
-            }
+        }
 
         // reset manual camera behind the player
         CameraManager CM = Access.CameraManager();
@@ -328,17 +329,17 @@ public class CheckPointManager : MonoBehaviour, IControllable
         if (!hasSS)
         {
             loadLastCP(false);
-            } else {
+        } else {
 
             player.gameObject.transform.position = ss_pos;
-                player.gameObject.transform.rotation = ss_rot;
+            player.gameObject.transform.rotation = ss_rot;
             OnPlayerRespawn(saveStateMarkerInst.transform);
-            }
+        }
 
         PlayerController pc = player.GetComponent<PlayerController>();
         StartCoroutine(waitInputToResume(pc));
 
-        }
+    }
 
     public void loadLastCP(bool iFromDeath = false)
     {
@@ -368,16 +369,17 @@ public class CheckPointManager : MonoBehaviour, IControllable
             //         r.load();
             //     }
             // }
-            }
+        }
         else
         {
             loadRaceStart();
-            }
+        }
         if (iFromDeath)
         {
             Access.CollectiblesManager().jar.collectedNuts = 0;
             return;
         }
+
         Access.CameraManager().TryResetView();
     }
 

@@ -1,5 +1,7 @@
 using UnityEngine;
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class grapintest : MonoBehaviour, IControllable
 {
@@ -17,10 +19,10 @@ public class grapintest : MonoBehaviour, IControllable
         Access.Player().inputMgr.Detach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        Player.IsHooked = (Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown;
-        grapin.SetActive((Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown);
+        Player.IsHooked = (Entry.Get((int) PlayerInputs.InputCode.Grapin) as GameInputButton).GetState().heldDown;
+        grapin.SetActive((Entry.Get((int) PlayerInputs.InputCode.Grapin) as GameInputButton).GetState().heldDown);
     }
 
     // Update is called once per frame

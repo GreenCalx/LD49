@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using Schnibble.UI;
+
 public class UIVideoPanel : UIPanelTabbed
 {
     public TMP_Text currentResolution;

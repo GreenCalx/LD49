@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
-using static Schnibble.SchPhysics;
+using static Schnibble.Physics;
 
 public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 {

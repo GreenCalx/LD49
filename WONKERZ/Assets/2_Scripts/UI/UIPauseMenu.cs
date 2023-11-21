@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
@@ -41,9 +43,9 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        if ((Entry[(int) PlayerInputs.InputCode.UIStart] as GameInputButton).GetState().down)
+        if ((Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton).GetState().down)
         {
             if (!!TMP_trackname)
                 TMP_trackname.text = SceneManager.GetActiveScene().name;

@@ -3,6 +3,8 @@ using Schnibble;
 using System.Collections.Generic;
 using System.Collections; 
 
+using Schnibble.Managers;
+
 public class GarageEntry : MonoBehaviour, IControllable
 {
     [Header("Mand")]
@@ -38,12 +40,12 @@ public class GarageEntry : MonoBehaviour, IControllable
         Access.PlayerInputsManager()?.player1.Detach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (detector.playerInRange)
         {
-            if ((Entry[(int)PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
-                openGarage();
+            if ((Entry.Get((int)PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
+            openGarage();
         }
     }
 
@@ -51,7 +53,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     public void openGarage()
     {
         if (garageOpened)
-            return;
+        return;
 
         foreach(GameObject go in garageDoors)
         {
@@ -97,7 +99,7 @@ public class GarageEntry : MonoBehaviour, IControllable
     public void closeGarage()
     {
         if (!garageOpened)
-            return;
+        return;
 
         foreach(GameObject go in garageDoors)
         {

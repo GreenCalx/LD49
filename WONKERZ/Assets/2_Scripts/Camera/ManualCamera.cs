@@ -1,6 +1,8 @@
 using UnityEngine;
 using System;
 using Schnibble;
+using Schnibble.Managers;
+using static UnityEngine.Physics;
 
 public class ManualCamera : PlayerCamera, IControllable
 {
@@ -78,7 +80,7 @@ public class ManualCamera : PlayerCamera, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         // Camera manual movements if no focus
         if (null==secondaryFocus)
@@ -90,15 +92,15 @@ public class ManualCamera : PlayerCamera, IControllable
                     // input is cameraY, cameraX, because it represents the axis of rotation.
                 // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
                 var current = new Vector2(
-                    (Entry[(int)PlayerInputs.InputCode.CameraY] as GameInputAxis).GetState().valueRaw,
-                    -(Entry[(int)PlayerInputs.InputCode.CameraX] as GameInputAxis).GetState().valueRaw);
+                    (Entry.Get((int)PlayerInputs.InputCode.CameraY) as GameInputAxis).GetState().valueRaw,
+                    -(Entry.Get((int)PlayerInputs.InputCode.CameraX) as GameInputAxis).GetState().valueRaw);
                 current = Vector2.Scale(current, multiplier);
                 input.Add(current);
             }
         }
 
         // View reset
-        if ((Entry[(int)PlayerInputs.InputCode.CameraReset] as GameInputButton).GetState().down)
+        if ((Entry.Get((int)PlayerInputs.InputCode.CameraReset) as GameInputButton).GetState().down)
         {
             resetView();
         }
@@ -107,13 +109,13 @@ public class ManualCamera : PlayerCamera, IControllable
         // set secondary focus
         if (focusInputLock)
         {
-            if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().up)
+            if ((Entry.Get((int)PlayerInputs.InputCode.CameraFocus) as GameInputButton).GetState().up)
             {
                 focusInputLock = false;
             }
         } else { // No input lock
             // Y Pressed
-            if ((Entry[(int)PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().heldDown)
+            if ((Entry.Get((int)PlayerInputs.InputCode.CameraFocus) as GameInputButton).GetState().heldDown)
             {
                 // start focus
                 if (null==secondaryFocus)
@@ -152,13 +154,17 @@ public class ManualCamera : PlayerCamera, IControllable
     // Game camera overrides
     public override void init()
     {
-        Access.Player().inputMgr.Attach(this as IControllable);
-        playerRef = Access.Player().gameObject;
-        focus = playerRef.transform;
+        if (focus == null)
+        {
+            Access.Player().inputMgr.Attach(this as IControllable);
+            playerRef = Utils.getPlayerRef();
+            focus = playerRef.transform;
+        }
         focusPoint = focus.position;
 
         resetView();
-
+        //orbitAngles = new Vector2(defaultVerticalAngle, 180f);
+        //transform.localRotation = Quaternion.Euler(orbitAngles);
     }
 
     public override void resetView() 
@@ -211,6 +217,9 @@ public class ManualCamera : PlayerCamera, IControllable
                 UpdateFocusPoint();
             }
         }
+        else {
+            UpdateFocusPoint();
+        }
 
         //UpdateFocusPoint();
         Quaternion lookRotation;
@@ -237,7 +246,7 @@ public class ManualCamera : PlayerCamera, IControllable
         Vector3 castDirection = castLine / castDistance;
 
         // check if we hit something between camera and focuspoint
-        if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
+        if (BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
         {
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
@@ -330,7 +339,7 @@ public class ManualCamera : PlayerCamera, IControllable
     }
 
 
-    private SchMathf.AccumulatorV2 input;
+    private Math.AccumulatorV2 input;
     bool ManualRotation()
     {
         const float e = 0.001f;

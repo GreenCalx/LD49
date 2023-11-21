@@ -1,7 +1,10 @@
 using UnityEngine;
 
 using Schnibble;
-using static Schnibble.SchPhysics;
+using static Schnibble.Physics;
+using static UnityEngine.Physics;
+using static UnityEngine.Debug;
+using static Schnibble.Utils;
 
 
 public class WaterBoyancy : MonoBehaviour
@@ -25,23 +28,23 @@ public class WaterBoyancy : MonoBehaviour
         var RB = c.GetComponent<Rigidbody>();
         if (!ValidateForce(RB.velocity).Item2)
         {
-            Debug.Break();
+            Break();
         }
         if (c.GetComponent<Rigidbody>().velocity.y > WaterSurfaceTension)
         {
-            Physics.IgnoreCollision(c, GetComponent<MeshCollider>(), true);
+            IgnoreCollision(c, GetComponent<MeshCollider>(), true);
         }
     }
 
     void OnTriggerStay(Collider c)
     {
         var RB = c.GetComponent<Rigidbody>();
-        var F = -(RB.velocity + Physics.gravity * Time.deltaTime) * WaterDensity * (1 - Vector3.Dot(RB.velocity.normalized, transform.up));
+        var F = -(RB.velocity + gravity * Time.deltaTime) * WaterDensity * (1 - Vector3.Dot(RB.velocity.normalized, transform.up));
         bool IsGoodValue = false;
         (F, IsGoodValue) = ValidateForce(F);
         if (!IsGoodValue)
         {
-            Debug.Break();
+            Break();
             this.Log("VALIDATIOIN OF FORCE FAILED");
         }
 
@@ -50,6 +53,6 @@ public class WaterBoyancy : MonoBehaviour
 
     void OnTriggerExit(Collider c)
     {
-        Physics.IgnoreCollision(c, GetComponent<MeshCollider>(), false);
+        IgnoreCollision(c, GetComponent<MeshCollider>(), false);
     }
 }

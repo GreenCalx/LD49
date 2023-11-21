@@ -1,8 +1,12 @@
-using Schnibble;
 using System.Collections.Specialized;
 using UnityEngine;
-using static Schnibble.SchMathf;
-using static Schnibble.SchPhysics;
+using UnityEngine.SceneManagement;
+using Schnibble;
+using Schnibble.Managers;
+using static Schnibble.Math;
+using static Schnibble.Physics;
+using static Schnibble.Utils;
+using static UnityEngine.Debug;
 
 public class AirplaneState : FSMState, IControllable 
 {
@@ -110,10 +114,48 @@ public class GroundState : FSMState, IControllable
         }
     }
 
+    private class SpeedEffect : FSMAction
+    {
+        public override void Execute(FSMBase fsm){
+            var player = (fsm as PlayerFSM).GetPlayer();
+            var playerCar = player.car;
+            // Speed effect on camera
+            // update camera FOV/DIST if a PlayerCamera
+            CameraManager CamMgr = Access.CameraManager();
+            if (CamMgr?.active_camera is PlayerCamera)
+            {
+                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                pc.applySpeedEffect(playerCar.GetCurrentSpeed() / playerCar.maxTorque);
+            }
+
+            var SpeedDirection = playerCar.rb.velocity;
+            var particules = playerCar.speedEffect.particles.GetComponent<ParticleSystem>();
+            if (SpeedDirection.magnitude / playerCar.maxTorque > playerCar.speedEffect.threshold)
+            {
+                var e = particules.emission;
+                e.enabled = true;
+            }
+            else
+            {
+                var e = particules.emission;
+                e.enabled = false;
+            }
+
+            particules.transform.LookAt(playerCar.transform.position + SpeedDirection);
+            var lifemin = 0.2f;
+            var lifemax = 0.6f;
+            var speedmin = 20f;
+            var speedmax = 100f;
+            var partmain = particules.main;
+            partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
+        }
+    }
+
     public GroundState(PlayerController player) : base("Car")
     {
         this.player = player;
         this.actions.Add(new UpdateWheelBasis());
+        this.actions.Add(new SpeedEffect());
         this.fixedActions.Add(new GeneralGroundAction());
     }
 
@@ -129,9 +171,9 @@ public class GroundState : FSMState, IControllable
         (fsm as PlayerFSM).GetPlayer().DeactivateCar();
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        var jumpButton = Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton;
+        var jumpButton = Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton;
         if (jumpButton != null)
         {
             var jumpButtonState = jumpButton.GetState();
@@ -149,7 +191,7 @@ public class GroundState : FSMState, IControllable
             }
         }
 
-        var turboButton = Entry[(int)PlayerInputs.InputCode.Turbo] as GameInputButton;
+        var turboButton = Entry.Get((int)PlayerInputs.InputCode.Turbo) as GameInputButton;
         if (turboButton != null)
         {
             if (turboButton.GetState().heldDown)
@@ -158,7 +200,7 @@ public class GroundState : FSMState, IControllable
             }
         }
 
-        var handbrakeButton = Entry[(int)PlayerInputs.InputCode.Handbrake] as GameInputButton;
+        var handbrakeButton = Entry.Get((int)PlayerInputs.InputCode.Handbrake) as GameInputButton;
         if (handbrakeButton != null)
         {
             if (handbrakeButton.GetState().heldDown)
@@ -168,42 +210,52 @@ public class GroundState : FSMState, IControllable
         }
 
         // makes car torque control a power
-
-        var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
-        var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
-        if (weightXAxis != null)
+        //var weightControlButton = (Entry.Get((int)PlayerInputs.InputCode.WeightControl) as GameInputButton);
+        //if (weightControlButton != null)
         {
-            player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
-            player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
-        }
-        if (weightYAxis != null)
-        {
-            player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
-            player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
+            //if (weightControlButton.GetState().heldDown)
+            {
+                var weightXAxis = Entry.Get((int)PlayerInputs.InputCode.WeightX) as GameInputAxis;
+                var weightYAxis = Entry.Get((int)PlayerInputs.InputCode.WeightY) as GameInputAxis;
+
+                if (weightXAxis != null)
+                {
+                    player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
+                    player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
+                }
+
+                if (weightYAxis != null)
+                {
+                    player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
+                    player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
+                }
+            }
+
+
         }
 
-        var accelerationAxis = Entry[(int)PlayerInputs.InputCode.Accelerator] as GameInputAxis;
+        var accelerationAxis = Entry.Get((int)PlayerInputs.InputCode.Accelerator) as GameInputAxis;
         if (accelerationAxis != null)
         {
             var acceleration = Mathf.Clamp01(accelerationAxis.GetState().valueSmooth);
             if (acceleration != 0f)
-                player.car.currentRPM.Add(acceleration);
+            player.car.currentRPM.Add(acceleration);
         }
 
-        var breakAxis = Entry[(int)PlayerInputs.InputCode.Break] as GameInputAxis;
+        var breakAxis = Entry.Get((int)PlayerInputs.InputCode.Break) as GameInputAxis;
         if (breakAxis != null)
         {
             var breaks = Mathf.Clamp01(breakAxis.GetState().valueSmooth);
             if (breaks != 0f)
-                player.car.currentRPM.Add(-breaks);
+            player.car.currentRPM.Add(-breaks);
         }
         // todo toffa : this is very weird...check this at some point
 
-        var turnAxis = Entry[(int)PlayerInputs.InputCode.Turn] as GameInputAxis;
+        var turnAxis = Entry.Get((int)PlayerInputs.InputCode.Turn) as GameInputAxis;
         if (turnAxis != null)
         {
             if (turnAxis.GetState().valueSmooth != 0f)
-                player.turn.Add(turnAxis.GetState().valueSmooth);
+            player.turn.Add(turnAxis.GetState().valueSmooth);
         }
 
         var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
@@ -475,6 +527,10 @@ public class PlayerController : MonoBehaviour, IControllable
         vehicleStates = new PlayerVehicleStates(this);
 
         Freeze();
+
+        Access.SceneLoader().beforeLoadScene.AddListener(OnBeforeLoadScene);
+        Access.SceneLoader().beforeEnableScene.AddListener(OnBeforeEnableScene);
+        Access.SceneLoader().afterLoadScene.AddListener(OnAfterLoadScene);
     }
 
     void Start()
@@ -490,6 +546,35 @@ public class PlayerController : MonoBehaviour, IControllable
     void OnDestroy()
     {
         inputMgr.Detach(this);
+        Access.SceneLoader().beforeLoadScene.RemoveListener(OnBeforeLoadScene);
+        Access.SceneLoader().afterLoadScene.RemoveListener(OnAfterLoadScene);
+        Access.SceneLoader().beforeEnableScene.RemoveListener(OnBeforeEnableScene);
+    }
+
+    void OnBeforeLoadScene(){
+        vehicleStates.SetState(vehicleStates.states[(int)PlayerVehicleStates.States.Init]);
+        Freeze();
+    }
+
+    void OnBeforeEnableScene(Scene toBeEnabled) {
+
+        //
+        //private void RemovePreviousPlayerIfExists(Scene sceneToLoad)
+        {
+            foreach (var go in toBeEnabled.GetRootGameObjects())
+            {
+                if (go.name == Constants.GO_PLAYER)
+                {
+                    Destroy(go);
+                }
+            }
+        }
+        SceneManager.MoveGameObjectToScene(Access.Player().transform.root.gameObject,
+            toBeEnabled);
+    }
+
+    void OnAfterLoadScene() {
+        Access.invalidate();
     }
 
     // Update is called once per frame
@@ -603,7 +688,7 @@ public class PlayerController : MonoBehaviour, IControllable
         Access.UITurboAndSaves().updateTurboBar();
 
         Vector3 turboDir = transform.forward.normalized;
-        Debug.DrawRay(transform.position, turboDir, Color.yellow, 4, false);
+        DrawRay(transform.position, turboDir, Color.yellow, 4, false);
         car.rb.AddForce(turboDir * turbo.strength, ForceMode.VelocityChange);
 
         turbo.intervalElapsedTime = 0f;
@@ -764,7 +849,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
         Vector3 contactNormal = iDamageSourceNormal;
         Vector3 contactPoint = iDamageSourcePoint;
-        Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
+        DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
 
         Vector3 repulseDir = contactPoint + contactNormal;
         repulseForce = -repulseDir * iRepulsionForce;
@@ -784,8 +869,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     bool modifierCalled = false;
 
-
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         // dirty fix for respawn when slipping
         foreach (var a in car.axles)

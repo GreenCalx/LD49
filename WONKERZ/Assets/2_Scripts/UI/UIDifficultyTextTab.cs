@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Schnibble.UI;
+
 public class UIDifficultyTextTab : UITextTab
 {
     public DIFFICULTIES difficulty;

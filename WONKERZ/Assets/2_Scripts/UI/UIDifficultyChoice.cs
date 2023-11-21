@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Schnibble.UI;
 
 public class UIDifficultyChoice : UIPanelTabbed
 {

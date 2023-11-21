@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using Schnibble.UI;
+
 public class UIBountyMatrix : UIPanelTabbed
 {
     private BountyArray bountyMatrix;

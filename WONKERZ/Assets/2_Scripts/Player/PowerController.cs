@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Schnibble;
+using Schnibble.Managers;
 
 public class PowerController : MonoBehaviour
 {
@@ -62,7 +63,7 @@ public class PowerController : MonoBehaviour
     public void refreshPower()
     {
         if (currentPower != null)
-            currentPower.onRefresh();
+        currentPower.onRefresh();
     }
 
     public void tryTriggerPower()

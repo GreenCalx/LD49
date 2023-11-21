@@ -51,8 +51,8 @@ public class FallingObject : MonoBehaviour
         if (!isFalling || !delayedStartComplete)
             return;
 
-        if (iCollision.gameObject.GetComponent<Ground>()==null)
-            return;
+        //if (iCollision.gameObject.GetComponent<Ground>()==null)
+        //return;
 
         effectOnCollision(iCollision);
     }
@@ -62,8 +62,8 @@ public class FallingObject : MonoBehaviour
         if (!isFalling || !delayedStartComplete)
             return;
         
-        if (iCollision.gameObject.GetComponent<Ground>()==null)
-            return;
+        //if (iCollision.gameObject.GetComponent<Ground>()==null)
+        //return;
         
         if (!shouldStopAll)
         { return; }
@@ -75,8 +75,8 @@ public class FallingObject : MonoBehaviour
     {
         if (!!ParticleSystem_OnImpact)
         {
-            if (iCollision.gameObject.GetComponent<Ground>()==null)
-                return;
+            //if (iCollision.gameObject.GetComponent<Ground>()==null)
+            //return;
 
             List<ContactPoint> contacts = new List<ContactPoint>();
             int n_contacts = iCollision.GetContacts(contacts);

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using Schnibble.UI;
+
 public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
 {
     public UIGarageInputHelper inputHelper;
@@ -29,13 +31,13 @@ public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
     {
         base.deactivate();
         if (Parent!=null)
-            inputHelper.refreshHelper((Parent as UIGaragePanel));
+        inputHelper.refreshHelper((Parent as UIGaragePanel));
     }
 
     public override void select()
     {
         gameObject.SetActive(true);
-         base.select();
+        base.select();
         animateIn();
     }
 

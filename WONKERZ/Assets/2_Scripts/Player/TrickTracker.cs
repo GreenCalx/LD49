@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
-using static Schnibble.SchPhysics;
+using static Schnibble.Physics;
 
 // should be in namespace or sm shit but access to tricks not working for some reason ?
 public enum WHEEL_LOCATION

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public class Access
 {
@@ -15,12 +16,12 @@ public class Access
         private GameObject GO_UIPLAYER;
         private GameObject GO_PHYSXMATMGR;
         /* IF WE WANT TO ECO GetComponent<> call..
-                public InputManager         IM;
-                public ResolutionManager    RM;
-                public CameraManager        CM;
-                public UIGarageTestManager  UIGTM;
-                public CheckPointManager    CPM;
-        */
+        public InputManager         IM;
+        public ResolutionManager    RM;
+        public CameraManager        CM;
+        public UIGarageTestManager  UIGTM;
+        public CheckPointManager    CPM;
+         */
         private static AccessCache inst;
         public static AccessCache Instance
         {
@@ -32,7 +33,7 @@ public class Access
             GameObject handler = null;
             handler = !!iStorage ? iStorage : GameObject.Find(iHolder);
             if (!iStorage && !!handler)
-                iStorage = handler;
+            iStorage = handler;
             return handler;
         }
         public T getObject<T>(string iHolder, bool iComponentIsInChildren)
@@ -75,7 +76,7 @@ public class Access
                 handler = GameObject.Find(iHolder);
             }
             if (!!iComponentIsInChildren)
-                return !!handler ? handler.GetComponentInChildren<T>(true) : default(T);
+            return !!handler ? handler.GetComponentInChildren<T>(true) : default(T);
             return !!handler ? handler.GetComponent<T>() : default(T);
 
         }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class UIBindingElement : UISelectableElement
 {

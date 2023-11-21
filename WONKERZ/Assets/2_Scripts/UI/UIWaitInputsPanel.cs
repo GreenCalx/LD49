@@ -1,12 +1,15 @@
 using UnityEngine;
 using Schnibble;
 
+using Schnibble.UI;
+using Schnibble.Managers;
+
 public class UIWaitInputsPanel : UIPanelControlable
 {
     private bool wait = false;
     private float waitBeforeInputs = 0.5f;
     private float currentTime = 0f;
-    override protected void ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    override protected void ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (currentTime > waitBeforeInputs)
         {

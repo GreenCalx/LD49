@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class UITitleScreen : UIPanelTabbed
 {
@@ -22,11 +24,10 @@ public class UITitleScreen : UIPanelTabbed
     {
         deactivate();
     }
-
-    protected override void ProcessInputs(InputManager currentMgr, GameInput[] entry){
+    protected override void ProcessInputs(InputManager currentMgr, GameController entry){
         base.ProcessInputs(currentMgr, entry);
 
-        if ((entry[PlayerInputs.GetIdx(inputCancel)] as GameInputButton).GetState().down)
+        if ((entry.Get(PlayerInputs.GetIdx(inputCancel)) as GameInputButton).GetState().down)
         {
             // propose to quit to desktop
             confirmExitPanel.onActivate?.Invoke();

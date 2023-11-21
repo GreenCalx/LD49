@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Schnibble.UI;
 
 public class UIGaragePickableStat : UITextTab
 {
@@ -12,7 +13,7 @@ public class UIGaragePickableStat : UITextTab
         // update background if it exists
         Image bg = GetComponentInChildren<Image>();
         if (!!bg)
-            bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, 0.8f);
+        bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, 0.8f);
 
     }
 
@@ -22,6 +23,6 @@ public class UIGaragePickableStat : UITextTab
         // update background if it exists
         Image bg = GetComponentInChildren<Image>();
         if (!!bg)
-            bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, 0.3f);
+        bg.color = new Color(bg.color.r, bg.color.g, bg.color.b, 0.3f);
     }
 }

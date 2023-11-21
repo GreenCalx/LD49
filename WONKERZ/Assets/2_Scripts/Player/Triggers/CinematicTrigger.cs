@@ -3,6 +3,8 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using Schnibble;
 using System;
+using Schnibble.Managers;
+using static UnityEngine.Debug;
 
 // Triggers only once in current scene
 // > TODO : save seen cinematics to init triggerrs accordingly
@@ -60,19 +62,19 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (!isSkippable)
-            return;
+        return;
 
         if (triggered)
         {
-            if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
+            if ((Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
             { 
                 if (!skipVotes.Contains(currentMgr))
                     skipVotes.Add(currentMgr);
             }
-            else if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().up)
+            else if ((Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().up)
             { 
                 if (skipVotes.Contains(currentMgr))
                     skipVotes.Remove(currentMgr);
@@ -82,7 +84,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
     public void EndCinematic()
     {
-        Debug.Log("End Cinematic");
+        Log("End Cinematic");
 
         if (freezePlayer)
         {
@@ -106,10 +108,10 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         }
 
         if (triggerOnlyOnce)
-            Destroy(this as CinematicTrigger);
+        Destroy(this as CinematicTrigger);
         
         if (!!skipUIInst)
-            Destroy(skipUIInst.gameObject);
+        Destroy(skipUIInst.gameObject);
         
         cinematicDone = true;
 
@@ -119,7 +121,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public void StartCinematic()
     {
         if (!!triggered)
-            return;
+        return;
 
         // already triggered at some point in the game
         if (uniqueEventID != UniqueEvents.UEVENTS.NONE)
@@ -175,7 +177,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     void OnTriggerStay(Collider iCollider)
     {
         if (triggerOnlyOnce && triggered)
-            return;
+        return;
 
         CinematicPlayerTrigger CPT = null;
         if (acceptCinematicPlayerTriggers)

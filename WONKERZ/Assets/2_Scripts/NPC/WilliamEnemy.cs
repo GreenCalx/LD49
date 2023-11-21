@@ -2,7 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+
 using Schnibble;
+using Schnibble.AI;
+using static UnityEngine.Debug;
 
 public class WilliamEnemy : WkzNPC
 {
@@ -71,7 +74,7 @@ public class WilliamEnemy : WkzNPC
     protected override void OnAggro()
     {
         if (lariat_destination!=Vector3.zero)
-            return;
+        return;
         StartCoroutine(ShowSpottedMarker(this));
         SurprisedAnim();
     }
@@ -79,7 +82,7 @@ public class WilliamEnemy : WkzNPC
     protected override void InAggro()
     {
         if (lariat_destination!=Vector3.zero)
-            return;
+        return;
 
         if (idle_timer < current_idle_time)
         {
@@ -185,7 +188,7 @@ public class WilliamEnemy : WkzNPC
                 lariat_destination = GetNextLimitPosition(lariat_destination, 50f);
                 if (!agent.SetDestination(lariat_destination))
                 {
-                    Debug.LogError("William : Failed to attack player");
+                    LogError("William : Failed to attack player");
                 }
             }
             iAttacker.transform.Rotate(0, rotSpeed * Time.deltaTime, 0, Space.Self);
@@ -193,7 +196,7 @@ public class WilliamEnemy : WkzNPC
             // Limit time in lariat
             elapsed_time_in_lariat += Time.deltaTime;
             if (elapsed_time_in_lariat >= max_lariat_duration)
-                break;
+            break;
             
             yield return null;
         }

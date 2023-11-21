@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
-using static Schnibble.Utils;
 
 public class UIGarageTestManager : MonoBehaviour
 {

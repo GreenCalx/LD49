@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public class Hookable : MonoBehaviour, IControllable
 {
@@ -20,11 +21,11 @@ public class Hookable : MonoBehaviour, IControllable
         Access.Player().inputMgr.Detach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        hook.SetActive((Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown);
+        hook.SetActive((Entry.Get((int) PlayerInputs.InputCode.Grapin) as GameInputButton).GetState().heldDown);
         if (!!ccPlayer)
-        ccPlayer.IsHooked = (Entry[(int) PlayerInputs.InputCode.Grapin]as GameInputButton).GetState().heldDown;
+        ccPlayer.IsHooked = (Entry.Get((int) PlayerInputs.InputCode.Grapin) as GameInputButton).GetState().heldDown;
     }
 
     // Update is called once per frame
@@ -42,16 +43,16 @@ public class Hookable : MonoBehaviour, IControllable
     public void OnTriggerEnter(Collider iCol)
     {
         if (null == ccPlayer)
-            ccPlayer = iCol.GetComponent<PlayerController>();
+        ccPlayer = iCol.GetComponent<PlayerController>();
     }
     public void OnTriggerStay(Collider iCol)
     {
         if (null == ccPlayer)
-            ccPlayer = iCol.GetComponent<PlayerController>();
+        ccPlayer = iCol.GetComponent<PlayerController>();
     }
     public void OnTriggerExit(Collider iCol)
     {
         if (!!ccPlayer && !ccPlayer.IsHooked)
-            ccPlayer = iCol.GetComponent<PlayerController>();
+        ccPlayer = iCol.GetComponent<PlayerController>();
     }
 }

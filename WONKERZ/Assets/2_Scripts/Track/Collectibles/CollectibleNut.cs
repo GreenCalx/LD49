@@ -141,12 +141,12 @@ public class CollectibleNut : AbstractCollectible
 
     void OnCollisionEnter(Collision iCol)
     {
-        if (iCol.gameObject.GetComponent<Ground>() != null)
-        {
-            Rigidbody rb = GetComponent<Rigidbody>();
-            //rb.isKinematic = true;
-            rb.velocity = Vector3.zero;
-        }
+        //if (iCol.gameObject.GetComponent<Ground>() != null)
+        //{
+        //Rigidbody rb = GetComponent<Rigidbody>();
+        ////rb.isKinematic = true;
+        //rb.velocity = Vector3.zero;
+        //}
     }
 
     protected override void OnCollect()

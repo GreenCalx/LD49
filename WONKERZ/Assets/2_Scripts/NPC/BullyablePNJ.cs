@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using static UnityEngine.Debug;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BullyablePNJ : MonoBehaviour
@@ -31,7 +32,7 @@ public class BullyablePNJ : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(childToStabilize.position, childToStabilize.up * 100, Color.red);
+        DrawRay(childToStabilize.position, childToStabilize.up * 100, Color.red);
         if (enable_stabilization)
         {
             stabilize();

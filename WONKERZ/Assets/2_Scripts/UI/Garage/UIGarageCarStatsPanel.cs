@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Schnibble;
+using Schnibble.UI;
 
 public class UIGarageCarStatsPanel : UIGaragePanel
 {
@@ -66,7 +67,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
 
     public void updatePlayerWeightCurve()
     {
-#if false
+        #if false
         CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
 
         for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
@@ -77,6 +78,6 @@ public class UIGarageCarStatsPanel : UIGaragePanel
             cc.WEIGHT.MoveKey(i, k);
         }
         this.Log("player curve updated");
-#endif
+        #endif
     }
 }

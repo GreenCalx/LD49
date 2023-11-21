@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using Schnibble;
+using Schnibble.AI;
+using static UnityEngine.Debug;
 
 
 // Y Angle PID      : Follows target 
@@ -165,7 +167,7 @@ public class PinBlockade : SchAIAgent
         for (float time = 0f; time < 1f; time += Time.deltaTime * iJumper.jumpSpeed)
         {
             iJumper.transform.position  = Vector3.Lerp( jumpStart, iTarget, time) 
-                                            + Vector3.up * heightCurve.Evaluate(time);
+                                          + Vector3.up * heightCurve.Evaluate(time);
             iJumper.transform.rotation = Quaternion.Slerp(iJumper.transform.rotation, Quaternion.LookRotation(iTarget - iJumper.transform.position), time);
 
             yield return null;
@@ -185,7 +187,7 @@ public class PinBlockade : SchAIAgent
     void FixedUpdate()
     {
         if (!pinPIDBehaviourIsActive)
-            return;
+        return;
 
         
         if (pid_start_after_hit_elapsed < delayAfterHitForPIDActivation)
@@ -199,7 +201,7 @@ public class PinBlockade : SchAIAgent
         // PID X/Z : Stay up
         var targetUpDir = Vector3.up;
         var upDir = rb.rotation * Vector3.up;
-        Debug.DrawRay(transform.position, upDir, Color.green);
+        DrawRay(transform.position, upDir, Color.green);
 
         float currentAngleX = Vector3.SignedAngle(Vector3.up, upDir, Vector3.right);
         float currentAngleZ = Vector3.SignedAngle(Vector3.up, upDir, Vector3.forward);
@@ -220,7 +222,7 @@ public class PinBlockade : SchAIAgent
         {
             PlayerController player = Access.Player();
             if (!!player)
-                target = player.transform;
+            target = player.transform;
             return;
         }
 

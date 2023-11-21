@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Schnibble;
+using Schnibble.Managers;
+using Schnibble.Rendering;
 
 // Known issue :
 //  * If a camera is active in a new scene, it can take the lead over the active_camera
@@ -76,9 +78,9 @@ public class CameraManager : MonoBehaviour, IControllable
     }
 
     // Switch cameras between HUB cameras
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        if ((Entry[(int)PlayerInputs.InputCode.CameraReset] as GameInputButton).GetState().down)
+        if ((Entry.Get((int)PlayerInputs.InputCode.CameraReset) as GameInputButton).GetState().down)
         {
             elapsedTimeToResetCamView += Time.unscaledDeltaTime;
             if (elapsedTimeToResetCamView > pressTimeToResetView)
@@ -130,7 +132,7 @@ public class CameraManager : MonoBehaviour, IControllable
                 retval = currcam;
                 break;
             }
-            }
+        }
         return retval;
     }
 
@@ -183,7 +185,7 @@ public class CameraManager : MonoBehaviour, IControllable
             }
             //  > Add it to mgr cams
             cameras.Add(iNewCamType, nextCamera);
-            }
+        }
         else
         {
             // cam already stored, retrieve it for transition
@@ -228,9 +230,9 @@ public class CameraManager : MonoBehaviour, IControllable
         if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
         {
             if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
-                initTransition(nextCamera);
+            initTransition(nextCamera);
             else
-                operateCameraSwitch(nextCamera);
+            operateCameraSwitch(nextCamera);
         }
         else
         {
@@ -357,7 +359,7 @@ public class CameraManager : MonoBehaviour, IControllable
         transiTime += Time.deltaTime;
 
         return transiTime < transitionDuration;
-        }
+    }
 
     // Returns true when transition is done, false otherwise
     public bool transition(Transform iStart, Transform iEnd)
@@ -372,7 +374,7 @@ public class CameraManager : MonoBehaviour, IControllable
             this.LogWarn("CameraManager::Tried to transition from/to null Transform. Forcing transition quit.");
             endTransition();
             return true;
-            }
+        }
 
         if (!interpolatePosition(iStart, iEnd))
         {

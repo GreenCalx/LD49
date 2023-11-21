@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 using Schnibble;
+using static UnityEngine.Debug;
 
 public class SandWorm : MonoBehaviour
 {
@@ -35,8 +36,6 @@ public class SandWorm : MonoBehaviour
     private NavMeshAgent agent;
     private float timer;
 
-
-    
     private bool warpCC_started = false;
     // Start is called before the first frame update
     void Start()
@@ -48,7 +47,7 @@ public class SandWorm : MonoBehaviour
 
         if (!agent.isOnNavMesh)
         {
-            Debug.Log("Agent not on navmesh.");
+            Log("Agent not on navmesh.");
             NavMeshHit navHit;
             int layermask = NavMesh.GetAreaFromName("Ground");
             NavMesh.SamplePosition (transform.position, out navHit, agent.height*2, -1 * layermask);
@@ -131,7 +130,7 @@ public class SandWorm : MonoBehaviour
         Vector3 newPos = RandomNavSphere(transform.position, wanderRadius, -1 * layermask);
         
         if (drawDebugRays)
-            Debug.DrawRay(newPos, Vector3.up, Color.green);
+            DrawRay(newPos, Vector3.up, Color.green);
 
         if(!agent.SetDestination(newPos))
         {
@@ -154,7 +153,7 @@ public class SandWorm : MonoBehaviour
         newPos = navHit.position;
 
         if (drawDebugRays)
-            Debug.DrawRay(newPos, Vector3.up*500, Color.blue);
+            DrawRay(newPos, Vector3.up*500, Color.blue);
 
         if (!agent.SetDestination(newPos))
         {

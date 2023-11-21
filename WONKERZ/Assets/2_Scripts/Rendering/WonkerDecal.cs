@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
+using Schnibble.Rendering;
 
 
 public class WonkerDecal : MonoBehaviour

@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using IM = Schnibble.InputManager;
 using System.IO;
 using System.Text;
+
+using Schnibble.Managers;
+using IM = Schnibble.Managers.InputManager;
 
 #if false
 public class GarageTestDump

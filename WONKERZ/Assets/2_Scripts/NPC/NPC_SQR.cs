@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Schnibble.AI;
 
 public class NPC_SQR : MonoBehaviour
 {
@@ -84,7 +85,7 @@ public class NPC_SQR : MonoBehaviour
         deactivate_sqr = false;
 
         if (behaviour == SQR_BEHAVIOURS.KICKER)
-            agent.SetDestination(RandomNavmeshLocation(walkable_radius));
+        agent.SetDestination(RandomNavmeshLocation(walkable_radius));
         if(behaviour == SQR_BEHAVIOURS.BOMB_DROPPER)
         { agent.SetDestination(fleeGoal.transform.position); agent.isStopped = true; }
     }
@@ -93,12 +94,12 @@ public class NPC_SQR : MonoBehaviour
     void Update()
     {
         if (deactivate_sqr)
-            return;
+        return;
 
         if (behaviour == SQR_BEHAVIOURS.KICKER)
-            kickerUpdate();
+        kickerUpdate();
         else if (behaviour == SQR_BEHAVIOURS.BOMB_DROPPER)
-            bombDropperUpdate();
+        bombDropperUpdate();
     }
 
     private void bombDropperUpdate()
@@ -150,9 +151,9 @@ public class NPC_SQR : MonoBehaviour
         if (shouldDropBomb)
         {
             if (delayAnimElapsed >= delayBombAnimStart)
-                dropBomb();
+            dropBomb();
             else
-                delayAnimElapsed += Time.deltaTime;
+            delayAnimElapsed += Time.deltaTime;
         }
         if (timeOfLastBombDrop >= timeStepForBombDrop)
         {
@@ -267,7 +268,7 @@ public class NPC_SQR : MonoBehaviour
         if (agent.remainingDistance <= destination_tolerance)
         {
             if (is_running)
-                idle_elapsed_time = 0f;
+            idle_elapsed_time = 0f;
             is_running = false;
 
             if (idle_elapsed_time > idle_duration)

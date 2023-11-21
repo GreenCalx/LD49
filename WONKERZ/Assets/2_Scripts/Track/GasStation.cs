@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using Schnibble;
+using Schnibble.Managers;
 
 public class GasStation : MonoBehaviour, IControllable
 {
@@ -94,7 +95,7 @@ public class GasStation : MonoBehaviour, IControllable
         Destroy(convertedNut.gameObject);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         //convertNuts = (Entry[(int) PlayerInputs.InputCode.GiveCoinsForTurbo] as GameInputButton).GetState().down;
     }

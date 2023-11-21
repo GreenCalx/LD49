@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public interface ICarPower
 {

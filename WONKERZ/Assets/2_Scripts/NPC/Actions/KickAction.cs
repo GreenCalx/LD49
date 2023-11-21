@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using static UnityEngine.Debug;
 
 /// Controlled by SMBKick into Animator
 public class KickAction : MonoBehaviour
@@ -42,7 +43,7 @@ public class KickAction : MonoBehaviour
             Vector3 start = transform.parent.position;
             Vector3 end = transform.parent.forward * 100;
             end.y += Y_Slope;
-            Debug.DrawRay(start, end, Color.green);
+            DrawRay(start, end, Color.green);
         }
     }
 
@@ -75,7 +76,7 @@ public class KickAction : MonoBehaviour
         {
             foreach (var item in collision.contacts)
             {
-                Debug.DrawRay(item.point, item.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
+                DrawRay(item.point, item.normal * 100, Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f), 10f);
             }
         }
         // take the first hitpoint as it can only be a player or a dummy

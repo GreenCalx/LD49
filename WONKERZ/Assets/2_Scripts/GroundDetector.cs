@@ -31,29 +31,35 @@ public class GroundDetector : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
+        #if false
         if (iCol.gameObject.GetComponent<Ground>())
         {
             crossedGround = true;
             elapsed = 0f;
         }
+        #endif
     }
 
     void OnTriggerStay(Collider iCol)
     {
+        #if false
         if (iCol.gameObject.GetComponent<Ground>())
         {
             crossedGround = true;
             elapsed = 0f;
         }
+        #endif
     }
 
     void OnTriggerExit(Collider iCol)
     {
+        #if false
         if (iCol.gameObject.GetComponent<Ground>())
         {
             crossedGround = true;
             elapsed = 0f;
         }
+        #endif
     }
 
 }

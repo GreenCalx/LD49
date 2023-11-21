@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class UIBindings : UIPanelTabbedScrollable
 {
@@ -136,12 +138,12 @@ public class UIBindings : UIPanelTabbedScrollable
     public void CleanUp() {
         for(int i=0; i<layout.transform.childCount; ++i){
             var go =layout.transform.GetChild(i).gameObject;
-    Destroy(go);
+            Destroy(go);
+        }
+        this.tabs.Clear();
     }
-    this.tabs.Clear();
-}
 
-public void SetBinding(Controller.InputCode code, PlayerInputs.InputCode key)
+    public void SetBinding(Controller.InputCode code, PlayerInputs.InputCode key)
     {
 
         var currentData = inputMgr.controllers[0].controller.Get((int)key);
@@ -161,5 +163,5 @@ public void SetBinding(Controller.InputCode code, PlayerInputs.InputCode key)
                 new GameInputAxis.Axis(code, inputAxis.inputPrimary.negative),
                 inputAxis.inputSecondary, inputAxis.settings));
         }
-}
+    }
 }

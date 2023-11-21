@@ -1,10 +1,12 @@
 using Schnibble;
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class UIGaragePickableProfile : UITextTab
 {
     public string profile_name;
 
-    override protected void ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    override protected void ProcessInputs(InputManager currentMgr, GameController Inputs)
     {
         // dont execute base ProcessInputs
         // >>

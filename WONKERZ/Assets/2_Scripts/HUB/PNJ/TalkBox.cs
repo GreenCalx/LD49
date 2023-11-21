@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public class TalkBox : MonoBehaviour, IControllable
 {
@@ -37,14 +38,14 @@ public class TalkBox : MonoBehaviour, IControllable
         Access.Player().inputMgr.Detach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
 
-        if (is_talkable && (Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
+        if (is_talkable && (Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
         {
             talk();
         }
-        else if (is_in_dialog && (Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
+        else if (is_in_dialog && (Entry.Get((int) PlayerInputs.InputCode.UICancel) as GameInputButton).GetState().down)
         {
             end_dialog();
         }

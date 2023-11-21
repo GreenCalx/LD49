@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
 using Schnibble;
+using Schnibble.UI;
 
 
 [System.Serializable]

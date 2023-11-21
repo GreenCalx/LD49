@@ -2,10 +2,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using Schnibble;
+using Schnibble.UI;
 
 /**
-* MAIN, DOORS, HOOD, BUMPS, WHEEL
-*/
+ * MAIN, DOORS, HOOD, BUMPS, WHEEL
+ */
 
 public class UIGarageCosmeticsPanel : UIGaragePanel
 {

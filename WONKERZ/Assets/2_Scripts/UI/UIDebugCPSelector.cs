@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Schnibble;
+using Schnibble.Managers;
 
 public class UIDebugCPSelector : MonoBehaviour, IControllable
 {
@@ -32,7 +33,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         {
             CheckPoint as_cp = go.GetComponent<CheckPoint>();
             if (as_cp.collectMod != CollectiblesManager.COLLECT_MOD.HEAVEN)
-                continue;
+            continue;
             CPs.Add(as_cp.checkpoint_name);
             eligibleCPs.Add(as_cp);
         }
@@ -46,10 +47,10 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         TMP_selectedCP.text = CPs[currSelectedCPIndex];
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (!isActivated)
-            return;
+        return;
 
         if (elapsed_time < selectorLatch)
         {
@@ -57,8 +58,8 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             return;
         }
 
-        var godown = (Entry[(int) PlayerInputs.InputCode.UIDown] as GameInputButton).GetState().down;
-        var goup = (Entry[(int) PlayerInputs.InputCode.UIUp] as GameInputButton).GetState().down;
+        var godown = (Entry.Get((int) PlayerInputs.InputCode.UIDown) as GameInputButton).GetState().down;
+        var goup = (Entry.Get((int) PlayerInputs.InputCode.UIUp) as GameInputButton).GetState().down;
         if (godown)
         {
             currSelectedCPIndex = (currSelectedCPIndex <= 0) ? CPs.Count - 1 : currSelectedCPIndex - 1;
@@ -72,7 +73,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             TMP_selectedCP.text = CPs[currSelectedCPIndex];
         }
 
-        if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
+        if ((Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
         {
             string selectedCP = CPs[currSelectedCPIndex];
             foreach (CheckPoint cp in eligibleCPs)
@@ -87,7 +88,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
             }
         }
 
-        if ((Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
+        if ((Entry.Get((int) PlayerInputs.InputCode.UICancel) as GameInputButton).GetState().down)
         {
             deactivate();
             return;

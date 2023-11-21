@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using System;
+
 using Schnibble;
+using Schnibble.Managers;
 
 public class TSTSaveStates : MonoBehaviour, IControllable
 {
@@ -51,7 +53,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         elapsedSinceLastSS += Time.deltaTime;
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if ( elapsedSinceLastSS < ss_latch)
         {
@@ -59,7 +61,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         }
         elapsedSinceLastSS = 0f;
         
-        var plant = (Entry[(int) PlayerInputs.InputCode.SaveStatesPlant] as GameInputButton).GetState().down;
+        var plant = (Entry.Get((int) PlayerInputs.InputCode.SaveStatesPlant) as GameInputButton).GetState().down;
         if (plant) // SAVE
         {
             CheckPointManager cpm = Access.CheckPointManager();
@@ -77,13 +79,13 @@ public class TSTSaveStates : MonoBehaviour, IControllable
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
-                    Destroy(saveStateMarkerInst);
+                Destroy(saveStateMarkerInst);
                 saveStateMarkerInst = Instantiate(saveStateMarkerRef);
                 saveStateMarkerInst.transform.position = ss_pos;
                 saveStateMarkerInst.transform.rotation = ss_rot;
             }
         }
-        var load = (Entry[(int)PlayerInputs.InputCode.SaveStatesReturn] as GameInputButton).GetState().down;
+        var load = (Entry.Get((int)PlayerInputs.InputCode.SaveStatesReturn) as GameInputButton).GetState().down;
         if (load) // LOAD
         {
             loadState();
@@ -93,7 +95,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
     public bool pollExtraSaveStates()
     {
         if (ess == null)
-            return false;
+        return false;
 
         foreach (ESS e in ess)
         {

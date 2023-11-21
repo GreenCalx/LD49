@@ -2,7 +2,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
 
-public class PlayerDetector : MonoBehaviour
+using Schnibble.AI;
+
+public class PlayerDetector : SchAIDetector
 {
     public bool playerInRange = false;
     public Transform player;
@@ -27,6 +29,9 @@ public class PlayerDetector : MonoBehaviour
 
     }
 
+    public override bool IsTargetInRange() { return playerInRange; }
+    public override GameObject GetTarget() { return player.gameObject; }
+
     void OnTriggerStay(Collider iCollider)
     {
         // If the player dies while in range
@@ -48,7 +53,7 @@ public class PlayerDetector : MonoBehaviour
             playerInRange = false;
             player = null;
             if (callbackOnPlayerExitRange!=null)
-                callbackOnPlayerExitRange.Invoke();
+            callbackOnPlayerExitRange.Invoke();
         }
 
         Dummy d = iCollider.GetComponent<Dummy>();
@@ -72,7 +77,7 @@ public class PlayerDetector : MonoBehaviour
             playerInRange = true;
             player = iCollider.transform;
             if (callBackOnPlayerEnterRange!=null)
-                callBackOnPlayerEnterRange.Invoke();
+            callBackOnPlayerEnterRange.Invoke();
         }
 
         Dummy d = iCollider.GetComponent<Dummy>();

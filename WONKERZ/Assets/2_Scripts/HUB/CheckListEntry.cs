@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
+using Schnibble.Managers;
 
 public class CheckListEntry : MonoBehaviour, IControllable
 {
@@ -34,11 +35,11 @@ public class CheckListEntry : MonoBehaviour, IControllable
         Access.Player()?.inputMgr.Detach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (detector.playerInRange)
         {
-            if ((Entry[(int)PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
+            if ((Entry.Get((int)PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
             open();
         }
     }
@@ -46,7 +47,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
     public void open()
     {
         if (checkListOpened)
-            return;
+        return;
 
         checkListZoomCamera.gameObject.SetActive(true);
         checkListZoomCamera.launch();
@@ -69,7 +70,7 @@ public class CheckListEntry : MonoBehaviour, IControllable
     public void close()
     {
         if (!checkListOpened)
-            return;
+        return;
         
         checkListZoomCamera.end();
         checkListZoomCamera.gameObject.SetActive(false);

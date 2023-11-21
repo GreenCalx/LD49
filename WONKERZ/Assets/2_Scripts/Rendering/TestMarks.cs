@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Schnibble.Managers;
 
 public class TestMarks : MonoBehaviour
 {
@@ -20,11 +21,11 @@ public class TestMarks : MonoBehaviour
             var schMat = PhysicsMaterialManager.instance.GetMat(hash);
             //add skid marks at point
             var point = hitInfo.point;
-            var basis = Schnibble.SchMathf.GetBasis(transform.up);
+            var basis = Schnibble.Math.GetBasis(transform.up);
             //schMat.AddGroundMark(point, basis, 1);
         };
 
-}
+    }
     // Update is called once per frame
     void Update()
     {

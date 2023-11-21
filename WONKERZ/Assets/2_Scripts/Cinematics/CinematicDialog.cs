@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
+using Schnibble.Managers;
 
 [RequireComponent(typeof(PNJDialog))]
 public class CinematicDialog : MonoBehaviour, IControllable
@@ -44,13 +45,13 @@ public class CinematicDialog : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        if (!dialogIsOver && (Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
+        if (!dialogIsOver && (Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
         {
             dialog.talk();
         }
-        else if ((Entry[(int) PlayerInputs.InputCode.UICancel] as GameInputButton).GetState().down)
+        else if ((Entry.Get((int) PlayerInputs.InputCode.UICancel) as GameInputButton).GetState().down)
         {
             dialog.end_dialog();
         }
@@ -65,9 +66,9 @@ public class CinematicDialog : MonoBehaviour, IControllable
         UISpeedAndLifePool uiSpeedAndLifepoolRef    = Access.UISpeedAndLifePool();
 
         if (!!uiTurboAndSaveRef)
-            uiTurboAndSaveRef.gameObject.SetActive(false);
+        uiTurboAndSaveRef.gameObject.SetActive(false);
         if (!!uiSpeedAndLifepoolRef)
-            uiSpeedAndLifepoolRef.gameObject.SetActive(false);
+        uiSpeedAndLifepoolRef.gameObject.SetActive(false);
 
         dialogIsOver = false;
         Access.Player().inputMgr.Attach(this as IControllable);
@@ -83,9 +84,9 @@ public class CinematicDialog : MonoBehaviour, IControllable
         Access.Player().inputMgr.Detach(this as IControllable);
 
         if (!!uiTurboAndSaveRef)
-            uiTurboAndSaveRef.gameObject.SetActive(true);
+        uiTurboAndSaveRef.gameObject.SetActive(true);
         if (!!uiTurboAndSaveRef)
-            uiSpeedAndLifepoolRef.gameObject.SetActive(true);
+        uiSpeedAndLifepoolRef.gameObject.SetActive(true);
     }
 
     IEnumerator autoTalk()
@@ -97,19 +98,19 @@ public class CinematicDialog : MonoBehaviour, IControllable
             {
                 internalTimer += Time.deltaTime;
                 yield return null;
-                }
+            }
             internalTimer = 0f;
-                }
+        }
 
         dialogIsOver = true;
         if (callbackOnDialogDone!=null)
-            callbackOnDialogDone.Invoke();
-        }
+        callbackOnDialogDone.Invoke();
+    }
 
     // -------------------------------------
     // UNITY
     void Start()
-            {
+    {
         dialog = GetComponent<PNJDialog>();
     }
 }

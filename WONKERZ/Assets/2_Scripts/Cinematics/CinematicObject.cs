@@ -11,9 +11,9 @@ public class CinematicObject : MonoBehaviour
         if (!!mr) 
             mr.enabled = true;
 
-        Ground gnd = GetComponent<Ground>();
-        if (!!gnd) 
-            gnd.enabled = true;
+        //Ground gnd = GetComponent<Ground>();
+        //if (!!gnd) 
+        //    gnd.enabled = true;
 
         MeshCollider mc = GetComponent<MeshCollider>();
         if (!!mc) 
@@ -26,9 +26,9 @@ public class CinematicObject : MonoBehaviour
         if (!!mr) 
             mr.enabled = false;
 
-        Ground gnd = GetComponent<Ground>();
-        if (!!gnd) 
-            gnd.enabled = false;
+        //Ground gnd = GetComponent<Ground>();
+        //if (!!gnd) 
+        //    gnd.enabled = false;
 
         MeshCollider mc = GetComponent<MeshCollider>();
         if (!!mc) 

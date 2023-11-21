@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble.UI;
 
 public class UIResolutionPanelElem : UITextTab
 {

@@ -4,6 +4,7 @@ using UnityEngine;
 using Schnibble;
 using System;
 
+using Schnibble.Managers;
 
 static public class InputSettings
 {
@@ -12,11 +13,16 @@ static public class InputSettings
     public static float MouseMultiplier = 20;
 }
 
+public class WonkGameController : GameController {
+    public WonkGameController(int i) : base(i){}
+    public override int GetIdx(string name) => PlayerInputs.GetIdx(name);
+}
+
 public class Player0Inputs : PlayerInputs
 {
     public Player0Inputs()
     {
-        _controller = new GameController((int)InputCode.Count);
+        _controller = new WonkGameController((int)InputCode.Count);
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.1f, 10f);
 
@@ -114,7 +120,7 @@ public class Player1Inputs : PlayerInputs
 {
     public Player1Inputs()
     {
-        _controller = new GameController((int)InputCode.Count);
+        _controller = new WonkGameController((int)InputCode.Count);
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.1f, 10f);
 
@@ -203,7 +209,6 @@ public class Player1Inputs : PlayerInputs
             new GameInputButton("UIValidate", "Menus validation",
                 new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.Return)));
 
-
         controller.AddInput((int)InputCode.UIStart,
             new GameInputButton("UIStart", "Menus pause",
                 new Controller.InputCode(Controller.JoystickButtonsCode.Start), new Controller.InputCode(KeyCode.Escape)));
@@ -266,7 +271,7 @@ public class PlayerInputs
 
     public PlayerInputs()
     {
-        _controller = new GameController((int)InputCode.Count);
+        _controller = new WonkGameController((int)InputCode.Count);
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.01f, 10f);
 

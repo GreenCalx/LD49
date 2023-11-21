@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+using Schnibble.UI;
+
 public class UIChecklistImageTab : UIImageTab
 {
     [Header("Checklist Specifics")]

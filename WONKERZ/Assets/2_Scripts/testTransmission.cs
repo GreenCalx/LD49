@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Debug;
 
 namespace Schnibble {
     public class testTransmission : MonoBehaviour
@@ -16,7 +17,7 @@ namespace Schnibble {
         void Update()
         {
             if (Input.GetKey(KeyCode.J)){
-                Debug.Log("press");
+                Log("press");
                 // add torque to wheels
                 foreach(var w in wheels){
                     w.wheelCollider.ApplyTorque(new Vector3(Time.deltaTime, 0, 0));

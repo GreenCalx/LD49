@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Schnibble;
+using Schnibble.UI;
 
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class UIGaragePickableTest : UITextTab

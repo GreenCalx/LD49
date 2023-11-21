@@ -1,6 +1,7 @@
 using UnityEngine.UI;
 using UnityEngine;
 using System.Collections.Generic;
+using Schnibble.UI;
 
 public class UIGaragePickableColor : UIImageTab
 {
