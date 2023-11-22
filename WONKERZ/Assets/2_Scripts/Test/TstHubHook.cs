@@ -14,6 +14,7 @@ public class TstHubHook : MonoBehaviour
     [Header("Reset game progress unique events")]
     public bool resetGameProgressEvents = false;
     public bool loadDebugGameProgress = true;
+    public string debugProfileName = "";
 
     private readonly string pivotScene = Constants.SN_TITLE;
     private string hookedScene = "";
@@ -49,7 +50,7 @@ public class TstHubHook : MonoBehaviour
         if (resetGameProgressEvents)
             resetUniqueEvents();
         if (loadDebugGameProgress)
-            loadGameProgress();
+                loadGameProgress();
 
         Access.SceneLoader().loadScene(hookedScene);
 
@@ -77,7 +78,9 @@ public class TstHubHook : MonoBehaviour
 
     private void loadGameProgress()
     {
+        Access.GameProgressSaveManager().activeProfile = debugProfileName;
         Access.GameProgressSaveManager().Load();
+
         Access.CollectiblesManager().loadJars();
     }
 

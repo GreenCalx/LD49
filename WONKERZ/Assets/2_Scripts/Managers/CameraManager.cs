@@ -281,6 +281,11 @@ public class CameraManager : MonoBehaviour, IControllable
         if (inTransition)
             return;
 
+        if ((active_camera==null)&&(iNewCam.camType!=GameCamera.CAM_TYPE.INIT))
+        {
+            changeCamera(GameCamera.CAM_TYPE.INIT, false);
+        }
+
         if (active_camera != null)
         {
             switchToonPipeline(active_camera.gameObject, iNewCam.gameObject);
@@ -361,7 +366,7 @@ public class CameraManager : MonoBehaviour, IControllable
 
         if ((prev_tp==null)||(new_tp==null))
         {
-            Debug.LogError("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
+            Debug.LogWarning("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
             return;
         }
 

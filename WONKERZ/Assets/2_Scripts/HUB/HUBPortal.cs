@@ -4,7 +4,6 @@ using Schnibble;
 public class HUBPortal : MonoBehaviour
 {
     public string PORTAL_SCENE_TARGET = "main";
-    public GameObject UITransitionOUT;
     public bool transitionOUT = true;
     public bool invisibleLoading = false;
 
@@ -35,8 +34,6 @@ public class HUBPortal : MonoBehaviour
         if (!is_loading)
         {
             is_loading = true;
-            if (transitionOUT)   
-                Instantiate(UITransitionOUT);
             
             if (invisibleLoading)
                 Access.SceneLoader().asyncPreWarm(PORTAL_SCENE_TARGET);

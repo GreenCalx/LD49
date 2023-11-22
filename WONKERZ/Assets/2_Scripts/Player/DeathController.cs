@@ -103,7 +103,7 @@ public class DeathController : MonoBehaviour
         eventOnDeath.AddListener(explodeBodies);
         killingBlowDirection = iSteer;
         if (cloneFromPlayer)
-            StartCoroutine(PlayerCloneFactory.GetInstance().SpawnDeathClone(transform, eventOnDeath));
+            StartCoroutine(PlayerCloneFactory.GetInstance().SpawnPhysxClone(transform, eventOnDeath));
 
 
         //GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
@@ -118,7 +118,6 @@ public class DeathController : MonoBehaviour
         deathText = deathScreen.GetComponent<DeathUI>().deathText;
         Destroy(deathScreen, Access.CameraManager().deathCamDuration);
 
-        //Destroy(gameObject, timeBeforeDeletion);
         StartCoroutine(SelfKill());
     }
 
@@ -139,8 +138,6 @@ public class DeathController : MonoBehaviour
             rb.isKinematic = true;
             rb.detectCollisions = false;
         }
-
-        var player = GetComponent<CarController>();
         Time.timeScale = 1f;
         isStarted = false;
 

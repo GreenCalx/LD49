@@ -5,6 +5,7 @@ public class PortalTrigger : MonoBehaviour
 {
     public HUBPortal portal;
     public bool isActive = false;
+    public bool authorizeCinematicPlayerTrigger = true;
 
     // Start is called before the first frame update
     void Start()
@@ -21,17 +22,15 @@ public class PortalTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider iCollider)
     {
-        if (!isActive)
-            return;
-
-        if (!!Utils.colliderIsPlayer(iCollider) && !!portal)
-        {
-            portal.activatePortal();
-            isActive = false;
-        }
+        tryActivate(iCollider);
     }
 
     void OnTriggerStay(Collider iCollider)
+    {
+        tryActivate(iCollider);
+    }
+
+    private void tryActivate(Collider iCollider)
     {
         if (!isActive)
             return;
@@ -40,6 +39,17 @@ public class PortalTrigger : MonoBehaviour
         {
             portal.activatePortal();
             isActive = false;
+            return;
+        }
+        if (authorizeCinematicPlayerTrigger)
+        {
+            CinematicPlayerTrigger cinePlayer = iCollider.gameObject.GetComponent<CinematicPlayerTrigger>();
+            if (!!cinePlayer)
+            {
+                portal.activatePortal();
+                isActive = false;
+                return;
+            }
         }
     }
 }

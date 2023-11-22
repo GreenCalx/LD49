@@ -84,7 +84,8 @@ public class FollowObjectCamera : CinematicCamera
     public override void init()
     {
         Access.Player().inputMgr.Attach(this as IControllable);
-        focus = Access.Player().transform;
+        if (focusPlayer && (focus==null))
+            focus = Access.Player().transform;
         focusPoint = focus.position;
 
         resetView();
@@ -126,23 +127,7 @@ public class FollowObjectCamera : CinematicCamera
 
     void LateUpdate()
     {
-        var player = Access.Player();
-        if (!!player)
-        {
-            if (player.flags[PlayerController.FJump])
-            {
-                if (jumpStartTime <= 0f)
-                jumpStartTime = Time.unscaledTime;
-                UpdateFocusPointInJump();
-            }
-            else
-            {
-                jumpStartTime = 0f;
-                UpdateFocusPoint();
-            }
-        }
-
-        //UpdateFocusPoint();
+        UpdateFocusPoint();
         Quaternion lookRotation;
 
         if (ManualRotation() || (autoAlign && autoRotation()))

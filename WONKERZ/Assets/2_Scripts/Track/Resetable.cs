@@ -31,7 +31,9 @@ public class Resetable : MonoBehaviour
 
     void OnDestroy()
     {
-        Access.CheckPointManager().removeResetable(this);
+        CheckPointManager cpm = Access.CheckPointManager();
+        if (!!cpm)
+            cpm.removeResetable(this);
     }
 
     public void save()

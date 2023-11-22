@@ -45,7 +45,8 @@ public class PlayerCamera : GameCamera
 
     public void applySpeedEffect(float iSpeedPerCent)
     {
-        Camera cam = GetComponent<Camera>();
+        if (cam==null)
+            return;
 
         float apply_factor = Mathf.Clamp01((Mathf.Abs(iSpeedPerCent) - fov.thresholdPerCent) / fov.thresholdPerCent);
 

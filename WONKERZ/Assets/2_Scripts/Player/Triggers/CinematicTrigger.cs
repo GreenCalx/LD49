@@ -13,6 +13,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     [Header("triggerOnceInGame")]
     public UniqueEvents.UEVENTS uniqueEventID;
     [Header("tweaks")]
+    public bool acceptCinematicPlayerTriggers = true;
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
     public float startDelayInSeconds = 0f;
@@ -176,14 +177,21 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         if (triggerOnlyOnce && triggered)
             return;
 
-        if (Utils.colliderIsPlayer(iCollider))
+        CinematicPlayerTrigger CPT = null;
+        if (acceptCinematicPlayerTriggers)
+            CPT = iCollider.gameObject.GetComponent<CinematicPlayerTrigger>();
+
+        if (Utils.colliderIsPlayer(iCollider) || !!CPT)
         {
             if ( elapsedDelayTime <= startDelayInSeconds )
             {
                 elapsedDelayTime += Time.deltaTime;
                 return;
             }
-            StartCinematic();
+
+            if (Access.SceneLoader().activeSceneIsReady)
+                StartCinematic();
+            return;
         }
     }
 }

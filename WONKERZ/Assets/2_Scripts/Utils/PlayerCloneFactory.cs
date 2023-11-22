@@ -9,9 +9,9 @@ using Schnibble;
 public sealed class PlayerCloneFactory
 {
 
-    public IEnumerator SpawnDeathClone(Transform iParent = null, UnityEvent iCallback = null)
+    public IEnumerator SpawnPhysxClone(Transform iParent = null, UnityEvent iCallback = null)
     {
-        GameObject clone = GetDeathClone();
+        GameObject clone = GetPhysxClone();
         clone.transform.parent = iParent;
         yield return null; // wait 1 frame for component destruction
         clone.SetActive(true);
@@ -48,7 +48,7 @@ public sealed class PlayerCloneFactory
 
     // ---
 
-    private GameObject GetDeathClone()
+    private GameObject GetPhysxClone()
     {
         // Player Ref
         GameObject player = Access.Player().gameObject;
@@ -88,14 +88,16 @@ public sealed class PlayerCloneFactory
         {
             //Debug.Log("decorate " + iToDecorate.name);
             // Deco0 : Add Rigidbody
-            Rigidbody rb = iToDecorate.gameObject.AddComponent<Rigidbody>();
+            Rigidbody rb = iToDecorate.gameObject.GetComponent<Rigidbody>();
+            if (rb==null)
+                 rb = iToDecorate.gameObject.AddComponent<Rigidbody>();
 
             // Deco1 : Add Collider
             MeshCollider mc = iToDecorate.gameObject.AddComponent<MeshCollider>();
             mc.convex    = true;
 
             // Deco2 : Change Collision Layer
-            //iToDecorate.gameObject.layer = LayerMask.NameToLayer("NoPlayerCollision");
+            iToDecorate.gameObject.layer = LayerMask.NameToLayer("Default");
         }
 
         iToDecorate.gameObject.SetActive(true);
