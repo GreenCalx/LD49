@@ -292,7 +292,7 @@ public class BountyArray : MonoBehaviour
         return false;
     }
 
-    public void initUI(UIPanelTabbed parentUI, TextMeshProUGUI iToolTip)
+    public void initUI(UIPanelTabbed parentUI, TextMeshProUGUI iToolTip_desc, TextMeshProUGUI iToolTip_name, TextMeshProUGUI iToolTip_reward)
     {
         updateArray();
 
@@ -320,7 +320,9 @@ public class BountyArray : MonoBehaviour
 
                 // Color
                 uictt.updateColor();
-                uictt.tooltip = iToolTip;
+                uictt.tooltip_bountyDesc    = iToolTip_desc;
+                uictt.tooltip_bountyName    = iToolTip_name;
+                uictt.tooltip_bountyReward  = iToolTip_reward;
 
                 parentUI.tabs.Add(uictt);
             }

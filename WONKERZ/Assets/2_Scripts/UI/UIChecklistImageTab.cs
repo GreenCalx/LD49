@@ -13,7 +13,9 @@ public class UIChecklistImageTab : UIImageTab
     public string locked_tooltip = "???";
 
     public BountyArray bountyArray { set; private get; }
-    public TextMeshProUGUI tooltip { set; private get; }
+    public TextMeshProUGUI tooltip_bountyDesc { set; private get; }
+    public TextMeshProUGUI tooltip_bountyName { set; private get; }
+    public TextMeshProUGUI tooltip_bountyReward { set; private get; }
 
     public Image img2;
 
@@ -26,12 +28,19 @@ public class UIChecklistImageTab : UIImageTab
         BountyArray.AbstractBounty bounty;
         if (bountyArray.getBountyAt(x, y, out bounty))
         {
-            tooltip.text = bounty.hint;
+            tooltip_bountyDesc.text     = bounty.hint;
+            tooltip_bountyName.text     = bounty.name;
+            if (bountyArray.getStatus(x, y)==BountyArray.EItemState.UNLOCKED)
+                tooltip_bountyReward.text = bounty.cosmeticBounty.name;
+            else
+                tooltip_bountyReward.text   = locked_tooltip;
         } else {
             // LOCKED
-            tooltip.text = locked_tooltip;
+            tooltip_bountyName.text     = locked_tooltip;
+            tooltip_bountyDesc.text     = locked_tooltip;
+            tooltip_bountyReward.text   = locked_tooltip;
         }
-        // Update Tooltip
+        // Update tooltip_bountyDesc
     }
     
     override public void deselect()

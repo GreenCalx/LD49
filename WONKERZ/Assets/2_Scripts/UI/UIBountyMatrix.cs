@@ -6,7 +6,9 @@ using TMPro;
 public class UIBountyMatrix : UIPanelTabbed
 {
     private BountyArray bountyMatrix;
-    public TextMeshProUGUI tooltip; 
+    public TextMeshProUGUI tooltip_bountyDesc;
+    public TextMeshProUGUI tooltip_bountyName;
+    public TextMeshProUGUI tooltip_bountyReward;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +23,7 @@ public class UIBountyMatrix : UIPanelTabbed
     override public void activate()
     {
         bountyMatrix = Access.BountyArray();
-        bountyMatrix.initUI(this, tooltip);
+        bountyMatrix.initUI(this, tooltip_bountyDesc, tooltip_bountyName, tooltip_bountyReward);
         base.activate();
     }
 
