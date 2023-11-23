@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.AI;
 using Schnibble;
 
-public class WilliamEnemy : SchAIAgent
+public class WilliamEnemy : WkzNPC
 {
-    [Header("MAND")]
+    [Header("WilliamEnemy\nMAND")]
     public Animator animator;
     public PlayerDetector weakSpot;
     public GameObject deathEffect;
@@ -240,6 +240,7 @@ public class WilliamEnemy : SchAIAgent
         GameObject ghost = Instantiate(deathGhostPSRef, transform.position, Quaternion.identity);
         
         Destroy(gameObject, 2f);
+        Destroy(cameraFocusable, 0.5f);
         Destroy(this);
     }
 
