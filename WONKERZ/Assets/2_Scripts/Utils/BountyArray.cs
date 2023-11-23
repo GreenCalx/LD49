@@ -356,6 +356,32 @@ public class BountyArray : MonoBehaviour
         return (oBounty != null);
     }
 
+    public bool findBountyFromUEvent(string iUEventName, out AbstractBounty oBounty )
+    {
+        oBounty = null;
+        for(int i = 0; i<N_BOUNTY; i++)
+        {
+            for (int j=0; j<N_BOUNTY; j++)
+            {   
+                try {
+                    TrackEventBounty bounty =(TrackEventBounty)bounties[i,j];
+                    if (bounty!=null)
+                    {
+                        EventTriggerConstraint bnty_tsc = bounty.etc;
+                        string event_name = UniqueEvents.GetEventName(bnty_tsc.eventID);
+                        if (event_name == iUEventName)
+                        {
+                            oBounty = bounty;
+                            break;
+                        }
+                    }
+                } catch (InvalidCastException ice) { continue; }
+
+            }
+        }
+        return (oBounty != null);
+    }
+
     public void hide(UIPanelTabbed parentUI)
     {
         foreach(var o in parentUI.tabs)

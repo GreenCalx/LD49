@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using Schnibble;
 
@@ -10,7 +11,7 @@ using Schnibble;
 */
 public class TrackEvent : MonoBehaviour
 {
-    public string eventID;
+    //public string eventID;
 
     public UniqueEvents.UEVENTS uniqueEventOnSolving  = UniqueEvents.UEVENTS.NONE;
     public bool isSolved;
@@ -34,8 +35,10 @@ public class TrackEvent : MonoBehaviour
 
         // Notify BountyMatrix
         BountyArray bountyArray = Access.BountyArray();
+        
         BountyArray.AbstractBounty thisAsBounty;
-        if (!bountyArray.findBountyFromName(eventID, out thisAsBounty))
+        string bountyName = UniqueEvents.GetEventName(uniqueEventOnSolving);
+        if (!bountyArray.findBountyFromUEvent(bountyName, out thisAsBounty))
         { 
             this.LogError("TrackEvent::setSolved() -> Could not find bounty");
             return;

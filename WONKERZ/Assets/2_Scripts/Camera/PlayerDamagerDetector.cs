@@ -24,6 +24,7 @@ public class PlayerDamagerDetector : MonoBehaviour
     {
         if (dangerInRange)
         {
+            updateDangerInRange();
             refreshUI();
         } else if (!!UIToDisplay_Inst) {
             hideUI();
@@ -91,6 +92,7 @@ public class PlayerDamagerDetector : MonoBehaviour
 
     void updateDangerInRange()
     {
+        damagersInRange.RemoveAll(e => e == null);
         dangerInRange = (damagersInRange.Count > 0 );
     }
 }

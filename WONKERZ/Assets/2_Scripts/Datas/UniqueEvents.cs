@@ -19,6 +19,10 @@ public struct UniqueEvents
     /// Game Progress 
     public const string GP_IntroComplete = "GP_IntroComplete";
     public const string GP_DesertComplete = "GP_DesertComplete";
+    public const string GP_IceParkComplete = "GP_IceParkComplete";
+    public const string GP_WaterWorldComplete = "GP_WaterWorldComplete";
+    public const string GP_SkyCastleComplete = "GP_SkyCastleComplete";
+    public const string GP_JunkyardComplete = "GP_JunkyardComplete";
     /// Unique Cinematics
     public const string CIN_FromIntro = "CIN_FromIntro";
 
@@ -31,9 +35,20 @@ public struct UniqueEvents
     {
         NONE,
         GP_IntroComplete,
+        GP_DesertComplete,
+        GP_IceParkComplete,
+        GP_WaterWorldComplete,
+        GP_SkyCastleComplete,
+        GP_JunkyardComplete,
         CIN_FromIntro,
         BNTY_DesertBreakingPot,
         BNTY_DesertWONKERZ,
         BNTY_SawedWays
+        
     };
+
+    public static string GetEventName(UniqueEvents.UEVENTS iEvent)
+    {
+        return Enum.GetName(typeof(UniqueEvents.UEVENTS), iEvent);
+    }
 }
