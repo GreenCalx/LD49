@@ -97,7 +97,7 @@ public sealed class PlayerCloneFactory
             mc.convex    = true;
 
             // Deco2 : Change Collision Layer
-            iToDecorate.gameObject.layer = LayerMask.NameToLayer("Default");
+            iToDecorate.gameObject.layer = LayerMask.NameToLayer("No Player Collision");
         }
 
         iToDecorate.gameObject.SetActive(true);

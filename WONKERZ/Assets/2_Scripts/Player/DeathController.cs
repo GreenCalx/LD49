@@ -13,9 +13,9 @@ public class DeathController : MonoBehaviour
 
     [Header("Auto")]
     public bool cloneFromPlayer;
-    public List<Rigidbody> bodies;
+    public List<Rigidbody> bodies = new List<Rigidbody>();
     [Header("Manual")]
-    public List<Rigidbody> objects;
+    public List<Rigidbody> objects = new List<Rigidbody>();
     [Header("Tweaks")]
     public float force;
     public float radius;
@@ -128,6 +128,10 @@ public class DeathController : MonoBehaviour
         {
             Destroy(rb.gameObject);
         }
+        foreach(var rb in bodies)
+        {
+            Destroy(rb.gameObject);
+        }
         Destroy(gameObject, 0.1f);
     }
 
@@ -138,6 +142,12 @@ public class DeathController : MonoBehaviour
             rb.isKinematic = true;
             rb.detectCollisions = false;
         }
+        foreach (var rb in bodies)
+        {
+            rb.isKinematic = true;
+            rb.detectCollisions = false;
+        }
+
         Time.timeScale = 1f;
         isStarted = false;
 
