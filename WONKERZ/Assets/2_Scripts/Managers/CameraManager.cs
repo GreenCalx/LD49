@@ -102,6 +102,15 @@ public class CameraManager : MonoBehaviour, IControllable
 
         // Set to init cam
         changeCamera(GameCamera.CAM_TYPE.INIT, false);
+        if (active_camera!=null)
+        {
+            InitCamera initCam = active_camera.GetComponent<InitCamera>();
+            if ((initCam!=null)&&(initCam.nextCam!=null))
+            {
+                operateCameraSwitch(initCam.nextCam);
+            }
+        }
+
     }
 
     // Find Camera from its type within current scene
@@ -280,11 +289,24 @@ public class CameraManager : MonoBehaviour, IControllable
     {
         if (inTransition)
             return;
+        
+        if (active_camera!=null)
+        {
+            if (iNewCam.gameObject==active_camera.gameObject)
+                return;
+        }
+
 
         if ((active_camera==null)&&(iNewCam.camType!=GameCamera.CAM_TYPE.INIT))
         {
             changeCamera(GameCamera.CAM_TYPE.INIT, false);
         }
+
+        bool sceneTransition =  
+            (active_camera!=null)&&
+            (active_camera.camType==GameCamera.CAM_TYPE.INIT)&&
+            (iNewCam.camType!=GameCamera.CAM_TYPE.INIT);
+
 
         if (active_camera != null)
         {
@@ -315,6 +337,9 @@ public class CameraManager : MonoBehaviour, IControllable
         PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
         if (!!PMM)
             PMM.SetCamera(active_camera.cam);
+
+        if (sceneTransition)
+            Access.SceneLoader().asyncTransitionLock = false;
     }
 
     public bool interpolatePosition(Transform iStart, Transform iEnd)
