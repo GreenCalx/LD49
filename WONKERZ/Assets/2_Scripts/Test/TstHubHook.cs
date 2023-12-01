@@ -50,7 +50,7 @@ public class TstHubHook : MonoBehaviour
         if (resetGameProgressEvents)
             resetUniqueEvents();
         if (loadDebugGameProgress)
-                loadGameProgress();
+            loadGameProgress();
 
         Access.SceneLoader().loadScene(hookedScene);
 

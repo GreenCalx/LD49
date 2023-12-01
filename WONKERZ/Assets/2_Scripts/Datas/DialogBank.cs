@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 public static class DialogBank
 {
+    public static string playerName = "";
+
     public static readonly string[] INTRO_DIALOG= 
     {
         "I've been here forever...",
@@ -9,13 +11,13 @@ public static class DialogBank
 
     public static readonly string[] INTRO_CP_DIALOG= 
     {
-        "Hello there",
+        "Hello " + playerName,
         "I am Ricky, purveyor of the black tar fluid that runs in our pipes.",
         "Ernest found your wreckage on the shoreline. He hauled you back to the Garage.",
-        "He is wokring on your case right now. Don't worry you'll be fine. ",
+        "He is working on your case right now. Don't worry you'll be fine. ",
         "I will guide you through your recovery.",
         "As you probably noticed, you have a thing over your car. This represents your weight.",
-        "You can move it around with the Left Joystick. It can be helpful in many ways.",
+        "You can move it around with the Right Joystick. It can be helpful in many ways.",
         "First, it can help you in your turns. Try to steer the weight left as you turn left, and right as you turn right."
     }; 
 

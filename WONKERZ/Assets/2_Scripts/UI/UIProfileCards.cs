@@ -70,6 +70,7 @@ public class UIProfileCards : UIPanelTabbed
         GameProgressSaveManager GPSM = Access.GameProgressSaveManager();
         GPSM.activeProfile = iProfileName;
         GPSM.Load();
+        DialogBank.playerName = iProfileName;
 
         Access.CollectiblesManager().loadJars();
 
@@ -93,6 +94,8 @@ public class UIProfileCards : UIPanelTabbed
         GPSM.CreateActiveProfile();
         GPSM.updateFilePath();
         GPSM.ResetAndSave();
+
+        DialogBank.playerName = iNewProfileName;
 
         Access.SceneLoader().loadScene(Constants.SN_INTRO);
     }
