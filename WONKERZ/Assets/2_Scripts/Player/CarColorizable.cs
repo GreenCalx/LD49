@@ -12,7 +12,10 @@ public enum COLORIZABLE_CAR_PARTS {
     HOOD=5,
     WHEELS=6,
     SPRINGS=7,
-    ANY=8
+    LAMPS=8,
+    FRONT_PIPES=9,
+    BACK_PIPES=10,
+    ANY=11
 }
 
 public class CarColorizable : MonoBehaviour

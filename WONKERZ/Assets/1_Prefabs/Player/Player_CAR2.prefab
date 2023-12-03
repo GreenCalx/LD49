@@ -164,7 +164,7 @@ MonoBehaviour:
   audioSource: {fileID: 6635145384143706130}
   damageSound: {fileID: 8300000, guid: e3e623ff0419b0f49bef6831b248113d, type: 3}
   inputMgr: {fileID: 0}
-  playerInst: {fileID: 3030551637303335215, guid: d5f16fa8d17665f448d6895782ee6c4e, type: 3}
+  playerInst: {fileID: 8074188254164822577}
   jumpDecal: {fileID: 5383428326292998026}
   springCompressionTime: 1
   jumpCompressionOverTime:
@@ -1547,6 +1547,26 @@ PrefabInstance:
     - {fileID: 5562771349046457083, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
     - {fileID: 4013616540006491879, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+--- !u!1 &1098468157374189650 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7151558485642442540, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+  m_PrefabInstance: {fileID: 7782777012740433790}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &657386111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098468157374189650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 6
+  partSkinName: default
+  materialName: PlasticFromPalette_SMALL
 --- !u!64 &1098468157374189652 stripped
 MeshCollider:
   m_CorrespondingSourceObject: {fileID: 7151558485642442538, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
@@ -1719,6 +1739,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -0.835
       objectReference: {fileID: 0}
+    - target: {fileID: 5776863424385544667, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b6887890e03cf642add06495adb0bef, type: 2}
     - target: {fileID: 6790076215394279714, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1779,10 +1803,18 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8839315397883243502, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b6887890e03cf642add06495adb0bef, type: 2}
     - target: {fileID: 9148781464502902243, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.571
       objectReference: {fileID: 0}
+    - target: {fileID: 9162527126796392028, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5b6887890e03cf642add06495adb0bef, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
 --- !u!1 &1429961781515636029 stripped
@@ -1845,6 +1877,26 @@ MonoBehaviour:
   part: 2
   partSkinName: default
   materialName: CarCommonMat
+--- !u!1 &2718683966143170640 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6691684382781673464, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+  m_PrefabInstance: {fileID: 8747987001601984424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &894318834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2718683966143170640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 10
+  partSkinName: default
+  materialName: CarCommonMat
 --- !u!1 &4319179845114842687 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4798542501191371159, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
@@ -1885,6 +1937,46 @@ MonoBehaviour:
   part: 3
   partSkinName: default
   materialName: CarCommonMat
+--- !u!1 &5778055988052734440 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2974856915970635328, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+  m_PrefabInstance: {fileID: 8747987001601984424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6486285002600036650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5778055988052734440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 8
+  partSkinName: default
+  materialName: CarCommonMat
+--- !u!1 &6597575903328748359 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2515360998855984367, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+  m_PrefabInstance: {fileID: 8747987001601984424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6486285002600036653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6597575903328748359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 9
+  partSkinName: default
+  materialName: CarCommonMat
 --- !u!1 &8764711168605074618 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 55614992793350930, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
@@ -1903,5 +1995,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 1
+  partSkinName: default
+  materialName: CarCommonMat
+--- !u!1 &8951529830021844693 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 386516958599399805, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
+  m_PrefabInstance: {fileID: 8747987001601984424}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6486285002600036651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8951529830021844693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 8
   partSkinName: default
   materialName: CarCommonMat

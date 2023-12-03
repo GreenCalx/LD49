@@ -20,6 +20,7 @@ public class UITitleScreen : UIPanelTabbed
 
     void OnDestroy()
     {
+        deactivate();
     }
 
     protected override void ProcessInputs(InputManager currentMgr, GameInput[] entry){
