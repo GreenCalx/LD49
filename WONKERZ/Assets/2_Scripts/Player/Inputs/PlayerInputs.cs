@@ -224,6 +224,8 @@ public class PlayerInputs
         WeightX,
         // player : misc
 
+        AirplaneMode,
+
         // axis
         CameraChange,
         CameraReset,

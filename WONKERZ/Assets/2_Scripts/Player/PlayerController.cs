@@ -4,6 +4,39 @@ using static Schnibble.SchMathf;
 using System.Collections.Specialized;
 using UnityEngine;
 
+public class AirplaneState : FSMState, IControllable 
+{
+    private PlayerController player;
+    private class GeneralAirAction : FSMAction {
+        public override void Execute(FSMBase fsm) {
+            var player = (fsm as PlayerFSM).GetPlayer();
+        }
+    }
+
+    public override void OnEnter(FSMBase fsm) {
+        var player = (fsm as PlayerFSM  ).GetPlayer();
+        player.ActivateAirplane();
+    }
+    public override void  OnExit(FSMBase fsm) {
+        var player = (fsm as PlayerFSM).GetPlayer();
+        player.DeactivateAirplane();
+    }
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry) {
+        var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
+        if (airplaneMode != null) {
+            if (airplaneMode.GetState().down) {
+                player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+            }
+        }
+    }
+
+        public AirplaneState(PlayerController player) : base("Car")
+    {
+        this.player = player;
+        
+    }
+}
+
 // FSM when in ground mode
 public class GroundState : FSMState, IControllable
 {
@@ -157,6 +190,13 @@ public class GroundState : FSMState, IControllable
             if (turnAxis.GetState().valueSmooth != 0f)
             player.turn.Add(turnAxis.GetState().valueSmooth);
         }
+
+        var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
+        if (airplaneMode != null) {
+            if (airplaneMode.GetState().down) {
+                player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+            }
+        }
     }
 };
 
@@ -198,9 +238,11 @@ public class PlayerVehicleStates : PlayerFSM
     {
         states[(int)States.Init] = new FSMState("Init");
         states[(int)States.Car] = new GroundState(player);
+        states[(int)States.Plane] = new AirplaneState(player);
 
         var initState = states[(int)States.Init];
         var carState = states[(int)States.Car];
+        var aitplaneState = states[(int)States.Plane];
 
         globalTransitions.Add(new FSMNullTransition(initState));
 
@@ -409,6 +451,11 @@ public class PlayerController : MonoBehaviour, IControllable
         }
         carInstance.SetActive(false);
 
+        if (planeInstance == null) {
+            planeInstance = Instantiate(planePrefab);
+            planeInstance.transform.parent = gameObject.transform;
+        }
+
         generalStates = new PlayerGeneralStates(this);
         vehicleStates = new PlayerVehicleStates(this);
 
@@ -604,6 +651,18 @@ public class PlayerController : MonoBehaviour, IControllable
 public void DeactivateCar()
 {
     carInstance.SetActive(false);
+    Access.Player().inputMgr.Detach(car as IControllable);
+}
+
+    public void ActivateAirplane()
+{
+    planeInstance.SetActive(true);
+    Access.Player().inputMgr.Attach(car as IControllable);
+}
+
+public void DeactivateAirplane()
+{
+    planeInstance.SetActive(false);
     Access.Player().inputMgr.Detach(car as IControllable);
 }
 
