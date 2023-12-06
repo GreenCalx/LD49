@@ -7,11 +7,7 @@ using UnityEngine;
 public class AirplaneState : FSMState, IControllable 
 {
     private PlayerController player;
-    private class GeneralAirAction : FSMAction {
-        public override void Execute(FSMBase fsm) {
-            var player = (fsm as PlayerFSM).GetPlayer();
-        }
-    }
+    private class GeneralAirAction : GroundState.GeneralGroundAction {}
 
     public override void OnEnter(FSMBase fsm) {
         var player = (fsm as PlayerFSM  ).GetPlayer();
@@ -28,12 +24,25 @@ public class AirplaneState : FSMState, IControllable
                 player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
             }
         }
+
+        var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
+        var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
+        if (weightXAxis != null)
+        {
+            player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
+            player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
+        }
+        if (weightYAxis != null)
+        {
+            player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
+            player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
+        }
     }
 
-        public AirplaneState(PlayerController player) : base("Car")
+    public AirplaneState(PlayerController player) : base("Airplane")
     {
         this.player = player;
-        
+        this.fixedActions.Add(new GeneralAirAction());
     }
 }
 
@@ -42,7 +51,7 @@ public class GroundState : FSMState, IControllable
 {
     private PlayerController player;
 
-    private class GeneralGroundAction : FSMAction
+    public class GeneralGroundAction : FSMAction
     {
         public override void Execute(FSMBase fsm)
         {
@@ -427,7 +436,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public GameObject boatPrefab;
     private GameObject boatInstance;
     public GameObject planePrefab;
-    private GameObject planeInstance;
+    public GameObject planeInstance;
 
     public Rigidbody rb;
 
@@ -643,143 +652,139 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public void ActivateCar()
-{
-    carInstance.SetActive(true);
-    Access.Player().inputMgr.Attach(car as IControllable);
-}
+    {
+        carInstance.SetActive(true);
+        inputMgr.Attach(car as IControllable);
 
-public void DeactivateCar()
-{
-    carInstance.SetActive(false);
-    Access.Player().inputMgr.Detach(car as IControllable);
-}
+        foreach (var axle in car.axles)
+        {
+            axle.right.AsGameObject().SetActive(true);
+            axle.left.AsGameObject().SetActive(true);
+        }
+    }
+
+    public void DeactivateCar()
+    {
+        carInstance.SetActive(false);
+        inputMgr.Detach(car as IControllable);
+
+        // enable object that might not be part of us, aka the wheel colliders
+        foreach (var axle in car.axles)
+        {
+            axle.right.AsGameObject().SetActive(false);
+            axle.left.AsGameObject().SetActive(false);
+        }
+    }
 
     public void ActivateAirplane()
-{
-    planeInstance.SetActive(true);
-    Access.Player().inputMgr.Attach(car as IControllable);
-}
-
-public void DeactivateAirplane()
-{
-    planeInstance.SetActive(false);
-    Access.Player().inputMgr.Detach(car as IControllable);
-}
-
-public bool IsInMenu() { return isInMenu; }
-public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound();  }
-public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
-private void MuteSound()
-{
-    foreach (var source in GetComponentsInChildren<AudioSource>())
     {
-        source.mute = true;
-}
-}
-
-private void UnMuteSound()
-{
-    foreach (var source in GetComponentsInChildren<AudioSource>())
-    {
-        source.mute = false;
-}
-}
-
-public void SetHandbrake(bool v)
-{
-    var rear = car.axles[(int)AxleType.rear];
-    rear.left.isHandbraked = v;
-    rear.right.isHandbraked = v;
-
-    var front = car.axles[(int)AxleType.front];
-    front.left.isHandbraked = v;
-    front.right.isHandbraked = v;
-}
-
-public void SetCarCenterOfMass()
-{
-    car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
-}
-
-/// =============== Game Logic ==================
-public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
-{
-    //
-    //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
-    //return;
-    if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
-    return;
-
-    audioSource.clip = damageSound;
-    audioSource.Play();
-
-    // lose nuts
-    CollectiblesManager cm = Access.CollectiblesManager();
-    int n_nuts = cm.getCollectedNuts();
-
-    Vector3 contactNormal = iDamageSourceNormal;
-    Vector3 contactPoint = iDamageSourcePoint;
-    Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
-
-    Vector3 repulseDir = contactPoint + contactNormal;
-    repulseForce = -repulseDir * iRepulsionForce;
-
-    int availableNuts = (n_nuts >= iDamage) ? iDamage : n_nuts;
-    for (int i = 0; i < availableNuts; i++)
-    {
-        GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
-        nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
-    }
-    cm.loseNuts(iDamage);
-    rb.AddForce(repulseForce, ForceMode.Impulse);
-
-    elapsedTimeSinceLastDamage = 0f;
-    //stateMachine.ForceState(invulState);
-}
-
-bool modifierCalled = false;
-
-
-void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
-{
-    // dirty fix for respawn when slipping
-    foreach (var a in car.axles)
-    {
-        a.right.slipX = 1;
-        a.right.slipY = 1;
-
-
-        a.left.slipX = 1;
-        a.left.slipY = 1;
+        planeInstance.SetActive(true);
+        rb.useGravity = false;
     }
 
-    // Specific states control
-
-    var generalInputs = (generalStates.GetState() as IControllable);
-    if (generalInputs != null)
+    public void DeactivateAirplane()
     {
-        generalInputs.ProcessInputs(currentMgr, Entry);
+        planeInstance.SetActive(false);
+        rb.useGravity = true;
     }
 
-
-    var vehicleInputs = (vehicleStates.GetState() as IControllable);
-    if (vehicleInputs != null)
+    public bool IsInMenu() { return isInMenu; }
+    public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound();  }
+    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
+    private void MuteSound()
     {
-        vehicleInputs.ProcessInputs(currentMgr, Entry);
+        foreach (var source in GetComponentsInChildren<AudioSource>())
+        {
+            source.mute = true;
+        }
     }
 
-
-
-    // to remove
-
-    if (Input.GetKeyDown(KeyCode.Space))
+    private void UnMuteSound()
     {
-        PlayerController pc = Instantiate(playerInst, transform.position, transform.rotation);
-        pc.inputMgr = Access.PlayerInputsManager().dualPlayers;
-
-        var states = pc.vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
-        Access.Player().UnFreeze();
+        foreach (var source in GetComponentsInChildren<AudioSource>())
+        {
+            source.mute = false;
+        }
     }
-}
+
+    public void SetHandbrake(bool v)
+    {
+        var rear = car.axles[(int)AxleType.rear];
+        rear.left.isHandbraked = v;
+        rear.right.isHandbraked = v;
+
+        var front = car.axles[(int)AxleType.front];
+        front.left.isHandbraked = v;
+        front.right.isHandbraked = v;
+    }
+
+    public void SetCarCenterOfMass()
+    {
+        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
+    }
+
+    /// =============== Game Logic ==================
+    public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
+    {
+        //
+        //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
+        //return;
+        if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
+        return;
+
+        audioSource.clip = damageSound;
+        audioSource.Play();
+
+        // lose nuts
+        CollectiblesManager cm = Access.CollectiblesManager();
+        int n_nuts = cm.getCollectedNuts();
+
+        Vector3 contactNormal = iDamageSourceNormal;
+        Vector3 contactPoint = iDamageSourcePoint;
+        Debug.DrawRay(contactPoint, contactNormal * 5, Color.red, 5, false);
+
+        Vector3 repulseDir = contactPoint + contactNormal;
+        repulseForce = -repulseDir * iRepulsionForce;
+
+        int availableNuts = (n_nuts >= iDamage) ? iDamage : n_nuts;
+        for (int i = 0; i < availableNuts; i++)
+        {
+            GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
+            nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
+        }
+        cm.loseNuts(iDamage);
+        rb.AddForce(repulseForce, ForceMode.Impulse);
+
+        elapsedTimeSinceLastDamage = 0f;
+        //stateMachine.ForceState(invulState);
+    }
+
+    bool modifierCalled = false;
+
+
+    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    {
+        // dirty fix for respawn when slipping
+        foreach (var a in car.axles)
+        {
+            a.right.slipX = 1;
+            a.right.slipY = 1;
+
+            a.left.slipX = 1;
+            a.left.slipY = 1;
+        }
+
+        // Specific states control
+        var generalInputs = (generalStates.GetState() as IControllable);
+        if (generalInputs != null)
+        {
+            generalInputs.ProcessInputs(currentMgr, Entry);
+        }
+
+        var vehicleInputs = (vehicleStates.GetState() as IControllable);
+        if (vehicleInputs != null)
+        {
+            vehicleInputs.ProcessInputs(currentMgr, Entry);
+        }
+    }
 }
