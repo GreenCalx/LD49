@@ -1,6 +1,9 @@
 using UnityEngine;
 using System;
 using Schnibble;
+using static UnityEngine.Debug;
+using static UnityEngine.Physics;
+using Schnibble.Managers;
 
 public class FollowObjectCamera : CinematicCamera
 {
@@ -68,7 +71,7 @@ public class FollowObjectCamera : CinematicCamera
 
     void Update()
     {
-        Debug.DrawRay(focus.position, focus.forward*10, Color.blue);
+        DrawRay(focus.position, focus.forward*10, Color.blue);
     }
 
     void OnDestroy()
@@ -85,7 +88,7 @@ public class FollowObjectCamera : CinematicCamera
     {
         Access.Player().inputMgr.Attach(this as IControllable);
         if (focusPlayer && (focus==null))
-            focus = Access.Player().transform;
+        focus = Access.Player().transform;
         focusPoint = focus.position;
 
         resetView();
@@ -115,7 +118,7 @@ public class FollowObjectCamera : CinematicCamera
         Vector3 castDirection = castLine / castDistance;
 
         // check if we hit something between camera and focuspoint
-        if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
+        if (BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
         {
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
@@ -152,7 +155,7 @@ public class FollowObjectCamera : CinematicCamera
         Vector3 castDirection = castLine / castDistance;
 
         // check if we hit something between camera and focuspoint
-        if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
+        if (BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
         {
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
@@ -239,7 +242,7 @@ public class FollowObjectCamera : CinematicCamera
     }
 
 
-    private SchMathf.AccumulatorV2 input;
+    private Schnibble.Math.AccumulatorV2 input;
     bool ManualRotation()
     {
         const float e = 0.001f;
@@ -259,7 +262,7 @@ public class FollowObjectCamera : CinematicCamera
     bool autoRotation()
     {
         if (Time.unscaledTime - lastManualRotationTime < alignDelay)
-            return false;
+        return false;
 
 
         Vector2 movement = new Vector2(focusPoint.x - previousFocusPoint.x, focusPoint.z - previousFocusPoint.z);

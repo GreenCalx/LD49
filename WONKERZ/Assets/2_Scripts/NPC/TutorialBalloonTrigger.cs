@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
 using System;
-using static Schnibble.SchPhysics; // axles
+using static Schnibble.Physics; // axles
+using Schnibble.UI;
+using Schnibble.Managers;
 
 public class TutorialBalloonTrigger : MonoBehaviour, IControllable
 {
@@ -51,10 +53,10 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         }
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (!triggered)
-            return;
+        return;
 
         // weight_pressed = ((Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton).GetState().up);
         // if (weight_pressed)
@@ -62,13 +64,13 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         // if ((Entry[(int)PlayerInputs.InputCode.CameraControl] as GameInputButton).GetState().heldDown)
         // { weight_pressed_elapsed = 0f; }
 
-        jump_pressed = ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().down);
+        jump_pressed = ((Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton).GetState().down);
         if (jump_pressed)
         { jump_pressed_elapsed += Time.deltaTime; }
-        if ((Entry[(int)PlayerInputs.InputCode.Jump] as GameInputButton).GetState().up)
+        if ((Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton).GetState().up)
         { jump_pressed_elapsed = 0f; }
 
-        LJoyDown_pressed = ((Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis).GetState().valueSmooth < 0f);
+        LJoyDown_pressed = ((Entry.Get((int)PlayerInputs.InputCode.WeightY) as GameInputAxis).GetState().valueSmooth < 0f);
         if (LJoyDown_pressed)
         { LJoyDown_pressed_elapsed += Time.deltaTime; }
     }
@@ -152,7 +154,7 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     {
         CameraManager cm = Access.CameraManager();
         if (cm.active_camera==null)
-            return;
+        return;
 
         PlayerCamera pCam = cm.active_camera.GetComponent<PlayerCamera>();
         if (!!pCam)
@@ -172,9 +174,9 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         var front = pc.car.axles[(int)AxleType.front];
 
         if  (rear.left.isHandbraked  &&
-                rear.right.isHandbraked &&
-                front.left.isHandbraked &&
-                front.right.isHandbraked)
+             rear.right.isHandbraked &&
+             front.left.isHandbraked &&
+             front.right.isHandbraked)
         {
             HappyValidation();
         }
@@ -191,12 +193,12 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     void OnTriggerEnter(Collider iCollider)
     {
         if (tutorialCompleted)
-            return;
+        return;
 
         if (triggerOnce)
         {
             if (triggered)
-                return;
+            return;
         }
 
         if (disableBalloon)

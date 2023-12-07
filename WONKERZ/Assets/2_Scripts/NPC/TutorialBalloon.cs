@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using static UnityEngine.Debug;
 using Schnibble;
+using Schnibble.Managers;
 
 public class TutorialBalloon : MonoBehaviour
 {
@@ -41,7 +43,7 @@ public class TutorialBalloon : MonoBehaviour
             { Access.PlayerInputsManager().player1.Attach(_currTrigger as IControllable);}
             _currTrigger = value;
             if(_currTrigger!=null)
-                Access.PlayerInputsManager().player1.Detach(_currTrigger as IControllable);
+            Access.PlayerInputsManager().player1.Detach(_currTrigger as IControllable);
         }
 
         get { return _currTrigger; }
@@ -69,19 +71,19 @@ public class TutorialBalloon : MonoBehaviour
         GameCamera curr_cam = Access.CameraManager().active_camera;
         PlayerCamera pc;
         try {
-        pc = (PlayerCamera) curr_cam;
+            pc = (PlayerCamera) curr_cam;
         } catch (InvalidCastException e )
         {
-            Debug.LogWarning("Failed to cast active_camera to a PlayerCamera. Try again.");
+            LogWarning("Failed to cast active_camera to a PlayerCamera. Try again.");
             yield break;
         }
         if (null==pc)
         {
-            Debug.LogError("Wrong type of camera to launch tutorial balloon. Need a player camera.");
+            LogError("Wrong type of camera to launch tutorial balloon. Need a player camera.");
             yield break;
         }
 
-        Debug.Log("TutorialBalloon::launchOnFocused() : CamType is a Player Cam, waiting for focus...");
+        Log("TutorialBalloon::launchOnFocused() : CamType is a Player Cam, waiting for focus...");
 
         while (pc.secondaryFocus != self_camFocusPoint)
         {
@@ -102,7 +104,7 @@ public class TutorialBalloon : MonoBehaviour
     public void disable()
     {
         if (null!=PlayerAnchorPoint)
-            PlayerAnchorPoint.delete();
+        PlayerAnchorPoint.delete();
         self_jointToPlayer.connectedBody = null;
         self_jointToPlayer.autoConfigureConnectedAnchor = true;
         enable_move = false;
@@ -161,7 +163,7 @@ public class TutorialBalloon : MonoBehaviour
         // position
         Vector3 targetPos = player.transform.position + (player.transform.forward * distance);
         //if (pc.TouchGround())
-            targetPos.y = 0f;
+        targetPos.y = 0f;
         // sub body rots
         float rotationY = Mathf.Atan2(difference.x, difference.z) * Mathf.Rad2Deg + 90f;
         //float rotationX = Mathf.Atan2(difference.z, difference.y) * Mathf.Rad2Deg - 90f;

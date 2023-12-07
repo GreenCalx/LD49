@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Schnibble;
+using Schnibble.Managers;
 using System;
 public class InputAxisHighlighter : MonoBehaviour, IControllable
 {
@@ -45,7 +46,7 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
     }
 
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         // if (Access.PlayerInputsManager().player1 == currentMgr)
         // {
@@ -53,13 +54,13 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
         // }      
         if (requiresTriggerModificator)
         {
-            GameInputButton modifTrigg = Entry[(int)optionalTriggerModif] as GameInputButton;
+            GameInputButton modifTrigg = Entry.Get((int)optionalTriggerModif) as GameInputButton;
             if (modifTrigg.GetState().up)
                 return;
         }
 
-        GameInputAxis   inputAxis0   = Entry[(int)axis0] as GameInputAxis;
-        GameInputAxis   inputAxis1   = Entry[(int)axis1] as GameInputAxis;
+        GameInputAxis   inputAxis0   = Entry.Get((int)axis0) as GameInputAxis;
+        GameInputAxis   inputAxis1   = Entry.Get((int)axis1) as GameInputAxis;
 
         if (null!=inputAxis0)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Schnibble;
+using Schnibble.Managers;
 using System;
 
 public class InputButtonHighlighter : MonoBehaviour, IControllable
@@ -40,9 +41,9 @@ public class InputButtonHighlighter : MonoBehaviour, IControllable
     }
 
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry)
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        GameInputButton inputButton = Entry[(int)key] as GameInputButton;
+        GameInputButton inputButton = Entry.Get((int)key) as GameInputButton;
         if (null!=inputButton)
         {
             if (inputButton.GetState().down)

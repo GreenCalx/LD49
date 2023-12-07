@@ -20,8 +20,8 @@ GameObject:
   - component: {fileID: -1292285153376040016}
   - component: {fileID: 1844676545904051825}
   - component: {fileID: -5754234224573047130}
-  - component: {fileID: 7942752816821631577}
   - component: {fileID: 1088823065795957811}
+  - component: {fileID: -485847373434331477}
   m_Layer: 0
   m_Name: ------ MANAGERS ------
   m_TagString: Untagged
@@ -89,7 +89,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d752867b348643147b020dd7b6ceb442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: 
   CurrentMode: 1
   _Activated: 0
 --- !u!114 &8553312098393095324
@@ -106,6 +105,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transitionAnimator_Ref: {fileID: 9007486505285227248, guid: b4f79c4f676ff7a4eb97fe1aaef70e1f, type: 3}
   asyncTransitionLock: 1
+  loadingScene: LoadingScene
+  beforeLoadScene:
+    m_PersistentCalls:
+      m_Calls: []
+  beforeEnableScene:
+    m_PersistentCalls:
+      m_Calls: []
+  afterLoadScene:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &2461822761663601311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,26 +284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea5fb59ec85cc7e4595db03a8125b58e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &7942752816821631577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2461822761771495987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fd305743144316458453ebf34108297, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  init_Player1: 1
-  init_Player2: 0
-  init_DualPlayers: 0
-  init_All: 0
-  player1: {fileID: 0}
-  player2: {fileID: 0}
-  dualPlayers: {fileID: 0}
-  all: {fileID: 0}
 --- !u!114 &1088823065795957811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,3 +298,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeProfile: 
   profileDataFilePath: 
+--- !u!114 &-485847373434331477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a2f1d453f778f0459d1e522a43a6ae9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  init_Player1: 1
+  init_Player2: 0
+  init_DualPlayers: 0
+  init_All: 0
+  player1: {fileID: 0}
+  player2: {fileID: 0}
+  dualPlayers: {fileID: 0}
+  all: {fileID: 0}

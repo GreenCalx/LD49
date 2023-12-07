@@ -6,6 +6,7 @@ using static Schnibble.Physics;
 
 public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 {
+    #if SCH_SUSPENSION_V2
     public class SchSandTrapRigidBody : SchRigidBody {
         GameObject obj;
         public float MaxForce;
@@ -24,13 +25,16 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
     }
 
     public SchSandTrapRigidBody rb;
+    #else
+    public SchRigidBody rb;
+    #endif
     public void Awake() {
-        irb = rb;
+        irb = rb.irb;
     }
 
     public void OnCollisionStay(Collision c)
     {
         var colliderRB = c.body as Rigidbody;
-        colliderRB.AddForce(rb.GetVelocityAtPoint(colliderRB.position) - colliderRB.velocity, ForceMode.VelocityChange);
+        //colliderRB.AddForce(rb.GetVelocityAtPoint(colliderRB.position) - colliderRB.velocity, ForceMode.VelocityChange);
     }
 }

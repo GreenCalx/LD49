@@ -21,16 +21,16 @@ public class AirplaneState : FSMState, IControllable
         var player = (fsm as PlayerFSM).GetPlayer();
         player.DeactivateAirplane();
     }
-    void IControllable.ProcessInputs(InputManager currentMgr, GameInput[] Entry) {
-        var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry) {
+        var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
         if (airplaneMode != null) {
             if (airplaneMode.GetState().down) {
                 player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
             }
         }
 
-        var weightXAxis = Entry[(int)PlayerInputs.InputCode.WeightX] as GameInputAxis;
-        var weightYAxis = Entry[(int)PlayerInputs.InputCode.WeightY] as GameInputAxis;
+        var weightXAxis = Entry.Get((int)PlayerInputs.InputCode.WeightX) as GameInputAxis;
+        var weightYAxis = Entry.Get((int)PlayerInputs.InputCode.WeightY) as GameInputAxis;
         if (weightXAxis != null)
         {
             player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
@@ -258,7 +258,7 @@ public class GroundState : FSMState, IControllable
             player.turn.Add(turnAxis.GetState().valueSmooth);
         }
 
-        var airplaneMode = Entry[(int)PlayerInputs.InputCode.AirplaneMode] as GameInputButton;
+        var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
         if (airplaneMode != null) {
             if (airplaneMode.GetState().down) {
                 player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
@@ -528,9 +528,6 @@ public class PlayerController : MonoBehaviour, IControllable
 
         Freeze();
 
-        Access.SceneLoader().beforeLoadScene.AddListener(OnBeforeLoadScene);
-        Access.SceneLoader().beforeEnableScene.AddListener(OnBeforeEnableScene);
-        Access.SceneLoader().afterLoadScene.AddListener(OnAfterLoadScene);
     }
 
     void Start()
@@ -541,14 +538,24 @@ public class PlayerController : MonoBehaviour, IControllable
         }
 
         inputMgr.Attach(this);
+
+        Access.SceneLoader().beforeLoadScene.AddListener(OnBeforeLoadScene);
+        Access.SceneLoader().beforeEnableScene.AddListener(OnBeforeEnableScene);
+        Access.SceneLoader().afterLoadScene.AddListener(OnAfterLoadScene);
+
     }
 
     void OnDestroy()
     {
         inputMgr.Detach(this);
-        Access.SceneLoader().beforeLoadScene.RemoveListener(OnBeforeLoadScene);
-        Access.SceneLoader().afterLoadScene.RemoveListener(OnAfterLoadScene);
-        Access.SceneLoader().beforeEnableScene.RemoveListener(OnBeforeEnableScene);
+
+        var sceneLoader = Access.SceneLoader();
+        if (sceneLoader) {
+
+            sceneLoader.beforeLoadScene.RemoveListener(OnBeforeLoadScene);
+            sceneLoader.afterLoadScene.RemoveListener(OnAfterLoadScene);
+            sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);
+        }
     }
 
     void OnBeforeLoadScene(){
@@ -600,6 +607,8 @@ public class PlayerController : MonoBehaviour, IControllable
     }
 
     public WonkerDecal jumpDecal;
+
+    #if SCH_SUSPENSION_V2
     public void ResetSpringSizeMinAndUnlock()
     {
         foreach (var axle in car.axles)
@@ -671,6 +680,64 @@ public class PlayerController : MonoBehaviour, IControllable
         }
 
     }
+    #else
+
+    public void ResetSpringSizeMinAndUnlock()
+    {
+        foreach (var axle in car.axles)
+        {
+            axle.right.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
+            axle.left.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
+        }
+        car.overrideMaxSpring = false;
+    }
+
+    public void SetSpringSizeMinAndLock()
+    {
+        springElapsedCompression += Time.deltaTime;
+        float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression / springCompressionTime);
+        springCompVal = Mathf.Min(1, springCompVal);
+
+
+        float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression / springCompressionTime));
+
+        jumpDecal.SetAnimationTime(springJumpFactor);
+        foreach (var axle in car.axles)
+        {
+            axle.right.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
+            axle.left.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
+        }
+        car.overrideMaxSpring = true;
+    }
+
+    public float springCompressionTime = 0.5f;
+    public AnimationCurve jumpCompressionOverTime;
+    public float springElapsedCompression = 0f;
+    public void TryJump()
+    {
+        if (jump.applyForceMultiplier)
+        {
+            float springCompVal = springElapsedCompression / springCompressionTime;
+            springCompVal = Mathf.Min(1, springCompVal);
+            if (springCompVal > 0.5f)
+            {
+                audioSource.clip = jump.sounds[0];
+                audioSource.Play(0);
+            }
+            float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
+
+            foreach (var axle in car.axles)
+            {
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
+                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
+            }
+            jump.applyForceMultiplier = false;
+            springElapsedCompression = 0f;
+            jumpDecal.SetAnimationTime(0f);
+        }
+
+    }
+    #endif
     public void useTurbo()
     {
         turbo.intervalElapsedTime += Time.deltaTime;
@@ -766,8 +833,15 @@ public class PlayerController : MonoBehaviour, IControllable
 
         foreach (var axle in car.axles)
         {
-            axle.right.AsGameObject().SetActive(true);
-            axle.left.AsGameObject().SetActive(true);
+            if (axle.right != null) {
+                var go = axle.right.AsGameObject();
+                if (go) go.SetActive(true);
+            }
+
+            if (axle.left != null) {
+                var go = axle.left.AsGameObject();
+                if (go) go.SetActive(true);
+            }
         }
     }
 
@@ -779,8 +853,15 @@ public class PlayerController : MonoBehaviour, IControllable
         // enable object that might not be part of us, aka the wheel colliders
         foreach (var axle in car.axles)
         {
-            axle.right.AsGameObject().SetActive(false);
-            axle.left.AsGameObject().SetActive(false);
+            if (axle.right != null) {
+                var go = axle.right.AsGameObject();
+                if (go) go.SetActive(false);
+            }
+
+            if (axle.left != null) {
+                var go = axle.left.AsGameObject();
+                if (go) go.SetActive(false);
+            }
         }
     }
 

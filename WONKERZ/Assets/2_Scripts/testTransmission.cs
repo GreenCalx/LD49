@@ -4,6 +4,7 @@ using UnityEngine;
 using static UnityEngine.Debug;
 
 namespace Schnibble {
+    #if SCH_SUSPENSION_V2
     public class testTransmission : MonoBehaviour
     {
         public List<WheelColliderBehavior> wheels;
@@ -25,4 +26,5 @@ namespace Schnibble {
             }
         }
     }
+    #endif
 }

@@ -3,6 +3,7 @@ using System;
 using Schnibble;
 using Schnibble.Managers;
 using static UnityEngine.Physics;
+using static UnityEngine.Debug;
 
 public class ManualCamera : PlayerCamera, IControllable
 {
@@ -68,7 +69,7 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         updateSecondaryFocus();
         if (focus!=null)
-            Debug.DrawRay(focus.position, focus.forward*10, Color.blue);
+            DrawRay(focus.position, focus.forward*10, Color.blue);
     }
 
     void OnDestroy()
@@ -136,7 +137,7 @@ public class ManualCamera : PlayerCamera, IControllable
         elapsedTimeFocusChange += Time.deltaTime;
         if ((null!=secondaryFocus)&&(elapsedTimeFocusChange >= focusChangeInputLatch))
         {
-            var focus_change_val = ((Entry[(int)PlayerInputs.InputCode.CameraFocusChange] as GameInputAxis)).GetState().valueRaw;
+            var focus_change_val = ((Entry.Get((int)PlayerInputs.InputCode.CameraFocusChange) as GameInputAxis)).GetState().valueRaw;
             if (focus_change_val > 0)
             {
                 changeFocus();
@@ -190,7 +191,7 @@ public class ManualCamera : PlayerCamera, IControllable
         Vector3 castDirection = castLine / castDistance;
 
         // check if we hit something between camera and focuspoint
-        if (Physics.BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
+        if (BoxCast(castFrom, CameraHalfExtends, castDirection, out RaycastHit hit, lookRotation, castDistance, obstructionMask))
         {
             rectPosition = castFrom + castDirection * hit.distance;
             lookPosition = rectPosition - rectOffset;
@@ -339,7 +340,7 @@ public class ManualCamera : PlayerCamera, IControllable
     }
 
 
-    private Math.AccumulatorV2 input;
+    private Schnibble.Math.AccumulatorV2 input;
     bool ManualRotation()
     {
         const float e = 0.001f;

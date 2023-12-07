@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Debug;
 using System.Linq;
 using Schnibble;
 using Schnibble.Managers;
@@ -325,7 +326,7 @@ public class CameraManager : MonoBehaviour, IControllable
         // Debug Cam switches below
         string new_cam_name = ((iNewCam==null)?"null":iNewCam.gameObject.name);
         string prev_cam_name = ((active_camera==null)?"null":active_camera.gameObject.name);
-        Debug.Log("CamSwitch : " +  new_cam_name  + " FROM " + prev_cam_name);
+        Log("CamSwitch : " +  new_cam_name  + " FROM " + prev_cam_name);
 
 
         active_camera = iNewCam;
@@ -393,7 +394,7 @@ public class CameraManager : MonoBehaviour, IControllable
 
         if ((prev_tp==null)||(new_tp==null))
         {
-            Debug.LogWarning("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
+            LogWarning("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
             return;
         }
 

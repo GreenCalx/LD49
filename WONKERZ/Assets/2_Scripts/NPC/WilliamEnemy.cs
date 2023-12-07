@@ -118,20 +118,20 @@ public class WilliamEnemy : WkzNPC
     /// LOCAL
     public void CallGuard()
     {
-        Debug.Log(gameObject.name + " CallGuard");
-        LaunchAction(Guard(this, coordinator.playerDetector.player.position));
+        Log(gameObject.name + " CallGuard");
+        LaunchAction(Guard(this, coordinator.playerDetector.GetTarget().transform.position));
     }
 
     public void CallLariat()
     {
-        Debug.Log(gameObject.name + " CallLariat");
-        LaunchAction(LariatSpin(this, coordinator.playerDetector.player.position));
+        Log(gameObject.name + " CallLariat");
+        LaunchAction(LariatSpin(this, coordinator.playerDetector.GetTarget().transform.position));
     }
 
     public void CallDirectHit()
     {
-        Debug.Log(gameObject.name + " CallDirectHit");
-        LaunchAction(DirectHit(this, coordinator.playerDetector.player.position));
+        Log(gameObject.name + " CallDirectHit");
+        LaunchAction(DirectHit(this, coordinator.playerDetector.GetTarget().transform.position));
     }
 
     private IEnumerator DirectHit(WilliamEnemy iAttacker, Vector3 iTargetPos)

@@ -46,7 +46,7 @@ public class SandTrapBehavior : MonoBehaviour
 
         mat.SetFloat("_AngleAnimationStart", 0);
         mat.SetFloat("_AngleAnimationStop", 0);
-        rb.rb.MaxForce = 0f;
+        //rb.rb.MaxForce = 0f;
         renderer.sharedMaterial = matIdle;
     }
 
@@ -107,7 +107,7 @@ public class SandTrapBehavior : MonoBehaviour
 
         if (focused)
         {
-            rb.rb.MaxForce = maxForce;
+            //rb.rb.MaxForce = maxForce;
 
             var focusPos = focus.transform.position;
             focusPos.y = fourmillionRoot.gameObject.transform.position.y;

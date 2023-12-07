@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Debug;
 using Schnibble;
+using Schnibble.UI;
 using System;
 
 public class UIProfileCards : UIPanelTabbed
@@ -29,7 +31,7 @@ public class UIProfileCards : UIPanelTabbed
             UIProfileCardPanel uipcp = (UIProfileCardPanel) t;
             if (uipcp==null)
             {
-                Debug.LogError("A card profile doesn't carry UIProfileCardPanel : " + t.gameObject.name);
+                LogError("A card profile doesn't carry UIProfileCardPanel : " + t.gameObject.name);
                 continue;
             }
             profileCards.Add(uipcp);
@@ -49,7 +51,7 @@ public class UIProfileCards : UIPanelTabbed
         UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
         if (uipcp==null)
         {
-            Debug.LogError("Selected Card is not activable");
+            LogError("Selected Card is not activable");
             return;
         }
         string selected_profile_name = uipcp.profileName.text;
