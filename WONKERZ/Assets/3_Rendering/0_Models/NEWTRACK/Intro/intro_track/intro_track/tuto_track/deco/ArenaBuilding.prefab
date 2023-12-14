@@ -129,6 +129,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -5437218420131181651, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd569e7df66333c4d929abddd3b3c58a, type: 2}
     - target: {fileID: -4808612337495729374, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -141,6 +145,14 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: -3452784712015735597, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3452784712015735597, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: eb0c10b3cb44c0640836cfd89d42cf97, type: 2}
     - target: {fileID: -1416594682018409236, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -149,6 +161,10 @@ PrefabInstance:
       propertyPath: m_Convex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 732289551677339444, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 219a47f70f263cd4f87d7e13adfed921, type: 2}
     - target: {fileID: 919132149155446097, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
       propertyPath: m_Name
       value: ArenaBuilding
@@ -157,14 +173,38 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 1554227249849005795, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd569e7df66333c4d929abddd3b3c58a, type: 2}
     - target: {fileID: 1634212959279468737, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
       objectReference: {fileID: 0}
+    - target: {fileID: 2272811901947968612, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd569e7df66333c4d929abddd3b3c58a, type: 2}
     - target: {fileID: 4833116130137222158, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
       propertyPath: m_Convex
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5041433161331350054, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 219a47f70f263cd4f87d7e13adfed921, type: 2}
+    - target: {fileID: 6211389621826070221, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: dd569e7df66333c4d929abddd3b3c58a, type: 2}
+    - target: {fileID: 7570410174958198516, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8420371169051676300, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: eb0c10b3cb44c0640836cfd89d42cf97, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8ac8dc3906a85644ae49b6b06892d6e, type: 3}
 --- !u!4 &722719111481540482 stripped
@@ -216,12 +256,12 @@ HingeJoint:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_Limits:
-    min: -90
+    min: 0
     max: 90
-    bounciness: 0
-    bounceMinVelocity: 0.2
+    bounciness: 0.1
+    bounceMinVelocity: 0.3
     contactDistance: 1
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
@@ -273,12 +313,12 @@ HingeJoint:
     targetVelocity: 0
     force: 0
     freeSpin: 0
-  m_UseLimits: 0
+  m_UseLimits: 1
   m_Limits:
     min: -90
-    max: 90
-    bounciness: 0
-    bounceMinVelocity: 0.2
+    max: 0
+    bounciness: 0.1
+    bounceMinVelocity: 0.3
     contactDistance: 1
   m_BreakForce: Infinity
   m_BreakTorque: Infinity

@@ -24,6 +24,12 @@ public class ExplodeChildBodies : MonoBehaviour
         triggered = true;
     }
 
+    public void setExplosionDirToPlayerVelocity()
+    {
+        directionSteer = Access.Player().rb.velocity.normalized;
+        forceStr = Access.Player().rb.velocity.magnitude;
+    }
+
     void explodeChilds()
     {
         int n_bodies = childBodies.Length;
@@ -32,6 +38,8 @@ public class ExplodeChildBodies : MonoBehaviour
             Rigidbody rb = childBodies[i];
             //Vector3 randDirection = Random.insideUnitCircle.normalized;
             //Vector3 dir = randDirection + directionSteer;
+            rb.isKinematic = false;
+
             rb.AddForce(directionSteer*forceStr, ForceMode.Impulse);
             Debug.DrawRay(rb.gameObject.transform.position, directionSteer*forceStr,  Color.red);
         }

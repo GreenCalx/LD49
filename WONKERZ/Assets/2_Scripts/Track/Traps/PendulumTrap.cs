@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PendulumTrap : MonoBehaviour
 {
+
+    public Vector3 axis;
     [Range(0.01f, 2f)]
     public float amplitude = 1f;
     [Range(0.01f, 4f)]
@@ -30,16 +32,30 @@ public class PendulumTrap : MonoBehaviour
         switch (phase)
         {
             case 0:
-                transform.Rotate(0f, 0f, (speed * (1-timer))*amplitude);
+                transform.Rotate(
+                    axis.x * (speed * (1-timer))*amplitude, 
+                    axis.y * (speed * (1-timer))*amplitude, 
+                    axis.z * (speed * (1-timer))*amplitude
+                    );
                 break;
             case 1:
-                transform.Rotate(0f, 0f, (-speed * timer)*amplitude);
+                transform.Rotate(
+                    axis.x * (-speed * timer)*amplitude, 
+                    axis.y * (-speed * timer)*amplitude, 
+                    axis.z * (-speed * timer)*amplitude);
                 break;
             case 2:
-                transform.Rotate(0f, 0f, (-speed * (1-timer))*amplitude);
+                transform.Rotate(
+                    axis.x * (-speed * (1-timer))*amplitude, 
+                    axis.y * (-speed * (1-timer))*amplitude, 
+                    axis.z * (-speed * (1-timer))*amplitude);
                 break;
             case 3:
-                transform.Rotate(0f, 0f, (speed * timer)*amplitude);
+                transform.Rotate(
+                    axis.x * (speed * timer)*amplitude, 
+                    axis.y * (speed * timer)*amplitude, 
+                    axis.z * (speed * timer)*amplitude
+                    );
                 break;
         }
     }
