@@ -30,7 +30,7 @@ public class PlayerDetector : SchAIDetector
     }
 
     public override bool IsTargetInRange() { return playerInRange; }
-    public override GameObject GetTarget() { return player.gameObject; }
+    public override GameObject GetTarget() { return (!!player)?player.gameObject:null; }
 
     void OnTriggerStay(Collider iCollider)
     {
@@ -75,7 +75,12 @@ public class PlayerDetector : SchAIDetector
         if (Utils.colliderIsPlayer(iCollider))
         {
             playerInRange = true;
-            player = iCollider.transform;
+
+             // If a child collider of Player is detected
+             // We still want to keep ref on the player object
+             // thus we set it to raw player instead of incoming collider
+            player = Access.Player().transform;
+
             if (callBackOnPlayerEnterRange!=null)
             callBackOnPlayerEnterRange.Invoke();
         }

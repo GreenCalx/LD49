@@ -494,6 +494,8 @@ MonoBehaviour:
   damagers:
   - {fileID: 1102173275055553701}
   - {fileID: 966058104455114018}
+  arms: {fileID: 7919083974476423046}
+  damagerMaterialRef: {fileID: 2100000, guid: 9baf54282fe9c8c439dabb5a9055b6df, type: 2}
   max_lariat_duration: 2.5
   lariat_rot_per_sec: 0.3
   lariat_target_reached_epsilon: 5
@@ -682,6 +684,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 76bcd786faa582942b6434f144b2aba7, type: 2}
+    - target: {fileID: -4727409234670586001, guid: 97101149526f978428590711d2f0b680, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -2470153077621482899, guid: 97101149526f978428590711d2f0b680, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.014
@@ -697,6 +703,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 97101149526f978428590711d2f0b680, type: 3}
       propertyPath: m_Name
       value: william
+      objectReference: {fileID: 0}
+    - target: {fileID: 933676769775427784, guid: 97101149526f978428590711d2f0b680, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1119815577314225349, guid: 97101149526f978428590711d2f0b680, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1119815577314225349, guid: 97101149526f978428590711d2f0b680, type: 3}
       propertyPath: m_Materials.Array.data[1]
@@ -811,6 +825,11 @@ MonoBehaviour:
 --- !u!4 &7342811063695037608 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 97101149526f978428590711d2f0b680, type: 3}
+  m_PrefabInstance: {fileID: 7092147688957064003}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &7919083974476423046 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 1119815577314225349, guid: 97101149526f978428590711d2f0b680, type: 3}
   m_PrefabInstance: {fileID: 7092147688957064003}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &7975091463596379666 stripped

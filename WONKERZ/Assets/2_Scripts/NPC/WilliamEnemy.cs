@@ -18,6 +18,8 @@ public class WilliamEnemy : WkzNPC
     public PlayerDetector guardDetector;
     public PlayerDetector directHitDetector;
     public List<PlayerDamager> damagers;
+    public SkinnedMeshRenderer arms;
+    public Material damagerMaterialRef;
 
     [Header("Tweaks")]
     public float max_lariat_duration = 5f;
@@ -46,6 +48,8 @@ public class WilliamEnemy : WkzNPC
     private float elapsed_time_in_lariat = 0f;
     private float current_idle_time = 2f;
     private float idle_timer;
+
+    private Coroutine showDamagerCo;
 
     // Start is called before the first frame update
     void Start()
@@ -230,6 +234,34 @@ public class WilliamEnemy : WkzNPC
         iAttacker.StopAction();
     }
 
+    private IEnumerator ColorizeHands(WilliamEnemy iAttacker, Color iAlbedoColor, float iDuration)
+    {
+        if (damagerMaterialRef==null)
+            yield break;
+        Material[] mats = iAttacker.arms.materials;
+        Color baseColor = Color.white;
+        Material damagingMat = null;
+        for (int i=0;i<mats.Length;i++) 
+        {
+            damagingMat = mats[i];
+            if (damagingMat.name==(iAttacker.damagerMaterialRef.name+Constants.EXT_INSTANCE))
+            {
+                baseColor = damagingMat.color;
+                damagingMat.color = iAlbedoColor;
+            }
+        }
+
+        if (iDuration < 0f)
+            yield break;
+
+        float timer = 0f;
+        while (timer < iDuration)
+        { timer += Time.deltaTime; yield return null;}
+
+
+        damagingMat.color = baseColor;
+    }
+
     public void kill()
     {
         ai_kill();
@@ -266,6 +298,8 @@ public class WilliamEnemy : WkzNPC
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
         animator.SetBool(param_DHIT, false);
+        
+        showDamagerCo = StartCoroutine(ColorizeHands(this, Color.red, -1));
     }
 
     public void IdleAnim()
@@ -275,6 +309,8 @@ public class WilliamEnemy : WkzNPC
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
         animator.SetBool(param_DHIT, false);
+
+        StartCoroutine(ColorizeHands(this, Color.white, -1f));
     }
 
     public void LariatAnim()
@@ -284,6 +320,8 @@ public class WilliamEnemy : WkzNPC
         animator.SetBool(param_SURPRISED, false);
         animator.SetBool(param_TAUNT, false);
         animator.SetBool(param_DHIT, false);
+
+        StartCoroutine(ColorizeHands(this, Color.red, -1f));
     }
 
     public void DeathAnim()
