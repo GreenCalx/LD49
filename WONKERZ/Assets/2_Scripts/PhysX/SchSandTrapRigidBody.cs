@@ -25,12 +25,15 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
     }
 
     public SchSandTrapRigidBody rb;
+    public void Awake() {
+        irb = rb;
+    }
     #else
     public SchRigidBody rb;
-    #endif
     public void Awake() {
         irb = rb.irb;
     }
+    #endif
 
     public void OnCollisionStay(Collision c)
     {
