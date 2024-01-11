@@ -20,7 +20,7 @@ public class BreakableObject : MonoBehaviour
     public bool destroyParentGameObject = true;
 
     public float timeBeforeFragClean = 15f;
-    public float breakDistance = 8f;
+
     public float breakSpeedThreshold = 30f;
     public float fragmentExplodeForce = 30f;
     public float upwardMultiplier = 1f;
@@ -46,8 +46,13 @@ public class BreakableObject : MonoBehaviour
         if (!!brokenVersionInst) elapsedTimeSinceBreak += Time.deltaTime;
         if (elapsedTimeSinceBreak >= timeBeforeFragClean)
         {
+            foreach(Transform child in brokenVersionInst.transform)
+            {
+                Destroy(child.gameObject);
+            }
             Destroy(brokenVersionInst);
-            if (destroyParentGameObject)Destroy(gameObject);
+            if (destroyParentGameObject)
+                Destroy(gameObject);
         }
     }
 
@@ -97,10 +102,6 @@ public class BreakableObject : MonoBehaviour
         if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }
 
-        //float dist = Vector3.Distance(transform.position, cc.transform.position);
-        //if (dist > breakDistance)
-        //{  return; }
-
         // approximate contact point for explosion as collider position
         breakWall(iPC.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
         elapsedTimeSinceBreak = 0f;
@@ -148,9 +149,11 @@ public class BreakableObject : MonoBehaviour
                 initialObject.SetActive(false);
             } break;
             case BreakingMode.eDisableRenderer: {
-                MeshCollider mc = initialObject.GetComponent<MeshCollider>();
+                MeshCollider mc = initialObject.GetComponentInChildren<MeshCollider>();
                 if (!!mc) mc.enabled = false;
-                MeshRenderer mr = initialObject.GetComponent<MeshRenderer>();
+                BoxCollider bc = initialObject.GetComponentInChildren<BoxCollider>();
+                if (!!bc) bc.enabled = false;
+                MeshRenderer mr = initialObject.GetComponentInChildren<MeshRenderer>();
                 if (!!mr) mr.enabled = false;
             } break;
         }
