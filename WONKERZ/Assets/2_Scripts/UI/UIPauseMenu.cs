@@ -64,9 +64,9 @@ public class UIPauseMenu : MonoBehaviour, IControllable
         Time.timeScale = (isPaused ? 0 : 1);
         var player = Access.Player();
         if (isPaused)
-        player.Freeze();
+            player.Freeze();
         else
-        player.UnFreeze();
+            player.UnFreeze();
     }
 
     public void OnExitButton()
