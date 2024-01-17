@@ -38,7 +38,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     private float elapsedSinceLastSSLoad = 0f;
     private float respawnButtonDownElapsed = 0f;
     private bool respawnCalled = false;
-    private bool saveStateLoaded = false;
+    public bool saveStateLoaded { get; private set;}
 
     private bool playerIsFrozen = false;
     private bool anyKeyPressed = false;

@@ -14,6 +14,8 @@ Material:
   - _NORMALMAP
   m_InvalidKeywords:
   - _DECALWRITECOLOR_ON
+  - _DECALWRITEEMISSION_ON
+  - _DECALWRITENORMAL_ON
   - _DECAL_ON
   - _ZWRITE_ON
   m_LightmapFlags: 4
@@ -26,7 +28,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: a4d23ddec969a574f94face28869ba98, type: 3}
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -42,7 +44,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ea892f1fca9d31d4cbea15bd13a956ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -74,10 +76,10 @@ Material:
     - _Decal: 1
     - _DecalAffectOnlyID: 7
     - _DecalWriteColor: 1
-    - _DecalWriteEmission: 0
+    - _DecalWriteEmission: 1
     - _DecalWriteMaterial: 0
     - _DecalWriteMaterialID: 0
-    - _DecalWriteNormal: 0
+    - _DecalWriteNormal: 1
     - _DepthMask: 0
     - _DepthMaskRead: 0
     - _DetailNormalMapScale: 1
@@ -85,7 +87,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _MaterialID: 6
+    - _MaterialID: 7
     - _Metallic: 0.091
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -99,5 +101,5 @@ Material:
     - _Ztest: 2
     m_Colors:
     - _Color: {r: 1, g: 0.89790314, b: 0.16509432, a: 1}
-    - _EmissionColor: {r: 1, g: 0.118562, b: 0.08018869, a: 1}
+    - _EmissionColor: {r: 1.9999998, g: 1.65445, b: 0.15706804, a: 1}
   m_BuildTextureStacks: []

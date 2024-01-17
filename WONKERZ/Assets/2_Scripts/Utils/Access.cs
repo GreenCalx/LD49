@@ -33,7 +33,7 @@ public class Access
             GameObject handler = null;
             handler = !!iStorage ? iStorage : GameObject.Find(iHolder);
             if (!iStorage && !!handler)
-            iStorage = handler;
+                iStorage = handler;
             return handler;
         }
         public T getObject<T>(string iHolder, bool iComponentIsInChildren)
@@ -76,7 +76,7 @@ public class Access
                 handler = GameObject.Find(iHolder);
             }
             if (!!iComponentIsInChildren)
-            return !!handler ? handler.GetComponentInChildren<T>(true) : default(T);
+                return !!handler ? handler.GetComponentInChildren<T>(true) : default(T);
             return !!handler ? handler.GetComponent<T>() : default(T);
 
         }

@@ -11,12 +11,16 @@ public class IntroTutorialTriggers : MonoBehaviour
     public bool weightTutoDone = false;
     public UITutorialStopWindow weightTutoWindow;
 
+    public bool panelTutoDone = false;
+    public UITutorialStopWindow panelTutoWindow;
+
     public bool getUpTutoDone = false;
     public UITutorialStopWindow getUpTutoWindow;
     public float timeThrStuckDetection = 1f;
 
     private CollectiblesManager CM;
     private PlayerController PC;
+    private CheckPointManager CPM;
 
     private float elapsedTimeStuckDetection = 0f;
 
@@ -25,6 +29,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     {
         CM = Access.CollectiblesManager();
         PC = Access.Player();
+        CPM = Access.CheckPointManager();
 
         elapsedTimeStuckDetection = 0f;
     }
@@ -34,6 +39,21 @@ public class IntroTutorialTriggers : MonoBehaviour
     {
         pollFirstNut();
         pollPlayerStuck();
+        pollPlayerRespawned();
+    }
+
+    public void pollPlayerRespawned()
+    {
+        if (panelTutoDone)
+            return;
+
+        // Debug.Log("P STATE : " + PC.generalStates.GetState().name);
+        // if (PC.generalStates.GetState().name == "Dead")
+        if (CPM.saveStateLoaded)
+        {
+            Instantiate(panelTutoWindow);
+            panelTutoDone = true;
+        }
     }
 
     public void pollPlayerStuck()

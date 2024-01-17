@@ -3,6 +3,7 @@ using Schnibble;
 
 public class TorchAnimation : MonoBehaviour
 {
+    public float animTimeScale = 1f;
     public AnimationCurve AC;
     public Light target_light;
     private float elapsed_time;
@@ -44,7 +45,7 @@ public class TorchAnimation : MonoBehaviour
         if (elapsed_time < firstFrame.time)
             rewind_read = false;
 
-        float val = AC.Evaluate(elapsed_time);
+        float val = AC.Evaluate(elapsed_time * animTimeScale);
 
         target_light.intensity = base_intensity * val;
     }

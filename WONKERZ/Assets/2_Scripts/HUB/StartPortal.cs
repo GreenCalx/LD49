@@ -42,27 +42,30 @@ public class StartPortal : AbstractCameraPoint
             }
         }
 
-        if (isTutorialStartPortal)
-        {
-            initTutorial();
-        }
-
     }
 
     void init()
     {
+        Access.Player().Freeze();
+
         relocatePlayer();
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
             Access.CameraManager()?.changeCamera(camera_type, false);
 
         var states = Access.Player().vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
-        Access.Player().UnFreeze();
-
+        
         if (deleteAfterSpawn)
         {
             Destroy(gameObject);
         }
+
+        if (isTutorialStartPortal)
+        {
+            initTutorial();
+        }
+
+        Access.Player().UnFreeze();
     }
 
     void initTutorial()

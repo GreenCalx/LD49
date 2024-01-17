@@ -8,9 +8,14 @@ public class UISpeedAndLifePool : MonoBehaviour
     public TMPro.TextMeshProUGUI    speedText;
     public Image                    speedBar;
     public TextMeshProUGUI          lifePool;
+    private PlayerController player;
+    private CollectiblesManager CM;
 
     void Start()
     {
+        player = Access.Player();
+        CM = Access.CollectiblesManager();
+
         updateSpeedCounter();
         updateLifePool();
     }
@@ -23,9 +28,8 @@ public class UISpeedAndLifePool : MonoBehaviour
 
     public void updateSpeedCounter()
     {
-        PlayerController pc = Access.Player();
-        var PlayerVelocity = pc.rb.velocity.magnitude;
-        CarController cc = pc.car;
+        var PlayerVelocity = player.rb.velocity.magnitude;
+        CarController cc = player.car;
         float max_speed = cc.maxTorque;
 
         // Update Bar
@@ -34,13 +38,12 @@ public class UISpeedAndLifePool : MonoBehaviour
 
         // Update Text
         string lbl = ((int)PlayerVelocity).ToString();
-        lbl += " KMH";
         speedText.SetText(lbl);
     }
 
     public void updateLifePool()
     {
-        int n_nuts = Access.CollectiblesManager().getCollectedNuts();
+        int n_nuts = CM.getCollectedNuts();
         lifePool.text = (n_nuts > 0) ? n_nuts.ToString() : "0";
     }
 }
