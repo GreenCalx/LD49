@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
@@ -17,6 +19,15 @@ public class TrickTracker : MonoBehaviour
 
     [Header("MANDATORY")]
     public bool activate_tricks;
+   
+   // Two purposes :
+   // 1 : less mess in the editor + full UI can be easily hidden
+   // 2 : Avoid ui instantiation in old scene (the loading scene most likely) 
+   // as this Start method will be be called before LoadingScene is fully unloaded
+   // and there is no way to overload Instantiate method with an explicit scene name
+   // Unity shits.
+    public GameObject UIHandle;
+
     public GameObject trickUIRef;
     private GameObject trickUIInst;
     public TrickUI trickUI;
@@ -47,7 +58,7 @@ public class TrickTracker : MonoBehaviour
     //[HideInInspector]
     private List<float> rec_rot_x, rec_rot_y, rec_rot_z;
 
-    public Vector3 rotations;
+    public Vector3 rotations;   
 
     [HideInInspector]
     public float time_waited_after_line;
@@ -58,17 +69,18 @@ public class TrickTracker : MonoBehaviour
     private CarController CC;
     public bool ready_to_rec_line;
 
+    private Coroutine trickRecordCo;
     void Start()
     {
-        init();
+        //init();
     }
 
-    public void init()
+    public void init(GameObject iUIHandle)
     {
         if (!activate_tricks)
             return;
 
-        CC = GetComponent<CarController>();
+        CC = Access.Player().car;
         if (!CC)
         {
             activate_tricks = false;
@@ -79,11 +91,8 @@ public class TrickTracker : MonoBehaviour
         for (int i = 0; i < wheels_statuses.Length; i++)
             wheels_statuses[i] = true;
 
-        if (trickUI == null)
-        {
-            trickUIInst = Instantiate(trickUIRef);
-            trickUI =  trickUIInst.GetComponent<TrickUI>();
-        }
+        trickUIInst = Instantiate(trickUIRef, iUIHandle.transform);
+        trickUI =  trickUIInst.GetComponent<TrickUI>();
 
         trick_line = new TrickLine();
         time_trick_started = 0;
@@ -115,6 +124,12 @@ public class TrickTracker : MonoBehaviour
             {
                 if (tryOpenLine())
                 {
+                    // TODO : New record system wip
+                    // if (trickRecordCo!=null)
+                    //     StopCoroutine(trickRecordCo);
+                    // trickRecordCo = StartCoroutine(TrickRecordCo(0.1f));
+
+                    UnityEngine.Debug.Log("open line");
                     trickUI.recordingTrick();
                     initRotationsRecord();
                     recordRotations();
@@ -133,6 +148,73 @@ public class TrickTracker : MonoBehaviour
         updateUI();
     }
 
+    IEnumerator TrickRecordCo(float frequency)
+    {
+        Rigidbody car_rb = CC.GetComponent<Rigidbody>();
+        if (car_rb==null)
+            yield break;
+        
+        // 0.5 circle is pi, our quanta is 180deg
+        float threshold = Mathf.PI;
+
+        // in rad?
+        float accumulated_x = 0f;
+        float accumulated_y = 0f;
+        float accumulated_z = 0f;
+        
+        float previous_rpf_x = 0f;
+        float previous_rpf_y = 0f;
+        float previous_rpf_z = 0f;
+
+        while (trick_line.is_opened)
+        {
+            yield return new WaitForSeconds(frequency);
+
+            //recordRotations();
+            Vector3 angVel = car_rb.angularVelocity; // rad/sec
+
+            float rpf_x =  angVel.x * (60f/(2*Mathf.PI)) *frequency;
+            float rpf_y =  angVel.y * (60f/(2*Mathf.PI)) *frequency;
+            float rpf_z =  angVel.z * (60f/(2*Mathf.PI)) *frequency; 
+            
+            // rpf_x -= previous_rpf_x;
+            // rpf_y -= previous_rpf_y;
+            // rpf_z -= previous_rpf_z;
+
+            // rpf_x = 1f / rpf_x;
+            // rpf_y = 1f / rpf_y;
+            // rpf_z = 1f / rpf_z;
+
+            accumulated_x += rpf_x;
+            accumulated_y += rpf_y;
+            accumulated_z += rpf_z;
+
+            if (accumulated_x >= threshold)
+            {
+                UnityEngine.Debug.Log("trick on x");
+            }
+            if (accumulated_y >= threshold)
+            {
+                UnityEngine.Debug.Log("trick on y");
+            }
+            if (accumulated_z >= threshold)
+            {
+                UnityEngine.Debug.Log("trick on z");
+            }
+
+            previous_rpf_x = rpf_x;
+            previous_rpf_y = rpf_y;
+            previous_rpf_z = rpf_z;
+        }
+
+        UnityEngine.Debug.Log("v RECORD RESULT v");
+        UnityEngine.Debug.Log("acc x " + accumulated_x);
+        UnityEngine.Debug.Log("acc y " + accumulated_y);
+        UnityEngine.Debug.Log("acc z " + accumulated_z);
+
+        yield return null;
+    }
+
     public void recordRotations()
     {
         //Vector3 curr_PYR = player_transform.rotation.eulerAngles;
@@ -149,9 +231,9 @@ public class TrickTracker : MonoBehaviour
         //if (!rec_rot_x.Contains(curr_PYR.x))
         rec_rot_x.Add(curr_PYR.x);
         //if (!rec_rot_y.Contains(curr_PYR.y))
-            rec_rot_y.Add(curr_PYR.y);
+        rec_rot_y.Add(curr_PYR.y);
         //if (!rec_rot_z.Contains(curr_PYR.z))
-            rec_rot_z.Add(curr_PYR.z);
+        rec_rot_z.Add(curr_PYR.z);
 
         updateRotations();
     }
@@ -245,10 +327,10 @@ public class TrickTracker : MonoBehaviour
     public bool tryContinueLine()
     {
         // NEW TRICK / continuing trick
-        Trick tbasic = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
-        Trick tflat = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
-        Trick tneutral = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
-        Trick tignore = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
+        Trick tbasic    = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.BASIC);
+        Trick tflat     = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.FLAT);
+        Trick tneutral  = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.NEUTRAL);
+        Trick tignore   = TrickDictionary.checkTricksIndexed(this, Trick.TRICK_NATURE.IGNORE);
 
         double trick_duration = Time.time - time_trick_started;
         if (tbasic != null)

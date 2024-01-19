@@ -16,6 +16,7 @@ public class StartLine : MonoBehaviour
     private float countdownElapsedTime = 0f;
 
     public bool enable_tricks = false;
+    public GameObject UIHandle; // for tricktracker
 
     public float countdown_delay = 1f;
     private float countdown_delay_current = 0f;
@@ -170,7 +171,7 @@ public class StartLine : MonoBehaviour
         if (!!tt)
         {
             tt.activate_tricks = true; // activate default in hub
-            tt.init();
+            tt.init(UIHandle);
         }
     }
 }

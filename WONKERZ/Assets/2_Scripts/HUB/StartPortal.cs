@@ -13,7 +13,8 @@ public class StartPortal : AbstractCameraPoint
     public bool enable_tricks = false;
     public bool deleteAfterSpawn = false;
     public GameCamera.CAM_TYPE camera_type;
-    public bool isTutorialStartPortal = false;
+    public bool isTutorialStartPortal = false; 
+    public GameObject UIHandle;  // for tricktracker
 
     [Header("Optionals")]
     public Transform facingPoint;
@@ -26,6 +27,9 @@ public class StartPortal : AbstractCameraPoint
     void Start()
     {
         init();
+
+        if (enable_tricks)
+            activateTricks();
 
         if (forceSinglePlayer)
         {
@@ -108,6 +112,17 @@ public class StartPortal : AbstractCameraPoint
         }
         pc.rb.velocity = Vector3.zero;
         pc.rb.angularVelocity = Vector3.zero;
+    }
+
+    // needed in intro as there is no startline, also for the hub, maybe?
+    private void activateTricks()
+    {
+        TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
+        if (!!tt)
+        {
+            tt.activate_tricks = true; // activate default in hub
+            tt.init(UIHandle);
+        }
     }
 
 }
