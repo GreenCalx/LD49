@@ -15,7 +15,8 @@ public enum COLORIZABLE_CAR_PARTS {
     LAMPS=8,
     FRONT_PIPES=9,
     BACK_PIPES=10,
-    ANY=11
+    JUMP_DECAL=11,
+    ANY=12
 }
 
 public class CarColorizable : MonoBehaviour
