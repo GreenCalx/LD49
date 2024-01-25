@@ -5,6 +5,9 @@ using UnityEngine;
 // Not MVC cause as this is only use for the intro scene, integrating 
 public class IntroTutorialTriggers : MonoBehaviour
 {
+    public bool firstCheckPointDone = false;
+    public UITutorialStopWindow firstCheckPointWindow;
+
     public bool firstNutTutoDone = false;
     public UITutorialStopWindow firstNutTutoWindow;
 
@@ -37,9 +40,23 @@ public class IntroTutorialTriggers : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        pollFirstCheckpoint();
         pollFirstNut();
         pollPlayerStuck();
         pollPlayerRespawned();
+        
+    }
+
+    public void pollFirstCheckpoint()
+    {
+        if (firstCheckPointDone)
+            return;
+
+        if (CPM.last_checkpoint != CPM.race_start)
+        {
+            Instantiate(firstCheckPointWindow);
+            firstCheckPointDone = true;
+        }
     }
 
     public void pollPlayerRespawned()

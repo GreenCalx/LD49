@@ -15,7 +15,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     [HideInInspector]
     public bool player_in_cinematic = false;
 
-    private GameObject player;
+    private PlayerController player;
 
     // SaveStates
     public GameObject saveStateMarkerRef;
@@ -47,6 +47,10 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public bool playerInGasStation = false;
     public List<Resetable> resetables = new List<Resetable>();
 
+    private UITurboAndSaves uiTurboAndSaves;
+    private TrickTracker TT;
+    private TrackManager TrackMGR;
+
     void Start()
     {
         init();
@@ -60,17 +64,22 @@ public class CheckPointManager : MonoBehaviour, IControllable
             findCheckpoints();
         }
 
-        player = Access.Player().gameObject;
+
+        player = Access.Player();
+        uiTurboAndSaves = Access.UITurboAndSaves();
+        TT = player.GetComponent<TrickTracker>();
+        TrackMGR = Access.TrackManager();
+
         //refreshCameras();
         last_checkpoint = race_start;
         last_camerapoint = race_start.GetComponent<CheckPoint>();
         if (last_camerapoint == null)
         last_camerapoint = race_start.GetComponent<StartPortal>();
 
-        Access.Player().inputMgr.Attach(this as IControllable);
+        player.inputMgr.Attach(this as IControllable);
 
         // Init from difficulty
-        switch (Access.TrackManager().track_score.selected_diff)
+        switch (TrackMGR.track_score.selected_diff)
         {
             case DIFFICULTIES.EASY:
                 MAX_PANELS = Constants.EASY_N_PANELS;
@@ -91,7 +100,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 break;
         }
         currPanels = MAX_PANELS;
-        Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
+        uiTurboAndSaves?.updateAvailablePanels(currPanels);
 
         hasSS = false;
         respawnCalled = false;
@@ -156,7 +165,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
             respawnButtonDownElapsed += Time.deltaTime;
             float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
-            Access.UITurboAndSaves()?.updateCPFillImage(fillVal);
+            uiTurboAndSaves?.updateCPFillImage(fillVal);
         }
 
         if (respawnCalled) // ACTUAL LOAD
@@ -173,13 +182,13 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 }
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                Access.UITurboAndSaves()?.updateCPFillImage(0f);
+                uiTurboAndSaves?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
             } else if (respawnButtonDownElapsed>=timeToForceCPLoad) {
                 loadLastCP(false);
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                Access.UITurboAndSaves()?.updateCPFillImage(0f);
+                uiTurboAndSaves?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
                 saveStateLoaded = true;
             }
@@ -197,7 +206,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     {
         if (currPanels>0)
         {
-            if (!Access.Player().TouchGroundAll())
+            if (!player.TouchGroundAll())
             return;
 
             currPanels -= 1;
@@ -205,7 +214,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             ss_rot = player.gameObject.transform.rotation;
             hasSS = true;
 
-            Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
+            uiTurboAndSaves?.updateAvailablePanels(currPanels);
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
@@ -255,11 +264,19 @@ public class CheckPointManager : MonoBehaviour, IControllable
             if (!!saveStateMarkerInst)
             Destroy(saveStateMarkerInst);
 
-            Access.UITurboAndSaves()?.updateLastCPTriggered(cp.id.ToString());
-            Access.UITurboAndSaves()?.updateAvailablePanels(currPanels);
+            uiTurboAndSaves?.updateLastCPTriggered(cp.id.ToString());
+            uiTurboAndSaves?.updateAvailablePanels(currPanels);
             if (!!ui_cp)
             {
                 ui_cp.displayCP(cp);
+            }
+
+            if (!!TT && !!TT.trickUI)
+            {
+                TrackMGR.addToScore(TT.storedScore);
+                TT.storedScore = 0;
+                TT.trickUI.displayTrackScore(TrackMGR.getTrickScore());
+                TT.trickUI.displayTricklineScore(0);
             }
 
         }
@@ -303,12 +320,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
         }
 
         // invalidate trick
-        TrickTracker tt = player.GetComponent<TrickTracker>();
-        if (!!tt && tt.activate_tricks)
+        if (!!TT && TT.activate_tricks)
         {
-            tt.end_line(true);
-            tt.storedScore = 0;
-            tt.trickUI.displayTricklineScore(0);
+            TT.end_line(true);
+            TT.storedScore = 0;
+            TT.trickUI.displayTricklineScore(0);
         }
 
         // reset manual camera behind the player
@@ -336,14 +352,11 @@ public class CheckPointManager : MonoBehaviour, IControllable
             OnPlayerRespawn(saveStateMarkerInst.transform);
         }
 
-        PlayerController pc = player.GetComponent<PlayerController>();
-        StartCoroutine(waitInputToResume(pc));
-
+        StartCoroutine(waitInputToResume(player));
     }
 
     public void loadLastCP(bool iFromDeath = false)
     {
-
         resetRegisteredResetables();
 
         // relocate player
@@ -357,18 +370,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             player.transform.rotation = respawn.transform.rotation;
             OnPlayerRespawn(respawn.transform.parent.transform);
 
-            PlayerController pc = player.GetComponent<PlayerController>();
-            StartCoroutine(waitInputToResume(pc));
-            // reset segment resetable items
-            // if ( as_cp.MCP != null )
-            // {
-            //     List<Resetable> resetables = as_cp.MCP.resetables;
-            //     resetables.RemoveAll((x => x == null));
-            //     foreach (Resetable r in resetables)
-            //     {
-            //         r.load();
-            //     }
-            // }
+            StartCoroutine(waitInputToResume(player));
         }
         else
         {
@@ -380,6 +382,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             return;
         }
 
+        currPanels = MAX_PANELS;
         Access.CameraManager().TryResetView();
     }
 
@@ -410,6 +413,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     private void resetRegisteredResetables()
     {
+        resetables.RemoveAll((x => x == null));
         foreach(Resetable r in resetables)
         {
             r.load();

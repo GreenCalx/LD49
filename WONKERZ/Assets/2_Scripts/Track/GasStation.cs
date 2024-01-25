@@ -7,6 +7,16 @@ using Schnibble.Managers;
 
 public class GasStation : MonoBehaviour, IControllable
 {
+    [Header("BellRefs")]
+    public Transform bell_t;
+    public ParticleSystem bell_PS;
+    public AudioClip bell_SFX;
+
+    [Header("TourniquetRef")]
+    public HingeJoint tourniquetHinge;
+    [Header("PumpistRefs")]
+    public ParticleSystem sleeping_PS;
+
     [Header("NutConvertAnim")]
     public Transform convertNutsDestination;
     public GameObject nutsRef;
@@ -122,9 +132,7 @@ public class GasStation : MonoBehaviour, IControllable
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            Access.CheckPointManager().notifyGasStation(this);
-            animator.SetBool(animatorStationActivationParm, true);
-            changeLightsColor(LightColorOnActivated);
+            tourniquetHinge.useMotor = true;
         }
     }
 
@@ -132,9 +140,9 @@ public class GasStation : MonoBehaviour, IControllable
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            UICheckpoint uicp = Access.UICheckpoint();
+            //UICheckpoint uicp = Access.UICheckpoint();
 
-            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            //Access.PlayerInputsManager().player1.Attach(this as IControllable);
             Access.CheckPointManager().playerInGasStation = true;
             askCoinz.gameObject.SetActive(true);
             askCoinz.animate = true;
@@ -145,8 +153,9 @@ public class GasStation : MonoBehaviour, IControllable
     {
         if (Utils.isPlayer(iCollider.gameObject))
         {
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            //Access.PlayerInputsManager().player1.Detach(this as IControllable);
             Access.CheckPointManager().playerInGasStation = false;
+
             if (IsPumpingGas)
             {
                 IsPumpingGas = false;
@@ -157,5 +166,21 @@ public class GasStation : MonoBehaviour, IControllable
             askCoinz.gameObject.SetActive(false);
             askCoinz.animate = false;
         }
+    }
+
+    public void ActivateGasStation()
+    {
+        GetComponent<CheckPoint>()?.triggerCheckPoint();
+        animator.SetBool(animatorStationActivationParm, true);
+        changeLightsColor(LightColorOnActivated);
+    }
+
+    public void RingBell()
+    {
+        
+        Schnibble.Utils.SpawnAudioSource( bell_SFX, bell_t);
+        bell_PS.Play();
+        sleeping_PS.Stop();
+        ActivateGasStation();
     }
 }

@@ -32,8 +32,7 @@ public class UIDebugCPSelector : MonoBehaviour, IControllable
         foreach (GameObject go in cpm.checkpoints)
         {
             CheckPoint as_cp = go.GetComponent<CheckPoint>();
-            if (as_cp.collectMod != CollectiblesManager.COLLECT_MOD.HEAVEN)
-            continue;
+
             CPs.Add(as_cp.checkpoint_name);
             eligibleCPs.Add(as_cp);
         }

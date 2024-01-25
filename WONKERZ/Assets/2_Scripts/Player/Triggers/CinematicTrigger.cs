@@ -15,6 +15,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     [Header("triggerOnceInGame")]
     public UniqueEvents.UEVENTS uniqueEventID;
     [Header("tweaks")]
+    public bool useLocalColliderTrigger =  true;
     public bool acceptCinematicPlayerTriggers = true;
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
@@ -176,8 +177,11 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
     void OnTriggerStay(Collider iCollider)
     {
+        if (!useLocalColliderTrigger)
+            return;
+
         if (triggerOnlyOnce && triggered)
-        return;
+            return;
 
         CinematicPlayerTrigger CPT = null;
         if (acceptCinematicPlayerTriggers)

@@ -19,8 +19,21 @@ public class PlayerCamera : GameCamera
 
     public GameObject playerRef;
     [Header("Camera Focus")]
-    public float secondaryFocusFindRange = 50f;
-    public CameraFocusable secondaryFocus;
+    public float breakFocusDistance = 60f;
+
+    private CameraFocusable loc_secondaryFocus;
+    public CameraFocusable secondaryFocus
+    {
+        get { return loc_secondaryFocus; }
+        set {
+            if (value!=loc_secondaryFocus)
+                loc_secondaryFocus?.OnPlayerUnfocus();
+            
+            value?.OnPlayerFocus(); 
+
+            loc_secondaryFocus = value; 
+            }
+    }
     public float focusChangeInputLatch = 0.2f;
     public float camDistIncrease = 0f;
     public float camFOVIncrease = 0f;
@@ -78,7 +91,7 @@ public class PlayerCamera : GameCamera
         foreach(CameraFocusable f in focusables)
         {
             float dist = Vector3.Distance(f.transform.position, p_pos);
-            if (dist > secondaryFocusFindRange)
+            if (dist > f.focusFindRange)
                 continue;
 
             if (dist < minDist)
@@ -129,7 +142,7 @@ public class PlayerCamera : GameCamera
         // Check if distance is met, disable otherwise
         PlayerController p = Access.Player();
         Vector3 p_pos = p.transform.position;
-        if (Vector3.Distance(secondaryFocus.transform.position, p_pos) > secondaryFocusFindRange)
+        if (Vector3.Distance(secondaryFocus.transform.position, p_pos) > breakFocusDistance)
         {
             resetFocus();
         }
@@ -155,7 +168,7 @@ public class PlayerCamera : GameCamera
                 continue;
             
             float dist = Vector3.Distance(f.transform.position, p_pos);
-            if (dist > secondaryFocusFindRange)
+            if (dist > f.focusFindRange)
                 continue;
 
             if (dist < minDist)
