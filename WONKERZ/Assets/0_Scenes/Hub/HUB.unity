@@ -528,8 +528,8 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1935872378}
-          m_TargetAssemblyTypeName: CinematicDialog, Assembly-CSharp
-          m_MethodName: playPNJDialog
+          m_TargetAssemblyTypeName: CinematicDialog, WkzCore
+          m_MethodName: Launch
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -550,6 +550,25 @@ MonoBehaviour:
           m_TargetAssemblyTypeName: CinematicCamera, Assembly-CSharp
           m_MethodName: launch
           m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    delay: 0
+    parm1: 0
+    parm2: 0
+    parm3: 0
+  - func:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 160168716}
+          m_TargetAssemblyTypeName: NPCErnest, WkzCore
+          m_MethodName: BeHappy
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -595,6 +614,7 @@ Transform:
   - {fileID: 348026362976109335}
   - {fileID: 3835351238974777253}
   - {fileID: 1400994245282447797}
+  - {fileID: 791648988}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1020,6 +1040,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8915064414879939579, guid: d87247aef1fb7b343bd8323aeda01cd3, type: 3}
   m_PrefabInstance: {fileID: 153109460}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &160168716 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1405272382, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+  m_PrefabInstance: {fileID: 791648987}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab757fd2f1ee14b4190d928ef942816c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &160959101 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8352238409528076299, guid: f9795a1fbc6c1f548a97860f2f7d2d10, type: 3}
@@ -2191,6 +2222,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 90e7e9790574b0742a8b3bbd784545d2, type: 2}
+    - target: {fileID: 2127997427966524255, guid: bfe34dfd0b2bcec49b815e12d0bb20a2, type: 3}
+      propertyPath: m_Layer
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 3408817588776587474, guid: bfe34dfd0b2bcec49b815e12d0bb20a2, type: 3}
       propertyPath: m_Name
       value: garage
@@ -2783,14 +2818,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 320149364}
-  m_LocalRotation: {x: 0.0042678127, y: -0.9228212, z: -0.010227849, w: -0.38506904}
-  m_LocalPosition: {x: 169.08, y: 58.24, z: -238.61}
+  m_LocalRotation: {x: 0.00022636147, y: -0.7177343, z: -0.011080248, w: -0.6962289}
+  m_LocalPosition: {x: 178.7, y: 58.5, z: -249.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1071877491}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: -1.27, y: -225.299, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.929, y: -268.264, z: 0.866}
 --- !u!114 &320149366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3127,7 +3162,7 @@ Transform:
   - {fileID: 258927858}
   - {fileID: 2461822761663601298}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &335826623 stripped
 RectTransform:
@@ -3463,7 +3498,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 358342227}
-  - component: {fileID: 358342229}
   - component: {fileID: 358342228}
   m_Layer: 0
   m_Name: FromIntroCinematicDialog_SCENARIO
@@ -3499,9 +3533,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  auto_talk_time: 5
+  dialog_id: 6
+  dialogHeaderString: Ernest
+  dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
-  dialogIsOver: 0
+  auto_talk_time: 5
   callbackOnDialogDone:
     m_PersistentCalls:
       m_Calls:
@@ -3517,23 +3553,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &358342229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 358342226}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 424a591c5baf13a4aa5e8c9fa422d36d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialog_id: 6
-  npc_name: Ernest
-  dialogUI: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
-  voices: []
-  dialog_ongoing: 0
 --- !u!4 &360320498 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 334ef892c4653304ab558196181cf696, type: 3}
@@ -3914,7 +3933,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2714980785880523246, guid: 88bda912d9cae7d40831fa531ce5e5fe, type: 3}
       propertyPath: enable_tricks
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2714980785880523246, guid: 88bda912d9cae7d40831fa531ce5e5fe, type: 3}
       propertyPath: UITransitionIN
@@ -4369,7 +4388,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 533393559}
-  - component: {fileID: 533393561}
   - component: {fileID: 533393560}
   m_Layer: 0
   m_Name: FromIntroCinematicDialog_AreaTuto1
@@ -4405,9 +4423,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  auto_talk_time: 8
+  dialog_id: 8
+  dialogHeaderString: Ernest
+  dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
-  dialogIsOver: 0
+  auto_talk_time: 8
   callbackOnDialogDone:
     m_PersistentCalls:
       m_Calls:
@@ -4423,23 +4443,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &533393561
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533393558}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 424a591c5baf13a4aa5e8c9fa422d36d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialog_id: 8
-  npc_name: Ernest
-  dialogUI: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
-  voices: []
-  dialog_ongoing: 0
 --- !u!1001 &551812231
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4522,11 +4525,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!64 &570819628
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -4924,8 +4922,8 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 2126308527}
-          m_TargetAssemblyTypeName: CinematicDialog, Assembly-CSharp
-          m_MethodName: playPNJDialog
+          m_TargetAssemblyTypeName: CinematicDialog, WkzCore
+          m_MethodName: Launch
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -5499,6 +5497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
   uniqueEventID: 0
+  useLocalColliderTrigger: 1
   acceptCinematicPlayerTriggers: 1
   isLevelEntryCinematic: 0
   isSkippable: 0
@@ -5836,6 +5835,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1487407272}
+  - {fileID: 1382209559}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6515,6 +6515,92 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2334790941818826713, guid: d270b2ecddb215b45a4690b362ab1168, type: 3}
   m_PrefabInstance: {fileID: 788291208}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &791648987
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 43714157}
+    m_Modifications:
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ActPointFinger
+      objectReference: {fileID: 0}
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StartTalk
+      objectReference: {fileID: 0}
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: PNJDialog, WkzCore
+      objectReference: {fileID: 0}
+    - target: {fileID: 3456130067524549042, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8827850590530360727, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_Name
+      value: Prof_Ernest
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 201.46939
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 49.68
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -237.61368
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.88455325
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.46643922
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 55.607
+      objectReference: {fileID: 0}
+    - target: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+--- !u!4 &791648988 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9095060134560681436, guid: 1988fa5aee16918478c64ffd71b239e2, type: 3}
+  m_PrefabInstance: {fileID: 791648987}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &810908826
 GameObject:
@@ -8776,7 +8862,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
-  uniqueEventID: 2
+  uniqueEventID: 7
+  useLocalColliderTrigger: 1
   acceptCinematicPlayerTriggers: 1
   isLevelEntryCinematic: 0
   isSkippable: 0
@@ -9228,11 +9315,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1 &1103148848
 GameObject:
   m_ObjectHideFlags: 0
@@ -9479,7 +9561,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11508,6 +11590,100 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -6673216161785964264, guid: f9795a1fbc6c1f548a97860f2f7d2d10, type: 3}
   m_PrefabInstance: {fileID: 6256963588645709887}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1382209558
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1382209559}
+  - component: {fileID: 1382209560}
+  m_Layer: 0
+  m_Name: '!!SHADOWS_GarageAreaLight'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1382209559
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382209558}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 208.71, y: 72.21, z: -241.63}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 714763904}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!108 &1382209560
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382209558}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 2
+  m_Shape: 0
+  m_Color: {r: 0.957016, g: 1, b: 0.5707547, a: 1}
+  m_Intensity: 2.4
+  m_Range: 300
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 1
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 0.609
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 16744447
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 14.6
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!1001 &1383607333
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11725,11 +11901,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1001 &1392460525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -12226,11 +12397,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1 &1454777100
 GameObject:
   m_ObjectHideFlags: 0
@@ -13034,6 +13200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerOnlyOnce: 1
   uniqueEventID: 7
+  useLocalColliderTrigger: 1
   acceptCinematicPlayerTriggers: 1
   isLevelEntryCinematic: 0
   isSkippable: 0
@@ -14582,8 +14749,8 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 533393560}
-          m_TargetAssemblyTypeName: CinematicDialog, Assembly-CSharp
-          m_MethodName: playPNJDialog
+          m_TargetAssemblyTypeName: CinematicDialog, WkzCore
+          m_MethodName: Launch
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -16271,7 +16438,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1935872377}
-  - component: {fileID: 1935872379}
   - component: {fileID: 1935872378}
   m_Layer: 0
   m_Name: FromIntroCinematicDialog_AreaTuto0
@@ -16307,9 +16473,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  auto_talk_time: 5
+  dialog_id: 7
+  dialogHeaderString: Ernest
+  dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
-  dialogIsOver: 0
+  auto_talk_time: 5
   callbackOnDialogDone:
     m_PersistentCalls:
       m_Calls:
@@ -16325,23 +16493,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1935872379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1935872376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 424a591c5baf13a4aa5e8c9fa422d36d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialog_id: 7
-  npc_name: Ernest
-  dialogUI: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
-  voices: []
-  dialog_ongoing: 0
 --- !u!1001 &1937454883
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16524,11 +16675,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1001 &1959488506
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16682,11 +16828,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!65 &1964090811
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -17319,8 +17460,8 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 358342228}
-          m_TargetAssemblyTypeName: CinematicDialog, Assembly-CSharp
-          m_MethodName: playPNJDialog
+          m_TargetAssemblyTypeName: CinematicDialog, WkzCore
+          m_MethodName: Launch
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -17337,9 +17478,9 @@ MonoBehaviour:
   - func:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1665719097}
-          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-          m_MethodName: SetActive
+        - m_Target: {fileID: 160168716}
+          m_TargetAssemblyTypeName: NPCErnest, WkzCore
+          m_MethodName: BeHappy
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -17347,7 +17488,7 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
-            m_BoolArgument: 0
+            m_BoolArgument: 1
           m_CallState: 2
     delay: 0
     parm1: 0
@@ -17516,7 +17657,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2126308526}
-  - component: {fileID: 2126308528}
   - component: {fileID: 2126308527}
   m_Layer: 0
   m_Name: FromIntroCinematicDialog_AreaTuto2
@@ -17552,9 +17692,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  auto_talk_time: 8
+  dialog_id: 9
+  dialogHeaderString: Ernest
+  dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
-  dialogIsOver: 0
+  auto_talk_time: 5
   callbackOnDialogDone:
     m_PersistentCalls:
       m_Calls:
@@ -17594,23 +17736,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2126308528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2126308525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 424a591c5baf13a4aa5e8c9fa422d36d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialog_id: 9
-  npc_name: Ernest
-  dialogUI: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
-  voices: []
-  dialog_ongoing: 0
 --- !u!1 &2128748368
 GameObject:
   m_ObjectHideFlags: 0
@@ -17721,11 +17846,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1001 &2139176906
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23306,6 +23426,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Ernest
       objectReference: {fileID: 0}
+    - target: {fileID: 1859752936165249051, guid: 7416290b670ffb845a1a1c8331a85aed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8032282522625057132, guid: 7416290b670ffb845a1a1c8331a85aed, type: 3}
       propertyPath: name
       value: Ernest
@@ -24114,11 +24238,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!64 &3361113437703059381
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -24159,11 +24278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!114 &3361113438455335585
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24176,11 +24290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!64 &3361113438664617705
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -24221,11 +24330,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!64 &3361113439306988941
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -24252,11 +24356,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!64 &3361113439310040683
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -25907,11 +26006,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!1001 &7387496199664414870
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26196,11 +26290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!114 &8214702729176308886
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26213,11 +26302,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!114 &8214702729386325152
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26230,11 +26314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!114 &8214702729749802621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26247,11 +26326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!114 &8293936983461435629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26264,11 +26338,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcba7de107a0e6a4db23d9a972df3bbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GI:
-    Friction: {x: 0.01, y: 0.1}
-    Velocity: {x: 0, y: 0, z: 0}
-    DepthPerturbation: {x: 0, y: 0, z: 0}
-    Type: 0
 --- !u!4 &8536942844772951556
 Transform:
   m_ObjectHideFlags: 0

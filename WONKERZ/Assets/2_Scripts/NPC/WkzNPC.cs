@@ -10,7 +10,7 @@ public class WkzNPC : SchAIAgent
     
     [Header("WONKERZ NPC\nMAND")]
     public BEHAVIOUR behaviour;
-    public string name;
+    public string npc_name;
     public CameraFocusable cameraFocusable;
 
 }

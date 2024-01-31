@@ -13,7 +13,9 @@ public class CameraFocusable : MonoBehaviour
     public string actionName = "";
     public UIFocusAction UIFocusAction_Ref;
     public Vector3 screenSpaceUIOffset;
+    public UnityEvent callbackOnFocus;
     public UnityEvent callbackOnAction;
+    public UnityEvent callbackOnUnFocus;
 
     [Header("Internals")]
     public bool isFocus = false;
@@ -58,7 +60,9 @@ public class CameraFocusable : MonoBehaviour
         if (isFocus)
             return;
 
+        callbackOnFocus?.Invoke();
         isFocus = true;
+        
         if (UIFocusAction_Ref!=null)
         {
             UIFocusAction_Inst = Instantiate(UIFocusAction_Ref, Access.UISecondaryFocus().transform);
@@ -76,6 +80,7 @@ public class CameraFocusable : MonoBehaviour
         if (!isFocus)
             return;
 
+        callbackOnUnFocus?.Invoke();
         isFocus = false;
         Destroy(UIFocusAction_Inst.gameObject);
     }

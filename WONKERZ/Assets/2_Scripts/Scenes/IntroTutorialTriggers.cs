@@ -5,6 +5,8 @@ using UnityEngine;
 // Not MVC cause as this is only use for the intro scene, integrating 
 public class IntroTutorialTriggers : MonoBehaviour
 {
+    public UITutorialStopWindow tutoWindow_Inst;
+
     public bool firstCheckPointDone = false;
     public UITutorialStopWindow firstCheckPointWindow;
 
@@ -35,6 +37,7 @@ public class IntroTutorialTriggers : MonoBehaviour
         CPM = Access.CheckPointManager();
 
         elapsedTimeStuckDetection = 0f;
+        tutoWindow_Inst = null;
     }
 
     // Update is called once per frame
@@ -44,7 +47,6 @@ public class IntroTutorialTriggers : MonoBehaviour
         pollFirstNut();
         pollPlayerStuck();
         pollPlayerRespawned();
-        
     }
 
     public void pollFirstCheckpoint()
@@ -54,7 +56,7 @@ public class IntroTutorialTriggers : MonoBehaviour
 
         if (CPM.last_checkpoint != CPM.race_start)
         {
-            Instantiate(firstCheckPointWindow);
+            SpawnWindow(firstCheckPointWindow);
             firstCheckPointDone = true;
         }
     }
@@ -64,11 +66,14 @@ public class IntroTutorialTriggers : MonoBehaviour
         if (panelTutoDone)
             return;
 
+        if (!firstCheckPointDone)
+            return;
+
         // Debug.Log("P STATE : " + PC.generalStates.GetState().name);
         // if (PC.generalStates.GetState().name == "Dead")
         if (CPM.saveStateLoaded)
         {
-            Instantiate(panelTutoWindow);
+            SpawnWindow(panelTutoWindow);
             panelTutoDone = true;
         }
     }
@@ -87,7 +92,7 @@ public class IntroTutorialTriggers : MonoBehaviour
             elapsedTimeStuckDetection += Time.deltaTime;
             if (elapsedTimeStuckDetection >= timeThrStuckDetection)
             {
-                Instantiate(getUpTutoWindow);
+                SpawnWindow(getUpTutoWindow);
                 getUpTutoDone = true; 
             }
         } else {
@@ -102,8 +107,15 @@ public class IntroTutorialTriggers : MonoBehaviour
 
         if (CM.getCollectedNuts() > 0)
         {
-            Instantiate(firstNutTutoWindow);
+            SpawnWindow(firstNutTutoWindow);
             firstNutTutoDone = true;
         }
+    }
+
+    private void SpawnWindow(UITutorialStopWindow iWindow)
+    {
+        if (!!tutoWindow_Inst)
+            Destroy(tutoWindow_Inst);
+        tutoWindow_Inst = Instantiate(iWindow);
     }
 }

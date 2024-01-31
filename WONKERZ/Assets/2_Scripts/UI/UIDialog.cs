@@ -92,7 +92,7 @@ public class UIDialog : MonoBehaviour
         __overflow_checked = false;
     }
 
-    private void displayHeader(string iHeaderTxt)
+    public void displayHeader(string iHeaderTxt)
     {
         if (header==null)
             return;

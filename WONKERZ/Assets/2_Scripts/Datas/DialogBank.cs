@@ -53,8 +53,8 @@ public static class DialogBank
 
     public static readonly string[] ERNEST_DIALOG_0=
     {
-        "Here you go ",
-        "Welcome to Weavers Islands.I am Ernest, the last garagist.",
+        "Here you go !! ",
+        "Welcome to Weaver Islands. I am Ernest, the last garagist.",
         "This place used to be a paradise filled with life. But when the Great Compressor arrived in his Junk fortress, everyone left promptly.",
         "My four brothers were abducted shortly after his arrival and locked into their respective realms. Ricky and I are the last living souls on this land.",
         "Alone, it is impossible to fight back. However, now that you are here maybe we can turn things around.",
@@ -77,6 +77,22 @@ public static class DialogBank
         "Unlock skins & other surprises in your checklist to cruise around the world with style!"
     };
 
+    public static readonly string[] MIKE_DIALOG_INTRO0 =
+    {
+        "Hey " + playerName + " ...",
+        "You found me. Ricky said I should hide, so don't tell him.",
+        "Go back to the Gas Station. We will meet again."
+    };
+    public static readonly string[] MIKE_DIALOG_INTRO1 =
+    {
+        "They say I'm a mistake, but I'm not !"
+    };
+
+    public static readonly string[] ERNEST_DIALOG_HUB_DESERT_HINT =
+    {
+        "Drive across the stone bridge and head into the Desert to find the next portal.",
+    };
+
     private static List<string[]> bank;
 
     static DialogBank()
@@ -92,8 +108,11 @@ public static class DialogBank
              ERNEST_DIALOG_0,                   // 6
              ERNEST_DIALOG_GARAGEAREA_TUTO0,    // 7
              ERNEST_DIALOG_GARAGEAREA_TUTO1,    // 8
-             ERNEST_DIALOG_GARAGEAREA_TUTO2     // 9
-             };
+             ERNEST_DIALOG_GARAGEAREA_TUTO2,    // 9
+             MIKE_DIALOG_INTRO0,                // 10
+             MIKE_DIALOG_INTRO1,                // 11
+             ERNEST_DIALOG_HUB_DESERT_HINT      // 12
+            };
     }
 
     public static string[] load(int id)
