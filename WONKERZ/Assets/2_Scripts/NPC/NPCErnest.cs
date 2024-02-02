@@ -23,6 +23,8 @@ public class NPCErnest : NPCDialog
 
     // -
 
+    private Coroutine actRotateCo;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -77,14 +79,18 @@ public class NPCErnest : NPCDialog
         selfAnimator.SetTrigger(anim_RotateCW);
         selfAnimator.SetTrigger(anim_DoAction);
 
-        StartCoroutine(FacePlayer());
+        if (actRotateCo!=null)
+        { StopCoroutine(actRotateCo); actRotateCo = null; }
+        actRotateCo = StartCoroutine(FacePlayer());
     }
     public void ActRotateCCW()
     {
         selfAnimator.SetTrigger(anim_RotateCCW);
         selfAnimator.SetTrigger(anim_DoAction);
 
-        StartCoroutine(FacePlayer());
+        if (actRotateCo!=null)
+        { StopCoroutine(actRotateCo); actRotateCo = null; }
+        actRotateCo = StartCoroutine(FacePlayer());
     }
 
     public void ActRotateTowardsPlayer()
@@ -94,16 +100,18 @@ public class NPCErnest : NPCDialog
         pos.y = transform.position.y;
         Quaternion targetRot = Quaternion.LookRotation(transform.position - pos);
 
-        if ((targetRot.w > 0.95) || (targetRot.w < -0.95))
-            return;
+        Vector3 vecSelfRot = transform.rotation * Vector3.up;
+        Vector3 vecTargetRot = targetRot * Vector3.up;
 
-        if (targetRot.w < 0 )
+        float angSelfRot    = Mathf.Atan2(vecSelfRot.x, vecSelfRot.z) * Mathf.Rad2Deg;
+        float angTargetRot  = Mathf.Atan2(vecTargetRot.x, vecTargetRot.z) * Mathf.Rad2Deg;
+        var angleDiff = Mathf.DeltaAngle( angTargetRot, angSelfRot);
+        if (angleDiff > 0 )
         {
-            ActRotateCCW();
-        } else {
             ActRotateCW();
+        } else {
+            ActRotateCCW();
         }
-
     }
 
     // Behaviours
