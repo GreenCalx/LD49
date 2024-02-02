@@ -5,9 +5,10 @@ using UnityEngine.Events;
 using Schnibble;
 using Schnibble.Managers;
 
-public class PNJDialog : WkzNPC
+public class NPCDialog : WkzNPC
 {
-    [Header("PNJDialog")]
+    [Header("# PNJDialog")]
+    public NPCMouthAnimDecal selfMouthDecal;
     // ID of the dialog to load ( cf. DialogBank )
     public int dialog_id;
 
@@ -51,6 +52,14 @@ public class PNJDialog : WkzNPC
         dialog_id = iDialogID;
     }
 
+    public void AnimateMouth(bool iState)
+    {
+        if (!!selfMouthDecal)
+        {
+            selfMouthDecal.Animate(iState);
+        }
+    }
+
     public void StartTalk()
     {
         if (dialogController!=null)
@@ -65,13 +74,15 @@ public class PNJDialog : WkzNPC
 
         dialogController.SetDialogCallback( cb );
         dialogController.LaunchDialog(dialog_id);
+
+        AnimateMouth(true);
     }
 
     public void EndTalk()
     {    
         // if (!!dialogUI)
         //     Destroy(dialogUI.gameObject);
-        
+        AnimateMouth(false);
         if (next_dialog_ids.Count > 0)
         {
             UpdateDialogID();

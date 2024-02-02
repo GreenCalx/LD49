@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCErnest : PNJDialog
+public class NPCErnest : NPCDialog
 {
-    [Header("NPCErnest")]
+    [Header("# NPCErnest")]
     [Header("Self References")]
     public Animator selfAnimator;
-    public string anim_DoAction = "";
+    [Header("Anim States")]
+
     public string anim_HAPPY = "";
     public string anim_THINKER = "";
+    public string anim_POINTHAND = "";
+    public string anim_SAD = "";
+    [Header("Anim Actions")]
+    public string anim_DoAction = "";
+    public string anim_RotateCW = "";
+    public string anim_RotateCCW = "";
+    public string anim_EUREKA = "";
     public string anim_VICTORY = "";
     public string anim_POINTFINGER = "";
-    public string anim_POINTHAND = "";
+
+    // -
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +32,7 @@ public class NPCErnest : PNJDialog
     // Update is called once per frame
     void Update()
     {
-
+        //FacePlayer();// temp test
     }
 
     public void BeHappy(bool iState)
@@ -38,6 +47,10 @@ public class NPCErnest : PNJDialog
     {
         selfAnimator.SetBool(anim_POINTHAND, iState);
     }
+    public void BeSad(bool iState)
+    {
+        selfAnimator.SetBool(anim_SAD, iState);
+    }
 
     // ACTIONS
     // Note : Order is important for AnimatorGraph. 
@@ -50,8 +63,67 @@ public class NPCErnest : PNJDialog
 
     public void ActPointFinger()
     {
-        
         selfAnimator.SetTrigger(anim_POINTFINGER);
         selfAnimator.SetTrigger (anim_DoAction);
+    }
+
+    public void ActEureka()
+    {
+        selfAnimator.SetTrigger(anim_EUREKA);
+        selfAnimator.SetTrigger(anim_DoAction);
+    }
+    public void ActRotateCW()
+    {
+        selfAnimator.SetTrigger(anim_RotateCW);
+        selfAnimator.SetTrigger(anim_DoAction);
+
+        StartCoroutine(FacePlayer());
+    }
+    public void ActRotateCCW()
+    {
+        selfAnimator.SetTrigger(anim_RotateCCW);
+        selfAnimator.SetTrigger(anim_DoAction);
+
+        StartCoroutine(FacePlayer());
+    }
+
+    public void ActRotateTowardsPlayer()
+    {
+        PlayerController p_ref = Access.Player();
+        Vector3 pos = p_ref.transform.position;
+        pos.y = transform.position.y;
+        Quaternion targetRot = Quaternion.LookRotation(transform.position - pos);
+
+        if ((targetRot.w > 0.95) || (targetRot.w < -0.95))
+            return;
+
+        if (targetRot.w < 0 )
+        {
+            ActRotateCCW();
+        } else {
+            ActRotateCW();
+        }
+
+    }
+
+    // Behaviours
+    IEnumerator FacePlayer()
+    {
+        PlayerController p_ref = Access.Player();
+        float timeCount = 0f;
+        float animSpeed = 0.04f;
+
+            Vector3 pos = p_ref.transform.position;
+            pos.y = transform.position.y;
+
+            Quaternion targetRot = Quaternion.LookRotation(transform.position - pos);
+
+        while (timeCount < selfAnimator.speed)
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRot, timeCount * animSpeed);
+
+            timeCount += Time.deltaTime;
+            yield return null;
+        }
     }
 }

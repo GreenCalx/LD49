@@ -8,7 +8,7 @@ public class WkzNPC : SchAIAgent
     
     public enum BEHAVIOUR { HOSTILE, NEUTRAL, FRIENDLY };
     
-    [Header("WONKERZ NPC\nMAND")]
+    [Header("# WONKERZ NPC\nMAND")]
     public BEHAVIOUR behaviour;
     public string npc_name;
     public CameraFocusable cameraFocusable;

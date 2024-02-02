@@ -7,7 +7,7 @@ using Schnibble.Rendering;
 
 public class WonkerDecal : MonoBehaviour
 {
-
+    [Header("# WonkerDecal")]
     public DecalRenderer decalRenderer;
     private CameraManager CM;
 
@@ -27,6 +27,7 @@ public class WonkerDecal : MonoBehaviour
 
     void Update()
     {
+        // TODO : Subscribe to cam manager to get updated
         if (decalRenderer.cam!=CM.active_camera.cam)
         {
             this.Log("cam change on decal");
