@@ -14,6 +14,7 @@ public class NPCErnest : NPCDialog
     public string anim_POINTHAND = "";
     public string anim_SAD = "";
     [Header("Anim Actions")]
+    public string anim_QuitAction = "";
     public string anim_DoAction = "";
     public string anim_RotateCW = "";
     public string anim_RotateCCW = "";
@@ -133,5 +134,7 @@ public class NPCErnest : NPCDialog
             timeCount += Time.deltaTime;
             yield return null;
         }
+        selfAnimator.SetTrigger(anim_QuitAction);
+        
     }
 }
