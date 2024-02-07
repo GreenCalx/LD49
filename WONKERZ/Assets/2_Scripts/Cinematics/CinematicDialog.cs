@@ -8,6 +8,7 @@ using Schnibble.Managers;
 
 public class CinematicDialog : MonoBehaviour
 {
+    public string npc_name = "";
     public int dialog_id;
     public string dialogHeaderString = "";
     public GameObject dialogUI_Ref;
@@ -28,7 +29,7 @@ public class CinematicDialog : MonoBehaviour
         dialogController.SetDialogCallback( callbackOnDialogDone );
         dialogController.autoTalk = autoDialog;
 
-        dialogController.LaunchDialog(dialog_id);
+        dialogController.LaunchDialog(npc_name, dialog_id);
     }
 
     void OnDestroy()

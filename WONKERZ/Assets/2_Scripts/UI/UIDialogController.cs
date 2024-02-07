@@ -42,9 +42,9 @@ public class UIDialogController : MonoBehaviour, IControllable
         callbackOnDialogDone = iCallback;
     }
 
-    public void LaunchDialog(int iDialogID)
+    public void LaunchDialog(string iNPCName, int iDialogID)
     {
-        loadedDialog = DialogBank.load(iDialogID);
+        loadedDialog = DialogBank.load(iNPCName, Utils.GetCurrentSceneName(), iDialogID);
 
         Access.Player().inputMgr.Attach(this as IControllable);
         

@@ -1,9 +1,16 @@
 using UnityEngine;
 using Schnibble;
 using Schnibble.Managers;
+using UnityEngine.SceneManagement;
 
 public static partial class Utils
 {
+    public static string GetCurrentSceneName()
+    {
+        Scene currentScene = SceneManager.GetActiveScene();
+        return currentScene.name;
+    }
+
     public static GameObject getPlayerRef()
     {
         return Access.Player().gameObject;

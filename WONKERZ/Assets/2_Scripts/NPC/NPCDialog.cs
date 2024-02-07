@@ -36,7 +36,7 @@ public class NPCDialog : WkzNPC
             next_dialog_ids.Insert(0, dialog_id);
         }
 
-        dialog = DialogBank.load(dialog_id);
+        dialog = DialogBank.load(npc_name, Utils.GetCurrentSceneName(), dialog_id);
 
         __audio_source = GetComponent<AudioSource>();
     }
@@ -73,7 +73,7 @@ public class NPCDialog : WkzNPC
         cb.AddListener(EndTalk);
 
         dialogController.SetDialogCallback( cb );
-        dialogController.LaunchDialog(dialog_id);
+        dialogController.LaunchDialog( npc_name ,dialog_id);
 
         AnimateMouth(true);
     }
@@ -113,7 +113,7 @@ public class NPCDialog : WkzNPC
         }
 
         dialog_id = next_dialog_ids[dialog_id_index];
-        dialog = DialogBank.load(dialog_id);
+        dialog = DialogBank.load(npc_name, Utils.GetCurrentSceneName(), dialog_id);
     }
 
 }

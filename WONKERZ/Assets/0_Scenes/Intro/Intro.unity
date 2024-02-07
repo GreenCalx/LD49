@@ -468,6 +468,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 352776376}
   rootNode: {fileID: 788513348}
   cinematicDone: 0
@@ -4085,7 +4087,7 @@ Transform:
   - {fileID: 724907381}
   - {fileID: 384985054131717959}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &188972982
 PrefabInstance:
@@ -4759,7 +4761,7 @@ Transform:
   m_Children:
   - {fileID: 823032409}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &206093232
 GameObject:
@@ -4793,7 +4795,7 @@ Transform:
   - {fileID: 1377845762}
   - {fileID: 702359974}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &209325024
 PrefabInstance:
@@ -5969,7 +5971,7 @@ Transform:
   - {fileID: 16707476}
   - {fileID: 1927400294}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &236734720
 GameObject:
@@ -9240,7 +9242,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalScale.x
@@ -11105,6 +11107,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 191950338}
   rootNode: {fileID: 517056213}
   cinematicDone: 0
@@ -11201,7 +11205,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog_id: 2
+  npc_name: Ricky
+  dialog_id: 1
   dialogHeaderString: Ricky
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
@@ -14044,23 +14049,23 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1309522257}
     m_Modifications:
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 81
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -744.27313
+      value: -618.44495
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 19.944519
+      value: 297.67902
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -975.08374
+      value: 22.34436
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -14068,15 +14073,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -14096,6 +14101,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
+--- !u!4 &575565165 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
+  m_PrefabInstance: {fileID: 575565164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &578362283
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22309,6 +22319,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0.5
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 2545480866165517445}
   rootNode: {fileID: 1839734997}
   cinematicDone: 0
@@ -23770,7 +23782,7 @@ Transform:
   - {fileID: 739250197}
   - {fileID: 755781078}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &979260308
 GameObject:
@@ -23816,7 +23828,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog_id: 5
+  npc_name: Ricky
+  dialog_id: 4
   dialogHeaderString: Ricky
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
@@ -24437,6 +24450,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  npc_name: 
   dialog_id: 0
   dialogHeaderString: ???
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
@@ -24991,11 +25005,11 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1309522257}
     m_Modifications:
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalScale.x
@@ -25011,15 +25025,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -744.64
+      value: -618.81177
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 19.944534
+      value: 297.67902
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1060.79
+      value: -63.36194
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -25027,15 +25041,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -25059,6 +25073,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
+--- !u!4 &1009753466 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4449788818944304662, guid: 47aca2429e5246b4e8d0f0358b78a8de, type: 3}
+  m_PrefabInstance: {fileID: 1009753465}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1009979990
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29086,7 +29105,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1182898569
 GameObject:
@@ -29824,7 +29843,7 @@ Transform:
   - {fileID: 466342031}
   - {fileID: 1514229796}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1209437642
 MonoBehaviour:
@@ -30813,7 +30832,7 @@ Transform:
   - {fileID: 1312584413}
   - {fileID: 1720289880}
   m_Father: {fileID: 0}
-  m_RootOrder: 17
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1257082930
 PrefabInstance:
@@ -31716,7 +31735,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8752692432343815122, guid: a12a5976300eb5b43b19d4a2f36bb023, type: 3}
       propertyPath: m_LocalPosition.x
@@ -32334,6 +32353,8 @@ Transform:
   - {fileID: 2081607338}
   - {fileID: 631149911}
   - {fileID: 879280897}
+  - {fileID: 1009753466}
+  - {fileID: 575565165}
   m_Father: {fileID: 1704546295}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -34371,7 +34392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog_id: 3
+  npc_name: Ricky
+  dialog_id: 2
   dialogHeaderString: Ricky
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
@@ -34490,7 +34512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 384985052665167889, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 384985052665167889, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -38581,7 +38603,7 @@ Transform:
   - {fileID: 2097474022}
   - {fileID: 7635061214809335021}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1568955028
 PrefabInstance:
@@ -41761,7 +41783,7 @@ Transform:
   - {fileID: 1237032052}
   - {fileID: 179022186}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1709116982
 PrefabInstance:
@@ -42059,7 +42081,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog_id: 4
+  npc_name: Ricky
+  dialog_id: 3
   dialogHeaderString: Ricky
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
@@ -42319,6 +42342,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 676688361}
   rootNode: {fileID: 1909316568}
   cinematicDone: 0
@@ -43161,6 +43186,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 0
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 0}
   rootNode: {fileID: 1197905691}
   cinematicDone: 0
@@ -45835,6 +45862,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 1189680711}
   rootNode: {fileID: 813419582}
   cinematicDone: 0
@@ -46083,7 +46112,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a670a5f3b6653b49aa57d64fcc00d13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialog_id: 1
+  npc_name: Ricky
+  dialog_id: 0
   dialogHeaderString: Ricky
   dialogUI_Ref: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   autoDialog: 0
@@ -47240,7 +47270,7 @@ Transform:
   - {fileID: 1419788804}
   - {fileID: 506799015}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1914732259
 PrefabInstance:
@@ -47796,6 +47826,8 @@ MonoBehaviour:
   isSkippable: 0
   startDelayInSeconds: 0
   freezePlayer: 1
+  hidePlayerUI: 1
+  playerUIHandle: {fileID: 0}
   cam: {fileID: 904545551}
   rootNode: {fileID: 484998614}
   cinematicDone: 0
@@ -54532,7 +54564,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2404052109772840766, guid: 9906a798c35050945a68d0af852259b5, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2404052109772840766, guid: 9906a798c35050945a68d0af852259b5, type: 3}
       propertyPath: m_LocalPosition.x

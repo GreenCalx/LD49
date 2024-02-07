@@ -27,7 +27,7 @@ public class TalkBox : MonoBehaviour, IControllable
     {
         is_talkable = false;
         is_in_dialog = false;
-        loaded_dialog = DialogBank.load(dialog_id);
+        loaded_dialog = DialogBank.load(npc_name, Utils.GetCurrentSceneName() ,dialog_id);
 
         audio_source = GetComponent<AudioSource>();
         Access.Player().inputMgr.Attach(this as IControllable);

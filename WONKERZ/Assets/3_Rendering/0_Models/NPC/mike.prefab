@@ -152,7 +152,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6881615811161110877}
   - component: {fileID: 6950068339565770453}
-  - component: {fileID: 5793912633445988389}
+  - component: {fileID: 341587019359484206}
   m_Layer: 0
   m_Name: mike
   m_TagString: Untagged
@@ -220,7 +220,7 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
---- !u!114 &5793912633445988389
+--- !u!114 &341587019359484206
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -229,7 +229,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1560689103739042397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 424a591c5baf13a4aa5e8c9fa422d36d, type: 3}
+  m_Script: {fileID: 11500000, guid: 23102f4f11c0d3845bdfac0a745843b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   coordinator: {fileID: 0}
@@ -240,11 +240,13 @@ MonoBehaviour:
   behaviour: 2
   npc_name: Mike
   cameraFocusable: {fileID: 2956263699552453874}
-  dialog_id: 10
-  next_dialog_ids: 0b000000
+  selfMouthDecal: {fileID: 0}
+  dialog_id: 0
+  next_dialog_ids: 01000000
   cycleDialogs: 0
   dialogUI: {fileID: 2319097700563430046, guid: bf024745ac853fb48b98d64a3f6ec700, type: 3}
   voices: []
+  selfAnimator: {fileID: 0}
 --- !u!1001 &951497872553593275
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -365,11 +367,11 @@ PrefabInstance:
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 5793912633445988389}
+      objectReference: {fileID: 341587019359484206}
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnUnFocus.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 5793912633445988389}
+      objectReference: {fileID: 341587019359484206}
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -388,11 +390,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PNJDialog, WkzCore
+      value: NPCDialog, WkzCore
       objectReference: {fileID: 0}
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnUnFocus.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: PNJDialog, WkzCore
+      value: NPCDialog, WkzCore
       objectReference: {fileID: 0}
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: callbackOnAction.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

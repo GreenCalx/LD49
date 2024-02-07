@@ -1,122 +1,104 @@
+using System.IO;
 using System.Collections.Generic;
+using UnityEngine;
 
 public static class DialogBank
 {
-    public static string playerName = "";
+    [System.Serializable]
+    public class DialogBankInfo
+    {
+        public NPCDialogBank[] npc_bank;
 
-    public static readonly string[] INTRO_DIALOG= 
+        public NPCDialogBank GetNPCBank(string iNPCName)
+        {
+            foreach (NPCDialogBank npc_dial in npc_bank)
+            {
+                if (npc_dial.name == iNPCName)
+                    return npc_dial;
+            }
+            return null;
+        }
+    }
+    
+    [System.Serializable]
+    public class NPCDialogBank
     {
-        "I've been here forever...",
-    };
+        public string name;
+        public NPCSceneBank[] scenes;
 
-    public static readonly string[] INTRO_CP_DIALOG= 
-    {
-        "Hello " + playerName,
-        "I am Ricky, purveyor of the black tar fluid that runs in our pipes.",
-        "Ernest found your wreckage on the shoreline. He hauled you back to the Garage.",
-        "He is working on your case right now. Don't worry you'll be fine. ",
-        "I will guide you through your recovery.",
-        "As you probably noticed, you have a thing over your car. This represents your weight.",
-        "You can move it around with the Right Joystick. It can be helpful in many ways.",
-        "First, it can help you in your turns. Try to steer the weight left as you turn left, and right as you turn right."
-    }; 
-
-    public static readonly string[] INTRO_CP2_DIALOG= 
-    {
-        "You can compress your springs and lower your gravity center.",
-        "Upon release, you will jump automatically as the springs extends.",
-        "The longer you compressed them, the higher the jump.",
-        "While airborne, control the weight to land back on your wheels.",
-        "Try to jump between waves in the next section to get used to it !"
-    }; 
-
-    public static readonly string[] INTRO_CP3_DIALOG= 
-    {
-        "Weight can also be used to overcome high obstacles. Steer it back as you approach the target, then front to clear it.",
-        "Also, you can steer it towards a steep surface to keep a grip on it."
-    }; 
-
-    public static readonly string[] INTRO_CP4_DIALOG= 
-    {
-        "Some track sections can be long and deadly.",
-        "Plant panels to save your current location and restart from that point at will.",
-        "The number of panels is unlimited here, so feel free to use them as much as you needs to.",
-    };
-
-    public static readonly string[] INTRO_CP5_DIALOG= 
-    {
-        "Focus your enemies with Y, then drive into the target to kill them",
-    };
-
-    public static readonly string[] ERNEST_DIALOG_0=
-    {
-        "Here you go !! ",
-        "Welcome to Weaver Islands. I am Ernest, the last garagist.",
-        "This place used to be a paradise filled with life. But when the Great Compressor arrived in his Junk fortress, everyone left promptly.",
-        "My four brothers were abducted shortly after his arrival and locked into their respective realms. Ricky and I are the last living souls on this land.",
-        "Alone, it is impossible to fight back. However, now that you are here maybe we can turn things around.",
-        "Please find my brothers before the whole island turns into a junkyard for ever.",
-        "Reunited, I am sure that we can put an end to this madness.",
-        "Try to find Pierre first, he used to run the prosperous Dust City. He is a bit short-tempered, so don't take it personal if he shows some heat.",
-        "Drive across the stone bridge and head into the portal that leads to his city."
-    };
-    public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO0=
-    {
-        "Before you leave, let me show you the facilities.",
-    };
-    public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO1=
-    {
-        "First, the checklist box. If you accomplish certain objectives, you will unlock cool things to play with.",
-    };
-    public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO2=
-    {
-        "There is also the garage itself, which provides car customization.",
-        "Unlock skins & other surprises in your checklist to cruise around the world with style!"
-    };
-
-    public static readonly string[] MIKE_DIALOG_INTRO0 =
-    {
-        "Hey " + playerName + " ...",
-        "You found me. Ricky said I should hide, so don't tell him.",
-        "Go back to the Gas Station. We will meet again."
-    };
-    public static readonly string[] MIKE_DIALOG_INTRO1 =
-    {
-        "They say I'm a mistake, but I'm not !"
-    };
-
-    public static readonly string[] ERNEST_DIALOG_HUB_DESERT_HINT =
-    {
-        "Drive across the stone bridge and head into the Desert to find the next portal.",
-    };
-
-    private static List<string[]> bank;
-
-    static DialogBank()
-    {
-        // load dialog in bank
-        bank = new List<string[]>{
-             INTRO_DIALOG,                      // 0
-             INTRO_CP_DIALOG,                   // 1
-             INTRO_CP2_DIALOG,                  // 2
-             INTRO_CP3_DIALOG,                  // 3
-             INTRO_CP4_DIALOG,                  // 4
-             INTRO_CP5_DIALOG,                  // 5
-             ERNEST_DIALOG_0,                   // 6
-             ERNEST_DIALOG_GARAGEAREA_TUTO0,    // 7
-             ERNEST_DIALOG_GARAGEAREA_TUTO1,    // 8
-             ERNEST_DIALOG_GARAGEAREA_TUTO2,    // 9
-             MIKE_DIALOG_INTRO0,                // 10
-             MIKE_DIALOG_INTRO1,                // 11
-             ERNEST_DIALOG_HUB_DESERT_HINT      // 12
-            };
+        public NPCSceneBank GetSceneBank(string iSceneName)
+        {
+            foreach (NPCSceneBank scene_bank in scenes)
+            {
+                if (scene_bank.name == iSceneName)
+                    return scene_bank;
+            }
+            return null;
+        }
     }
 
-    public static string[] load(int id)
+    [System.Serializable]
+    public class NPCSceneBank
     {
-        if ((id < 0) || (id > bank.Count))
-            return new string[]{};
-        return bank[id] ;
+        public string name;
+        public NPCSceneDialog[] dialogs;
+        public NPCSceneDialog GetDialog(int iID)
+        {
+            foreach (NPCSceneDialog scene_dialog in dialogs)
+            {
+                if (scene_dialog.id == iID)
+                    return scene_dialog;
+            }
+            return null;
+        }
+    }
+
+    [System.Serializable]
+    public class NPCSceneDialog
+    {
+        public int id;
+        public string[] dialog;
+    }
+
+    public static string playerName = "";
+
+    public static DialogBankInfo bankInfo;
+
+    public static void initBank(string iBankPath)
+    {
+        TextAsset dialogFile = Resources.Load(iBankPath) as TextAsset;
+        
+        if (!!dialogFile)
+        {
+            // Replace $player with actuel playername
+            string json_str = dialogFile.text.Replace(Constants.TOK_PLAYER, playerName);
+
+            bankInfo = JsonUtility.FromJson<DialogBankInfo>(json_str);
+        }
+            
+    }
+
+    public static string[] load(string iNPCName, string iSceneName, int iID)
+    {
+        if (bankInfo==null)
+        {
+            initBank(Constants.RES_DIALOGBANK);
+        }
+
+        NPCDialogBank npc_bank = bankInfo.GetNPCBank(iNPCName);
+        if (null!=npc_bank)
+        {
+            NPCSceneBank scene_bank = npc_bank.GetSceneBank(iSceneName);
+            if (null!=scene_bank)
+            {
+                NPCSceneDialog scene_dialog = scene_bank.GetDialog(iID);
+                if (null!=scene_dialog)
+                {
+                    return scene_dialog.dialog;
+                }
+            }
+        }
+        return new string[]{};
     }
 
 }

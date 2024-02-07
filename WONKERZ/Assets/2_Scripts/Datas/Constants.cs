@@ -13,6 +13,9 @@ public struct Constants
     // -- Debug vars --
     public const bool DBG_REPLAYDUMP = false;
 
+    // -- Tokens --
+    public const string TOK_PLAYER = "<player>";
+
     // -- Paths --
     public const string FD_SAVEFILES = "/savefiles/";
     public const string unix_FD_SAVEFILES = "";
@@ -60,6 +63,7 @@ public struct Constants
     public const string RES_ICON_A = "Icons/UI_InputA";
     public const string RES_ICON_B = "Icons/UI_InputB";
     public const string RES_ICON_Y = "Icons/UI_InputY";
+    public const string RES_DIALOGBANK = "NPCDialogs";
 
     // -- Layers --
     public const string LYR_UIMESH = "UIMesh";
