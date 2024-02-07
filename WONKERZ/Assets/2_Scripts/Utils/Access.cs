@@ -164,10 +164,6 @@ public class Access
     {
         return cache.getObject<GameProgressSaveManager>(Constants.GO_MANAGERS, false);
     }
-    public static UITurboAndSaves UITurboAndSaves()
-    {
-        return cache.getObject<UITurboAndSaves>(Constants.GO_PLAYERUI, true);
-    }
 
     public static UISpeedAndLifePool UISpeedAndLifePool()
     {

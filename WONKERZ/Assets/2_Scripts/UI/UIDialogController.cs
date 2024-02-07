@@ -91,11 +91,8 @@ public class UIDialogController : MonoBehaviour, IControllable
 
     IEnumerator PlayerTalkCo()
     {
-        UITurboAndSaves uiTurboAndSaveRef           = Access.UITurboAndSaves();
         UISpeedAndLifePool uiSpeedAndLifepoolRef    = Access.UISpeedAndLifePool();
 
-        if (!!uiTurboAndSaveRef)
-            uiTurboAndSaveRef.gameObject.SetActive(false);
         if (!!uiSpeedAndLifepoolRef)
             uiSpeedAndLifepoolRef.gameObject.SetActive(false);
 
@@ -106,9 +103,7 @@ public class UIDialogController : MonoBehaviour, IControllable
         }
         EndDialog();
 
-        if (!!uiTurboAndSaveRef)
-            uiTurboAndSaveRef.gameObject.SetActive(true);
-        if (!!uiTurboAndSaveRef)
+        if (!!uiSpeedAndLifepoolRef)
             uiSpeedAndLifepoolRef.gameObject.SetActive(true);
     }
 

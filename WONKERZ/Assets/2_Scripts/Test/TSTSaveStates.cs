@@ -75,7 +75,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
             ss_rot = Access.Player().gameObject.transform.rotation;
             hasSS = true;
             nPanelUsed += 1;
-            Access.UITurboAndSaves().updateAvailablePanels(cpm.currPanels);
+            Access.UISpeedAndLifePool().updateAvailablePanels(cpm.currPanels);
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
@@ -144,7 +144,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         }
 
         nPanelRespawn += 1;
-        Access.UITurboAndSaves().updatePanelOnRespawn();
+        Access.UISpeedAndLifePool().updatePanelOnRespawn();
     }
 
     private IEnumerator waitInputToResume(PlayerController iPC)

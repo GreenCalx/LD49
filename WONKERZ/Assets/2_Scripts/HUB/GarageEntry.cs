@@ -75,7 +75,6 @@ public class GarageEntry : MonoBehaviour, IControllable
         }
 
         Access.UISpeedAndLifePool().gameObject.SetActive(false);
-        Access.UITurboAndSaves().gameObject.SetActive(false);
 
         detector.enabled = false;
         foreach(GameObject to_deactivate in self_worldSpaceHints)
@@ -119,7 +118,7 @@ public class GarageEntry : MonoBehaviour, IControllable
         Destroy(garageUI);
 
         Access.UISpeedAndLifePool().gameObject.SetActive(true);
-        Access.UITurboAndSaves().gameObject.SetActive(true);
+
         
         foreach(GameObject to_reactivate in self_worldSpaceHints)
         {

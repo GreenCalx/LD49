@@ -47,7 +47,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public bool playerInGasStation = false;
     public List<Resetable> resetables = new List<Resetable>();
 
-    private UITurboAndSaves uiTurboAndSaves;
+    private UISpeedAndLifePool uiPlayer;
     private TrickTracker TT;
     private TrackManager TrackMGR;
 
@@ -66,7 +66,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
 
         player = Access.Player();
-        uiTurboAndSaves = Access.UITurboAndSaves();
+        uiPlayer = Access.UISpeedAndLifePool();
         TT = player.GetComponent<TrickTracker>();
         TrackMGR = Access.TrackManager();
 
@@ -100,7 +100,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 break;
         }
         currPanels = MAX_PANELS;
-        uiTurboAndSaves?.updateAvailablePanels(currPanels);
+        uiPlayer?.updateAvailablePanels(currPanels);
 
         hasSS = false;
         respawnCalled = false;
@@ -165,7 +165,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             }
             respawnButtonDownElapsed += Time.deltaTime;
             float fillVal = Mathf.Clamp( respawnButtonDownElapsed / timeToForceCPLoad, 0f, 1f);
-            uiTurboAndSaves?.updateCPFillImage(fillVal);
+            uiPlayer?.updateCPFillImage(fillVal);
         }
 
         if (respawnCalled) // ACTUAL LOAD
@@ -182,13 +182,13 @@ public class CheckPointManager : MonoBehaviour, IControllable
                 }
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                uiTurboAndSaves?.updateCPFillImage(0f);
+                uiPlayer?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
             } else if (respawnButtonDownElapsed>=timeToForceCPLoad) {
                 loadLastCP(false);
                 respawnButtonDownElapsed = 0f;
                 respawnCalled = false;
-                uiTurboAndSaves?.updateCPFillImage(0f);
+                uiPlayer?.updateCPFillImage(0f);
                 elapsedSinceLastSSLoad = 0f;
                 saveStateLoaded = true;
             }
@@ -214,7 +214,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
             ss_rot = player.gameObject.transform.rotation;
             hasSS = true;
 
-            uiTurboAndSaves?.updateAvailablePanels(currPanels);
+            uiPlayer?.updateAvailablePanels(currPanels);
             if (!!saveStateMarkerRef)
             {
                 if (!!saveStateMarkerInst)
@@ -264,8 +264,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             if (!!saveStateMarkerInst)
             Destroy(saveStateMarkerInst);
 
-            uiTurboAndSaves?.updateLastCPTriggered(cp.id.ToString());
-            uiTurboAndSaves?.updateAvailablePanels(currPanels);
+            uiPlayer?.updateLastCPTriggered(cp.id.ToString());
+            uiPlayer?.updateAvailablePanels(currPanels);
             if (!!ui_cp)
             {
                 ui_cp.displayCP(cp);

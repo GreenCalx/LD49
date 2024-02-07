@@ -59,7 +59,7 @@ public class GasStation : MonoBehaviour, IControllable
             if (bypassNutsCost)
             {
                 Access.Player().turbo.current = 1f;
-                Access.UITurboAndSaves().updateTurboBar();
+                //Access.UITurboAndSaves().updateTurboBar();
                 return;
             }
             nutConversionElapsed += Time.deltaTime;
@@ -73,7 +73,7 @@ public class GasStation : MonoBehaviour, IControllable
                     {
                         animator.SetBool(animatorParm, true);
                         IsPumpingGas = true;
-                        Access.UITurboAndSaves().startTurboRefilAnim(true);
+                        //Access.UITurboAndSaves().startTurboRefilAnim(true);
                     }
                     StartCoroutine(nutsConvertAnim(Instantiate(nutsRef)));
                 }
@@ -81,7 +81,7 @@ public class GasStation : MonoBehaviour, IControllable
                 {
                     animator.SetBool(animatorParm, false);
                     IsPumpingGas = false;
-                    Access.UITurboAndSaves().startTurboRefilAnim(false);
+                    //Access.UITurboAndSaves().startTurboRefilAnim(false);
                 }
             }
         }
@@ -160,7 +160,7 @@ public class GasStation : MonoBehaviour, IControllable
             {
                 IsPumpingGas = false;
                 animator.SetBool(animatorParm, false);
-                Access.UITurboAndSaves().startTurboRefilAnim(false);
+                //Access.UITurboAndSaves().startTurboRefilAnim(false);
             }
 
             askCoinz.gameObject.SetActive(false);

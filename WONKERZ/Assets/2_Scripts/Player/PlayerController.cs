@@ -740,6 +740,9 @@ public class PlayerController : MonoBehaviour, IControllable
     #endif
     public void useTurbo()
     {
+        // no turbo atm
+        return;
+
         turbo.intervalElapsedTime += Time.deltaTime;
         if (turbo.intervalElapsedTime < turbo.timeInterval)
         return;
@@ -752,7 +755,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
         turbo.current = Mathf.Clamp(nextTurboValue, 0f, turbo.max);
 
-        Access.UITurboAndSaves().updateTurboBar();
+        //Access.UITurboAndSaves().updateTurboBar();
 
         Vector3 turboDir = transform.forward.normalized;
         DrawRay(transform.position, turboDir, Color.yellow, 4, false);

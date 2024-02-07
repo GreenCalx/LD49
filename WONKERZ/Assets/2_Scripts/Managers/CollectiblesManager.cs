@@ -298,7 +298,7 @@ public class CollectiblesManager : MonoBehaviour
 
         jar.collectedNuts--;
 
-        Access.UITurboAndSaves().updateTurboBar();
+        //Access.UITurboAndSaves().updateTurboBar();
         Access.UISpeedAndLifePool().updateLifePool();
 
         return true;
