@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class CameraFocusable : MonoBehaviour
 {
     [Header("Tweaks")]
+    public bool enableFocusActions = true;
     public Color focusColor;
     public float focusFindRange = 50f;
     [Header("Optional - Action On Focus")]
@@ -57,6 +58,9 @@ public class CameraFocusable : MonoBehaviour
 
     public void OnPlayerFocus()
     {
+        if (!enableFocusActions)
+            return;
+
         if (isFocus)
             return;
 
@@ -77,6 +81,9 @@ public class CameraFocusable : MonoBehaviour
     
     public void OnPlayerUnfocus()
     {
+        if (!enableFocusActions)
+            return;
+
         if (!isFocus)
             return;
 

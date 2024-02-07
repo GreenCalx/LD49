@@ -77,6 +77,12 @@ public class PlayerCamera : GameCamera
 
     public override void resetView() { }
 
+    public void SetSecondaryFocus(CameraFocusable iFocusable, bool iShow)
+    {
+        secondaryFocus = iFocusable;
+        showFocus(iShow);
+    }
+
     protected void findFocus()
     {
         showFocus(false);
@@ -109,7 +115,7 @@ public class PlayerCamera : GameCamera
         }
     }
 
-    protected void resetFocus()
+    public void resetFocus()
     {
         showFocus(false);
         secondaryFocus = null;
@@ -125,8 +131,9 @@ public class PlayerCamera : GameCamera
         
         if (!!secondaryFocus)
         {
-            uISecondaryFocus.setColor(secondaryFocus.focusColor);
             uISecondaryFocus.trackObjectPosition(secondaryFocus.transform);
+            if (iState)
+                uISecondaryFocus.setColor(secondaryFocus.focusColor);
         } else { 
             uISecondaryFocus.trackObjectPosition(null);
         }

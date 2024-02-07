@@ -39,16 +39,13 @@ public static class DialogBank
     public static readonly string[] INTRO_CP4_DIALOG= 
     {
         "Some track sections can be long and deadly.",
-        "Thus, you can plant panels to save your current location and restart from that point at will.",
+        "Plant panels to save your current location and restart from that point at will.",
         "The number of panels is unlimited here, so feel free to use them as much as you needs to.",
-        "You can also get up on your own by playing with your weight and springs. It can be quite tricky, but with practice you will master it!",
     };
 
     public static readonly string[] INTRO_CP5_DIALOG= 
     {
-        "Nuts are your lifepoints. If you take damage with 0 in the bank you die.",
-        "If you get killed, you will respawn at the last triggered Gas Station. Your the last planted panel will be lost.",
-        "The last section is a small arena where you need to defeat every enemies. Be patient and aim for the target."
+        "Focus your enemies with Y, then drive into the target to kill them",
     };
 
     public static readonly string[] ERNEST_DIALOG_0=
@@ -69,7 +66,7 @@ public static class DialogBank
     };
     public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO1=
     {
-        "Here is the checklist box. If you accomplish certain objectives, you will unlock cool things to play with.",
+        "First, the checklist box. If you accomplish certain objectives, you will unlock cool things to play with.",
     };
     public static readonly string[] ERNEST_DIALOG_GARAGEAREA_TUTO2=
     {

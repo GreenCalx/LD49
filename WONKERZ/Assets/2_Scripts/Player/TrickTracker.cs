@@ -365,6 +365,9 @@ public class TrickTracker : MonoBehaviour
 
     public void end_line(bool iForceFail = false)
     {
+        if (trick_line==null)
+            return;
+
         if (carIsOnGround() && !iForceFail)
         {
             int trick_score = trick_line.getLineScore(combo_multiplier);

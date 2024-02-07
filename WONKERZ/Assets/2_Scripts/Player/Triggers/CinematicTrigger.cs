@@ -20,22 +20,23 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     public bool isLevelEntryCinematic = false;
     public bool isSkippable = true;
     public float startDelayInSeconds = 0f;
-    private float elapsedDelayTime = 0f;
-    private bool triggered = false;
-
     public bool freezePlayer = true;
-    public CinematicCamera cam;
 
+    [Header("Player UI ")]
+    public bool hidePlayerUI = true;
+    public GameObject playerUIHandle;
+    [Header("Cinematics")]
+    public CinematicCamera cam;
     public CinematicNode rootNode;
     public bool cinematicDone = false;
-
     public float  timeToSkipCinematic = 2f;
-    private float elapsedSkipTime = 0f;
-
     public GameObject skipUIRef;
-    private UICinematicSkip skipUIInst;
 
+    private float elapsedSkipTime = 0f;
+    private UICinematicSkip skipUIInst;
     private List<InputManager> skipVotes = new List<InputManager>();
+    private float elapsedDelayTime = 0f;
+    private bool triggered = false;
 
     // Start is called before the first frame update
     void Start()
@@ -113,6 +114,12 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         
         if (!!skipUIInst)
         Destroy(skipUIInst.gameObject);
+
+        if (hidePlayerUI)
+        {
+            if (!!playerUIHandle)
+                playerUIHandle.SetActive(true);
+        }
         
         cinematicDone = true;
 
@@ -141,6 +148,12 @@ public class CinematicTrigger : MonoBehaviour, IControllable
         {
             Access.Player().Freeze();
             Access.CheckPointManager().player_in_cinematic = true;
+        }
+
+        if (hidePlayerUI)
+        {
+            if (!!playerUIHandle)
+                playerUIHandle.SetActive(false);
         }
 
         Access.Player().inputMgr.Attach(this as IControllable);
