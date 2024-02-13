@@ -31,6 +31,7 @@ public struct UniqueEvents
     public const string BNTY_DesertBreakingPot = "BNTY_DesertBreakingPot";
     public const string BNTY_DesertWONKERZ = "BNTY_DesertWonkerz";
     public const string BNTY_SawedWays = "BNTY_SawedWays";
+    public const string BNTY_TheKidFloorIsLava0 = "BNTY_TheKidFloorIsLava0";
 
     public enum UEVENTS
     {
@@ -44,7 +45,8 @@ public struct UniqueEvents
         CIN_FromIntro,
         BNTY_DesertBreakingPot,
         BNTY_DesertWONKERZ,
-        BNTY_SawedWays
+        BNTY_SawedWays,
+        BNTY_TheKidFloorIsLava0
         
     };
 
