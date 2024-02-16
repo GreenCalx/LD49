@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/CosmeticCollection", order = 3)]
+[CreateAssetMenu(fileName = "CosmeticCollection", menuName = "ScriptableObjects/CosmeticCollection", order = 3)]
 public class CosmeticCollection : ScriptableObject
 {
     public static readonly int size = 256;
@@ -14,6 +14,7 @@ public class CosmeticCollection : ScriptableObject
     {
         return skins[id];
     }
+
 }
 
 

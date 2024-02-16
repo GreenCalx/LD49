@@ -55,9 +55,13 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         // init from table
         PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
         
+        // populate default cosmetics
+        List<CosmeticElement> defaults = pcm.getDefaultCarParts();
+        foreach(CosmeticElement c in defaults) { addSkin(carSkinHandle, uiNavParentForCar, c.carPart, c ); }
+
+        // populate unlocked cosmetics
         foreach (int skin_id in pcm.availableCosmetics)
         {
-
             CosmeticElement c_el = pcm.getCosmeticFromID(skin_id);
             if (c_el==null)
                 continue;

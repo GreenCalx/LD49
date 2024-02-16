@@ -12,8 +12,9 @@ using Schnibble;
 */
 public class PlayerCosmeticsManager : MonoBehaviour
 {
-
+    public CosmeticCollection defaultCarCollection;
     public CosmeticCollection cosmeticCollection;
+    
     // [Serializable]
     // public struct SkinDesc
     // {
@@ -62,6 +63,14 @@ public class PlayerCosmeticsManager : MonoBehaviour
     public CosmeticElement getCosmeticFromID(int iID)
     {
         return cosmeticCollection.GetCosmetic(iID);
+    }
+
+    public List<CosmeticElement> getDefaultCarParts()
+    {
+        List<CosmeticElement> retval = new List<CosmeticElement>();
+        for(int i=0; i < defaultCarCollection.skins.Length;i++)
+        { retval.Add(defaultCarCollection.skins[i]); }
+        return retval;
     }
 
     public void addCosmetic(int iCosmeticElementID)
