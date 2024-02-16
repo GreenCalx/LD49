@@ -102,19 +102,24 @@ public class BountyArray : MonoBehaviour
     {
         public string name; //  key to retrieve bounty in the garage and such
         public int x, y;
-        public CosmeticElement cosmeticBounty;
+        public int cosmeticBountyID;
         public string hint;
 
-        public AbstractBounty(int iX, int iY, string iName, string iHint , CosmeticElement iCosmeticBounty)
+        public AbstractBounty(int iX, int iY, string iName, string iHint , int iCosmeticBountyID)
         {
             name    = iName;
             x       = iX;
             y       = iY;
-            cosmeticBounty  = iCosmeticBounty;
+            cosmeticBountyID  = iCosmeticBountyID;
             hint    = iHint;
         }
 
         virtual public bool check() { return false; }
+
+        public CosmeticElement GetAttachedCosmetic()
+        {
+            return Access.PlayerCosmeticsManager()?.getCosmeticFromID(cosmeticBountyID);
+        }
     }
 
     ///
@@ -165,7 +170,7 @@ public class BountyArray : MonoBehaviour
     {
         public TrackScoreConstraint tsc;
 
-        public TrackScoreBounty(int iX, int iY, string iName, string iHint , CosmeticElement iBounty, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBounty)
+        public TrackScoreBounty(int iX, int iY, string iName, string iHint , int iBountyCosmeticID, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
         {
             tsc = iTSC;
         }
@@ -188,7 +193,7 @@ public class BountyArray : MonoBehaviour
     public class TrackEventBounty : AbstractBounty
     {
         public EventTriggerConstraint etc;
-        public TrackEventBounty(int iX, int iY, string iName, string iHint , CosmeticElement iBounty, EventTriggerConstraint iETC) : base(iX, iY, iName, iHint, iBounty)
+        public TrackEventBounty(int iX, int iY, string iName, string iHint , int iBountyCosmeticID, EventTriggerConstraint iETC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
         {
             etc = iETC;
         }
@@ -241,6 +246,10 @@ public class BountyArray : MonoBehaviour
     // TODO : O(2N²) iz bad
     public void updateArray()
     {
+        PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
+        if (pcm==null)
+        { UnityEngine.Debug.LogError("BountyArray::updateArray:: no Player cosmetics manager"); return;}
+
         // Get unlocks
         for(int i = 0; i<N_BOUNTY; i++)
         {
@@ -249,14 +258,14 @@ public class BountyArray : MonoBehaviour
                 if (bountyMatrix.bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
                 {
                     // Already unlocked, nothing to do
-                    Access.PlayerCosmeticsManager().addCosmetic(bounties[i,j].cosmeticBounty);
+                    pcm.addCosmetic(bounties[i,j].cosmeticBountyID);
                     continue;
                 }
 
                 if (bounties[i,j].check())
                 {   // new unlock !
                     bountyMatrix.bountiesUnlockStatus[i,j] = EItemState.UNLOCKED;
-                    Access.PlayerCosmeticsManager().addCosmetic(bounties[i,j].cosmeticBounty);
+                    pcm.addCosmetic(bounties[i,j].cosmeticBountyID);
 
                     saveBountyMatrix();
                     continue; 

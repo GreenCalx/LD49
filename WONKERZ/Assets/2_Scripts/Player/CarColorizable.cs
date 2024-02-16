@@ -22,6 +22,9 @@ public enum COLORIZABLE_CAR_PARTS {
 public class CarColorizable : MonoBehaviour
 {
     public COLORIZABLE_CAR_PARTS part;
-    public string partSkinName;
-    public string materialName;
+
+    public int materialSkinID;
+    public int partSkinID;
+    // public string partSkinName;
+    // public string materialName;
 }

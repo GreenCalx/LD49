@@ -6,15 +6,15 @@ using Schnibble;
 public class SerializableSkin
 {
     public int carPartID; // CarPartToColorize
-    public string partSkinName; // id of the skin for a given car part
-    public string materialName; // id of the material for a given car part
+    public int partSkinID;  // id of the skin for a given car part
+    public int materialSkinID; // id of the material for a given car part
 
     public CarColorizable buildSkin()
     {
         CarColorizable retval = new CarColorizable();
         retval.part = (COLORIZABLE_CAR_PARTS) carPartID;
-        retval.partSkinName = partSkinName;
-        retval.materialName = materialName;
+        retval.partSkinID = partSkinID;
+        retval.materialSkinID = materialSkinID;
         return retval;
     }
     public CarColorizable CarColorizable
@@ -26,8 +26,8 @@ public class SerializableSkin
         set 
         { 
             carPartID = (int) value.part; 
-            partSkinName = value.partSkinName;
-            materialName = value.materialName;
+            partSkinID = value.partSkinID;
+            materialSkinID = value.materialSkinID;
         }
     }
     public static implicit operator CarColorizable(SerializableSkin inst)

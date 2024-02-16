@@ -79,20 +79,20 @@ public class UIGarageProfilePanel : UIGaragePanel
         //color
         PlayerCosmeticsManager PCM = Access.PlayerCosmeticsManager();
 
-        PCM.colorize(profile.skin_body.materialName, COLORIZABLE_CAR_PARTS.MAIN);
-        PCM.colorize(profile.skin_hood.materialName, COLORIZABLE_CAR_PARTS.HOOD);
-        PCM.colorize(profile.skin_back_bump.materialName, COLORIZABLE_CAR_PARTS.BACK_BUMP);
-        PCM.colorize(profile.skin_front_bump.materialName, COLORIZABLE_CAR_PARTS.FRONT_BUMP);
-        PCM.colorize(profile.skin_right_door.materialName, COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
-        PCM.colorize(profile.skin_left_door.materialName, COLORIZABLE_CAR_PARTS.LEFT_DOOR);
-        PCM.colorize(profile.skin_wheel.materialName, COLORIZABLE_CAR_PARTS.WHEELS);
+        PCM.colorize(profile.skin_body.materialSkinID, COLORIZABLE_CAR_PARTS.MAIN);
+        PCM.colorize(profile.skin_hood.materialSkinID, COLORIZABLE_CAR_PARTS.HOOD);
+        PCM.colorize(profile.skin_back_bump.materialSkinID, COLORIZABLE_CAR_PARTS.BACK_BUMP);
+        PCM.colorize(profile.skin_front_bump.materialSkinID, COLORIZABLE_CAR_PARTS.FRONT_BUMP);
+        PCM.colorize(profile.skin_right_door.materialSkinID, COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
+        PCM.colorize(profile.skin_left_door.materialSkinID, COLORIZABLE_CAR_PARTS.LEFT_DOOR);
+        PCM.colorize(profile.skin_wheel.materialSkinID, COLORIZABLE_CAR_PARTS.WHEELS);
 
-        PCM.customize(profile.skin_body);
-        PCM.customize(profile.skin_hood);
-        PCM.customize(profile.skin_back_bump);
-        PCM.customize(profile.skin_front_bump);
-        PCM.customize(profile.skin_right_door);
-        PCM.customize(profile.skin_left_door);
-        PCM.customize(profile.skin_wheel);
+        PCM.customize(profile.skin_body.materialSkinID, COLORIZABLE_CAR_PARTS.MAIN);
+        PCM.customize(profile.skin_hood.materialSkinID, COLORIZABLE_CAR_PARTS.HOOD);
+        PCM.customize(profile.skin_back_bump.materialSkinID, COLORIZABLE_CAR_PARTS.BACK_BUMP);
+        PCM.customize(profile.skin_front_bump.materialSkinID, COLORIZABLE_CAR_PARTS.FRONT_BUMP);
+        PCM.customize(profile.skin_right_door.materialSkinID, COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
+        PCM.customize(profile.skin_left_door.materialSkinID, COLORIZABLE_CAR_PARTS.LEFT_DOOR);
+        PCM.customize(profile.skin_wheel.materialSkinID, COLORIZABLE_CAR_PARTS.WHEELS);
     }
 }

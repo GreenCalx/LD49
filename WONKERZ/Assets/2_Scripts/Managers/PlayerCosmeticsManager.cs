@@ -1,35 +1,10 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using System.Collections.Generic;
 using Schnibble;
 
-/**
-*   Cosmetic element
-*/
-public class CosmeticElement
-{
-    public string name = "";
-    public COLORIZABLE_CAR_PARTS carPart;
 
-    public string   matName     = "";
-    public string   modelName   = "";
-
-    public CosmeticElement()
-    {
-        name = "default";
-        carPart = COLORIZABLE_CAR_PARTS.ANY;
-        matName = "CarColor";
-        modelName = "";
-    }
-
-    public CosmeticElement(string iName, COLORIZABLE_CAR_PARTS iPart, string iMatName, string iModelName)
-    {
-        name        = iName;
-        carPart     = iPart;
-        matName     = iMatName;
-        modelName   = iModelName;
-    }
-}
 
 
 /**
@@ -37,58 +12,62 @@ public class CosmeticElement
 */
 public class PlayerCosmeticsManager : MonoBehaviour
 {
-    // TODO : Find a way to expose string(skin_name)/Mesh(skin itself) in editor
-    [Serializable]
-    public struct SkinDesc
-    {
-        public Mesh mesh;
-        public COLORIZABLE_CAR_PARTS carPart;
-    };
 
-    [Serializable]
-    public struct SkinBundle
-    {
-        public string key;
-        public List<SkinDesc> descriptors;
-    };
+    public CosmeticCollection cosmeticCollection;
+    // [Serializable]
+    // public struct SkinDesc
+    // {
+    //     public string skinName;
 
-    public List<SkinBundle> skinname_mesh_dico;
-    private Dictionary<string, SkinBundle> local_skin_dico;
+    //     public Mesh meshRef;
+    //     public Material matRef;
+    //     public GameObject decalGORef;
+    // };
+
+    // [Serializable]
+    // public struct SkinBundle
+    // {
+    //     public COLORIZABLE_CAR_PARTS targetCarPart;
+    //     public SkinDesc skinDescriptor;
+    //     //public string key;
+    //     //public List<SkinDesc> descriptors;
+    // };
+
+    // public Dictionary<COLORIZABLE_CAR_PARTS, List<SkinDesc>> skinBundles;
+    //private Dictionary<string, SkinBundle> local_skin_dico;
 
     [Header("Internals")]
-    public List<CosmeticElement> availableCosmetics = new List<CosmeticElement>();
+    public List<int> availableCosmetics = new List<int>();
 
     private static List<GameObject> players = new List<GameObject>();
 
-    private static PlayerCosmeticsManager inst;
-
-    public static PlayerCosmeticsManager Instance
-    {
-        get { return inst ?? (inst = Access.PlayerCosmeticsManager()); }
-        private set { inst = value; }
-    }
 
     void Start()
     {
-        initSkinDictionary();
+        //initSkinDictionary();
 
         resetPlayersToCustomize();
         initCustomizationFromPlayer();
     }
 
-    private void initSkinDictionary()
+    // private void initSkinDictionary()
+    // {
+    //     local_skin_dico = new Dictionary<string, SkinBundle>();
+    //     foreach(SkinBundle sb in skinname_mesh_dico)
+    //     {
+    //         local_skin_dico.Add( sb.key, sb);
+    //     }
+    // }
+
+    public CosmeticElement getCosmeticFromID(int iID)
     {
-        local_skin_dico = new Dictionary<string, SkinBundle>();
-        foreach(SkinBundle sb in skinname_mesh_dico)
-        {
-            local_skin_dico.Add( sb.key, sb);
-        }
+        return cosmeticCollection.GetCosmetic(iID);
     }
 
-    public void addCosmetic(CosmeticElement iCE)
+    public void addCosmetic(int iCosmeticElementID)
     {
-        if (!availableCosmetics.Exists(e => e.name == iCE.name))
-            availableCosmetics.Add(iCE);
+        if (!availableCosmetics.Contains(iCosmeticElementID))
+             availableCosmetics.Add( iCosmeticElementID );
     }
 
     public void addPlayerToCustomize(GameObject iGO)
@@ -114,13 +93,13 @@ public class PlayerCosmeticsManager : MonoBehaviour
     private void initCustomizationFromPlayer()
     {
         // COLORS
-        addCosmetic(  new CosmeticElement("default_color_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "CarColor", "") );
-        addCosmetic(  new CosmeticElement("default_color_body_secondary", COLORIZABLE_CAR_PARTS.FRONT_BUMP, "CarCommonMat", "") );
-        addCosmetic(  new CosmeticElement("default_color_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "CarCommonMat", "") );
+        // addCosmetic(  new CosmeticElement("default_color_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "CarColor", "") );
+        // addCosmetic(  new CosmeticElement("default_color_body_secondary", COLORIZABLE_CAR_PARTS.FRONT_BUMP, "CarCommonMat", "") );
+        // addCosmetic(  new CosmeticElement("default_color_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "CarCommonMat", "") );
 
-        // SKINS
-        addCosmetic(  new CosmeticElement("default_skin_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "", "default") );
-        addCosmetic(  new CosmeticElement("default_skin_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "", "default") );
+        // // SKINS
+        // addCosmetic(  new CosmeticElement("default_skin_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "", "default") );
+        // addCosmetic(  new CosmeticElement("default_skin_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "", "default") );
         
         // GameObject p = Access.Player().gameObject;
 
@@ -157,9 +136,18 @@ public class PlayerCosmeticsManager : MonoBehaviour
         return retval;
     }
 
-    public void colorize(string iMatName, COLORIZABLE_CAR_PARTS iPart)
+    public void colorize(int iMatSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
-        Material mat = Resources.Load(iMatName, typeof(Material)) as Material;
+        CosmeticElement c_el = getCosmeticFromID(iMatSkinID);
+        if (c_el.cosmeticType != CosmeticType.PAINT)
+            return;
+
+        colorize(c_el.material, iPart);
+    }
+
+    public void colorize(Material iMat, COLORIZABLE_CAR_PARTS iPart)
+    {
+        //Material mat = Resources.Load(iMatName, typeof(Material)) as Material;
 
         foreach (GameObject p in players)
         {
@@ -171,23 +159,21 @@ public class PlayerCosmeticsManager : MonoBehaviour
                 CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
                 if (!!cc_color && cc_color.part == iPart)
                 { 
-                    rend.material = mat; 
-                    cc_color.materialName = iMatName;
+                    rend.material = iMat; 
+                    //cc_color.materialName = iMatName;
                 }
             }
         }
     }
 
-    public void customize(CarColorizable iCC)
+    public void customize( int iSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
-        List<COLORIZABLE_CAR_PARTS> parts = new List<COLORIZABLE_CAR_PARTS>();
-        parts.Add(iCC.part);
-        customize(iCC.partSkinName, parts);
-    }
+        CosmeticElement skin = getCosmeticFromID(iSkinID);
+        if (skin.cosmeticType != CosmeticType.MODEL)
+            return;
 
-    public void customize( string skinKey, List<COLORIZABLE_CAR_PARTS> iParts)
-    {
-        string skinName = skinKey;
+        string skinName = skin.name;
+        Mesh mesh       = skin.mesh;
 
         foreach (GameObject p in players)
         {
@@ -197,18 +183,11 @@ public class PlayerCosmeticsManager : MonoBehaviour
             {
                 MeshFilter rend = pRends[i];
                 CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
-                if (!!cc_color && iParts.Contains(cc_color.part))
+                if (!!cc_color && (iPart == cc_color.part))
                 { 
-                    SkinBundle sb = local_skin_dico[skinName];
-                    foreach ( SkinDesc sd in sb.descriptors)
-                    {
-                        if (cc_color.part == sd.carPart)
-                        {
-                            rend.sharedMesh = sd.mesh;
-                            cc_color.partSkinName = skinName;
-                            break;
-                        }
-                    }
+                    rend.sharedMesh = mesh;
+                    cc_color.partSkinID = iSkinID;
+                    break;
                 }
             }
         }        

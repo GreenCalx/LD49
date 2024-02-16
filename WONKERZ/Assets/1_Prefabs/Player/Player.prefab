@@ -265,11 +265,8 @@ MonoBehaviour:
     width: 4
     length: 3
     right:
-      colliderMin: {fileID: 0}
-      colliderMinRB: {fileID: 0}
-      colliderMax: {fileID: 0}
-      colliderMaxRB: {fileID: 0}
-      colliderInst: {fileID: 6142174457915794252}
+      collider: {fileID: 0}
+      colliderRB: {fileID: 0}
       velocity: {x: 0, y: 0, z: 0}
       lastFrameAcceleration: {x: 0, y: 0, z: 0}
       markIndex: 0
@@ -362,11 +359,8 @@ MonoBehaviour:
       slipY: 1
       physicsSubSteps: 10
     left:
-      colliderMin: {fileID: 0}
-      colliderMinRB: {fileID: 0}
-      colliderMax: {fileID: 0}
-      colliderMaxRB: {fileID: 0}
-      colliderInst: {fileID: 6142174457915794252}
+      collider: {fileID: 0}
+      colliderRB: {fileID: 0}
       velocity: {x: 0, y: 0, z: 0}
       lastFrameAcceleration: {x: 0, y: 0, z: 0}
       markIndex: 0
@@ -465,11 +459,8 @@ MonoBehaviour:
     width: 4
     length: -3
     right:
-      colliderMin: {fileID: 0}
-      colliderMinRB: {fileID: 0}
-      colliderMax: {fileID: 0}
-      colliderMaxRB: {fileID: 0}
-      colliderInst: {fileID: 6142174457915794252}
+      collider: {fileID: 0}
+      colliderRB: {fileID: 0}
       velocity: {x: 0, y: 0, z: 0}
       lastFrameAcceleration: {x: 0, y: 0, z: 0}
       markIndex: 0
@@ -562,11 +553,8 @@ MonoBehaviour:
       slipY: 1
       physicsSubSteps: 10
     left:
-      colliderMin: {fileID: 0}
-      colliderMinRB: {fileID: 0}
-      colliderMax: {fileID: 0}
-      colliderMaxRB: {fileID: 0}
-      colliderInst: {fileID: 6142174457915794252}
+      collider: {fileID: 0}
+      colliderRB: {fileID: 0}
       velocity: {x: 0, y: 0, z: 0}
       lastFrameAcceleration: {x: 0, y: 0, z: 0}
       markIndex: 0
@@ -706,7 +694,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  debugTorque: {fileID: 0}
 --- !u!114 &516557862193755869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,6 +720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activate_tricks: 0
+  UIHandle: {fileID: 0}
   trickUIRef: {fileID: 78465226459344293, guid: 26e30dcdec69d2140abb2e4c9c553d25, type: 3}
   trickUI: {fileID: 0}
   player_transform: {fileID: 2966540010634319501}
@@ -1619,7 +1607,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4727036670256620208, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
   m_PrefabInstance: {fileID: 5850141404303316516}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3977565398274153011}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
@@ -1719,6 +1707,26 @@ MonoBehaviour:
   part: 4
   partSkinName: default
   materialName: CarCommonMat
+--- !u!1 &3977565398274153011 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7357973849973574679, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
+  m_PrefabInstance: {fileID: 5850141404303316516}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5682906207003223916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3977565398274153011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a898b0025f6f26a428b6720186f13844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  part: 11
+  partSkinName: defaul
+  materialName: 
 --- !u!1 &4336036469478515849 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7855213085448614573, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1766,11 +1774,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &6142174457915794252 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 293441772862944616, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7271790385856646871 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3874633108973934835, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}

@@ -9,13 +9,14 @@ public class UIGaragePickableSkin : UIImageTab
 {
     [Header("Skin")]
     public string skinName;
-    public List<COLORIZABLE_CAR_PARTS> carParts;
+    public int skinID;
+    public COLORIZABLE_CAR_PARTS carPart;
 
     override public void activate()
     {
         base.activate();
 
-        Access.PlayerCosmeticsManager().customize(skinName, carParts);
+        Access.PlayerCosmeticsManager().customize(skinID, carPart);
         
     }
 

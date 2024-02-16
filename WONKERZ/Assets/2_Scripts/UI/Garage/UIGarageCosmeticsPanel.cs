@@ -55,35 +55,32 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         // init from table
         PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
         
-        foreach (CosmeticElement c_el in pcm.availableCosmetics)
+        foreach (int skin_id in pcm.availableCosmetics)
         {
+
+            CosmeticElement c_el = pcm.getCosmeticFromID(skin_id);
+            if (c_el==null)
+                continue;
+
             // Init available colors
-            if (c_el.matName != "")
+            if (c_el.material != null)
             {
-                if (primaryCarColorParts.Contains(c_el.carPart))
-                {
-                    addColor(primaryCarColorHandle, uiNavParentForCar, primaryCarColorParts, c_el);
-                }
-                else if (secondaryCarColorParts.Contains(c_el.carPart))
-                {
-                    addColor(secondaryCarColorHandle, uiNavParentForCar, secondaryCarColorParts, c_el);
-                }
-                else if (primaryWheelColorParts.Contains(c_el.carPart))
-                {
-                    addColor(primaryWheelColorHandle, uiNavParentForWheels, primaryWheelColorParts, c_el);
-                }
+                // Unlocking a color works for every set of part
+                addColor(primaryCarColorHandle, uiNavParentForCar, primaryCarColorParts, c_el);
+                addColor(secondaryCarColorHandle, uiNavParentForCar, secondaryCarColorParts, c_el);
+                addColor(primaryWheelColorHandle, uiNavParentForWheels, primaryWheelColorParts, c_el);
             }
 
             // Init available skins
-            if (c_el.modelName != "")
+            if (c_el.mesh != null)
             {
                 if ( carSkinParts.Contains(c_el.carPart) )
                 {
-                    addSkin( carSkinHandle, uiNavParentForCar, carSkinParts, c_el);
+                    addSkin( carSkinHandle, uiNavParentForCar, c_el.carPart, c_el);
                 }
                 else if ( wheelSkinParts.Contains(c_el.carPart))
                 {
-                    addSkin( wheelSkinHandle, uiNavParentForWheels, wheelSkinParts, c_el);
+                    addSkin( wheelSkinHandle, uiNavParentForWheels, c_el.carPart, c_el);
                 }
             }
         }
@@ -99,15 +96,15 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         uigpc.Parent = iNavParent;
         uigpc.copyInputsFromParent = true;
         uigpc.parts_to_colorize = iParts;
-        uigpc.material_name = iCosmetic.matName;
-        Material mat = Resources.Load(iCosmetic.matName, typeof(Material)) as Material;
+        uigpc.material = iCosmetic.material;
+        //Material mat = Resources.Load(iCosmetic.matName, typeof(Material)) as Material;
 
-        ui_img.color = mat.color; 
+        ui_img.color = iCosmetic.material.color; 
 
         iParent.tabs.Add(uigpc);
     }
 
-    private void addSkin(UIPanelTabbed iParent, UIGaragePanel iNavParent, List<COLORIZABLE_CAR_PARTS> iParts, CosmeticElement iCosmetic)
+    private void addSkin(UIPanelTabbed iParent, UIGaragePanel iNavParent, COLORIZABLE_CAR_PARTS iPart, CosmeticElement iCosmetic)
     {
         GameObject go = Instantiate(uiGaragePickableSkinRef, iParent.transform);
         UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
@@ -115,8 +112,8 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
 
         uigps.Parent = iNavParent;
         uigps.copyInputsFromParent = true;
-        uigps.carParts = iParts;
-        uigps.skinName = iCosmetic.modelName;
+        uigps.carPart = iPart;
+        uigps.skinName = iCosmetic.name;
 
         //ui_img.color = mat.color; 
 

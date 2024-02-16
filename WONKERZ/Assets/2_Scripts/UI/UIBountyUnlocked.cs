@@ -41,7 +41,7 @@ public class UIBountyUnlocked : MonoBehaviour
     {
         enable();
         bounty_name.text    = iTEB.name;
-        bounty_reward.text  = iTEB.cosmeticBounty.name;
+        bounty_reward.text  = iTEB.GetAttachedCosmetic()?.name;
         display_start_time = Time.time;
     }
 

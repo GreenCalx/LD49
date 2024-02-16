@@ -6,7 +6,7 @@ using Schnibble.UI;
 public class UIGaragePickableColor : UIImageTab
 {
     public List<COLORIZABLE_CAR_PARTS> parts_to_colorize;
-    public string material_name;
+    public Material material;
 
     void Start()
     {
@@ -19,7 +19,7 @@ public class UIGaragePickableColor : UIImageTab
         
         foreach(COLORIZABLE_CAR_PARTS ccp in parts_to_colorize)
         {
-            Access.PlayerCosmeticsManager().colorize( material_name ,ccp);
+            Access.PlayerCosmeticsManager().colorize( material , ccp);
         }
     }
 
