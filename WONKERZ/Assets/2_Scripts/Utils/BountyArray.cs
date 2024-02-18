@@ -102,23 +102,31 @@ public class BountyArray : MonoBehaviour
     {
         public string name; //  key to retrieve bounty in the garage and such
         public int x, y;
-        public int cosmeticBountyID;
+        public int[] cosmeticBountyIDs;
         public string hint;
 
-        public AbstractBounty(int iX, int iY, string iName, string iHint , int iCosmeticBountyID)
+        public AbstractBounty(int iX, int iY, string iName, string iHint , int[] iCosmeticBountyIDs)
         {
             name    = iName;
             x       = iX;
             y       = iY;
-            cosmeticBountyID  = iCosmeticBountyID;
+            cosmeticBountyIDs  = iCosmeticBountyIDs;
             hint    = iHint;
         }
 
         virtual public bool check() { return false; }
 
-        public CosmeticElement GetAttachedCosmetic()
+        public List<CosmeticElement> GetAttachedCosmetics()
         {
-            return Access.PlayerCosmeticsManager()?.getCosmeticFromID(cosmeticBountyID);
+            return Access.PlayerCosmeticsManager()?.getCosmeticsFromIDs(cosmeticBountyIDs);
+        }
+
+        public string GetRewardsAsText()
+        {
+            string reward_txt = "";
+            foreach ( CosmeticElement ce in GetAttachedCosmetics())
+            { reward_txt += ce.name; reward_txt += '\n'; }
+            return reward_txt;
         }
     }
 
@@ -170,7 +178,7 @@ public class BountyArray : MonoBehaviour
     {
         public TrackScoreConstraint tsc;
 
-        public TrackScoreBounty(int iX, int iY, string iName, string iHint , int iBountyCosmeticID, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
+        public TrackScoreBounty(int iX, int iY, string iName, string iHint , int[] iBountyCosmeticID, TrackScoreConstraint iTSC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
         {
             tsc = iTSC;
         }
@@ -193,7 +201,7 @@ public class BountyArray : MonoBehaviour
     public class TrackEventBounty : AbstractBounty
     {
         public EventTriggerConstraint etc;
-        public TrackEventBounty(int iX, int iY, string iName, string iHint , int iBountyCosmeticID, EventTriggerConstraint iETC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
+        public TrackEventBounty(int iX, int iY, string iName, string iHint , int[] iBountyCosmeticID, EventTriggerConstraint iETC) : base(iX, iY, iName, iHint, iBountyCosmeticID)
         {
             etc = iETC;
         }
@@ -258,14 +266,14 @@ public class BountyArray : MonoBehaviour
                 if (bountyMatrix.bountiesUnlockStatus[i,j]==EItemState.UNLOCKED)
                 {
                     // Already unlocked, nothing to do
-                    pcm.addCosmetic(bounties[i,j].cosmeticBountyID);
+                    pcm.addCosmetic(bounties[i,j].cosmeticBountyIDs);
                     continue;
                 }
 
                 if (bounties[i,j].check())
                 {   // new unlock !
                     bountyMatrix.bountiesUnlockStatus[i,j] = EItemState.UNLOCKED;
-                    pcm.addCosmetic(bounties[i,j].cosmeticBountyID);
+                    pcm.addCosmetic(bounties[i,j].cosmeticBountyIDs);
 
                     saveBountyMatrix();
                     continue; 

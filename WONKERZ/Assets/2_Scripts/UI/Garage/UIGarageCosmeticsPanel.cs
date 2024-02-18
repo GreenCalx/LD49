@@ -10,27 +10,41 @@ using Schnibble.UI;
 
 public class UIGarageCosmeticsPanel : UIGaragePanel
 {
-    [Header("UIGarageCosmeticsPanel")]
-    public UIPanelTabbed primaryCarColorHandle;
-    public UIPanelTabbed secondaryCarColorHandle;
-    public UIPanelTabbed primaryWheelColorHandle;
-    
-    public UIPanelTabbed carSkinHandle;
-    public UIPanelTabbed wheelSkinHandle;
-
-    public UIGaragePanel uiNavParentForCar;
-    public UIGaragePanel uiNavParentForWheels;
-
-    public List<COLORIZABLE_CAR_PARTS> primaryCarColorParts;
-    public List<COLORIZABLE_CAR_PARTS> secondaryCarColorParts;
-    public List<COLORIZABLE_CAR_PARTS> primaryWheelColorParts;
-
-    public List<COLORIZABLE_CAR_PARTS> carSkinParts;
-    public List<COLORIZABLE_CAR_PARTS> wheelSkinParts;
-
+    [Header("--------------------------------\n# UIGarageCosmeticsPanel")]
     public GameObject uiGaragePickableColorRef;
     public GameObject uiGaragePickableSkinRef;
 
+    [Header("-BodyPanel-")]
+    public UIGaragePanel uiNavParentForCar;
+
+    public UIPanelTabbed primaryCarColorHandle;
+    public UIPanelTabbed frameSkinHandle;
+    public UIPanelTabbed hoodSkinHandle;
+    public UIPanelTabbed doorSkinHandle;
+
+    public UIPanelTabbed secondaryCarColorHandle;
+    public UIPanelTabbed lampsSkinHandle;
+    public UIPanelTabbed frontPipesSkinHandle;
+    public UIPanelTabbed backPipesSkinHandle;
+    public UIPanelTabbed bumpersSkinHandle;
+    public UIPanelTabbed windshieldSkinHandle;
+
+    public List<COLORIZABLE_CAR_PARTS> primaryCarColorParts;
+    public List<COLORIZABLE_CAR_PARTS> secondaryCarColorParts;
+
+    [Header("-WheelPanel-")]
+    public UIGaragePanel uiNavParentForWheels;
+    public UIPanelTabbed primaryWheelColorHandle;
+    public UIPanelTabbed wheelSkinHandle;
+
+    public List<COLORIZABLE_CAR_PARTS> wheelSkinParts;
+    public List<COLORIZABLE_CAR_PARTS> primaryWheelColorParts;
+
+    [Header("-AccessoriesPanel-")]
+     public UIGaragePanel uiNavParentForAccessories;
+     public UIPanelTabbed wheightSkinHandle;
+    public UIPanelTabbed jumpDecalHandle;
+    public UIPanelTabbed springsSkinHandle;
 
     override protected List<IUIGarageElement.UIGarageHelperValue> getHelperInputs()
     {
@@ -57,7 +71,11 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         
         // populate default cosmetics
         List<CosmeticElement> defaults = pcm.getDefaultCarParts();
-        foreach(CosmeticElement c in defaults) { addSkin(carSkinHandle, uiNavParentForCar, c.carPart, c ); }
+        foreach(CosmeticElement c in defaults) 
+        { 
+            dispatchCosmeticElementInUI(c);
+           // addSkin(carSkinHandle, uiNavParentForCar, c.carPart, c ); 
+        }
 
         // populate unlocked cosmetics
         foreach (int skin_id in pcm.availableCosmetics)
@@ -65,30 +83,63 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
             CosmeticElement c_el = pcm.getCosmeticFromID(skin_id);
             if (c_el==null)
                 continue;
+            c_el.skinID = skin_id;
+            dispatchCosmeticElementInUI(c_el);
+            // // Init available colors
+            // if (c_el.material != null)
+            // {
+            //     // Unlocking a color works for every set of part
+            //     addBodyColor(c_el);
+            // }
 
-            // Init available colors
-            if (c_el.material != null)
-            {
-                // Unlocking a color works for every set of part
-                addColor(primaryCarColorHandle, uiNavParentForCar, primaryCarColorParts, c_el);
-                addColor(secondaryCarColorHandle, uiNavParentForCar, secondaryCarColorParts, c_el);
-                addColor(primaryWheelColorHandle, uiNavParentForWheels, primaryWheelColorParts, c_el);
-            }
-
-            // Init available skins
-            if (c_el.mesh != null)
-            {
-                if ( carSkinParts.Contains(c_el.carPart) )
-                {
-                    addSkin( carSkinHandle, uiNavParentForCar, c_el.carPart, c_el);
-                }
-                else if ( wheelSkinParts.Contains(c_el.carPart))
-                {
-                    addSkin( wheelSkinHandle, uiNavParentForWheels, c_el.carPart, c_el);
-                }
-            }
+            // // Init available skins
+            // if (c_el.mesh != null)
+            // {
+            //     if ( carSkinParts.Contains(c_el.carPart) )
+            //     {
+            //         addSkin( carSkinHandle, uiNavParentForCar, c_el.carPart, c_el);
+            //     }
+            //     else if ( wheelSkinParts.Contains(c_el.carPart))
+            //     {
+            //         addSkin( wheelSkinHandle, uiNavParentForWheels, c_el.carPart, c_el);
+            //     }
+            // }
         }
         
+    }
+
+    public void dispatchCosmeticElementInUI(CosmeticElement iCE)
+    {
+        switch (iCE.cosmeticType)
+        {
+            case CosmeticType.PAINT:
+                addBodyColor(iCE);
+                break;
+            case CosmeticType.MODEL:
+                addSkin(iCE);
+                break;
+            case CosmeticType.ACCESSORY:
+                addAccessory(iCE);
+                break;
+            case CosmeticType.RUBBER:
+                addWheelColor(iCE);
+                break;
+            default:
+                break;
+        }
+    }
+
+    /// ---
+
+    private void addBodyColor(CosmeticElement iCE)
+    {
+        addColor(primaryCarColorHandle, uiNavParentForCar, primaryCarColorParts, iCE);
+        addColor(secondaryCarColorHandle, uiNavParentForCar, secondaryCarColorParts, iCE);
+    }
+
+    private void addWheelColor(CosmeticElement iCE)
+    {
+        addColor(primaryWheelColorHandle, uiNavParentForWheels, primaryWheelColorParts, iCE);
     }
 
     private void addColor(UIPanelTabbed iParent, UIGaragePanel iNavParent, List<COLORIZABLE_CAR_PARTS> iParts, CosmeticElement iCosmetic)
@@ -108,21 +159,110 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         iParent.tabs.Add(uigpc);
     }
 
-    private void addSkin(UIPanelTabbed iParent, UIGaragePanel iNavParent, COLORIZABLE_CAR_PARTS iPart, CosmeticElement iCosmetic)
+    private void addSkin(CosmeticElement iCosmetic)
     {
-        GameObject go = Instantiate(uiGaragePickableSkinRef, iParent.transform);
+        UIPanelTabbed parent = null;
+        UIGaragePanel navparent = null;
+
+        // find part
+        switch (iCosmetic.carPart)
+        {
+            case COLORIZABLE_CAR_PARTS.MAIN:
+                parent = frameSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.HOOD:
+                parent = hoodSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.LEFT_DOOR:
+                parent = doorSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.RIGHT_DOOR:
+                parent = doorSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.FRONT_BUMP:
+                parent = bumpersSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.BACK_BUMP:
+                parent = bumpersSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.LAMPS:
+                parent = lampsSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.FRONT_PIPES:
+                parent = frontPipesSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.BACK_PIPES:
+                parent = backPipesSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.WINDSHIELD:
+                parent = windshieldSkinHandle;
+                navparent = uiNavParentForCar;
+                break;
+            case COLORIZABLE_CAR_PARTS.WHEELS:
+                parent = wheelSkinHandle;
+                navparent = uiNavParentForWheels;
+                break;
+        }
+
+        GameObject go = Instantiate(uiGaragePickableSkinRef, parent.transform);
         UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
         Image ui_img = go.GetComponent<Image>();
 
-        uigps.Parent = iNavParent;
+        uigps.Parent = navparent;
         uigps.copyInputsFromParent = true;
-        uigps.carPart = iPart;
+        uigps.carPart = iCosmetic.carPart;
         uigps.skinName = iCosmetic.name;
-
+        uigps.setSkinID(iCosmetic.skinID);
         //ui_img.color = mat.color; 
 
-        iParent.tabs.Add(uigps);
+        parent.tabs.Add(uigps);
     }
 
+    private void addAccessory(CosmeticElement iCosmetic)
+    {
+        UIPanelTabbed parent = null;
+        UIGaragePanel navparent = null;
+
+        // find part
+        switch (iCosmetic.carPart)
+        {
+            case COLORIZABLE_CAR_PARTS.WEIGHT:
+                parent = wheightSkinHandle;
+                navparent = uiNavParentForAccessories;
+                break;
+            case COLORIZABLE_CAR_PARTS.SPRINGS:
+                parent = springsSkinHandle;
+                navparent = uiNavParentForAccessories;
+                break;
+            case COLORIZABLE_CAR_PARTS.JUMP_DECAL:
+                parent = jumpDecalHandle;
+                navparent = uiNavParentForAccessories;
+                break;
+        }
+
+
+        GameObject go = Instantiate(uiGaragePickableSkinRef, parent.transform);
+        UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
+        Image ui_img = go.GetComponent<Image>();
+
+        uigps.Parent = navparent;
+        uigps.copyInputsFromParent = true;
+        uigps.carPart = iCosmetic.carPart;
+        uigps.skinName = iCosmetic.name;
+        uigps.setSkinID(iCosmetic.skinID);
+        
+        //ui_img.color = mat.color; 
+
+        parent.tabs.Add(uigps);
+    }
 
 }

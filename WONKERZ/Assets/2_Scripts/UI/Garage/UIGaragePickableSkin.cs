@@ -4,13 +4,24 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using Schnibble.UI;
+using TMPro;
+
 
 public class UIGaragePickableSkin : UIImageTab
 {
+    [Header("Self Refs")]
+    public TextMeshProUGUI self_skinIdLbl;
+
     [Header("Skin")]
     public string skinName;
-    public int skinID;
+    private int skinID;
     public COLORIZABLE_CAR_PARTS carPart;
+
+    public void setSkinID(int iVal)
+    {
+        skinID = iVal;
+        self_skinIdLbl.text = iVal.ToString();
+    }
 
     override public void activate()
     {

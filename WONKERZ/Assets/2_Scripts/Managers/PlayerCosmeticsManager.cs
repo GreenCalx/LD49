@@ -48,7 +48,6 @@ public class PlayerCosmeticsManager : MonoBehaviour
         //initSkinDictionary();
 
         resetPlayersToCustomize();
-        initCustomizationFromPlayer();
     }
 
     // private void initSkinDictionary()
@@ -65,6 +64,16 @@ public class PlayerCosmeticsManager : MonoBehaviour
         return cosmeticCollection.GetCosmetic(iID);
     }
 
+    public List<CosmeticElement> getCosmeticsFromIDs(int[] iIDs)
+    {
+        List<CosmeticElement> cosmetics = new List<CosmeticElement>();
+        for (int i=0; i < iIDs.Length ; i++)
+        {
+            cosmetics.Add( cosmeticCollection.GetCosmetic(iIDs[i]));
+        }
+        return cosmetics;
+    }
+
     public List<CosmeticElement> getDefaultCarParts()
     {
         List<CosmeticElement> retval = new List<CosmeticElement>();
@@ -73,10 +82,14 @@ public class PlayerCosmeticsManager : MonoBehaviour
         return retval;
     }
 
-    public void addCosmetic(int iCosmeticElementID)
+    public void addCosmetic(int[] iCosmeticElementIDs)
     {
-        if (!availableCosmetics.Contains(iCosmeticElementID))
-             availableCosmetics.Add( iCosmeticElementID );
+        for (int i=0; i < iCosmeticElementIDs.Length; i++)
+        {
+            if (!availableCosmetics.Contains(iCosmeticElementIDs[i]))
+                availableCosmetics.Add( iCosmeticElementIDs[i] );
+        }
+        
     }
 
     public void addPlayerToCustomize(GameObject iGO)
@@ -97,34 +110,6 @@ public class PlayerCosmeticsManager : MonoBehaviour
     {
         players.Clear();
         players.Add(Access.Player().gameObject); 
-    }
-
-    private void initCustomizationFromPlayer()
-    {
-        // COLORS
-        // addCosmetic(  new CosmeticElement("default_color_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "CarColor", "") );
-        // addCosmetic(  new CosmeticElement("default_color_body_secondary", COLORIZABLE_CAR_PARTS.FRONT_BUMP, "CarCommonMat", "") );
-        // addCosmetic(  new CosmeticElement("default_color_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "CarCommonMat", "") );
-
-        // // SKINS
-        // addCosmetic(  new CosmeticElement("default_skin_body_primary", COLORIZABLE_CAR_PARTS.MAIN, "", "default") );
-        // addCosmetic(  new CosmeticElement("default_skin_wheel_primary", COLORIZABLE_CAR_PARTS.WHEELS, "", "default") );
-        
-        // GameObject p = Access.Player().gameObject;
-
-        // MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
-        // int n_parts = pRends.Length;
-        // for (int i=0; i < n_parts; i++)
-        // {
-        //     MeshFilter rend = pRends[i];
-        //     CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
-        //     if (!!cc_color)
-        //     {
-        //         // TODO : Prevent duplicated at init (multiple car parts sharing same cosmetic)
-        //        // addCosmetic( new CosmeticElement("default", cc_color.part, cc_color.partSkinName) );
-        //     } 
-        // }
-
     }
 
     public CarColorizable getCustomizationOfPart(COLORIZABLE_CAR_PARTS iPart)
@@ -148,9 +133,9 @@ public class PlayerCosmeticsManager : MonoBehaviour
     public void colorize(int iMatSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
         CosmeticElement c_el = getCosmeticFromID(iMatSkinID);
-        if (c_el.cosmeticType != CosmeticType.PAINT)
-            return;
 
+        if (c_el.cosmeticType != CosmeticType.PAINT)
+                return;
         colorize(c_el.material, iPart);
     }
 
@@ -178,12 +163,12 @@ public class PlayerCosmeticsManager : MonoBehaviour
     public void customize( int iSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
         CosmeticElement skin = getCosmeticFromID(iSkinID);
+
         if (skin.cosmeticType != CosmeticType.MODEL)
             return;
 
         string skinName = skin.name;
         Mesh mesh       = skin.mesh;
-
         foreach (GameObject p in players)
         {
             MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
@@ -195,11 +180,11 @@ public class PlayerCosmeticsManager : MonoBehaviour
                 if (!!cc_color && (iPart == cc_color.part))
                 { 
                     rend.sharedMesh = mesh;
-                    cc_color.partSkinID = iSkinID;
+                    cc_color.partSkinID = skin.skinID;
                     break;
                 }
             }
-        }        
+        }     
     }
 
 }

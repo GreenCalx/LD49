@@ -33,7 +33,7 @@ public class UIChecklistImageTab : UIImageTab
             tooltip_bountyDesc.text     = bounty.hint;
             tooltip_bountyName.text     = bounty.name;
             if (bountyArray.getStatus(x, y)==BountyArray.EItemState.UNLOCKED)
-                tooltip_bountyReward.text = bounty.GetAttachedCosmetic()?.name;
+                tooltip_bountyReward.text = bounty.GetRewardsAsText();
             else
                 tooltip_bountyReward.text   = locked_tooltip;
         } else {

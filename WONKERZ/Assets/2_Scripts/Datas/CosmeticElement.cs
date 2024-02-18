@@ -8,7 +8,8 @@ public enum CosmeticType
 {
     PAINT = 0,
     MODEL = 1,
-    DECAL = 2
+    ACCESSORY = 2,
+    RUBBER= 3
 }
 /**
 *   Cosmetic element
@@ -28,5 +29,8 @@ public class CosmeticElement : ScriptableObject
 
     [Header("# Jump decal")]
     public GameObject decal;
+
+    [Header("Internals")]
+    public int skinID = 0;
 
 }
