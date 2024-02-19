@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class LandMine : MonoBehaviour
 {
+    public WonkerDecal zoneDecal;
     public PlayerDetector playerDetector;
     public GameObject explosionEffect;
     public MeshDeform attachedGroundToDeform;
@@ -19,9 +20,12 @@ public class LandMine : MonoBehaviour
     private bool isTriggered = false;
     public AudioSource boomSFX;
 
+    private Vector3 initZoneDecalScale;
+
     // Start is called before the first frame update
     void Start()
     {
+        initZoneDecalScale = zoneDecal.transform.localScale;
         elapsedTimeBeforeExplosion = 0f;
         isTriggered = false;
         updateLandMineColor();
@@ -39,12 +43,12 @@ public class LandMine : MonoBehaviour
                 explode();
                 movePoints();
             }
-            elapsedTimeBeforeExplosion += Time.fixedDeltaTime;
+            elapsedTimeBeforeExplosion += Time.deltaTime;
             updateLandMineColor();
         } else {
             if (elapsedTimeBeforeExplosion > 0f)
             {
-                elapsedTimeBeforeExplosion -= Time.fixedDeltaTime;
+                elapsedTimeBeforeExplosion -= Time.deltaTime;
                 elapsedTimeBeforeExplosion = Mathf.Clamp(elapsedTimeBeforeExplosion, 0f, timeBeforeExplosion);
                 updateLandMineColor();
             }
@@ -113,6 +117,12 @@ public class LandMine : MonoBehaviour
         {
             mr.material.SetColor("_Color", newcolor);
         }
+
+
+        Vector3 zoneDecalScale = new Vector3( initZoneDecalScale.x * time_ratio, initZoneDecalScale.y * time_ratio , initZoneDecalScale.z * time_ratio);
+        zoneDecal.transform.localScale = zoneDecalScale;
+        zoneDecal.transform.localPosition = Vector3.zero;
+        zoneDecal.SetAnimationTime(1f);
     }
 
 }

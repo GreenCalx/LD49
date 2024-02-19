@@ -1,5 +1,75 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1582084908209154976
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6568903757758587655}
+  - component: {fileID: 3862945337565755321}
+  - component: {fileID: 1549022547840844857}
+  m_Layer: 0
+  m_Name: TimedDecalZoneDetection
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &6568903757758587655
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582084908209154976}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 20, y: 20, z: 20}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 4738295344251101279}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3862945337565755321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582084908209154976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decalRenderer: {fileID: 1549022547840844857}
+--- !u!114 &1549022547840844857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582084908209154976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  decalMesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  decalMat: {fileID: 2100000, guid: 35c512e1324102d4ab97b3e5997dd9ca, type: 2}
+  writeColor: 1
+  writeNormal: 0
+  writeMaterial: 0
+  writeEmission: 1
+  writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
 --- !u!1 &4738295344251101278
 GameObject:
   m_ObjectHideFlags: 0
@@ -34,6 +104,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2242080780312495421}
+  - {fileID: 6568903757758587655}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -78,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9b41efee03d9c14c86f0924fa8d2028, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zoneDecal: {fileID: 3862945337565755321}
   playerDetector: {fileID: 8033096350715711142}
   explosionEffect: {fileID: 2331094284247211939, guid: 332b69c95161ddf41a5b13a3716c9e40, type: 3}
   attachedGroundToDeform: {fileID: 0}
@@ -85,7 +157,7 @@ MonoBehaviour:
   explosionRange: 5
   explosionForce: 40
   explosionDamage: 5
-  timeBeforeExplosion: 1
+  timeBeforeExplosion: 3
   boomSFX: {fileID: -7767106260797607599, guid: 48a0ad5af82e92c4794428c0a2630511, type: 3}
 --- !u!33 &7081175099464896907
 MeshFilter:
@@ -144,6 +216,38 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4738295344251101279}
     m_Modifications:
+    - target: {fileID: 3521902828471666919, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3521902828471666919, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3521902828471666919, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3521902828471666919, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952796073010678160, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: decalSize.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952796073010678160, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: decalSize.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952796073010678160, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: decalSize.z
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3952796073010678160, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: activateRangeDecal
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5097253524668416522, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
       propertyPath: m_Radius
       value: 10
@@ -191,6 +295,10 @@ PrefabInstance:
     - target: {fileID: 5097253524668416523, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5097253524668416523, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5097253524668416524, guid: 60f0bb6975a700e4094c094c5b6702c0, type: 3}
       propertyPath: m_Name

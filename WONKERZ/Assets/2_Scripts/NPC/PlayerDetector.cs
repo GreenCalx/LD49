@@ -16,11 +16,22 @@ public class PlayerDetector : SchAIDetector
     public UnityEvent callBackOnPlayerEnterRange;
     public UnityEvent callBackOnPlayerInRange;
     public UnityEvent callbackOnPlayerExitRange;
+
+    [Header("RangeDecal")]
+    public bool activateRangeDecal = false;
+    public GameObject decalObject;
+    public Vector3 decalSize = new Vector3(1f,1f,1f);
     // Start is called before the first frame update
     void Start()
     {
         playerInRange = false;
         dummyInRange = false;
+
+        if (activateRangeDecal)
+        {
+            decalObject.SetActive(true);
+            decalObject.transform.localScale = decalSize;
+        }
     }
 
     // Update is called once per frame

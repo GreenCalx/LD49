@@ -3,7 +3,7 @@ Shader "Custom/Sch-TimeDecal"
     Properties
     {
        _Color("Color", Color) = (1,1,1,1)
-       _ColorMaxTime("Color", Color) = (1,1,1,1)
+       _ColorMaxTime("MaxTimeColor", Color) = (1,1,1,1)
         [NoScaleOffset] _MainTex("Albedo", 2D) = "white" {}
 
         [Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
