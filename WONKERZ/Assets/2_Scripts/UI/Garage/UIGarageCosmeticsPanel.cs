@@ -13,6 +13,7 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
     [Header("--------------------------------\n# UIGarageCosmeticsPanel")]
     public GameObject uiGaragePickableColorRef;
     public GameObject uiGaragePickableSkinRef;
+    public GameObject uiGaragePickableDecalRef;
 
     [Header("-BodyPanel-")]
     public UIGaragePanel uiNavParentForCar;
@@ -36,8 +37,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
     public UIGaragePanel uiNavParentForWheels;
     public UIPanelTabbed primaryWheelColorHandle;
     public UIPanelTabbed wheelSkinHandle;
-
-    public List<COLORIZABLE_CAR_PARTS> wheelSkinParts;
     public List<COLORIZABLE_CAR_PARTS> primaryWheelColorParts;
 
     [Header("-AccessoriesPanel-")]
@@ -74,7 +73,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         foreach(CosmeticElement c in defaults) 
         { 
             dispatchCosmeticElementInUI(c);
-           // addSkin(carSkinHandle, uiNavParentForCar, c.carPart, c ); 
         }
 
         // populate unlocked cosmetics
@@ -85,25 +83,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
                 continue;
             c_el.skinID = skin_id;
             dispatchCosmeticElementInUI(c_el);
-            // // Init available colors
-            // if (c_el.material != null)
-            // {
-            //     // Unlocking a color works for every set of part
-            //     addBodyColor(c_el);
-            // }
-
-            // // Init available skins
-            // if (c_el.mesh != null)
-            // {
-            //     if ( carSkinParts.Contains(c_el.carPart) )
-            //     {
-            //         addSkin( carSkinHandle, uiNavParentForCar, c_el.carPart, c_el);
-            //     }
-            //     else if ( wheelSkinParts.Contains(c_el.carPart))
-            //     {
-            //         addSkin( wheelSkinHandle, uiNavParentForWheels, c_el.carPart, c_el);
-            //     }
-            // }
         }
         
     }
@@ -118,8 +97,8 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
             case CosmeticType.MODEL:
                 addSkin(iCE);
                 break;
-            case CosmeticType.ACCESSORY:
-                addAccessory(iCE);
+            case CosmeticType.DECAL:
+                addDecal(iCE);
                 break;
             case CosmeticType.RUBBER:
                 addWheelColor(iCE);
@@ -211,6 +190,14 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
                 parent = wheelSkinHandle;
                 navparent = uiNavParentForWheels;
                 break;
+            case COLORIZABLE_CAR_PARTS.WEIGHT:
+                parent = wheightSkinHandle;
+                navparent = uiNavParentForAccessories;
+                break;
+            case COLORIZABLE_CAR_PARTS.SPRINGS:
+                parent = springsSkinHandle;
+                navparent = uiNavParentForWheels;
+                break;
         }
 
         GameObject go = Instantiate(uiGaragePickableSkinRef, parent.transform);
@@ -221,13 +208,18 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         uigps.copyInputsFromParent = true;
         uigps.carPart = iCosmetic.carPart;
         uigps.skinName = iCosmetic.name;
-        uigps.setSkinID(iCosmetic.skinID);
+        
         //ui_img.color = mat.color; 
 
         parent.tabs.Add(uigps);
+        
+        if (iCosmetic.isDefaultSkin)
+            uigps.setSkinID(-1);
+        else
+            uigps.setSkinID(iCosmetic.skinID);
     }
 
-    private void addAccessory(CosmeticElement iCosmetic)
+    private void addDecal(CosmeticElement iCosmetic)
     {
         UIPanelTabbed parent = null;
         UIGaragePanel navparent = null;
@@ -235,14 +227,6 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         // find part
         switch (iCosmetic.carPart)
         {
-            case COLORIZABLE_CAR_PARTS.WEIGHT:
-                parent = wheightSkinHandle;
-                navparent = uiNavParentForAccessories;
-                break;
-            case COLORIZABLE_CAR_PARTS.SPRINGS:
-                parent = springsSkinHandle;
-                navparent = uiNavParentForAccessories;
-                break;
             case COLORIZABLE_CAR_PARTS.JUMP_DECAL:
                 parent = jumpDecalHandle;
                 navparent = uiNavParentForAccessories;
@@ -250,19 +234,25 @@ public class UIGarageCosmeticsPanel : UIGaragePanel
         }
 
 
-        GameObject go = Instantiate(uiGaragePickableSkinRef, parent.transform);
-        UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
+        GameObject go = Instantiate(uiGaragePickableDecalRef, parent.transform);
+        UIGaragePickableDecal uigpd = go.GetComponent<UIGaragePickableDecal>();
         Image ui_img = go.GetComponent<Image>();
 
-        uigps.Parent = navparent;
-        uigps.copyInputsFromParent = true;
-        uigps.carPart = iCosmetic.carPart;
-        uigps.skinName = iCosmetic.name;
-        uigps.setSkinID(iCosmetic.skinID);
+        uigpd.Parent = navparent;
+        uigpd.copyInputsFromParent = true;
+        uigpd.carPart = iCosmetic.carPart;
+        uigpd.skinName = iCosmetic.name;
+
+        parent.tabs.Add(uigpd);
+
+        if (iCosmetic.isDefaultSkin)
+            uigpd.setSkinID(-1);
+        else
+            uigpd.setSkinID(iCosmetic.skinID);
         
         //ui_img.color = mat.color; 
 
-        parent.tabs.Add(uigps);
+        
     }
 
 }

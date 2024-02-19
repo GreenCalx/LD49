@@ -45,23 +45,17 @@ public class PlayerCosmeticsManager : MonoBehaviour
 
     void Start()
     {
-        //initSkinDictionary();
-
         resetPlayersToCustomize();
     }
-
-    // private void initSkinDictionary()
-    // {
-    //     local_skin_dico = new Dictionary<string, SkinBundle>();
-    //     foreach(SkinBundle sb in skinname_mesh_dico)
-    //     {
-    //         local_skin_dico.Add( sb.key, sb);
-    //     }
-    // }
 
     public CosmeticElement getCosmeticFromID(int iID)
     {
         return cosmeticCollection.GetCosmetic(iID);
+    }
+
+    public CosmeticElement getDefaultCosmetic(COLORIZABLE_CAR_PARTS iPart)
+    {
+        return defaultCarCollection.GetCosmeticFromPart(iPart);
     }
 
     public List<CosmeticElement> getCosmeticsFromIDs(int[] iIDs)
@@ -130,9 +124,9 @@ public class PlayerCosmeticsManager : MonoBehaviour
         return retval;
     }
 
-    public void colorize(int iMatSkinID, COLORIZABLE_CAR_PARTS iPart)
+    public void colorize(int iSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
-        CosmeticElement c_el = getCosmeticFromID(iMatSkinID);
+        CosmeticElement c_el = (iSkinID < 0) ? getDefaultCosmetic(iPart) : getCosmeticFromID(iSkinID);
 
         if (c_el.cosmeticType != CosmeticType.PAINT)
                 return;
@@ -162,7 +156,9 @@ public class PlayerCosmeticsManager : MonoBehaviour
 
     public void customize( int iSkinID, COLORIZABLE_CAR_PARTS iPart)
     {
-        CosmeticElement skin = getCosmeticFromID(iSkinID);
+        
+
+        CosmeticElement skin = (iSkinID < 0) ? getDefaultCosmetic(iPart) : getCosmeticFromID(iSkinID);
 
         if (skin.cosmeticType != CosmeticType.MODEL)
             return;
@@ -181,10 +177,40 @@ public class PlayerCosmeticsManager : MonoBehaviour
                 { 
                     rend.sharedMesh = mesh;
                     cc_color.partSkinID = skin.skinID;
-                    break;
+                    //break; // can be multiple occurences like wheels
                 }
             }
         }     
+    }
+
+    public void changeDecal(int iSkinID, COLORIZABLE_CAR_PARTS iPart)
+    {
+        CosmeticElement skin = (iSkinID < 0) ? getDefaultCosmetic(iPart) : getCosmeticFromID(iSkinID);
+
+        if (skin.cosmeticType != CosmeticType.DECAL)
+            return;
+        
+        if (skin.decal==null)
+            return;
+        
+        WonkerDecal new_decal = Instantiate(skin.decal).GetComponent<WonkerDecal>();
+
+        foreach (GameObject p in players)
+        {
+            PlayerController pc = p.GetComponent<PlayerController>();
+            if (pc==null)
+                continue;
+
+            new_decal.transform.parent = pc.jumpDecal.transform.parent;
+            new_decal.transform.position = pc.jumpDecal.transform.position;
+            new_decal.transform.rotation = pc.jumpDecal.transform.rotation;
+            Destroy(pc.jumpDecal.gameObject);
+
+            pc.jumpDecal = new_decal;
+
+        }
+
+        
     }
 
 }

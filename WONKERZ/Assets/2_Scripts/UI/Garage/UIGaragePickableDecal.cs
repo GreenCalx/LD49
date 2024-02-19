@@ -7,7 +7,7 @@ using Schnibble.UI;
 using TMPro;
 
 
-public class UIGaragePickableSkin : UIImageTab
+public class UIGaragePickableDecal : UIImageTab
 {
     [Header("Self Refs")]
     public TextMeshProUGUI self_skinIdLbl;
@@ -30,7 +30,7 @@ public class UIGaragePickableSkin : UIImageTab
     {
         base.activate();
 
-        Access.PlayerCosmeticsManager().customize(skinID, carPart);
+        Access.PlayerCosmeticsManager().changeDecal(skinID, carPart);
         
     }
 
@@ -38,6 +38,8 @@ public class UIGaragePickableSkin : UIImageTab
     {
         base.select();
         transform.localScale = new Vector3(1.2f, 1.2f, 1.2f );
+
+        // previsualize decal with time
     }
 
     override public void deselect()

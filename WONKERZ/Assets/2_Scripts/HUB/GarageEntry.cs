@@ -76,7 +76,7 @@ public class GarageEntry : MonoBehaviour, IControllable
 
         Access.UISpeedAndLifePool().gameObject.SetActive(false);
 
-        detector.enabled = false;
+        detector.gameObject.SetActive(false);
         foreach(GameObject to_deactivate in self_worldSpaceHints)
         {
             to_deactivate.SetActive(false);
@@ -87,6 +87,8 @@ public class GarageEntry : MonoBehaviour, IControllable
         uig.setGarageEntry(this.GetComponent<GarageEntry>());
         uig.onActivate.Invoke();
 
+        player.transform.position = transform.position;
+        player.transform.rotation = Quaternion.identity;
         player.Freeze();
 
         var SndMgr = Access.SoundManager();
@@ -118,13 +120,12 @@ public class GarageEntry : MonoBehaviour, IControllable
         Destroy(garageUI);
 
         Access.UISpeedAndLifePool().gameObject.SetActive(true);
-
         
         foreach(GameObject to_reactivate in self_worldSpaceHints)
         {
-            to_reactivate.SetActive(false);
+            to_reactivate.SetActive(true);
         }
-        detector.enabled = true;
+        detector.gameObject.SetActive(true);
 
         if (!!player)
         player.UnFreeze();

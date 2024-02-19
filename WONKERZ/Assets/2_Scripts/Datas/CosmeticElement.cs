@@ -8,7 +8,7 @@ public enum CosmeticType
 {
     PAINT = 0,
     MODEL = 1,
-    ACCESSORY = 2,
+    DECAL = 2,
     RUBBER= 3
 }
 /**
@@ -19,6 +19,8 @@ public class CosmeticElement : ScriptableObject
 {
     public string name = "";
     public CosmeticType cosmeticType;
+
+    public bool isDefaultSkin = false;
 
     [Header("# Material skins")]
     public Material material;

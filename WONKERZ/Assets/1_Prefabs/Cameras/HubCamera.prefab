@@ -100,15 +100,14 @@ MonoBehaviour:
     speed: 1.35
     max: 60
   playerRef: {fileID: 0}
-  secondaryFocusFindRange: 200
-  secondaryFocus: {fileID: 0}
+  breakFocusDistance: 100
   focusChangeInputLatch: 0.2
   camDistIncrease: 0
   camFOVIncrease: 0
   needButtonPressBeforeMove: 0
   autoAlign: 1
   focus: {fileID: 0}
-  distance: 20.5
+  distance: 32
   focusRadius: 2
   focusCentering: 0.5
   rotationSpeed: 264
@@ -121,9 +120,9 @@ MonoBehaviour:
   obstructionMask:
     serializedVersion: 2
     m_Bits: 6295287
-  camReverseDetectionThreshold: 140
+  camReverseDetectionThreshold: 77
   jumpDelay: 0.2
-  jumpMaxFocusRadius: 5
+  jumpMaxFocusRadius: 2
   jumpFocusRadiusStep: 0.1
   lastManualRotationTime: 0
 --- !u!114 &367400099

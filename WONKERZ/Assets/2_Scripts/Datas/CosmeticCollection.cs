@@ -15,6 +15,18 @@ public class CosmeticCollection : ScriptableObject
         return skins[id];
     }
 
+    public CosmeticElement GetCosmeticFromPart(COLORIZABLE_CAR_PARTS iPart)
+    {
+        foreach(CosmeticElement ce in skins)
+        {
+            if (ce.carPart == iPart)
+            {
+                return ce;
+            }
+        }
+        return null;
+    }
+
 }
 
 
