@@ -47,7 +47,7 @@ public class UIDialogController : MonoBehaviour, IControllable
         loadedDialog = DialogBank.load(iNPCName, Utils.GetCurrentSceneName(), iDialogID);
 
         Access.Player().inputMgr.Attach(this as IControllable);
-        
+         Access.Player().Freeze();
         dialog_ongoing = true;
         if (!autoTalk)
             StartCoroutine(PlayerTalkCo());
@@ -85,6 +85,7 @@ public class UIDialogController : MonoBehaviour, IControllable
     public void EndDialog()
     {
         Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        Access.Player().UnFreeze();
         callbackOnDialogDone.Invoke();
         Destroy(gameObject);
     }

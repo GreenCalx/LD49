@@ -58,6 +58,9 @@ MonoBehaviour:
   callbackOnPlayerExitRange:
     m_PersistentCalls:
       m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
 --- !u!65 &596493632996892823
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -318,6 +321,9 @@ MonoBehaviour:
   callbackOnPlayerExitRange:
     m_PersistentCalls:
       m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
 --- !u!135 &3797740014180725034
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -402,6 +408,9 @@ MonoBehaviour:
   callbackOnPlayerExitRange:
     m_PersistentCalls:
       m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
 --- !u!1 &8874412432809094886
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,7 +491,7 @@ MonoBehaviour:
   navAgentMaskName: Walkable
   canAggroPlayer: 1
   behaviour: 0
-  name: William
+  npc_name: 
   cameraFocusable: {fileID: 2486291761422161362}
   animator: {fileID: 2300977334515442154}
   weakSpot: {fileID: 7363402154086574269}
@@ -546,6 +555,10 @@ PrefabInstance:
     - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: focusColor.r
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1766096672092755891, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
+      propertyPath: focusFindRange
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4057780066181654894, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
       propertyPath: m_RootOrder
