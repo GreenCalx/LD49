@@ -110,6 +110,8 @@ public class TrackManager : MonoBehaviour
     public TrackScore track_score;
     public List<TrackEvent> track_events;
 
+    public bool trackIsReady {get; set;}
+
     void Awake()
     {
         track_score = new TrackScore();

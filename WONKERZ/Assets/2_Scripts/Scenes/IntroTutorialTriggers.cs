@@ -115,7 +115,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     private void SpawnWindow(UITutorialStopWindow iWindow)
     {
         if (!!tutoWindow_Inst)
-            Destroy(tutoWindow_Inst);
+            Destroy(tutoWindow_Inst.gameObject);
         tutoWindow_Inst = Instantiate(iWindow);
     }
 }

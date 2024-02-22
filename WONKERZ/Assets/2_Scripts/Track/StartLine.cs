@@ -18,8 +18,7 @@ public class StartLine : MonoBehaviour
     public bool enable_tricks = false;
     public GameObject UIHandle; // for tricktracker
 
-    public float countdown_delay = 1f;
-    private float countdown_delay_current = 0f;
+    public int countdown = 3;
     public bool is_rdy_to_launch = false;
 
     public CinematicTrigger entryCinematicTrigger;
@@ -28,8 +27,8 @@ public class StartLine : MonoBehaviour
     public AudioClip countDownSFX0;
     public AudioClip countDownSFX1;
 
-    [Header("Debug")]
-    public bool bypassCountdown = false;
+    [Header("Internal")]
+    private PlayerController PC;
 
     private UIStartTrack UIStartTrackInst = null;
     // Start is called before the first frame update
@@ -40,10 +39,10 @@ public class StartLine : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (UIStartTrackInst != null)
-        {
-            countdownElapsedTime += Time.fixedDeltaTime;
-        }
+        // if (UIStartTrackInst != null)
+        // {
+        //     countdownElapsedTime += Time.fixedDeltaTime;
+        // }
     }
 
     public void launchCountdown()
@@ -53,7 +52,7 @@ public class StartLine : MonoBehaviour
             UIStartTrackInst = Instantiate(UIStartTrackRef).GetComponent<UIStartTrack>();
             countdownElapsedTime = 0f;
 
-            StartCoroutine(countdown(Access.Player()));
+            StartCoroutine(countdownCo(PC));
         }
     }
 
@@ -77,27 +76,29 @@ public class StartLine : MonoBehaviour
         StartCoroutine(postCountdown());
     }
 
-    IEnumerator countdown(PlayerController iPC)
+    IEnumerator countdownCo(PlayerController iPC)
     {
         iPC.Freeze();
 
         audioSource.clip = countDownSFX0;
         audioSource.Play(0);
 
-        while (countdownElapsedTime < 3f)
+        countdownElapsedTime = 0f;
+        float secondElapsedTime = 0f;
+        while (countdownElapsedTime < countdown)
         {
-            if (countdownElapsedTime >= 1f && countdownElapsedTime < 1.1f) {
-                audioSource.clip = countDownSFX0;
-                audioSource.Play(0);
-            }
-            if (countdownElapsedTime >= 2f && countdownElapsedTime < 2.1f)
+            countdownElapsedTime += Time.deltaTime;
+            secondElapsedTime += Time.deltaTime;
+            if (secondElapsedTime >= 1f)
             {
                 audioSource.clip = countDownSFX0;
                 audioSource.Play(0);
-            }
+                UIStartTrackInst.updateDisplay(countdownElapsedTime);
+
+                secondElapsedTime = 0f;
+            }     
             
-            UIStartTrackInst.updateDisplay(countdownElapsedTime);
-            yield return new WaitForSeconds(0.1f);
+            yield return null;
         }
 
         audioSource.clip = countDownSFX1;
@@ -123,24 +124,14 @@ public class StartLine : MonoBehaviour
     {
         if ((Utils.colliderIsPlayer(iCol)))
         {
+            PC = Access.Player();
             if (!is_rdy_to_launch)
             {
-                countdown_delay_current += Time.deltaTime;
-                is_rdy_to_launch = countdown_delay_current >= countdown_delay;
-                Access.Player().Freeze();
+                is_rdy_to_launch = Access.TrackManager().trackIsReady; // TODO  wait for scenemanager to tell its ok
+                PC.Freeze();
             }
             else
             {
-                if (bypassCountdown) // debug
-                {
-                    Access.CollectiblesManager().resetInfCollectibles();
-                    Scene currentScene = SceneManager.GetActiveScene();
-                    Access.TrackManager().launchTrack(currentScene.name);
-                    if (enable_tricks)
-                    activateTricks();
-                    return;
-                }
-
                 if (entryCinematicTrigger!=null)
                     launchCinematic();
                 else
@@ -167,7 +158,7 @@ public class StartLine : MonoBehaviour
 
     private void activateTricks()
     {
-        TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
+        TrickTracker tt = PC.gameObject.GetComponent<TrickTracker>();
         if (!!tt)
         {
             tt.activate_tricks = true; // activate default in hub
