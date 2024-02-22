@@ -44,7 +44,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17bd327e4c428f242a2fa0dbca281902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableFocusActions: 1
   focusColor: {r: 1, g: 0, b: 0, a: 1}
+  focusFindRange: 50
+  actionName: 
+  UIFocusAction_Ref: {fileID: 0}
+  screenSpaceUIOffset: {x: 0, y: 0, z: 0}
+  callbackOnFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackOnAction:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackOnUnFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  isFocus: 0
 --- !u!1 &942660972116004919
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +258,7 @@ NavMeshAgent:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6125894891243856483}
   m_Enabled: 1
-  m_AgentTypeID: -1372625422
+  m_AgentTypeID: 287145453
   m_Radius: 1.0912594
   m_Speed: 3.5
   m_Acceleration: 8
@@ -253,7 +268,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 13.757184
+  m_Height: 10
   m_BaseOffset: -0.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -276,6 +291,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6747728156275922521}
     m_Modifications:
+    - target: {fileID: 777304279641069240, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2495110921735235518, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -320,11 +339,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3122576307413190400, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3828054075473253483, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5967185546243745283, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6802812222082182882, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
+      propertyPath: m_Convex
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7035997235203366651, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
       propertyPath: m_Name
       value: pinhead_0001
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 251657337184228594, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6cb34bfab1bccb04ca994a6022943861, type: 3}
 --- !u!4 &5573448784276891783 stripped
 Transform:
