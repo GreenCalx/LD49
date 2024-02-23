@@ -9,6 +9,7 @@ public class GaragistCage : MonoBehaviour
     private string openCageAnimParm = "unlock";
 
     public GaragistCollectible garagist;
+    public NPCGaragist NPC;
     public string trackname = "";
 
     void Start()
@@ -16,20 +17,28 @@ public class GaragistCage : MonoBehaviour
         if (Access.CollectiblesManager().hasGaragist(trackname))
         {
             gameObject.SetActive(false);
+        } else {
+            NPC.setJailed();
         }
     }
 
-    void OnTriggerEnter(Collider iCollider)
+
+    public void TryOpenCage()
     {
-        if (Utils.isPlayer(iCollider.gameObject))
+        if (NPC.isFree)
+            return;
+
+        string scene_name = SceneManager.GetActiveScene().name;
+        if (Access.CollectiblesManager().hasCageKey(scene_name))
         {
-            string scene_name = SceneManager.GetActiveScene().name;
-            if (Access.CollectiblesManager().hasCageKey(scene_name))
-            {
-                // open cage
-                cageAnim.SetBool(openCageAnimParm, true);
-                garagist.ForceCollect();
-            }
+            // open cage
+            cageAnim.SetBool(openCageAnimParm, true);
+
+            NPC.setFree();
+            garagist.ForceCollect();
+        } else {
+            NPC.StartTalk();
         }
     }
+
 }

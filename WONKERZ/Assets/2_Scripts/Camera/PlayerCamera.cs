@@ -96,6 +96,9 @@ public class PlayerCamera : GameCamera
         List<CameraFocusable> focusables = Access.CameraManager().focusables;
         foreach(CameraFocusable f in focusables)
         {
+            if (!f.gameObject.activeSelf)
+                continue;
+
             float dist = Vector3.Distance(f.transform.position, p_pos);
             if (dist > f.focusFindRange)
                 continue;

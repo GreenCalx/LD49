@@ -27,15 +27,14 @@ public class CameraFocusable : MonoBehaviour
 
     void Start()
     {
-        bool susbscribedToCamMgr = false;
+        susbscribedToCamMgr = false;
         subToManager();
     }
 
     void Update()
     {
         if (!susbscribedToCamMgr)
-            return;
-        subToManager();
+            subToManager();
     }
 
     void OnDestroy()
