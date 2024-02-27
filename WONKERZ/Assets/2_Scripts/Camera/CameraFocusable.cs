@@ -88,7 +88,8 @@ public class CameraFocusable : MonoBehaviour
 
         callbackOnUnFocus?.Invoke();
         isFocus = false;
-        Destroy(UIFocusAction_Inst.gameObject);
+        if (!!UIFocusAction_Inst)
+            Destroy(UIFocusAction_Inst.gameObject);
     }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 using Schnibble;
 using Schnibble.AI;
+using Schnibble.Rendering;
 using static UnityEngine.Debug;
 
 public class WilliamEnemy : WkzNPC
@@ -20,6 +21,7 @@ public class WilliamEnemy : WkzNPC
     public List<PlayerDamager> damagers;
     public SkinnedMeshRenderer arms;
     public Material damagerMaterialRef;
+    public GameObject chargeAttackDecal_Ref;
 
     [Header("Tweaks")]
     public float max_lariat_duration = 5f;
@@ -29,6 +31,8 @@ public class WilliamEnemy : WkzNPC
     public float direct_hit_duration = 1.5f;
     public float idle_time_between_action = 2f;
     public float idle_time_variance = 0.5f;
+    public float prelariat_charge_duration = 1f;
+    public float atkChargeDecalYOffset = 0f;
     [Range(0f,50f)]
     public float player_aim_error = 5f;
     [Header("Anim")]
@@ -44,10 +48,12 @@ public class WilliamEnemy : WkzNPC
 
     // AI
 
+    [Header("Internals")]
     private Vector3 lariat_destination = Vector3.zero;
     private float elapsed_time_in_lariat = 0f;
     private float current_idle_time = 2f;
     private float idle_timer;
+    private GameObject chargeAttackDecal_Inst; 
 
     private Coroutine showDamagerCo;
 
@@ -58,6 +64,7 @@ public class WilliamEnemy : WkzNPC
         idle_timer = 0f;
         playerSpottedEffect.SetActive(false);
         updateCurrentIdleTime();
+        toggleOffDecal();
     }
 
     // Update is called once per frame
@@ -86,7 +93,7 @@ public class WilliamEnemy : WkzNPC
     protected override void InAggro()
     {
         if (lariat_destination!=Vector3.zero)
-        return;
+            return;
 
         if (idle_timer < current_idle_time)
         {
@@ -123,13 +130,13 @@ public class WilliamEnemy : WkzNPC
     public void CallGuard()
     {
         Log(gameObject.name + " CallGuard");
-        LaunchAction(Guard(this, coordinator.playerDetector.GetTarget().transform.position));
+        LaunchAction(Guard(this));
     }
 
     public void CallLariat()
     {
         Log(gameObject.name + " CallLariat");
-        LaunchAction(LariatSpin(this, coordinator.playerDetector.GetTarget().transform.position));
+        LaunchAction(LariatSpin(this));
     }
 
     public void CallDirectHit()
@@ -146,7 +153,7 @@ public class WilliamEnemy : WkzNPC
         while (timer < guard_duration)
         {
             timer += Time.deltaTime;
-            facePlayer();
+            facePlayer(true);
             yield return null;
         }
         
@@ -172,29 +179,43 @@ public class WilliamEnemy : WkzNPC
         playerSpottedEffect.SetActive(false);
     }
 
-    private IEnumerator LariatSpin(WilliamEnemy iAttacker, Vector3 iTarget)
+    private IEnumerator LariatSpin(WilliamEnemy iAttacker)
     {
+        // aim player & pre-anim
+        float chargeLariatElapsed = 0f;
+        while ( chargeLariatElapsed <= prelariat_charge_duration)
+        {
+            lariat_destination = GetNextPositionFromCoordinator();
+            faceTarget(lariat_destination, true);
+            toggleOnDecal(lariat_destination);
+            chargeLariatElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Actual Lariat
+
+        if (!agent.SetDestination(lariat_destination))
+        {
+            // WHY ?
+            // Find if its because the destination is out of the navigated surface
+            // > If so, find the limit position on this surface aligned with computed prediction
+            // > Else, try to move randomly somewhere on the surface
+            lariat_destination = GetNextLimitPosition(lariat_destination, 50f);
+            if (!agent.SetDestination(lariat_destination))
+            {
+                LogError("William : Failed to attack player");
+            }
+        }
+
+        tryUnparentAttackDecal();
         weakSpot.enabled = false;
         elapsed_time_in_lariat = 0f;
 
         iAttacker.LariatAnim();
         float rotSpeed = 360f / lariat_rot_per_sec;
+
         while( Vector3.Distance(iAttacker.transform.position, lariat_destination) > lariat_target_reached_epsilon)
         {
-            lariat_destination = GetNextPositionFromCoordinator();
-
-            if (!agent.SetDestination(lariat_destination))
-            {
-                // WHY ?
-                // Find if its because the destination is out of the navigated surface
-                // > If so, find the limit position on this surface aligned with computed prediction
-                // > Else, try to move randomly somewhere on the surface
-                lariat_destination = GetNextLimitPosition(lariat_destination, 50f);
-                if (!agent.SetDestination(lariat_destination))
-                {
-                    LogError("William : Failed to attack player");
-                }
-            }
             iAttacker.transform.Rotate(0, rotSpeed * Time.deltaTime, 0, Space.Self);
 
             // Limit time in lariat
@@ -204,18 +225,20 @@ public class WilliamEnemy : WkzNPC
             
             yield return null;
         }
+        toggleOffDecal();
         iAttacker.IdleAnim();
 
         lariat_destination = Vector3.zero;
         updateCurrentIdleTime();
         idle_timer = 0f;
 
+        
         weakSpot.enabled = true;
 
         iAttacker.StopAction();
     }
 
-    private IEnumerator Guard(WilliamEnemy iAttacker, Vector3 iTarget)
+    private IEnumerator Guard(WilliamEnemy iAttacker)
     {
         float timer = 0f;
         agent.isStopped = true;
@@ -264,6 +287,8 @@ public class WilliamEnemy : WkzNPC
 
     public void kill()
     {
+        facePlayer(true);
+
         ai_kill();
         DeathAnim();
         foreach(var damager in damagers) { Destroy(damager); }
@@ -279,15 +304,29 @@ public class WilliamEnemy : WkzNPC
         Destroy(this);
     }
 
-    public void facePlayer()
+    public void facePlayer(bool iForceNoLERP = false)
     {
-        Vector3 target = Access.Player().transform.position - transform.position;
-        float rotSpeed = 2f * Time.deltaTime;
+        faceTarget(Access.Player().transform.position, iForceNoLERP);
+    }
+
+    public void faceTarget(Vector3 iTarget, bool iForceNoLERP = false)
+    {
+        Vector3 target = iTarget - transform.position;
+        float rotSpeed = (iForceNoLERP) ? 180f : 2f * Time.deltaTime;
         float maxRotMagDelta = 0f;
 
-        Vector3 newDir = Vector3.RotateTowards(transform.forward, target, rotSpeed, maxRotMagDelta);
+        Vector3 from = transform.forward;
+        from.y = 0f;
+
+        Vector3 to = target;
+        to.y = 0f;
+
+        //Vector3 newDir = Vector3.RotateTowards(transform.forward, target, rotSpeed, maxRotMagDelta);
+        Vector3 newDir = Vector3.RotateTowards(from, to, rotSpeed, maxRotMagDelta);
         transform.rotation = Quaternion.LookRotation(newDir);
     }
+
+
 
 
     // ANIMS
@@ -355,5 +394,62 @@ public class WilliamEnemy : WkzNPC
         animator.SetBool(param_SURPRISED, false); 
 
         animator.SetBool(param_DHIT, true);
+    }
+
+    public void toggleOffDecal()
+    {
+        updateAttackDecal(false , Vector3.zero);
+    }
+
+    public void toggleOnDecal(Vector3 iTarget)
+    {
+        updateAttackDecal(true, iTarget);
+    }
+
+    private void updateAttackDecal(bool iState, Vector3 iTarget)
+    {
+        if (chargeAttackDecal_Ref==null)
+            return;
+
+        if (!iState)
+        {
+            if (chargeAttackDecal_Inst!=null)
+            {
+                Destroy(chargeAttackDecal_Inst.gameObject);
+            }
+        } else {
+
+            Vector3 targetPos   = iTarget;
+            Vector3 selfPos     = transform.position;
+
+            Vector3 decalPosition = Vector3.Lerp(targetPos, selfPos, 0.5f); // halfway
+            decalPosition.y = 0f;
+
+            
+            if (chargeAttackDecal_Inst==null)
+            {
+                chargeAttackDecal_Inst = Instantiate(chargeAttackDecal_Ref);
+                chargeAttackDecal_Inst.transform.parent = transform;
+                chargeAttackDecal_Inst.transform.rotation = transform.rotation;
+            }
+            
+            chargeAttackDecal_Inst.transform.position = new Vector3(decalPosition.x, 0f, decalPosition.z);
+            chargeAttackDecal_Inst.transform.localPosition = new Vector3(chargeAttackDecal_Inst.transform.localPosition.x, atkChargeDecalYOffset, chargeAttackDecal_Inst.transform.localPosition.z);
+            // Todo : use transform point instead to have a better Y offset during aiming phase (so the decal doesn't flicker cuz of Y coord)
+            //chargeAttackDecal_Inst.transform.position = chargeAttackDecal_Inst.transform.TransformPoint(decalPosition.x, atkChargeDecalYOffset, decalPosition.z);
+
+            chargeAttackDecal_Inst.transform.localScale = new Vector3( 
+                                                                chargeAttackDecal_Inst.transform.localScale.x,
+                                                                chargeAttackDecal_Inst.transform.localScale.y,
+                                                                Mathf.Ceil(Vector3.Distance(targetPos, selfPos))
+                                                                );
+        }
+    }
+
+    private void tryUnparentAttackDecal()
+    {
+        if (chargeAttackDecal_Inst==null)
+            return;
+        chargeAttackDecal_Inst.transform.parent = null;
     }
 }
