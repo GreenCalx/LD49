@@ -91,6 +91,50 @@ public class TurboCarPower : ICarPower
     }
 }
 
+public class SpinCarPower : ICarPower
+{
+    public GameObject SpinPowerObject_Ref;
+    private GameObject SpinPowerObject_Inst;
+
+    public float duration = 0.5f;
+    private float elapsed = 0f;
+    public string name { get; set; }
+    public SpinCarPower(GameObject iSpinPowerObject_Ref)
+    {
+        name = "SpinPower";
+        SpinPowerObject_Ref = iSpinPowerObject_Ref;
+    }
+    public void applyDirectEffect()
+    {
+        // SPAWN spin hurtbox mesh SpinPowerObject
+        SpinPowerObject_Inst = GameObject.Instantiate(SpinPowerObject_Ref, Access.Player().transform);
+        elapsed = 0f;
+    }
+    public void onRefresh()
+    {
+        elapsed += Time.deltaTime;
+        if (elapsed > duration)
+        {
+            onDisableEffect();
+        }
+    }
+    public void onDisableEffect()
+    {
+        // DESPAWN spin hurtbox mesh SpinPowerObject
+        GameObject.Destroy(SpinPowerObject_Inst.gameObject);
+    }
+    public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
+    {
+        this.Log("Spin Power Input effects");
+    }
+    public bool turnOffTriggers()
+    {
+        //if (Access.Player().currentSpeed < 1f)
+        //    return true;
+        return false;
+    }
+}
+
 public class WaterCarPower : ICarPower
 {
     public string name { get; set; }

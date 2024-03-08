@@ -8,8 +8,10 @@ public class PowerController : MonoBehaviour
 {
     public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
 
+    [Header("References for powers")]
     public GameObject turboParticles;
-
+    public GameObject SpinPowerObject_Ref;
+    [Header("Powers")]
     public List<ICarPower> powers;
     public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
     public ICarPower currentPower;
@@ -23,7 +25,7 @@ public class PowerController : MonoBehaviour
         powers = new List<ICarPower>()
         {
             new NeutralCarPower(),
-            new TurboCarPower(turboParticles),
+            new SpinCarPower(SpinPowerObject_Ref),
             new WaterCarPower(),
             new PlaneCarPower(),
             new SpiderCarPower()
@@ -53,6 +55,8 @@ public class PowerController : MonoBehaviour
             nextPower = powers[0];
             tryTriggerPower();
         }
+        if (currentPower!=null)
+            refreshPower();
     }
 
     public bool isInNeutralPowerMode()
@@ -72,7 +76,8 @@ public class PowerController : MonoBehaviour
         {
             //activate
             this.Log("Next power :" + nextPower.name);
-            currentPower.onDisableEffect();
+            if (currentPower!=null)
+                currentPower.onDisableEffect();
             currentPower = nextPower;
             currentPower.applyDirectEffect();
         }
@@ -108,18 +113,18 @@ public class PowerController : MonoBehaviour
 
     public void showUI(bool iToggle)
     {
-        if (uiPowerWheel == null)
-        {
-            uiPowerWheel = Access.UIPowerWheel();
-        }
-        if (!!uiPowerWheel)
-        {
-            uiPowerWheel.showWheel(iToggle);
-        }
-        else
-        {
-            this.LogWarn("Unable to find UIPowerWheel.");
-        }
+        // if (uiPowerWheel == null)
+        // {
+        //     uiPowerWheel = Access.UIPowerWheel();
+        // }
+        // if (!!uiPowerWheel)
+        // {
+        //     uiPowerWheel.showWheel(iToggle);
+        // }
+        // else
+        // {
+        //     this.LogWarn("Unable to find UIPowerWheel.");
+        // }
     }
 
     public void showIndicator(PowerWheelPlacement iPlacement)

@@ -258,12 +258,32 @@ public class GroundState : FSMState, IControllable
             player.turn.Add(turnAxis.GetState().valueSmooth);
         }
 
-        var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-        if (airplaneMode != null) {
-            if (airplaneMode.GetState().down) {
-                player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+        // powers
+        // spin
+        if (!player.IsInMenu())
+        {
+            var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
+            if (spinAtk!=null)
+            {
+                if (spinAtk.GetState().down)
+                {
+                    player.self_PowerController.setNextPower(1);
+                    player.self_PowerController.tryTriggerPower();
+                }
             }
         }
+
+        // paraglider
+        if (!player.IsInMenu())
+        {
+            var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
+            if (airplaneMode != null) {
+                if (airplaneMode.GetState().down) {
+                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+                }
+            }
+        }
+
     }
 };
 
@@ -410,7 +430,7 @@ public class PlayerController : MonoBehaviour, IControllable
 {
     public PlayerGeneralStates generalStates;
     public PlayerVehicleStates vehicleStates;
-
+    public PowerController self_PowerController;
     private bool isInMenu = false;
 
     // Flags
@@ -525,6 +545,8 @@ public class PlayerController : MonoBehaviour, IControllable
 
         generalStates = new PlayerGeneralStates(this);
         vehicleStates = new PlayerVehicleStates(this);
+
+        self_PowerController = GetComponent<PowerController>();
 
         Freeze();
 

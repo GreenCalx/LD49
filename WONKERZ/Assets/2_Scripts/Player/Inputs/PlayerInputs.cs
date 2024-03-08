@@ -26,8 +26,10 @@ public class Player0Inputs : PlayerInputs
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.1f, 10f);
 
+        // powers
         controller.AddInput((int)InputCode.AirplaneMode, new GameInputButton("Airplane transform", "Transform into an airplane", new Controller.InputCode(Controller.JoystickButtonsCode.B), new Controller.InputCode(KeyCode.F)));
-
+        controller.AddInput((int)InputCode.SpinAttack, new GameInputButton("Spin attack", "Launches a spin attack used to damage nearby enemies and deflect projectiles.", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.E)));
+        
         // misc camera
         controller.AddInput((int)InputCode.CameraX,
             new GameInputAxis("CameraX", "Move camera left or right",
@@ -124,8 +126,9 @@ public class Player1Inputs : PlayerInputs
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.1f, 10f);
 
+        // powers
         controller.AddInput((int)InputCode.AirplaneMode, new GameInputButton("Airplane transform", "Transform into an airplane", new Controller.InputCode(Controller.JoystickButtonsCode.B), new Controller.InputCode(KeyCode.F)));
-
+        controller.AddInput((int)InputCode.SpinAttack, new GameInputButton("Spin attack", "Launches a spin attack used to damage nearby enemies and deflect projectiles.", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.E)));
 
         // misc camera
         controller.AddInput((int)InputCode.CameraX,
@@ -235,6 +238,7 @@ public class PlayerInputs
         // player : misc
 
         AirplaneMode,
+        SpinAttack,
 
         // axis
         CameraChange,
@@ -275,7 +279,9 @@ public class PlayerInputs
 
         GameInputAxis.Settings defaultAxisSettings = new GameInputAxis.Settings(0.01f, 10f);
 
+        // powers
         controller.AddInput((int)InputCode.AirplaneMode, new GameInputButton("Airplane transform", "Transform into an airplane", new Controller.InputCode(Controller.JoystickButtonsCode.B), new Controller.InputCode(KeyCode.F)));
+        controller.AddInput((int)InputCode.SpinAttack, new GameInputButton("Spin attack", "Launches a spin attack used to damage nearby enemies and deflect projectiles.", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.E)));
 
         // misc camera
         controller.AddInput((int)InputCode.CameraX,
