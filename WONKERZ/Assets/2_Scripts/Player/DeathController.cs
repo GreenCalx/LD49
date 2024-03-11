@@ -126,10 +126,14 @@ public class DeathController : MonoBehaviour
         yield return new WaitForSeconds(timeBeforeDeletion);
         foreach (var rb in objects)
         {
+            if (rb==null)
+                continue;
             Destroy(rb.gameObject);
         }
         foreach(var rb in bodies)
         {
+            if (rb==null)
+                continue;
             Destroy(rb.gameObject);
         }
         Destroy(gameObject, 0.1f);

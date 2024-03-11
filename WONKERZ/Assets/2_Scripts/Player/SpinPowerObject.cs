@@ -39,10 +39,30 @@ public class SpinPowerObject : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        Debug.Log(iCol.gameObject.name);
+        Debug.Log("SpinPowerObject collision : " + iCol.gameObject.name);
         Rigidbody collider_rb = iCol.gameObject.GetComponent<Rigidbody>();
         if (!!collider_rb)
+            collider_rb = iCol.gameObject.GetComponentInChildren<Rigidbody>();
+
+        if (!!collider_rb)
         {
+            Reflectable as_reflectable = iCol.gameObject.GetComponent<Reflectable>();
+            if (!!as_reflectable)
+            {
+                if (as_reflectable.tryReflect())
+                {
+                    repulsionForce *= as_reflectable.reflectionMultiplier;
+
+                    if (as_reflectable.autoAimOnReflection != null)
+                    {
+                        Vector3 autoAimDir = as_reflectable.autoAimOnReflection.position - iCol.gameObject.transform.position;
+                        collider_rb.AddForce(autoAimDir.normalized * as_reflectable.reflectionMultiplier, ForceMode.VelocityChange);
+                        return;
+                    }
+                } else { 
+                    return; // already reflected
+                }
+            } 
             Vector3 f_dir = iCol.gameObject.transform.position - transform.position;
             collider_rb.AddForce(f_dir.normalized * repulsionForce, ForceMode.VelocityChange);
         }

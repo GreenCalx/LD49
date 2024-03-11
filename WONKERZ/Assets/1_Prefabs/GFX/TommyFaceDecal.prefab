@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6311059715389316811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6259128948292629488}
+  - component: {fileID: 5867213355474650852}
+  - component: {fileID: 9076882230193070507}
+  m_Layer: 0
+  m_Name: TommyFaceDecal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6259128948292629488
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311059715389316811}
+  m_LocalRotation: {x: -0.081914686, y: -0.0056289914, z: -0.0045833243, w: 0.99661297}
+  m_LocalPosition: {x: 0.005, y: 0.076, z: 0.477}
+  m_LocalScale: {x: 0.22, y: 0.2, z: 0.22}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: -9.4, y: -0.608, z: -0.477}
+--- !u!114 &5867213355474650852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311059715389316811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 834aa75e670b38746a8ceba1afac332c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 0}
+  decalMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  decalMat: {fileID: 2100000, guid: 0b60028e30d50e1478055b831c4acd78, type: 2}
+  writeColor: 1
+  writeNormal: 0
+  writeMaterial: 0
+  writeEmission: 0
+  writeMatID: 0
+  writeDepth: 0
+  fillMesh: {fileID: 0}
+  fillMeshMat: {fileID: 0}
+  postDecalMesh: {fileID: 0}
+--- !u!114 &9076882230193070507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311059715389316811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06ae6200f2f80ce4ca06bd1fb4575b21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decalRenderer: {fileID: 5867213355474650852}
+  speed: 1
+  defaultMouth: {fileID: 2800000, guid: 211b1c3af9b89e742a9933c175d59452, type: 3}
+  frames:
+  - {fileID: 2800000, guid: 211b1c3af9b89e742a9933c175d59452, type: 3}
+  - {fileID: 2800000, guid: 6e3cd4c7a218644408b47d3ccdc62d7f, type: 3}
+  - {fileID: 2800000, guid: 211b1c3af9b89e742a9933c175d59452, type: 3}
+  - {fileID: 2800000, guid: 6e3cd4c7a218644408b47d3ccdc62d7f, type: 3}
+  animate: 0

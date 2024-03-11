@@ -8,20 +8,19 @@ using Schnibble.AI;
 using Schnibble.Rendering;
 using static UnityEngine.Debug;
 
-public class WilliamEnemy : WkzNPC
+public class WilliamEnemy : WkzEnemy
 {
     [Header("WilliamEnemy\nMAND")]
     public Animator animator;
     public PlayerDetector weakSpot;
     public GameObject deathEffect;
     public GameObject deathGhostPSRef;
-    public GameObject playerSpottedEffect;
     public PlayerDetector guardDetector;
     public PlayerDetector directHitDetector;
     public List<PlayerDamager> damagers;
     public SkinnedMeshRenderer arms;
     public Material damagerMaterialRef;
-    public GameObject chargeAttackDecal_Ref;
+
 
     [Header("Tweaks")]
     public float max_lariat_duration = 5f;
@@ -32,7 +31,7 @@ public class WilliamEnemy : WkzNPC
     public float idle_time_between_action = 2f;
     public float idle_time_variance = 0.5f;
     public float prelariat_charge_duration = 1f;
-    public float atkChargeDecalYOffset = 0f;
+
     [Range(0f,50f)]
     public float player_aim_error = 5f;
     [Header("Anim")]
@@ -44,7 +43,6 @@ public class WilliamEnemy : WkzNPC
     public string param_DHIT = "DIRECT_HIT";
     [Header("Effects")]
     public float death_effect_size = 8f;
-    public float spottedMarkerDuration = 3f; 
 
     // AI
 
@@ -53,7 +51,6 @@ public class WilliamEnemy : WkzNPC
     private float elapsed_time_in_lariat = 0f;
     private float current_idle_time = 2f;
     private float idle_timer;
-    private GameObject chargeAttackDecal_Inst; 
 
     private Coroutine showDamagerCo;
 
@@ -64,7 +61,7 @@ public class WilliamEnemy : WkzNPC
         idle_timer = 0f;
         playerSpottedEffect.SetActive(false);
         updateCurrentIdleTime();
-        toggleOffDecal();
+        toggleOffDynamicDecal();
     }
 
     // Update is called once per frame
@@ -164,21 +161,6 @@ public class WilliamEnemy : WkzNPC
         agent.isStopped = false;
     }
 
-    private IEnumerator ShowSpottedMarker(WilliamEnemy iSelf)
-    {
-        playerSpottedEffect.SetActive(true);
-        float show_elapsed = 0f;
-        float anim_freq = 1 / iSelf.spottedMarkerDuration;
-
-        while (show_elapsed < iSelf.spottedMarkerDuration)
-        {
-            show_elapsed += Time.deltaTime;
-            yield return null;
-        }
-
-        playerSpottedEffect.SetActive(false);
-    }
-
     private IEnumerator LariatSpin(WilliamEnemy iAttacker)
     {
         // aim player & pre-anim
@@ -187,7 +169,7 @@ public class WilliamEnemy : WkzNPC
         {
             lariat_destination = GetNextPositionFromCoordinator();
             faceTarget(lariat_destination, true);
-            toggleOnDecal(lariat_destination);
+            toggleOnDynamicDecal(lariat_destination);
             chargeLariatElapsed += Time.deltaTime;
             yield return null;
         }
@@ -225,7 +207,7 @@ public class WilliamEnemy : WkzNPC
             
             yield return null;
         }
-        toggleOffDecal();
+        toggleOffDynamicDecal();
         iAttacker.IdleAnim();
 
         lariat_destination = Vector3.zero;
@@ -285,7 +267,7 @@ public class WilliamEnemy : WkzNPC
         damagingMat.color = baseColor;
     }
 
-    public void kill()
+    public override void kill()
     {
         facePlayer(true);
 
@@ -303,31 +285,6 @@ public class WilliamEnemy : WkzNPC
         Destroy(cameraFocusable, 0.5f);
         Destroy(this);
     }
-
-    public void facePlayer(bool iForceNoLERP = false)
-    {
-        faceTarget(Access.Player().transform.position, iForceNoLERP);
-    }
-
-    public void faceTarget(Vector3 iTarget, bool iForceNoLERP = false)
-    {
-        Vector3 target = iTarget - transform.position;
-        float rotSpeed = (iForceNoLERP) ? 180f : 2f * Time.deltaTime;
-        float maxRotMagDelta = 0f;
-
-        Vector3 from = transform.forward;
-        from.y = 0f;
-
-        Vector3 to = target;
-        to.y = 0f;
-
-        //Vector3 newDir = Vector3.RotateTowards(transform.forward, target, rotSpeed, maxRotMagDelta);
-        Vector3 newDir = Vector3.RotateTowards(from, to, rotSpeed, maxRotMagDelta);
-        transform.rotation = Quaternion.LookRotation(newDir);
-    }
-
-
-
 
     // ANIMS
     public void GuardAnim()
@@ -396,60 +353,7 @@ public class WilliamEnemy : WkzNPC
         animator.SetBool(param_DHIT, true);
     }
 
-    public void toggleOffDecal()
-    {
-        updateAttackDecal(false , Vector3.zero);
-    }
 
-    public void toggleOnDecal(Vector3 iTarget)
-    {
-        updateAttackDecal(true, iTarget);
-    }
 
-    private void updateAttackDecal(bool iState, Vector3 iTarget)
-    {
-        if (chargeAttackDecal_Ref==null)
-            return;
 
-        if (!iState)
-        {
-            if (chargeAttackDecal_Inst!=null)
-            {
-                Destroy(chargeAttackDecal_Inst.gameObject);
-            }
-        } else {
-
-            Vector3 targetPos   = iTarget;
-            Vector3 selfPos     = transform.position;
-
-            Vector3 decalPosition = Vector3.Lerp(targetPos, selfPos, 0.5f); // halfway
-            decalPosition.y = 0f;
-
-            
-            if (chargeAttackDecal_Inst==null)
-            {
-                chargeAttackDecal_Inst = Instantiate(chargeAttackDecal_Ref);
-                chargeAttackDecal_Inst.transform.parent = transform;
-                chargeAttackDecal_Inst.transform.rotation = transform.rotation;
-            }
-            
-            chargeAttackDecal_Inst.transform.position = new Vector3(decalPosition.x, 0f, decalPosition.z);
-            chargeAttackDecal_Inst.transform.localPosition = new Vector3(chargeAttackDecal_Inst.transform.localPosition.x, atkChargeDecalYOffset, chargeAttackDecal_Inst.transform.localPosition.z);
-            // Todo : use transform point instead to have a better Y offset during aiming phase (so the decal doesn't flicker cuz of Y coord)
-            //chargeAttackDecal_Inst.transform.position = chargeAttackDecal_Inst.transform.TransformPoint(decalPosition.x, atkChargeDecalYOffset, decalPosition.z);
-
-            chargeAttackDecal_Inst.transform.localScale = new Vector3( 
-                                                                chargeAttackDecal_Inst.transform.localScale.x,
-                                                                chargeAttackDecal_Inst.transform.localScale.y,
-                                                                Mathf.Ceil(Vector3.Distance(targetPos, selfPos))
-                                                                );
-        }
-    }
-
-    private void tryUnparentAttackDecal()
-    {
-        if (chargeAttackDecal_Inst==null)
-            return;
-        chargeAttackDecal_Inst.transform.parent = null;
-    }
 }
