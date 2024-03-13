@@ -10,11 +10,10 @@ public class Canon : MonoBehaviour
     public GameObject projectile_Ref;
     public float projectileDuration = 3f;
     ///
-    private GameObject projectile_Inst;
 
-    public void Fire()
+    public GameObject Fire()
     {
-        projectile_Inst = Instantiate(projectile_Ref);
+        GameObject projectile_Inst = Instantiate(projectile_Ref);
         projectile_Inst.transform.position = spawnPoint.position;
         projectile_Inst.transform.parent = null;
 
@@ -26,5 +25,6 @@ public class Canon : MonoBehaviour
         }
 
         Destroy(projectile_Inst, projectileDuration);
+        return projectile_Inst;
     }
 }

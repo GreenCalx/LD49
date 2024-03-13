@@ -27,14 +27,23 @@ public class CameraFocusable : MonoBehaviour
 
     void Start()
     {
-        susbscribedToCamMgr = false;
         subToManager();
+    }
+
+    void OnEnable()
+    {
+        subToManager();        
+    }
+
+    void OnDisable()
+    {
+        unsubToManager();
     }
 
     void Update()
     {
-        if (!susbscribedToCamMgr)
-            subToManager();
+        // if (!susbscribedToCamMgr)
+        //     subToManager();
     }
 
     void OnDestroy()
@@ -47,11 +56,24 @@ public class CameraFocusable : MonoBehaviour
 
     private void subToManager()
     {
-        cameraManager = Access.CameraManager();
+        if (cameraManager==null)
+            cameraManager = Access.CameraManager();
         if (!!cameraManager)
         {
             cameraManager.addFocusable(this);
             susbscribedToCamMgr = true;
+        }
+    }
+
+    private void unsubToManager()
+    {
+        if (cameraManager==null)
+            cameraManager = Access.CameraManager();
+            
+        if (!!cameraManager)
+        {
+            cameraManager.removeFocusable(this);
+            susbscribedToCamMgr = false;
         }
     }
 
