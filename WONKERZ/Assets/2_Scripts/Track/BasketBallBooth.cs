@@ -12,16 +12,19 @@ public class BasketBallBooth : MonoBehaviour
     public GameObject EventLauncherFocusable;
     public Transform rewardSpawn;
     public GameObject nutExplodingPatch_Ref;
+    public Transform gameBarrier;
 
     public bool eventIsActive = false;
     [Header("Tweaks")]
     public float canon_RoF = 2f;
     public float eventDuration = 30f;
+    public float barrierYOffsetWhenOffGame = -1f;
     [Header("Internals")]
     public int score = 0;
     private float rest_time = 0f;
     private float event_elapsed_time = 0f;
     public List<GameObject> spawnedBalls;
+    private Vector3 barrierInitPosition = Vector3.zero;// opened
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +32,11 @@ public class BasketBallBooth : MonoBehaviour
         rest_time = 0f;
         event_elapsed_time = 0f;
 
+        barrierInitPosition = gameBarrier.position;
+        gameBarrier.position += new Vector3(0f, barrierYOffsetWhenOffGame, 0f); // start open
+
         updateTimeLbl();
+        stopEvent();
     }
 
     // Update is called once per frame
@@ -74,6 +81,8 @@ public class BasketBallBooth : MonoBehaviour
 
         updateTimeLbl();
         updateScoreLbl();
+
+        gameBarrier.position = barrierInitPosition;
     }
 
     public void stopEvent()
@@ -99,6 +108,8 @@ public class BasketBallBooth : MonoBehaviour
 
         EventLauncher.SetActive(true);
         EventLauncherFocusable.SetActive(true);
+
+        gameBarrier.position = barrierInitPosition + new Vector3(0f, barrierYOffsetWhenOffGame, 0f);
 
     }
 
