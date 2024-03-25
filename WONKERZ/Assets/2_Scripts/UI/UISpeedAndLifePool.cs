@@ -57,7 +57,9 @@ public class UISpeedAndLifePool : MonoBehaviour
         speedBar.fillAmount = bar_percent;
 
         // Update Text
-        string lbl = ((int)PlayerVelocity).ToString();
+        float velocityInKmH = playerVelocity * 3.6f;
+        string lbl = ((int)velocityInKmH).ToString();
+        lbl += " KMH";
         speedText.SetText(lbl);
 
         //update overdrive
