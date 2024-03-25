@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
+using Schnibble;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
 
 public class CameraFocusable : MonoBehaviour
@@ -67,9 +65,16 @@ public class CameraFocusable : MonoBehaviour
 
     private void unsubToManager()
     {
-        if (cameraManager==null)
-            cameraManager = Access.CameraManager();
-            
+        // IMPORTANT toffa: unsubToManager is called OnDisable,
+        // but we cannot use GameObject.Find in this function.
+        // As Access will try to find the object, simply report that it is
+        // weird to unsub with a cameraManager == null as it means we never
+        // successfully made the subToManager.
+        //if (cameraManager == null)
+        //    cameraManager = Access.CameraManager();
+        if (cameraManager == null)
+            this.LogError("Trying to unsub from a null CameraManager. For now (03/25/24) it is only happenning in debug builds, using TSTHook.\n If it happens in release build this is a bug!");
+
         if (!!cameraManager)
         {
             cameraManager.removeFocusable(this);
