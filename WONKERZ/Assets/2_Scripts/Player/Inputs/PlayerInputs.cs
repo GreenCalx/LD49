@@ -235,6 +235,7 @@ public class PlayerInputs
         Turn,
         WeightY,
         WeightX,
+        ForwardBackward,
         // player : misc
 
         AirplaneMode,
@@ -338,6 +339,13 @@ public class PlayerInputs
         controller.AddInput((int)InputCode.Turn,
             new GameInputAxis("Turn", "Car direction",
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftH), new Controller.InputCode(Controller.JoystickAxisCode.LeftHNeg)),
+                new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
+                defaultAxisSettings));
+
+
+        controller.AddInput((int)InputCode.ForwardBackward,
+            new GameInputAxis("Turn", "Car Up/Down shifting",
+                new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.LeftV), new Controller.InputCode(Controller.JoystickAxisCode.LeftVNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(KeyCode.A), new Controller.InputCode(KeyCode.D)),
                 defaultAxisSettings));
 
