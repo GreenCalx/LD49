@@ -105,11 +105,12 @@ public class StartPortal : AbstractCameraPoint
 
     public void relocatePlayer(PlayerController pc)
     {
-        pc.transform.position = transform.position;
-        pc.transform.rotation = Quaternion.identity;
+        PlayerController pc = Access.Player();
+        pc.GetCurrentTransform().position = transform.position;
+        pc.GetCurrentTransform().rotation = Quaternion.identity;
         if (facingPoint != null)
         {
-            pc.transform.LookAt(facingPoint.transform);
+            pc.GetCurrentTransform().LookAt(facingPoint.transform);
         }
         pc.rb.velocity = Vector3.zero;
         pc.rb.angularVelocity = Vector3.zero;

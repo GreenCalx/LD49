@@ -606,6 +606,10 @@ public class PlayerController : MonoBehaviour, IControllable
         Access.invalidate();
     }
 
+    public Transform GetCurrentTransform() {
+        return currentRB == null ? transform : currentRB.transform;
+    }
+
     // Update is called once per frame
     void Update()
     {

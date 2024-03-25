@@ -155,10 +155,14 @@ public class ManualCamera : PlayerCamera, IControllable
     // Game camera overrides
     public override void init()
     {
+        var player = Access.Player();
+        if (playerRef == null) {
+            playerRef = player.GetCurrentTransform().gameObject;
+        }
+        
         if (focus == null)
         {
-            Access.Player().inputMgr.Attach(this as IControllable);
-            playerRef = Utils.getPlayerRef();
+            player.inputMgr.Attach(this as IControllable);
             focus = playerRef.transform;
         }
         focusPoint = focus.position;

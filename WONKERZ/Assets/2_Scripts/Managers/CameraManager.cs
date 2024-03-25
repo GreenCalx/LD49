@@ -116,6 +116,13 @@ public class CameraManager : MonoBehaviour, IControllable
 
     }
 
+    public void OnTargetChange(Transform t) {
+        if (active_camera.TryGetComponent<PlayerCamera>(out PlayerCamera cam)) {
+            cam.playerRef = t.gameObject;
+            cam.init();
+        }
+    }
+
     // Find Camera from its type within current scene
     // Only one per CAM_TYPE is retrieved for now as we don't need more
     // Thus if we want to have multiple cameras for the hub, we'll need to update

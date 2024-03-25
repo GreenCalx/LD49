@@ -70,10 +70,7 @@ public class PlayerCamera : GameCamera
     }
 
 
-    public override void init()
-    {
-        playerRef = Utils.getPlayerRef();
-    }
+    public override void init() {}
 
     public override void resetView() { }
 
@@ -89,7 +86,7 @@ public class PlayerCamera : GameCamera
         alreadyFocusedQ= new Queue<CameraFocusable>();
 
         PlayerController p = Access.Player();
-        Vector3 p_pos = p.transform.position;
+        Vector3 p_pos = p.GetCurrentTransform().position;
 
         float minDist = float.MaxValue;
         CameraFocusable chosenOne = null;
@@ -151,7 +148,7 @@ public class PlayerCamera : GameCamera
 
         // Check if distance is met, disable otherwise
         PlayerController p = Access.Player();
-        Vector3 p_pos = p.transform.position;
+        Vector3 p_pos = p.GetCurrentTransform().position;
         if (Vector3.Distance(secondaryFocus.transform.position, p_pos) > breakFocusDistance)
         {
             resetFocus();
@@ -166,7 +163,7 @@ public class PlayerCamera : GameCamera
         Debug.Log("Change focus");
 
         PlayerController p = Access.Player();
-        Vector3 p_pos = p.transform.position;
+        Vector3 p_pos = p.GetCurrentTransform().position;
 
         float minDist = float.MaxValue;
         CameraFocusable chosenOne = null;

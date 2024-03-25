@@ -23,9 +23,10 @@ public class FollowPlayer : PlayerCamera
 
     public override void init() 
     {
-        playerRef = Utils.getPlayerRef();
         //CPM = FindObjectOfType<CheckPointManager>();
         CPM = Access.CheckPointManager();
+
+        playerRef = Access.Player().GetCurrentTransform().gameObject;
     }
 
     // Update is called once per frame

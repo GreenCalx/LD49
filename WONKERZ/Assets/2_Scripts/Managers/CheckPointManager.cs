@@ -210,8 +210,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             return;
 
             currPanels -= 1;
-            ss_pos = player.transform.position;
-            ss_rot = player.gameObject.transform.rotation;
+            ss_pos = player.GetCurrentTransform().position;
+            ss_rot = player.GetCurrentTransform().rotation;
             hasSS = true;
 
             uiPlayer?.updateAvailablePanels(currPanels);
@@ -312,7 +312,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public void OnPlayerRespawn(Transform respawnSource)
     {
         // reset player physx
-        Rigidbody rb2d = player.GetComponentInChildren<Rigidbody>();
+        Rigidbody rb2d = player.rb;
         if (!!rb2d)
         {
             rb2d.velocity = Vector3.zero;
@@ -347,8 +347,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             loadLastCP(false);
         } else {
 
-            player.gameObject.transform.position = ss_pos;
-            player.gameObject.transform.rotation = ss_rot;
+            player.GetCurrentTransform().position = ss_pos;
+            player.GetCurrentTransform().rotation = ss_rot;
             OnPlayerRespawn(saveStateMarkerInst.transform);
         }
 
@@ -366,8 +366,8 @@ public class CheckPointManager : MonoBehaviour, IControllable
             last_camerapoint = as_cp;
             GameObject respawn = as_cp.getSpawn();
 
-            player.transform.position = respawn.transform.position;
-            player.transform.rotation = respawn.transform.rotation;
+            player.GetCurrentTransform().position = respawn.transform.position;
+            player.GetCurrentTransform().rotation = respawn.transform.rotation;
             OnPlayerRespawn(respawn.transform.parent.transform);
 
             StartCoroutine(waitInputToResume(player));

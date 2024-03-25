@@ -19,7 +19,7 @@ public class FPSCamera : PlayerCamera
         if (playerRef == null)
         {
             this.LogWarn("Bad ref on player in FPSCamera.");
-            playerRef = Utils.getPlayerRef();
+            playerRef = Access.Player().GetCurrentTransform().gameObject;
         }
         transform.position = playerRef.transform.position;
         transform.rotation = playerRef.transform.rotation;
@@ -28,7 +28,13 @@ public class FPSCamera : PlayerCamera
     public override void init()
     {
         camType = CAM_TYPE.FPS;
-        playerRef = Utils.getPlayerRef();
+
+        if (playerRef == null)
+        {
+            this.LogWarn("Bad ref on player in FPSCamera.");
+            playerRef = Access.Player().GetCurrentTransform().gameObject;
+        }
+
         transform.position = playerRef.transform.position;
         transform.rotation = playerRef.transform.rotation;
     }
