@@ -23,19 +23,23 @@ public class InputAxisHighlighter : MonoBehaviour, IControllable
     public bool highlight = false;
     public InputManager IM_Player1 = null;
 
+    private InputManager attachedTo = null;
+
     void Start()
     {
-        Access.Player().inputMgr.Attach(this as IControllable);
+        attachedTo = Access.Player().inputMgr;
+        attachedTo.Attach(this as IControllable);
     }
 
-    void OnDisable()
-    {
-        try{
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
-        } catch (NullReferenceException e) {
-            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
-        }
+void OnDisable()
+{
+    try{
+        if (attachedTo)
+            attachedTo.Detach(this as IControllable);
+    } catch (NullReferenceException e) {
+        this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
     }
+}
 
     void LateUpdate()
     {
