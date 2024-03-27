@@ -131,12 +131,14 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     // # SPRINGS
     public void IsInRaceCarCond()
     {
+        #if false
         PlayerController pc = Access.Player();
         float spring_ratio = pc.springElapsedCompression / pc.springCompressionTime;
         if (spring_ratio > 0.9f)
         {
             HappyValidation();
         }
+        #endif
     }
 
     /// # HAS JUMPED
@@ -170,6 +172,7 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
     {
         PlayerController pc = Access.Player();
 
+        #if false
         var rear = pc.car.axles[(int)AxleType.rear];
         var front = pc.car.axles[(int)AxleType.front];
 
@@ -180,6 +183,7 @@ public class TutorialBalloonTrigger : MonoBehaviour, IControllable
         {
             HappyValidation();
         }
+        #endif
     }
 
     public void HappyValidation()

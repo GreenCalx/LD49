@@ -97,7 +97,7 @@ public class BreakableObject : MonoBehaviour
 
     private void tryBreak(PlayerController iPC)
     {
-        CarController cc = iPC.car;
+        SchCarController cc = iPC.car;
         // break cond : player speed > threshold speed && dist < breakdist
         if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }

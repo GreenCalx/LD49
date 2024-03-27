@@ -66,7 +66,11 @@ public class TrickTracker : MonoBehaviour
     public float recorded_time_trick;
     private KeyValuePair<Trick, float> flat_trick_starter;
 
+    #if SCH_SUSPENSION_V2
+    private SchCarController CC;
+    #else
     private CarController CC;
+    #endif
     public bool ready_to_rec_line;
 
     private Coroutine trickRecordCo;
@@ -442,6 +446,7 @@ public class TrickTracker : MonoBehaviour
 
     public void updateWheelStatuses()
     {
+        #if false
         // update wheels
         Axle front = CC.axles[(int)AxleType.front];
         Axle rear = CC.axles[(int)AxleType.rear];
@@ -450,6 +455,7 @@ public class TrickTracker : MonoBehaviour
         wheels_statuses[(int)WHEEL_LOCATION.FRONT_RIGHT] = front.right.isGrounded;
         wheels_statuses[(int)WHEEL_LOCATION.BACK_LEFT] = rear.left.isGrounded;
         wheels_statuses[(int)WHEEL_LOCATION.BACK_RIGHT] = rear.right.isGrounded;
+        #endif
     }
 
     public bool carIsOnGround()

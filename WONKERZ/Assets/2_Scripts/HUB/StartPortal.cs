@@ -31,7 +31,7 @@ public class StartPortal : AbstractCameraPoint
         init(pc);
 
         if (enable_tricks)
-            activateTricks();
+        activateTricks();
 
         if (forceSinglePlayer)
         {
@@ -56,7 +56,7 @@ public class StartPortal : AbstractCameraPoint
 
         relocatePlayer(pc);
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
-            Access.CameraManager()?.changeCamera(camera_type, false);
+        Access.CameraManager()?.changeCamera(camera_type, false);
 
         var states = pc.vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
@@ -106,14 +106,18 @@ public class StartPortal : AbstractCameraPoint
     public void relocatePlayer(PlayerController pc)
     {
         PlayerController pc = Access.Player();
-        pc.GetCurrentTransform().position = transform.position;
-        pc.GetCurrentTransform().rotation = Quaternion.identity;
+        pc.GetTransform().position = transform.position;
+        pc.GetTransform().rotation = Quaternion.identity;
         if (facingPoint != null)
         {
-            pc.GetCurrentTransform().LookAt(facingPoint.transform);
+            pc.GetTransform().LookAt(facingPoint.transform);
         }
-        pc.rb.velocity = Vector3.zero;
-        pc.rb.angularVelocity = Vector3.zero;
+
+        if (pc.GetRigidbody())
+        {
+            pc.GetRigidbody().velocity = Vector3.zero;
+            pc.GetRigidbody().angularVelocity = Vector3.zero;
+        }
     }
 
     public void relocatePlayer()

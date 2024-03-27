@@ -122,8 +122,14 @@ public class ManualCamera : PlayerCamera, IControllable
                 if (null==secondaryFocus)
                 {
                     findFocus();
-                    distance += camDistIncrease;
-                    focusInputLock = true;
+                    if (null==secondaryFocus) {
+                        // have not found anything to focus, do not apply.
+                    }
+                    else
+                    {
+                        distance += camDistIncrease;
+                        focusInputLock = true;
+                    }
                 }
                 else // stop focus
                 {
@@ -157,7 +163,7 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         var player = Access.Player();
         if (playerRef == null) {
-            playerRef = player.GetCurrentTransform().gameObject;
+            playerRef = player.GetTransform().gameObject;
         }
         
         if (focus == null)

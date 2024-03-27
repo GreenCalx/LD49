@@ -60,7 +60,7 @@ public class GroundState : FSMState, IControllable
         public override void Execute(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
-
+            #if false
             player.TryJump();
             player.flags[PlayerController.FJump] = !player.TouchGround();
             // apply jump correction
@@ -89,6 +89,7 @@ public class GroundState : FSMState, IControllable
 
                 player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
             }
+            #endif
         }
     }
 
@@ -98,6 +99,7 @@ public class GroundState : FSMState, IControllable
         {
             var player = (fsm as PlayerFSM).GetPlayer();
 
+            #if false
             foreach (var axle in player.car.axles)
             {
                 if (axle.isSteerable)
@@ -111,6 +113,7 @@ public class GroundState : FSMState, IControllable
                 }
                 axle.left.basis = axle.right.basis;
             }
+            #endif
         }
     }
 
@@ -173,6 +176,7 @@ public class GroundState : FSMState, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
+        #if false
         var jumpButton = Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton;
         if (jumpButton != null)
         {
@@ -283,6 +287,7 @@ public class GroundState : FSMState, IControllable
                 }
             }
         }
+        #endif
 
     }
 };
@@ -508,7 +513,11 @@ public class PlayerController : MonoBehaviour, IControllable
     // cant be null
     public GameObject carPrefab;
     public GameObject carInstance;
+    #if SCH_SUSPENSION_V2
+    public SchCarController car;
+    #else
     public CarController car;
+    #endif
     public Accumulator turn;
 
     public GameObject boatPrefab;
@@ -524,9 +533,21 @@ public class PlayerController : MonoBehaviour, IControllable
     public InputManager inputMgr;
     public PlayerController playerInst;
 
+    // do not use directly transform, rigidbody, etc...
+    public Transform GetTransform() {
+        return currentRB ? currentRB.transform : transform;
+    }
+    // transform is readonly
+    //public void SetTransform(Transform t)
+
+    // Rigidbody can be different depending on which transform we are using.
+    Rigidbody currentRB;
+    public Rigidbody GetRigidbody() {
+        return currentRB;
+    }
+
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         if (car == null)
         {
             if (carInstance == null)
@@ -534,7 +555,11 @@ public class PlayerController : MonoBehaviour, IControllable
                 carInstance = Instantiate(carPrefab);
                 carInstance.transform.parent = gameObject.transform;
             }
+            #if SCH_SUSPENSION_V2
+            car = carInstance.GetComponent<SchCarController>();
+            #else
             car = carInstance.GetComponent<CarController>();
+            #endif
         }
         carInstance.SetActive(false);
 
@@ -606,10 +631,6 @@ public class PlayerController : MonoBehaviour, IControllable
         Access.invalidate();
     }
 
-    public Transform GetCurrentTransform() {
-        return currentRB == null ? transform : currentRB.transform;
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -635,6 +656,7 @@ public class PlayerController : MonoBehaviour, IControllable
     public WonkerDecal jumpDecal;
 
     #if SCH_SUSPENSION_V2
+    #else
     public void ResetSpringSizeMinAndUnlock()
     {
         foreach (var axle in car.axles)
@@ -706,64 +728,8 @@ public class PlayerController : MonoBehaviour, IControllable
         }
 
     }
-    #else
-
-    public void ResetSpringSizeMinAndUnlock()
-    {
-        foreach (var axle in car.axles)
-        {
-            axle.right.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
-            axle.left.suspension.spring.SetLengthSettings(car.springMin, car.springMax, car.springRestPercent);
-        }
-        car.overrideMaxSpring = false;
-    }
-
-    public void SetSpringSizeMinAndLock()
-    {
-        springElapsedCompression += Time.deltaTime;
-        float springCompVal = Mathf.Lerp(car.springMax, car.springMin + 0.1f, springElapsedCompression / springCompressionTime);
-        springCompVal = Mathf.Min(1, springCompVal);
-
-
-        float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression / springCompressionTime));
-
-        jumpDecal.SetAnimationTime(springJumpFactor);
-        foreach (var axle in car.axles)
-        {
-            axle.right.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
-            axle.left.suspension.spring.SetLengthSettings(car.springMin, springCompVal, car.springRestPercent);
-        }
-        car.overrideMaxSpring = true;
-    }
-
-    public float springCompressionTime = 0.5f;
-    public AnimationCurve jumpCompressionOverTime;
-    public float springElapsedCompression = 0f;
-    public void TryJump()
-    {
-        if (jump.applyForceMultiplier)
-        {
-            float springCompVal = springElapsedCompression / springCompressionTime;
-            springCompVal = Mathf.Min(1, springCompVal);
-            if (springCompVal > 0.5f)
-            {
-                audioSource.clip = jump.sounds[0];
-                audioSource.Play(0);
-            }
-            float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
-
-            foreach (var axle in car.axles)
-            {
-                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.spring.loadPosition, ForceMode.VelocityChange);
-                car.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.spring.loadPosition, ForceMode.VelocityChange);
-            }
-            jump.applyForceMultiplier = false;
-            springElapsedCompression = 0f;
-            jumpDecal.SetAnimationTime(0f);
-        }
-
-    }
     #endif
+
     public void useTurbo()
     {
         // no turbo atm
@@ -792,6 +758,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public bool TouchGround()
     {
+        #if false
         foreach (var a in car.axles)
         {
             if (a.left.isGrounded || a.right.isGrounded)
@@ -799,6 +766,7 @@ public class PlayerController : MonoBehaviour, IControllable
                 return true; // early return
             }
         }
+        #endif
         return false;
     }
 
@@ -810,6 +778,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public bool TouchGroundAll()
     {
+        #if false
         foreach (var a in car.axles)
         {
             if (!a.left.isGrounded || !a.right.isGrounded)
@@ -817,6 +786,7 @@ public class PlayerController : MonoBehaviour, IControllable
                 return false; // early return
             }
         }
+        #endif
         return true;
     }
 
@@ -857,6 +827,12 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public void ActivateCar()
     {
+        #if SCH_SUSPENSION_V2
+        carInstance.SetActive(true);
+        inputMgr.Attach(car as IControllable);
+        currentRB = car.rb;
+        Access.CameraManager().OnTargetChange(GetTransform());
+        #else
         carInstance.SetActive(true);
         inputMgr.Attach(car as IControllable);
 
@@ -872,43 +848,52 @@ public class PlayerController : MonoBehaviour, IControllable
                 if (go) go.SetActive(true);
             }
         }
+        currentRB = car.rb;
+        Access.CameraManager().OnTargetChange(GetTransform());
+        #endif
     }
 
     public void DeactivateCar()
     {
-        carInstance.SetActive(false);
+        #if SCH_SUSPENSION_V2
+            carInstance.SetActive(false);
         inputMgr.Detach(car as IControllable);
-
-        // enable object that might not be part of us, aka the wheel colliders
+        currentRB = null;
+        Access.CameraManager().OnTargetChange(GetTransform());
+        #else
+            // enable object that might not be part of us, aka the wheel colliders
         foreach (var axle in car.axles)
         {
-            if (axle.right != null) {
+            if (axle.right != null)
+            {
                 var go = axle.right.AsGameObject();
                 if (go) go.SetActive(false);
             }
 
-            if (axle.left != null) {
+            if (axle.left != null)
+            {
                 var go = axle.left.AsGameObject();
                 if (go) go.SetActive(false);
             }
         }
+        #endif
     }
 
     public void ActivateAirplane()
     {
         planeInstance.SetActive(true);
-        rb.useGravity = false;
+        currentRB = planeInstance.GetComponent<Rigidbody>();
     }
 
     public void DeactivateAirplane()
     {
         planeInstance.SetActive(false);
-        rb.useGravity = true;
+        currentRB = null;
     }
 
     public bool IsInMenu() { return isInMenu; }
-    public void Freeze() { isInMenu = true; rb.isKinematic = true; MuteSound();  }
-    public void UnFreeze() { isInMenu = false; rb.isKinematic = false; UnMuteSound(); }
+    public void Freeze() { isInMenu = true; if (currentRB) currentRB.isKinematic = true; MuteSound();  }
+    public void UnFreeze() { isInMenu = false; if (currentRB) currentRB.isKinematic = false; UnMuteSound(); }
     private void MuteSound()
     {
         foreach (var source in GetComponentsInChildren<AudioSource>())
@@ -927,18 +912,22 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public void SetHandbrake(bool v)
     {
-        var rear = car.axles[(int)AxleType.rear];
+        #if false
+        var rear = carOld.axles[(int)AxleType.rear];
         rear.left.isHandbraked = v;
         rear.right.isHandbraked = v;
 
-        var front = car.axles[(int)AxleType.front];
+        var front = carOld.axles[(int)AxleType.front];
         front.left.isHandbraked = v;
         front.right.isHandbraked = v;
+        #endif
     }
 
     public void SetCarCenterOfMass()
     {
-        car.centerOfMass.transform.localPosition = car.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
+        #if false
+        carOld.centerOfMass.transform.localPosition = carOld.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
+        #endif
     }
 
     /// =============== Game Logic ==================
@@ -981,6 +970,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
+        #if false
         // dirty fix for respawn when slipping
         foreach (var a in car.axles)
         {
@@ -990,6 +980,7 @@ public class PlayerController : MonoBehaviour, IControllable
             a.left.slipX = 1;
             a.left.slipY = 1;
         }
+        #endif
 
         // Specific states control
         var generalInputs = (generalStates.GetState() as IControllable);
@@ -1003,5 +994,5 @@ public class PlayerController : MonoBehaviour, IControllable
         {
             vehicleInputs.ProcessInputs(currentMgr, Entry);
         }
-    }
+}
 }

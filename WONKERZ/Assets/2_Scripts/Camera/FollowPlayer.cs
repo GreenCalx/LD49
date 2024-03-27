@@ -26,7 +26,7 @@ public class FollowPlayer : PlayerCamera
         //CPM = FindObjectOfType<CheckPointManager>();
         CPM = Access.CheckPointManager();
 
-        playerRef = Access.Player().GetCurrentTransform().gameObject;
+        playerRef = Access.Player().GetTransform().gameObject;
     }
 
     // Update is called once per frame
