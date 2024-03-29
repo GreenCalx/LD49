@@ -60,36 +60,38 @@ public class GroundState : FSMState, IControllable
         public override void Execute(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
-            #if false
-            player.TryJump();
-            player.flags[PlayerController.FJump] = !player.TouchGround();
-            // apply jump correction
 
-            // IMPORTANT toffa : sometimes fixedUpdate could be called multiple times if the framerate dips.
-            // but it would take a value of 0 that is wrong because we reset at the end of the first fixedUpdate frame.
-            if (player.jump.diPitchUnscaled.count != 0 && player.jump.diRollUnscaled.count != 0)
+            if (player.car_old)
             {
-                if (!player.TouchGround())
-                {
-                    var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
-                        0,
-                        -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
-                    torque = player.car.transform.TransformDirection(torque);
-                    player.car.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
-                }
-                else
-                {
-                    player.SetCarCenterOfMass();
-                }
+                player.TryJump();
+                player.flags[PlayerController.FJump] = !player.TouchGround();
+                // apply jump correction
 
-                // very bad design for now.
-                var weightIndPos = player.car.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
-                    player.weightIndicatorHeight,
-                    player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
+                // IMPORTANT toffa : sometimes fixedUpdate could be called multiple times if the framerate dips.
+                // but it would take a value of 0 that is wrong because we reset at the end of the first fixedUpdate frame.
+                if (player.jump.diPitchUnscaled.count != 0 && player.jump.diRollUnscaled.count != 0)
+                {
+                    if (!player.TouchGround())
+                    {
+                        var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
+                            0,
+                            -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
+                        torque = player.car_old.transform.TransformDirection(torque);
+                        player.car_old.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                    }
+                    else
+                    {
+                        player.SetCarCenterOfMass();
+                    }
 
-                player.weightIndicator.transform.position = player.car.centerOfMass.transform.parent.TransformPoint(weightIndPos);
+                    // very bad design for now.
+                    var weightIndPos = player.car_old.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
+                        player.weightIndicatorHeight,
+                        player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
+
+                    player.weightIndicator.transform.position = player.car_old.centerOfMass.transform.parent.TransformPoint(weightIndPos);
+                }
             }
-            #endif
         }
     }
 
