@@ -85,20 +85,21 @@ public class IntroTutorialTriggers : MonoBehaviour
         
         bool playerIsActive = PC.IsInMenu();
         bool playerIsGrounded = PC.TouchGroundAll();
-        bool playerHasLowSpeed = PC.car.GetCurrentSpeed() < 5f;
+
+        bool playerHasLowSpeed = (PC.car_old ? PC.car_old.GetCurrentSpeed() : PC.car_new.GetCurrentSpeed()) < 5f;
 
         if (!playerIsActive && !playerIsGrounded && playerHasLowSpeed)
-        {
-            elapsedTimeStuckDetection += Time.deltaTime;
+                                            {
+                                                elapsedTimeStuckDetection += Time.deltaTime;
             if (elapsedTimeStuckDetection >= timeThrStuckDetection)
             {
                 SpawnWindow(getUpTutoWindow);
                 getUpTutoDone = true; 
-            }
+                                            }
         } else {
             elapsedTimeStuckDetection = 0f;
         }
-    }
+        }
 
     public void pollFirstNut()
     {
@@ -109,8 +110,8 @@ public class IntroTutorialTriggers : MonoBehaviour
         {
             SpawnWindow(firstNutTutoWindow);
             firstNutTutoDone = true;
-        }
-    }
+            }
+            }
 
     private void SpawnWindow(UITutorialStopWindow iWindow)
     {

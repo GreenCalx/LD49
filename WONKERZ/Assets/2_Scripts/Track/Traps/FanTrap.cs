@@ -52,7 +52,7 @@ public class FanTrap : MonoBehaviour
     public void PushBackPlayer()
     {
         PlayerDetector pd = WindCollider.GetComponent<PlayerDetector>();
-        Rigidbody rb = Access.Player().car.rb;
+        Rigidbody rb = Access.Player().car_old.rb;
         
         Vector3 dir = transform.right;
         rb.AddForce( dir * force * Time.deltaTime, ForceMode.VelocityChange );

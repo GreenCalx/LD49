@@ -26,8 +26,8 @@ public class ExplodeChildBodies : MonoBehaviour
 
     public void setExplosionDirToPlayerVelocity()
     {
-        directionSteer = Access.Player().rb.velocity.normalized;
-        forceStr = Access.Player().rb.velocity.magnitude;
+        directionSteer = Access.Player().GetRigidbody().velocity.normalized;
+        forceStr = Access.Player().GetRigidbody().velocity.magnitude;
     }
 
     void explodeChilds()

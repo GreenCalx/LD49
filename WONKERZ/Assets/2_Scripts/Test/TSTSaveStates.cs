@@ -153,7 +153,7 @@ public class TSTSaveStates : MonoBehaviour, IControllable
         yield return new WaitForSeconds(0.2f);
         while (!Input.anyKeyDown)
         {
-            iPC.rb.velocity = Vector3.zero;
+            iPC.GetRigidbody().velocity = Vector3.zero;
             yield return null;
         }
         iPC.UnFreeze();

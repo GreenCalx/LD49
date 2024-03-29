@@ -66,11 +66,9 @@ public class TrickTracker : MonoBehaviour
     public float recorded_time_trick;
     private KeyValuePair<Trick, float> flat_trick_starter;
 
-    #if SCH_SUSPENSION_V2
-    private SchCarController CC;
-    #else
-    private CarController CC;
-    #endif
+    private SchCarController CC_new;
+    private CarController CC_old;
+
     public bool ready_to_rec_line;
 
     private Coroutine trickRecordCo;
@@ -84,8 +82,8 @@ public class TrickTracker : MonoBehaviour
         if (!activate_tricks)
             return;
 
-        CC = Access.Player().car;
-        if (!CC)
+        CC_old = Access.Player().car_old;
+        if (!CC_old)
         {
             activate_tricks = false;
             return;
@@ -154,7 +152,7 @@ public class TrickTracker : MonoBehaviour
 
     IEnumerator TrickRecordCo(float frequency)
     {
-        Rigidbody car_rb = CC.GetComponent<Rigidbody>();
+        Rigidbody car_rb = CC_old.GetComponent<Rigidbody>();
         if (car_rb==null)
             yield break;
         

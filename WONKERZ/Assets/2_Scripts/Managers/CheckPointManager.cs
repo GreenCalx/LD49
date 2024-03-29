@@ -302,7 +302,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
         playerIsFrozen = true;
         while (!anyKeyPressed)
         {
-            iPC.rb.velocity = Vector3.zero;
+            iPC.GetRigidbody().velocity = Vector3.zero;
             yield return null;
         }
         iPC.UnFreeze();
@@ -312,7 +312,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
     public void OnPlayerRespawn(Transform respawnSource)
     {
         // reset player physx
-        Rigidbody rb2d = player.rb;
+        Rigidbody rb2d = player.GetRigidbody();
         if (!!rb2d)
         {
             rb2d.velocity = Vector3.zero;

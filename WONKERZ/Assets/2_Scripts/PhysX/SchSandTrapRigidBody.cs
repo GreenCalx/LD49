@@ -6,10 +6,10 @@ using static Schnibble.Physics;
 
 public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 {
-    #if SCH_SUSPENSION_V2
     public class SchSandTrapRigidBody : SchRigidBody {
         GameObject obj;
         public float MaxForce;
+        /*
         public override Vector3 GetVelocityAtPoint(Vector3 worldPosition)
         {
             var maxLength = obj.transform.lossyScale.x;
@@ -22,18 +22,15 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 
             return velocity;
         }
+         */
     }
 
-    public SchSandTrapRigidBody rb;
+    public SchRigidBody rb_old;
+    public SchSandTrapRigidBody rb_new;
     public void Awake() {
-        irb = rb;
+        if (rb_old)
+        irb = rb_old.irb;
     }
-    #else
-    public SchRigidBody rb;
-    public void Awake() {
-        irb = rb.irb;
-    }
-    #endif
 
     public void OnCollisionStay(Collision c)
     {

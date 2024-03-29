@@ -49,9 +49,17 @@ public class UISpeedAndLifePool : MonoBehaviour
     public void updateSpeedCounter()
     {
         PlayerController pc = Access.Player();
-        SchCarController cc = pc.car;
-        var playerVelocity = cc.GetCurrentSpeed();
-        float max_speed = cc.maxTorque;
+        float playerVelocity = 0.0f;
+        float max_speed = 0.0f;
+        if (pc.car_old) {
+            CarController cc = pc.car_old;
+            playerVelocity = cc.GetCurrentSpeed();
+            max_speed = cc.maxTorque;
+        } else {
+            SchCarController cc = pc.car_new;
+            playerVelocity = cc.GetCurrentSpeed();
+            max_speed = cc.maxTorque;
+        }
 
         // Update Bar
         float bar_percent = Mathf.Clamp(playerVelocity / max_speed, 0f, max_speed);

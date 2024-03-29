@@ -276,8 +276,8 @@ public class PinBlockade : SchAIAgent
 
                 if (!!pc)
                 {
-                    rb.AddForce(pc.rb.velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
-                    rb.AddTorque(pc.rb.velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    rb.AddForce(pc.GetRigidbody().velocity * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
+                    rb.AddTorque(pc.GetRigidbody().velocity * onFirstHitPowerMultiplier * onFirstHitPowerMultiplier, ForceMode.VelocityChange);
                 }
                 if (life_lust)
                 {

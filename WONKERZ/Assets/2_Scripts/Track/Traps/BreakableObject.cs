@@ -97,13 +97,13 @@ public class BreakableObject : MonoBehaviour
 
     private void tryBreak(PlayerController iPC)
     {
-        SchCarController cc = iPC.car;
+        SchCarController cc = iPC.car_new;
         // break cond : player speed > threshold speed && dist < breakdist
         if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }
 
         // approximate contact point for explosion as collider position
-        breakWall(iPC.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
+        breakWall(iPC.GetRigidbody().worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
         elapsedTimeSinceBreak = 0f;
         Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
         isBroken = true;

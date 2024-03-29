@@ -25,7 +25,7 @@ public class UIGarageCarStatsPanel : UIGaragePanel
         // update displayed curve
         PlayerController player = (Parent as UIGarage).getGarageEntry().player;
 
-        graphPanel.graphRenderer.view.SetCurve(player.car.car.engine.torqueCurve);
+        graphPanel.graphRenderer.view.SetCurve(player.car_new.car.engine.torqueCurve);
 
         selectCurve();
     }
@@ -58,10 +58,10 @@ public class UIGarageCarStatsPanel : UIGaragePanel
         for (int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i)
         {
             var v = graphPanel.graphRenderer.view.points[i];
-            var k = player.car.car.engine.torqueCurve[i];
+            var k = player.car_new.car.engine.torqueCurve[i];
             k.time = v.x;
             k.value = v.y;
-            player.car.car.engine.torqueCurve.MoveKey(i, k);
+            player.car_new.car.engine.torqueCurve.MoveKey(i, k);
         }
         this.Log("player curve updated");
     }
