@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &294977989629675003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7335147776781763810}
+  m_Layer: 0
+  m_Name: GateClosePosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7335147776781763810
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 294977989629675003}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 4.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4272731719620724922}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2894528383075821055
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1556311831104381646}
+  m_Layer: 0
+  m_Name: GateOpenPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1556311831104381646
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2894528383075821055}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 33.8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4272731719620724922}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7512145166652628548
 GameObject:
   m_ObjectHideFlags: 0
@@ -30,6 +92,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 839840814020604712}
+  - {fileID: 1556311831104381646}
+  - {fileID: 7335147776781763810}
+  - {fileID: 6846289270287504274}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -74,6 +139,92 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!1 &9197405903345234817
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6846289270287504274}
+  - component: {fileID: 6506505454715398575}
+  - component: {fileID: 8914138596103935827}
+  m_Layer: 0
+  m_Name: PlayerDetectorForTickets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6846289270287504274
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9197405903345234817}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4272731719620724922}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &6506505454715398575
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9197405903345234817}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 150, y: 150, z: 200}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8914138596103935827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9197405903345234817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1dda1437eb9914d8acb608135b131b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  player: {fileID: 0}
+  dummy: {fileID: 0}
+  dummyInRange: 0
+  callBackOnPlayerEnterRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4689904291593001668}
+        m_TargetAssemblyTypeName: GoldenTicketGate, WkzCore
+        m_MethodName: tryOpenGate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callBackOnPlayerInRange:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackOnPlayerExitRange:
+    m_PersistentCalls:
+      m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
 --- !u!1001 &877374786247840963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -81,6 +232,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4272731719620724922}
     m_Modifications:
+    - target: {fileID: -8734167078539655613, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 33.8
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -143,6 +298,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
+--- !u!4 &785613055627383424 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8734167078539655613, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
+  m_PrefabInstance: {fileID: 877374786247840963}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &839840814020604712 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
@@ -194,6 +354,30 @@ MonoBehaviour:
   rotSpeed: 7
   rotDamp: 1
   worldSpace: 1
+--- !u!1 &7785373326972558687 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6928291541294238108, guid: 734d212052477a74a9c6c81a53568aca, type: 3}
+  m_PrefabInstance: {fileID: 877374786247840963}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4689904291593001668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7785373326972558687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9fb640f56ee67547a9c5e5e70a4eb46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  self_gateRef: {fileID: 785613055627383424}
+  gateOpened: {fileID: 1556311831104381646}
+  gateClosed: {fileID: 7335147776781763810}
+  goldenTicketNeeded: 1
+  playerDetector: {fileID: 8914138596103935827}
+  gateOpenTime: 2
+  isOpened: 0
 --- !u!1 &9126073417970212235 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8253792806700583240, guid: 734d212052477a74a9c6c81a53568aca, type: 3}

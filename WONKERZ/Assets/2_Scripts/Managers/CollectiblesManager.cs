@@ -176,6 +176,7 @@ public class CollectiblesManager : MonoBehaviour
 
         // Infinites
         public int collectedNuts;
+        public int collectedGoldenTickets;
 
         // serializable data
         public JarData jarData;
@@ -188,6 +189,7 @@ public class CollectiblesManager : MonoBehaviour
         public void init()
         {
             collectedNuts = 0;
+            collectedGoldenTickets = 0;
             WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
             CageKeyjar = new UniqueJar<CageKeyCollectible>();
             Garagistjar = new UniqueJar<GaragistCollectible>();
@@ -224,6 +226,10 @@ public class CollectiblesManager : MonoBehaviour
             if (iAC is CollectibleNut)
             {
                 collectedNuts++;
+            }
+            if (iAC is GoldenTicketCollectible)
+            {
+                collectedGoldenTickets++;
             }
         }
     }
@@ -273,6 +279,7 @@ public class CollectiblesManager : MonoBehaviour
     public void resetInfCollectibles()
     {
         jar.collectedNuts = 0;
+        jar.collectedGoldenTickets = 0;
     }
 
     public void loadJars()
@@ -302,6 +309,11 @@ public class CollectiblesManager : MonoBehaviour
         Access.UISpeedAndLifePool().updateLifePool();
 
         return true;
+    }
+
+    public int getCollectedTickets()
+    {
+        return jar.collectedGoldenTickets;
     }
 
     public int getCollectedNuts()
