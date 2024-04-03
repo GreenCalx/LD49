@@ -48,6 +48,7 @@ public class UISpeedAndLifePool : MonoBehaviour
 
     public void updateSpeedCounter()
     {
+        #if false
         PlayerController pc = Access.Player();
         float playerVelocity = 0.0f;
         float max_speed = 0.0f;
@@ -73,6 +74,7 @@ public class UISpeedAndLifePool : MonoBehaviour
 
         //update overdrive
         OverDriveUIHandle.gameObject.SetActive( (PlayerVelocity > max_speed) );
+        #endif
     }
 
     public void updateLifePool()

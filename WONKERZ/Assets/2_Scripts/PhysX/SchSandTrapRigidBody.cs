@@ -4,6 +4,7 @@ using UnityEngine;
 using Schnibble;
 using static Schnibble.Physics;
 
+#if false
 public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 {
     public class SchSandTrapRigidBody : SchRigidBody {
@@ -38,3 +39,4 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
         //colliderRB.AddForce(rb.GetVelocityAtPoint(colliderRB.position) - colliderRB.velocity, ForceMode.VelocityChange);
     }
 }
+#endif

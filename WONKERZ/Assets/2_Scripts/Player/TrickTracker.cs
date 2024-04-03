@@ -67,7 +67,7 @@ public class TrickTracker : MonoBehaviour
     private KeyValuePair<Trick, float> flat_trick_starter;
 
     private SchCarController CC_new;
-    private CarController CC_old;
+    //private CarController CC_old;
 
     public bool ready_to_rec_line;
 
@@ -82,12 +82,12 @@ public class TrickTracker : MonoBehaviour
         if (!activate_tricks)
             return;
 
-        CC_old = Access.Player().car_old;
-        if (!CC_old)
-        {
-            activate_tricks = false;
-            return;
-        }
+        //   CC_old = Access.Player().car_old;
+        //   if (!CC_old)
+        //   {
+        //       activate_tricks = false;
+        //       return;
+        //   }
 
         wheels_statuses = new bool[4];
         for (int i = 0; i < wheels_statuses.Length; i++)
@@ -152,9 +152,9 @@ public class TrickTracker : MonoBehaviour
 
     IEnumerator TrickRecordCo(float frequency)
     {
-        Rigidbody car_rb = CC_old.GetComponent<Rigidbody>();
-        if (car_rb==null)
-            yield break;
+        // Rigidbody car_rb = CC_old.GetComponent<Rigidbody>();
+        // if (car_rb==null)
+        //     yield break;
         
         // 0.5 circle is pi, our quanta is 180deg
         float threshold = Mathf.PI;
@@ -173,7 +173,8 @@ public class TrickTracker : MonoBehaviour
             yield return new WaitForSeconds(frequency);
 
             //recordRotations();
-            Vector3 angVel = car_rb.angularVelocity; // rad/sec
+            //Vector3 angVel = car_rb.angularVelocity; // rad/sec
+            Vector3 angVel = Vector3.zero;
 
             float rpf_x =  angVel.x * (60f/(2*Mathf.PI)) *frequency;
             float rpf_y =  angVel.y * (60f/(2*Mathf.PI)) *frequency;

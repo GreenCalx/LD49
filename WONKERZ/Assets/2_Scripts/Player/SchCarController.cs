@@ -21,17 +21,7 @@ namespace Schnibble {
         public float jumpTime = 0.5f;
 
         public float maxTorque = 200.0f;
-        public Rigidbody rb;
-        void Awake() {
-            rb = car.carRB;
-        }
         // end cleanup
-
-        // stub to be removed
-        public float GetCurrentSpeed() {
-            var currentSpeed = Mathf.Abs(car.carRB.velocity.magnitude);
-            return currentSpeed;
-        }
 
         void IControllable.ProcessInputs(InputManager mgr, GameController inputs) {
             // set car input values.

@@ -18,7 +18,7 @@ public class SandTrapBehavior : MonoBehaviour
     [HideInInspector]
     public Mesh mesh;
     private Vector3[] vertices;
-    public SchSandTrapRigidBodyBehaviour rb;
+    //public SchSandTrapRigidBodyBehaviour rb;
     public float maxForce;
 
     public float shootSpeedDamp = 0.5f;

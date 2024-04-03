@@ -9,9 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2966540010634319501}
-  - component: {fileID: -5108175126402747345}
   - component: {fileID: 3030551637303335215}
-  - component: {fileID: -7409916893505237497}
   - component: {fileID: 516557862193755869}
   - component: {fileID: 8016672389969602926}
   - component: {fileID: 438868188841962252}
@@ -21,7 +19,7 @@ GameObject:
   - component: {fileID: 3624256315320323754}
   - component: {fileID: 5670448572570956830}
   m_Layer: 8
-  m_Name: Player
+  m_Name: Player_old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,22 +43,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &-5108175126402747345
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2966540010634319502}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &3030551637303335215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,6 +55,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c3f306dbcd92143a51dae0a4bf3326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  self_PowerController: {fileID: 0}
   repulseForce: {x: 0, y: 0, z: 0}
   onDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
   jump:
@@ -80,6 +63,18 @@ MonoBehaviour:
     suspensionLock: 0
     applyForceMultiplier: 0
     value: 10
+    diPitch:
+      _valueCount: 0
+      _value: 0
+    diRoll:
+      _valueCount: 0
+      _value: 0
+    diPitchUnscaled:
+      _valueCount: 0
+      _value: 0
+    diRollUnscaled:
+      _valueCount: 0
+      _value: 0
     diMaxForce: 6.66
     sounds:
     - {fileID: 8300000, guid: 1d15a2153cb7aee40839ca9edacfb461, type: 3}
@@ -98,602 +93,14 @@ MonoBehaviour:
   invulnerabilityTimeAfterDamage: 0.2
   IsHooked: 0
   grapin: {fileID: 0}
-  carPrefab: {fileID: 9176791244789910489, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  carInstance: {fileID: 3347691404969369085}
-  car: {fileID: -7409916893505237497}
-  boatPrefab: {fileID: 0}
-  planePrefab: {fileID: 7412070512248532747}
-  planeInstance: {fileID: 7412070512248532747}
-  rb: {fileID: 0}
+  car: {fileID: 0}
+  turn:
+    _valueCount: 0
+    _value: 0
   audioSource: {fileID: 438868188841962252}
   damageSound: {fileID: 8300000, guid: e3e623ff0419b0f49bef6831b248113d, type: 3}
   inputMgr: {fileID: 0}
-  playerInst: {fileID: 0}
   jumpDecal: {fileID: 1204200880688723092}
-  springCompressionTime: 1
-  jumpCompressionOverTime:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  springElapsedCompression: 0
---- !u!114 &-7409916893505237497
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2966540010634319502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb9c01ab3ffe1834f975bded80a423d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  overrideInertia: 1
-  linearInertia: 2000
-  inertiaTensor: {x: 3000, y: 8000, z: 8000}
-  inertiaTensorRotation: {x: 0, y: 0, z: 0}
-  centerOfMass: {fileID: 4336036469478515849}
-  centerOfMassInitial: {x: 0, y: 0, z: 0}
-  dragCoeff: 0
-  downForceCoeff: 0
-  maxSteeringAngle_deg: 19.2
-  toeAngle: 0
-  ackerman: 0
-  ackermanReferential: {fileID: 0}
-  differential:
-    axles: []
-    torqueSplitter: 0.487
-  maxTorque: 80
-  torqueCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0.006549835
-      value: 200.22554
-      inSlope: -7.884177
-      outSlope: -7.884177
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.1383194
-      value: 199.18665
-      inSlope: -3.513771
-      outSlope: -3.513771
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 1
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.22692887
-      value: 99.98176
-      inSlope: -33.13579
-      outSlope: -33.13579
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.22471927
-    - serializedVersion: 3
-      time: 0.45425823
-      value: 95.55667
-      inSlope: -109.86302
-      outSlope: -109.86302
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.5362138
-      value: 48.585308
-      inSlope: -154.10571
-      outSlope: -154.10571
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.7672725
-      value: 40.49313
-      inSlope: -100.67422
-      outSlope: -100.67422
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: -169.69685
-      outSlope: -169.69685
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxBreak: 1000
-  breakCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  handbreakTorque: 2000
-  handbreakBias: 0
-  axles:
-  - parent: {fileID: 3347691404969369085}
-    width: 4
-    length: 3
-    right:
-      collider: {fileID: 0}
-      colliderRB: {fileID: 0}
-      velocity: {x: 0, y: 0, z: 0}
-      lastFrameAcceleration: {x: 0, y: 0, z: 0}
-      markIndex: 0
-      markTriIndex: 0
-      parent: {fileID: -7409916893505237497}
-      axle: 0
-      suspension:
-        renderer: {fileID: 1995720401472989455, guid: c03d6507f4619764b91e7ca655bf7a7d, type: 3}
-        spring:
-          restLength: 0
-          maxLength: 0
-          minLength: 0
-          currentLength: 0
-          stiffness: 0
-          damp: 0
-          anchorPosition: {x: 0, y: 0, z: 0}
-          loadPosition: {x: 0, y: 0, z: 0}
-        locked: 0
-        basis:
-          e00: 0
-          e01: 0
-          e02: 0
-          e03: 0
-          e10: 0
-          e11: 0
-          e12: 0
-          e13: 0
-          e20: 0
-          e21: 0
-          e22: 0
-          e23: 0
-          e30: 0
-          e31: 0
-          e32: 0
-          e33: 0
-      thisGO: {fileID: 0}
-      frictionCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      rollingFriction: 0
-      centerPosition: {x: 0, y: 0, z: 0}
-      width: 1
-      radius: 1
-      load: 0
-      isGrounded: 0
-      isHandbraked: 0
-      basis:
-        e00: 0
-        e01: 0
-        e02: 0
-        e03: 0
-        e10: 0
-        e11: 0
-        e12: 0
-        e13: 0
-        e20: 0
-        e21: 0
-        e22: 0
-        e23: 0
-        e30: 0
-        e31: 0
-        e32: 0
-        e33: 0
-      audioSource: {fileID: 8386465186156503149}
-      renderer: {fileID: 7361538611656034573, guid: 9d200121a248d04469cc87064966caff, type: 3}
-      debugSlipX: {fileID: 1963117250134512042}
-      slipX: 1
-      debugSlipY: {fileID: 7618946176625801960}
-      slipY: 1
-      physicsSubSteps: 10
-    left:
-      collider: {fileID: 0}
-      colliderRB: {fileID: 0}
-      velocity: {x: 0, y: 0, z: 0}
-      lastFrameAcceleration: {x: 0, y: 0, z: 0}
-      markIndex: 0
-      markTriIndex: 0
-      parent: {fileID: -7409916893505237497}
-      axle: 0
-      suspension:
-        renderer: {fileID: 1995720401472989455, guid: c03d6507f4619764b91e7ca655bf7a7d, type: 3}
-        spring:
-          restLength: 0
-          maxLength: 0
-          minLength: 0
-          currentLength: 0
-          stiffness: 0
-          damp: 0
-          anchorPosition: {x: 0, y: 0, z: 0}
-          loadPosition: {x: 0, y: 0, z: 0}
-        locked: 0
-        basis:
-          e00: 0
-          e01: 0
-          e02: 0
-          e03: 0
-          e10: 0
-          e11: 0
-          e12: 0
-          e13: 0
-          e20: 0
-          e21: 0
-          e22: 0
-          e23: 0
-          e30: 0
-          e31: 0
-          e32: 0
-          e33: 0
-      thisGO: {fileID: 0}
-      frictionCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      rollingFriction: 0
-      centerPosition: {x: 0, y: 0, z: 0}
-      width: 1
-      radius: 1
-      load: 0
-      isGrounded: 0
-      isHandbraked: 0
-      basis:
-        e00: 0
-        e01: 0
-        e02: 0
-        e03: 0
-        e10: 0
-        e11: 0
-        e12: 0
-        e13: 0
-        e20: 0
-        e21: 0
-        e22: 0
-        e23: 0
-        e30: 0
-        e31: 0
-        e32: 0
-        e33: 0
-      audioSource: {fileID: 8298548267865723279}
-      renderer: {fileID: 7361538611656034573, guid: 9d200121a248d04469cc87064966caff, type: 3}
-      debugSlipX: {fileID: 1982834024157839669}
-      slipX: 1
-      debugSlipY: {fileID: 2928644417937621357}
-      slipY: 1
-      physicsSubSteps: 10
-    isSteerable: 1
-    hasAntiRollBar: 0
-    antiRollBarStiffness: 0
-  - parent: {fileID: 3347691404969369085}
-    width: 4
-    length: -3
-    right:
-      collider: {fileID: 0}
-      colliderRB: {fileID: 0}
-      velocity: {x: 0, y: 0, z: 0}
-      lastFrameAcceleration: {x: 0, y: 0, z: 0}
-      markIndex: 0
-      markTriIndex: 0
-      parent: {fileID: -7409916893505237497}
-      axle: 0
-      suspension:
-        renderer: {fileID: 1995720401472989455, guid: c03d6507f4619764b91e7ca655bf7a7d, type: 3}
-        spring:
-          restLength: 0
-          maxLength: 0
-          minLength: 0
-          currentLength: 0
-          stiffness: 0
-          damp: 0
-          anchorPosition: {x: 0, y: 0, z: 0}
-          loadPosition: {x: 0, y: 0, z: 0}
-        locked: 0
-        basis:
-          e00: 0
-          e01: 0
-          e02: 0
-          e03: 0
-          e10: 0
-          e11: 0
-          e12: 0
-          e13: 0
-          e20: 0
-          e21: 0
-          e22: 0
-          e23: 0
-          e30: 0
-          e31: 0
-          e32: 0
-          e33: 0
-      thisGO: {fileID: 0}
-      frictionCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      rollingFriction: 0
-      centerPosition: {x: 0, y: 0, z: 0}
-      width: 1
-      radius: 1
-      load: 0
-      isGrounded: 0
-      isHandbraked: 0
-      basis:
-        e00: 0
-        e01: 0
-        e02: 0
-        e03: 0
-        e10: 0
-        e11: 0
-        e12: 0
-        e13: 0
-        e20: 0
-        e21: 0
-        e22: 0
-        e23: 0
-        e30: 0
-        e31: 0
-        e32: 0
-        e33: 0
-      audioSource: {fileID: 784944618089189551}
-      renderer: {fileID: 7361538611656034573, guid: 9d200121a248d04469cc87064966caff, type: 3}
-      debugSlipX: {fileID: 4395426975357876760}
-      slipX: 1
-      debugSlipY: {fileID: 2992556735420046297}
-      slipY: 1
-      physicsSubSteps: 10
-    left:
-      collider: {fileID: 0}
-      colliderRB: {fileID: 0}
-      velocity: {x: 0, y: 0, z: 0}
-      lastFrameAcceleration: {x: 0, y: 0, z: 0}
-      markIndex: 0
-      markTriIndex: 0
-      parent: {fileID: -7409916893505237497}
-      axle: 0
-      suspension:
-        renderer: {fileID: 1995720401472989455, guid: c03d6507f4619764b91e7ca655bf7a7d, type: 3}
-        spring:
-          restLength: 0
-          maxLength: 0
-          minLength: 0
-          currentLength: 0
-          stiffness: 0
-          damp: 0
-          anchorPosition: {x: 0, y: 0, z: 0}
-          loadPosition: {x: 0, y: 0, z: 0}
-        locked: 0
-        basis:
-          e00: 0
-          e01: 0
-          e02: 0
-          e03: 0
-          e10: 0
-          e11: 0
-          e12: 0
-          e13: 0
-          e20: 0
-          e21: 0
-          e22: 0
-          e23: 0
-          e30: 0
-          e31: 0
-          e32: 0
-          e33: 0
-      thisGO: {fileID: 0}
-      frictionCurve:
-        serializedVersion: 2
-        m_Curve:
-        - serializedVersion: 3
-          time: 0
-          value: 0
-          inSlope: 2
-          outSlope: 2
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        - serializedVersion: 3
-          time: 1
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-          weightedMode: 0
-          inWeight: 0
-          outWeight: 0
-        m_PreInfinity: 2
-        m_PostInfinity: 2
-        m_RotationOrder: 4
-      rollingFriction: 0
-      centerPosition: {x: 0, y: 0, z: 0}
-      width: 1
-      radius: 1
-      load: 0
-      isGrounded: 0
-      isHandbraked: 0
-      basis:
-        e00: 0
-        e01: 0
-        e02: 0
-        e03: 0
-        e10: 0
-        e11: 0
-        e12: 0
-        e13: 0
-        e20: 0
-        e21: 0
-        e22: 0
-        e23: 0
-        e30: 0
-        e31: 0
-        e32: 0
-        e33: 0
-      audioSource: {fileID: 3624256315320323754}
-      renderer: {fileID: 7361538611656034573, guid: 9d200121a248d04469cc87064966caff, type: 3}
-      debugSlipX: {fileID: 7953811600080302533}
-      slipX: 1
-      debugSlipY: {fileID: 5474880064324729484}
-      slipY: 1
-      physicsSubSteps: 10
-    isSteerable: 0
-    hasAntiRollBar: 0
-    antiRollBarStiffness: 0
-  speedEffect:
-    particles: {fileID: 7502670305448313716}
-    threshold: 0.61
-  rb: {fileID: -5108175126402747345}
-  springStiffness: 0.43
-  springDamper: 0.03
-  springMax: 3.25
-  springMin: 0.35
-  springRestPercent: 0.42
-  wheelRadius: 1.5
-  wheelWidth: 1.5
-  overrideMaxSpring: 0
-  friction:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0.08728079
-      outSlope: 0.08728079
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.055555586
-    - serializedVersion: 3
-      time: 0.41536587
-      value: 0.30399722
-      inSlope: -1.336538
-      outSlope: -1.336538
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.10368997
-      outWeight: 0.09279838
-    - serializedVersion: 3
-      time: 1
-      value: 0.05
-      inSlope: -0.14699894
-      outSlope: -0.14699894
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.13035516
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!114 &516557862193755869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -707,6 +114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turboParticles: {fileID: 1724764292144484328, guid: 2b8047e12c8eb2e47b0f7572a2ffc14f, type: 3}
+  SpinPowerObject_Ref: {fileID: 0}
 --- !u!114 &8016672389969602926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1415,11 +823,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9176791244789910490, guid: fa53a21225d52f7409210b4a3eaf7f62, type: 3}
   m_PrefabInstance: {fileID: 1839287068923438290}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &7412070512248532747 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9176791244789910489, guid: fa53a21225d52f7409210b4a3eaf7f62, type: 3}
-  m_PrefabInstance: {fileID: 1839287068923438290}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5850141404303316516
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1482,11 +885,11 @@ PrefabInstance:
     - target: {fileID: 4727036670256620208, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: cont
       value: 
-      objectReference: {fileID: -7409916893505237497}
+      objectReference: {fileID: 0}
     - target: {fileID: 4732535017245239637, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: car
       value: 
-      objectReference: {fileID: -5108175126402747345}
+      objectReference: {fileID: 4783224679038121377}
     - target: {fileID: 4732535017245239637, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: parts.Array.data[0].animatee
       value: 
@@ -1543,6 +946,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7980919339102707615, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
+      propertyPath: car
+      value: 
+      objectReference: {fileID: 7932007666703568985}
     - target: {fileID: 8171205871345755711, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1613,55 +1020,145 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1963117250134512042 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5337192307659130766, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1982834024157839669 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5380554256395884305, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2928644417937621357 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8758166504590513993, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2992556735420046297 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8694290212356345341, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3347691404969369085 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9176791244789910489, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
   m_PrefabInstance: {fileID: 5850141404303316516}
   m_PrefabAsset: {fileID: 0}
+--- !u!54 &4783224679038121377
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3347691404969369085}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &176924933524442734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3347691404969369085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 714c68f6f3de9f1428fca7ccd2743389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 4783224679038121377}
+  width:
+    value: 0
+  height:
+    value: 0
+  length:
+    value: 0
+  localCenterOfMass: {x: 0, y: 0, z: 0}
+  overrideMass: 0
+  mass:
+    value: 0
+  overrideInertia: 0
+  inertia: {x: 0, y: 0, z: 0}
+  axles: []
+--- !u!114 &2857474670945902781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3347691404969369085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  car: {fileID: 7932007666703568985}
+  speedEffect:
+    particles: {fileID: 7502670305448313716}
+    threshold: 0
+  jumpElapsedTime: 0
+  jumpTime: 0.5
+  maxTorque: 200
+--- !u!114 &7932007666703568985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3347691404969369085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 1
+  chassis: {fileID: 0}
+  engine: {fileID: 0}
+  torqueDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  speedDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  steeringDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  brakeDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  handBrakeDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  forward: 1
+  physXEngine: {fileID: 0}
+  jumpDef:
+    min: 0
+    max: 0
+  weightPitch:
+    _valueCount: 0
+    _value: 0
+  weightRoll:
+    _valueCount: 0
+    _value: 0
+  weightControlMaxX: 0
+  weightControlMaxZ: 0
+  wheelColliderPrefab: {fileID: 0}
+--- !u!114 &8701467582269954244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3347691404969369085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b3ed7094635944898365021ee28fab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  right: {fileID: 0}
+  left: {fileID: 0}
+  torqueDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  speedDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  brakeDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  handBrakeDifferential:
+    currentValue: 0
+    def: {fileID: 0}
+  steeringDifferential:
+    currentValue: 0
+    def: {fileID: 0}
 --- !u!4 &3347691404969369086 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9176791244789910490, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1685,8 +1182,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 2
-  partSkinName: default
-  materialName: CarColor
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &3638812908879701799 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7156300703947600131, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1705,8 +1202,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 4
-  partSkinName: default
-  materialName: CarCommonMat
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &3977565398274153011 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7357973849973574679, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1725,24 +1222,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 11
-  partSkinName: defaul
-  materialName: 
---- !u!1 &4336036469478515849 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7855213085448614573, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4395426975357876760 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7912913706381339708, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &5311253186486680408 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1772936380582653308, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1761,19 +1242,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 1
-  partSkinName: default
-  materialName: CarColor
---- !u!114 &5474880064324729484 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1933538433171238056, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &7271790385856646871 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3874633108973934835, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1792,8 +1262,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 5
-  partSkinName: default
-  materialName: CarColor
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &7323116360077826490 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3787262420448677790, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1812,35 +1282,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 0
-  partSkinName: default
-  materialName: CarColor
+  materialSkinID: 0
+  partSkinID: 0
 --- !u!1 &7502670305448313716 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4121135027177362768, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
   m_PrefabInstance: {fileID: 5850141404303316516}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7618946176625801960 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4076900823711624396, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7953811600080302533 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4561721044542892001, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8829695347395382027 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3145344049807236399, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1859,5 +1307,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   part: 3
-  partSkinName: default
-  materialName: CarCommonMat
+  materialSkinID: 0
+  partSkinID: 0

@@ -97,9 +97,10 @@ public class BreakableObject : MonoBehaviour
 
     private void tryBreak(PlayerController iPC)
     {
-        SchCarController cc = iPC.car_new;
+        #if false
+        //SchCarController cc = iPC.car_new;
         // break cond : player speed > threshold speed && dist < breakdist
-        if (cc.GetCurrentSpeed() < breakSpeedThreshold)
+        //if (cc.GetCurrentSpeed() < breakSpeedThreshold)
         { return; }
 
         // approximate contact point for explosion as collider position
@@ -119,16 +120,19 @@ public class BreakableObject : MonoBehaviour
         //Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
         //isBroken = true;
         //}
+        #endif
     }
 
     private void playerCollisionProc(Collision iCol)
     {
+        #if false
         CarController cc = iCol.collider.gameObject.GetComponent<CarController>();
         if (!!Utils.isPlayer(iCol.collider.gameObject))
         {
             breakWall(iCol.GetContact(0).point, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque) );
             elapsedTimeSinceBreak = 0f;
         }
+        #endif
     }
 
     private void breakWall(Vector3 contactPoint, float forceMultiplier)

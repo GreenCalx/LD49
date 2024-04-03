@@ -8,10 +8,22 @@ using static Schnibble.Physics;
 using static Schnibble.Utils;
 using static UnityEngine.Debug;
 
-public class AirplaneState : FSMState, IControllable 
+public class PlayerState : FSMState
 {
-    private PlayerController player;
+    protected PlayerController player;
+    protected PlayerState(PlayerController player, string stateName) : base(stateName) {
+        this.player = player;
+    }
+}
+
+public class AirplaneState : PlayerState, IControllable 
+{
     private class GeneralAirAction : GroundState.GeneralGroundAction {}
+
+    public AirplaneState(PlayerController player) : base(player, "airplane")
+    {
+        this.fixedActions.Add(new GeneralAirAction());
+    }
 
     public override void OnEnter(FSMBase fsm) {
         var player = (fsm as PlayerFSM  ).GetPlayer();
@@ -21,6 +33,7 @@ public class AirplaneState : FSMState, IControllable
         var player = (fsm as PlayerFSM).GetPlayer();
         player.DeactivateAirplane();
     }
+
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry) {
         var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
         if (airplaneMode != null) {
@@ -42,25 +55,18 @@ public class AirplaneState : FSMState, IControllable
             player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
         }
     }
-
-    public AirplaneState(PlayerController player) : base("Airplane")
-    {
-        this.player = player;
-        this.fixedActions.Add(new GeneralAirAction());
-    }
 }
 
 // FSM when in ground mode
-public class GroundState : FSMState, IControllable
+public class GroundState : PlayerState, IControllable
 {
-    private PlayerController player;
-
     public class GeneralGroundAction : FSMAction
     {
         public override void Execute(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
 
+            #if false
             if (player.car_old)
             {
                 player.TryJump();
@@ -92,6 +98,7 @@ public class GroundState : FSMState, IControllable
                     player.weightIndicator.transform.position = player.car_old.centerOfMass.transform.parent.TransformPoint(weightIndPos);
                 }
             }
+            #endif
         }
     }
 
@@ -101,6 +108,7 @@ public class GroundState : FSMState, IControllable
         {
             var player = (fsm as PlayerFSM).GetPlayer();
 
+            #if false
             if (player.car_old)
             {
                 foreach (var axle in player.car_old.axles)
@@ -117,6 +125,7 @@ public class GroundState : FSMState, IControllable
                     axle.left.basis = axle.right.basis;
                 }
             }
+            #endif
         }
     }
 
@@ -125,6 +134,7 @@ public class GroundState : FSMState, IControllable
         public override void Execute(FSMBase fsm){
             var player = (fsm as PlayerFSM).GetPlayer();
 
+            #if false
             if (player.car_old)
             {
                 var playerCar = player.car_old;
@@ -158,12 +168,12 @@ public class GroundState : FSMState, IControllable
                 var partmain = particules.main;
                 partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
             }
+            #endif
         }
     }
 
-    public GroundState(PlayerController player) : base("Car")
+    public GroundState(PlayerController player) : base(player, "ground")
     {
-        this.player = player;
         this.actions.Add(new UpdateWheelBasis());
         this.actions.Add(new SpeedEffect());
         this.fixedActions.Add(new GeneralGroundAction());
@@ -183,6 +193,7 @@ public class GroundState : FSMState, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
+        #if false
         if (player.car_old)
         {
             var jumpButton = Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton;
@@ -298,6 +309,7 @@ public class GroundState : FSMState, IControllable
                 }
             }
         }
+        #endif
     }
 };
 
@@ -305,7 +317,7 @@ public class PlayerFSM : FSMBase
 {
     protected PlayerController player;
 
-    public PlayerFSM(PlayerController player) : base("PlayerFSM")
+    public PlayerFSM(PlayerController player, string baseName) : base(baseName)
     {
         this.player = player;
     }
@@ -315,8 +327,7 @@ public class PlayerFSM : FSMBase
 
 public class PlayerVehicleStates : PlayerFSM
 {
-
-    public PlayerVehicleStates(PlayerController p) : base(p) { CreateFSM(); }
+    public PlayerVehicleStates(PlayerController p) : base(p, "vehicle") { CreateFSM(); }
 
     // this is used to commonly refers to some states
     // for instance setting the "Frozen" state, might be the one from
@@ -374,7 +385,7 @@ public class PlayerGeneralStates : PlayerFSM
     };
     public FSMState[] states = new FSMState[(int)States.Count];
 
-    public PlayerGeneralStates(PlayerController player) : base(player) { CreateFSM(); }
+    public PlayerGeneralStates(PlayerController player) : base(player, "general") { CreateFSM(); }
 
     private class PlayerAliveCondition : FSMCondition
     {
@@ -518,93 +529,100 @@ public class PlayerController : MonoBehaviour, IControllable
     public bool IsHooked;
     // TODO toffa : remove this hardcoded object
     public GameObject grapin;
+    
+    //private GameObject carPrefab;
+    //private GameObject carInstance;
 
-    // cant be null
-    public GameObject carPrefab;
-    public GameObject carInstance;
-
-    public SchCarController car_new;
-    public CarController car_old;
+    public SchCarController car;
+    //public CarController car_old;
     public Accumulator turn;
 
-    public GameObject boatPrefab;
+    //public GameObject boatPrefab;
     private GameObject boatInstance;
-    public GameObject planePrefab;
-    public GameObject planeInstance;
+    //public GameObject planePrefab;
+    private GameObject planeInstance;
 
     public AudioSource audioSource;
     public AudioClip damageSound;
 
     public InputManager inputMgr;
-    public PlayerController playerInst;
+
+    // what is currently controlled by the player?
+    // it might be different depending on states.
+    // the playercontroller does not have relevant data when it comes
+    // to rigidbody, transform, etc...
+    struct controlled
+    {
+        public Rigidbody rb;
+    };
+    controlled current;
+
 
     // do not use directly transform, rigidbody, etc...
     public Transform GetTransform() {
-        return currentRB ? currentRB.transform : transform;
+        return current.rb ? current.rb.transform : transform;
     }
     // transform is readonly
     //public void SetTransform(Transform t)
 
     // Rigidbody can be different depending on which transform we are using.
-    Rigidbody currentRB;
     public Rigidbody GetRigidbody() {
-        return currentRB;
+        return current.rb;
     }
 
     void Awake()
     {
-        if (car_old == null && car_new == null)
+        // SchCarController can't be null
+        if (car == null)
         {
-            if (carInstance == null)
-            {
-                carInstance = Instantiate(carPrefab);
-                carInstance.transform.parent = gameObject.transform;
-            }
-            car_new = carInstance.GetComponent<SchCarController>();
-            car_old = carInstance.GetComponent<CarController>();
-        }
-        carInstance.SetActive(false);
-
-        if (planeInstance == null) {
-            planeInstance = Instantiate(planePrefab);
-            planeInstance.transform.parent = gameObject.transform;
+            this.LogError("car property cannot be null! Please assign an gameobject to car.");
         }
 
+        // nocheckin
+        //if (car_old == null && car_new == null)
+        //{
+        //    if (carInstance == null)
+        //    {
+        //        carInstance = Instantiate(carPrefab);
+        //        carInstance.transform.parent = gameObject.transform;
+        //    }
+        //    car_new = carInstance.GetComponent<SchCarController>();
+        //    car_old = carInstance.GetComponent<CarController>();
+        //}
+        //carInstance.SetActive(false);
+
+        //if (planeInstance == null) {
+        //    planeInstance = Instantiate(planePrefab);
+        //    planeInstance.transform.parent = gameObject.transform;
+        //}
+
+        // create states if nuul
+        if (generalStates == null)
         generalStates = new PlayerGeneralStates(this);
+        if (vehicleStates == null)
         vehicleStates = new PlayerVehicleStates(this);
 
+        if (self_PowerController == null)
         self_PowerController = GetComponent<PowerController>();
 
+        if (self_PowerController == null) {
+            this.LogError("No powercontroller, please assign one or add a PowerController script to this object.");
+        }
+
+        // Always freeze when starting.
         Freeze();
-
     }
 
-    void Start()
-    {
-        if (inputMgr == null)
-        {
-            inputMgr = Access.PlayerInputsManager().player1;
+    // ----- Scene listeners
+    void InitSceneListeners() {
+        var scene_loader = Access.SceneLoader();
+        if (scene_loader == null) {
+            this.LogError("No scene loader available, world might be broken!");
         }
 
-        inputMgr.Attach(this);
-
-        Access.SceneLoader().beforeLoadScene.AddListener(OnBeforeLoadScene);
-        Access.SceneLoader().beforeEnableScene.AddListener(OnBeforeEnableScene);
-        Access.SceneLoader().afterLoadScene.AddListener(OnAfterLoadScene);
-
-    }
-
-    void OnDestroy()
-    {
-        inputMgr.Detach(this);
-
-        var sceneLoader = Access.SceneLoader();
-        if (sceneLoader) {
-
-            sceneLoader.beforeLoadScene.RemoveListener(OnBeforeLoadScene);
-            sceneLoader.afterLoadScene.RemoveListener(OnAfterLoadScene);
-            sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);
-        }
+        scene_loader.beforeLoadScene  .AddListener(OnBeforeLoadScene) ;
+        scene_loader.beforeEnableScene.AddListener(OnBeforeEnableScene);
+        scene_loader.afterLoadScene   .AddListener(OnAfterLoadScene);
     }
 
     void OnBeforeLoadScene(){
@@ -632,22 +650,52 @@ public class PlayerController : MonoBehaviour, IControllable
     void OnAfterLoadScene() {
         Access.invalidate();
     }
+    //------ end scene listeners
 
-    // Update is called once per frame
+    void Start()
+    {
+        if (inputMgr == null)
+        {
+            this.LogWarn("Input manager is null. Using default player 1.");
+            inputMgr = Access.PlayerInputsManager().player1;
+        }
+
+
+        if (inputMgr == null) {
+            this.LogError("Input manager is null even after init.");
+        }
+
+        inputMgr.Attach(this);
+
+        InitSceneListeners();
+    }
+
+    void OnDestroy()
+    {
+        inputMgr.Detach(this);
+
+        var sceneLoader = Access.SceneLoader();
+        if (sceneLoader) {
+
+            sceneLoader.beforeLoadScene.RemoveListener(OnBeforeLoadScene);
+            sceneLoader.afterLoadScene.RemoveListener(OnAfterLoadScene);
+            sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);
+        }
+    }
+
+
     void Update()
     {
         generalStates.Update();
         vehicleStates.Update();
 
         elapsedTimeSinceLastDamage += Time.deltaTime;
-
     }
 
     void FixedUpdate()
     {
         generalStates.FixedUpdate();
         vehicleStates.FixedUpdate();
-
 
         SetHandbrake(false);
         turn.Reset();
@@ -657,6 +705,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public WonkerDecal jumpDecal;
 
+    #if false
     public void ResetSpringSizeMinAndUnlock()
     {
         foreach (var axle in car_old.axles)
@@ -754,9 +803,11 @@ public class PlayerController : MonoBehaviour, IControllable
 
         turbo.intervalElapsedTime = 0f;
     }
+    #endif
 
     public bool TouchGround()
     {
+        #if false
         if (car_old)
         {
             foreach (var a in car_old.axles)
@@ -767,6 +818,7 @@ public class PlayerController : MonoBehaviour, IControllable
                 }
             }
         }
+        #endif
         return false;
     }
 
@@ -778,6 +830,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public bool TouchGroundAll()
     {
+        #if false
         if (car_old)
         {
             foreach (var a in car_old.axles)
@@ -788,6 +841,7 @@ public class PlayerController : MonoBehaviour, IControllable
                 }
             }
         }
+        #endif
         return true;
     }
 
@@ -828,6 +882,12 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public void ActivateCar()
     {
+        car.gameObject.SetActive(true);
+        inputMgr.Attach(car as IControllable);
+        current.rb = car.car.chassis.rb;
+        Access.CameraManager().OnTargetChange(GetTransform());
+
+        #if false
         if (car_new)
         {
             carInstance.SetActive(true);
@@ -858,10 +918,17 @@ public class PlayerController : MonoBehaviour, IControllable
             currentRB = car_old.rb;
             Access.CameraManager().OnTargetChange(GetTransform());
         }
+        #endif
     }
 
     public void DeactivateCar()
     {
+        car.gameObject.SetActive(false);
+        inputMgr.Detach(car as IControllable);
+        current.rb = null;
+        Access.CameraManager().OnTargetChange(GetTransform());
+
+        #if false
         if (car_new)
         {
             carInstance.SetActive(false);
@@ -893,23 +960,24 @@ public class PlayerController : MonoBehaviour, IControllable
             currentRB = null;
             Access.CameraManager().OnTargetChange(GetTransform());
         }
+        #endif
     }
 
     public void ActivateAirplane()
     {
         planeInstance.SetActive(true);
-        currentRB = planeInstance.GetComponent<Rigidbody>();
+        current.rb = planeInstance.GetComponent<Rigidbody>();
     }
 
     public void DeactivateAirplane()
     {
         planeInstance.SetActive(false);
-        currentRB = null;
+        current.rb = null;
     }
 
     public bool IsInMenu() { return isInMenu; }
-    public void Freeze() { isInMenu = true; if (currentRB) currentRB.isKinematic = true; MuteSound();  }
-    public void UnFreeze() { isInMenu = false; if (currentRB) currentRB.isKinematic = false; UnMuteSound(); }
+    public void Freeze() { isInMenu = true; if (current.rb) current.rb.isKinematic = true; MuteSound();  }
+    public void UnFreeze() { isInMenu = false; if (current.rb) current.rb.isKinematic = false; UnMuteSound(); }
     private void MuteSound()
     {
         foreach (var source in GetComponentsInChildren<AudioSource>())
@@ -928,6 +996,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     public void SetHandbrake(bool v)
     {
+        #if false
         if (car_old)
         {
             var rear = car_old.axles[(int)AxleType.rear];
@@ -938,12 +1007,15 @@ public class PlayerController : MonoBehaviour, IControllable
             front.left.isHandbraked = v;
             front.right.isHandbraked = v;
         }
+        #endif
     }
 
+    #if false
     public void SetCarCenterOfMass()
     {
         car_old.centerOfMass.transform.localPosition = car_old.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
     }
+    #endif
 
     /// =============== Game Logic ==================
     public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
@@ -986,6 +1058,7 @@ public class PlayerController : MonoBehaviour, IControllable
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
 
+        #if false
         if (car_old)
         {
             // dirty fix for respawn when slipping
@@ -998,6 +1071,7 @@ public class PlayerController : MonoBehaviour, IControllable
                 a.left.slipY = 1;
             }
         }
+        #endif
 
         // Specific states control
         var generalInputs = (generalStates.GetState() as IControllable);
