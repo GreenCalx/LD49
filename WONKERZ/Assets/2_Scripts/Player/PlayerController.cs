@@ -884,7 +884,7 @@ public class PlayerController : MonoBehaviour, IControllable
     {
         car.gameObject.SetActive(true);
         inputMgr.Attach(car as IControllable);
-        current.rb = car.car.chassis.rb;
+        current.rb = car.car.chassis.rb.GetPhysXBody();
         Access.CameraManager().OnTargetChange(GetTransform());
 
         #if false

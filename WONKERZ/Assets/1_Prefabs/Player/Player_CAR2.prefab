@@ -136,8 +136,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1914865991}
   - component: {fileID: 1914865993}
-  - component: {fileID: 1914865992}
-  - component: {fileID: 1914865994}
   m_Layer: 8
   m_Name: wheelColliderInst
   m_TagString: Untagged
@@ -171,52 +169,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1914865990}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c400ea2105829ba4b8097c438e9752d4, type: 3}
+  m_Script: {fileID: 11500000, guid: 37d6c91e922196f409ab33a978fd79ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
-  sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
-  suspension:
-    BodyA_go: {fileID: 0}
-    BodyB_go: {fileID: 0}
-    bodyA_anchor: {x: 0, y: 0, z: 0}
-    bodyB_anchor: {x: 0, y: 0, z: 0}
-    renderer: {fileID: 0}
-    spring:
-      restLength: 0
-      maxLength: 0
-      minLength: 0
-      currentLength: 0
-      stiffness: 0
-      damp: 0
-      anchorPosition: {x: 0, y: 0, z: 0}
-      loadPosition: {x: 0, y: 0, z: 0}
-    locked: 0
-    basis:
-      e00: 0
-      e01: 0
-      e02: 0
-      e03: 0
-      e10: 0
-      e11: 0
-      e12: 0
-      e13: 0
-      e20: 0
-      e21: 0
-      e22: 0
-      e23: 0
-      e30: 0
-      e31: 0
-      e32: 0
-      e33: 0
-    restLength: 0
-    maxLength: 0
-    minLength: 0
-    stiffness: 0
-    damping: 0
   car: {fileID: 3891694663254613587}
   collider: {fileID: 0}
-  rb: {fileID: 1914865994}
+  rb: {fileID: 0}
+  sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  suspension:
+    bodyA_anchor: {x: 0, y: 0, z: 0}
+    bodyB_anchor: {x: 0, y: 0, z: 0}
+    restLength: 2
+    maxLength: 3
+    minLength: 1
+    stiffness: 10
+    damping: 1
+    locked: 0
+    renderer: {fileID: 0}
   display_renderer: {fileID: 0}
   debug_renderer: {fileID: 0}
   susChassisAnchor: {x: 0, y: 0, z: 0}
@@ -234,7 +203,7 @@ MonoBehaviour:
   debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   slip: 0
   inertia:
-    value: 48
+    value: 0
   contactImpulse: {x: 0, y: 0, z: 0}
   accelerationTorque:
     value: 0
@@ -247,36 +216,27 @@ MonoBehaviour:
     value: 0
   longDir: {x: 0, y: 0, z: 0}
   latDir: {x: 0, y: 0, z: 0}
---- !u!64 &1914865992
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1914865990}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 62ad5886cec7d044faf96ab7766d5790, type: 2}
---- !u!54 &1914865994
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1914865990}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  schcollider:
+    castColliders:
+      min: {fileID: 1264655806}
+      minRB: {fileID: 1264655805}
+      max: {fileID: 174221845}
+      maxRB: {fileID: 174221844}
+      maxCastDistanceOffset: 1
+      colliderInst: {fileID: 0}
+    suspension:
+      bodyA_anchor: {x: 0, y: 0, z: 0}
+      bodyB_anchor: {x: 0, y: 0, z: 0}
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      stiffness: 0
+      damping: 0
+      locked: 0
+      renderer: {fileID: 0}
+    radius: 0
+    width: 0
+    filterCollidersFromCollisions: []
 --- !u!1 &7969866031500347891
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,6 +1147,22 @@ PrefabInstance:
       propertyPath: handBrakeDifferential.def
       value: 
       objectReference: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
+    - target: {fileID: 6486285002600036651, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: rb.rb
+      value: 
+      objectReference: {fileID: 3891694663254613591}
+    - target: {fileID: 6486285002600036651, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: mass.value
+      value: 2000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6486285002600036651, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: height.value
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6486285002600036651, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: overrideMass
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6486285002600036653, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
       propertyPath: type
       value: 0
