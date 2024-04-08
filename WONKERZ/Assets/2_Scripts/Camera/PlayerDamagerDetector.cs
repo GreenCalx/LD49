@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Schnibble;
+
 // Child of a player camera
 // Display dangers behind the player
 // ATM, designed to have 3 of em for leftCorner/Middle/RightCorner with their respective uis
@@ -48,7 +50,7 @@ public class PlayerDamagerDetector : MonoBehaviour
         Image img = UIToDisplay_Inst.GetComponentInChildren<Image>();
         if (img==null)
         {
-            Debug.LogError("Image missing on ui to display given to playerdamagerdetector.");
+            this.LogError("Image missing on ui to display given to playerdamagerdetector.");
             return;
         }
 
@@ -74,7 +76,7 @@ public class PlayerDamagerDetector : MonoBehaviour
         if (!!pd)
         {
             if (!damagersInRange.Contains(pd))
-                damagersInRange.Add(pd);
+            damagersInRange.Add(pd);
             updateDangerInRange();
         }
     }
@@ -85,7 +87,7 @@ public class PlayerDamagerDetector : MonoBehaviour
         if (!!pd)
         {
             if (damagersInRange.Contains(pd))
-                damagersInRange.Remove(pd);
+            damagersInRange.Remove(pd);
             updateDangerInRange();
         }
     }

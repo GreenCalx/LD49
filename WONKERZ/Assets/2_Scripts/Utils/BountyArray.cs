@@ -256,7 +256,7 @@ public class BountyArray : MonoBehaviour
     {
         PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
         if (pcm==null)
-        { UnityEngine.Debug.LogError("BountyArray::updateArray:: no Player cosmetics manager"); return;}
+        { this.LogError("BountyArray::updateArray:: no Player cosmetics manager"); return;}
 
         // Get unlocks
         for(int i = 0; i<N_BOUNTY; i++)

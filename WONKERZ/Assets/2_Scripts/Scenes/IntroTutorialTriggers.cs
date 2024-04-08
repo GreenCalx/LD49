@@ -69,7 +69,7 @@ public class IntroTutorialTriggers : MonoBehaviour
         if (!firstCheckPointDone)
             return;
 
-        // Debug.Log("P STATE : " + PC.generalStates.GetState().name);
+        // this.Log("P STATE : " + PC.generalStates.GetState().name);
         // if (PC.generalStates.GetState().name == "Dead")
         if (CPM.saveStateLoaded)
         {

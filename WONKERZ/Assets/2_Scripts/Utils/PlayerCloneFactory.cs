@@ -86,7 +86,7 @@ public sealed class PlayerCloneFactory
         MeshFilter mf = iToDecorate.GetComponent<MeshFilter>();
         if (mf!=null)
         {
-            //Debug.Log("decorate " + iToDecorate.name);
+            //this.Log("decorate " + iToDecorate.name);
             // Deco0 : Add Rigidbody
             Rigidbody rb = iToDecorate.gameObject.GetComponent<Rigidbody>();
             if (rb==null)
@@ -132,7 +132,7 @@ public sealed class PlayerCloneFactory
                         if (!!b)
                         { 
                             b.enabled = false; 
-                            //Debug.Log( "- disabling : " +  b.name); 
+                            //this.Log( "- disabling : " +  b.name); 
                         }
                     } catch( InvalidCastException ice ) 
                     { /* expected on pure components */}
@@ -145,7 +145,7 @@ public sealed class PlayerCloneFactory
         // Call filter on children, if exists
         foreach (Transform child in iToFilter.transform)
         {
-            //Debug.Log("filtering " + child.gameObject.name);
+            //this.Log("filtering " + child.gameObject.name);
             GameObject child_go = child.gameObject;
             filter(ref child_go, iFilter);
         }

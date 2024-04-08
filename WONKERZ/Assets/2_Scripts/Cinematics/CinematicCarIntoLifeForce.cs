@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Schnibble;
+
 public class CinematicCarIntoLifeForce : MonoBehaviour
 {
     private UnityEvent callbackOnCloneRdy;
@@ -19,8 +21,8 @@ public class CinematicCarIntoLifeForce : MonoBehaviour
     private Transform prevCamFocus;
 
     /**
-    *   Replaces player for a given amount of time
-    */
+     *   Replaces player for a given amount of time
+     */
     public void SpawnPlayerAsLifeForce()
     {
         callbackOnCloneRdy = new UnityEvent();
@@ -56,7 +58,7 @@ public class CinematicCarIntoLifeForce : MonoBehaviour
     public void Stop()
     {
         if (lifeForce_Inst!=null)
-            Destroy(lifeForce_Inst);
+        Destroy(lifeForce_Inst);
         Access.Player()?.gameObject.SetActive(true);
         Access.Player()?.UnFreeze();
     }
@@ -72,7 +74,7 @@ public class CinematicCarIntoLifeForce : MonoBehaviour
             }
         } catch (InvalidCastException ice)
         {
-            Debug.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
+            this.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
             return;
         }
     }
@@ -84,13 +86,13 @@ public class CinematicCarIntoLifeForce : MonoBehaviour
             if (!!foc)
             {
                 if (prevCamFocus!=null)
-                    foc.focus = prevCamFocus;
+                foc.focus = prevCamFocus;
                 else
-                    foc.focus = Access.Player().transform;
+                foc.focus = Access.Player().transform;
             }
         } catch (InvalidCastException ice)
         {
-            Debug.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
+            this.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
             return;
         }
     }

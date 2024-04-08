@@ -31,7 +31,7 @@ public class UIProfileCards : UIPanelTabbed
             UIProfileCardPanel uipcp = (UIProfileCardPanel) t;
             if (uipcp==null)
             {
-                LogError("A card profile doesn't carry UIProfileCardPanel : " + t.gameObject.name);
+                this.LogError("A card profile doesn't carry UIProfileCardPanel : " + t.gameObject.name);
                 continue;
             }
             profileCards.Add(uipcp);
@@ -51,7 +51,7 @@ public class UIProfileCards : UIPanelTabbed
         UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
         if (uipcp==null)
         {
-            LogError("Selected Card is not activable");
+            this.LogError("Selected Card is not activable");
             return;
         }
         string selected_profile_name = uipcp.profileName.text;

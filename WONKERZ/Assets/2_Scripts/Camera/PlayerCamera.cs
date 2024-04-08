@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
+using Schnibble;
+
 public class PlayerCamera : GameCamera
 {
     [System.Serializable]
@@ -27,12 +29,12 @@ public class PlayerCamera : GameCamera
         get { return loc_secondaryFocus; }
         set {
             if (value!=loc_secondaryFocus)
-                loc_secondaryFocus?.OnPlayerUnfocus();
+            loc_secondaryFocus?.OnPlayerUnfocus();
             
             value?.OnPlayerFocus(); 
 
             loc_secondaryFocus = value; 
-            }
+        }
     }
     public float focusChangeInputLatch = 0.2f;
     public float camDistIncrease = 0f;
@@ -59,7 +61,7 @@ public class PlayerCamera : GameCamera
     public void applySpeedEffect(float iSpeedPerCent)
     {
         if (cam==null)
-            return;
+        return;
 
         float apply_factor = Mathf.Clamp01((Mathf.Abs(iSpeedPerCent) - fov.thresholdPerCent) / fov.thresholdPerCent);
 
@@ -94,11 +96,11 @@ public class PlayerCamera : GameCamera
         foreach(CameraFocusable f in focusables)
         {
             if (!f.gameObject.activeSelf)
-                continue;
+            continue;
 
             float dist = Vector3.Distance(f.transform.position, p_pos);
             if (dist > f.focusFindRange)
-                continue;
+            continue;
 
             if (dist < minDist)
             {
@@ -125,7 +127,7 @@ public class PlayerCamera : GameCamera
     {
         uISecondaryFocus = Access.UISecondaryFocus();
         if (null==uISecondaryFocus)
-            return;
+        return;
 
         uISecondaryFocus.gameObject.SetActive(iState);
         
@@ -133,7 +135,7 @@ public class PlayerCamera : GameCamera
         {
             uISecondaryFocus.trackObjectPosition(secondaryFocus.transform);
             if (iState)
-                uISecondaryFocus.setColor(secondaryFocus.focusColor);
+            uISecondaryFocus.setColor(secondaryFocus.focusColor);
         } else { 
             uISecondaryFocus.trackObjectPosition(null);
         }
@@ -160,7 +162,7 @@ public class PlayerCamera : GameCamera
         if (null==secondaryFocus)
         { findFocus(); return ;}
 
-        Debug.Log("Change focus");
+        this.Log("Change focus");
 
         PlayerController p = Access.Player();
         Vector3 p_pos = p.GetTransform().position;
@@ -172,11 +174,11 @@ public class PlayerCamera : GameCamera
         foreach(CameraFocusable f in focusables)
         {
             if (alreadyFocusedQ.Contains(f))
-                continue;
+            continue;
             
             float dist = Vector3.Distance(f.transform.position, p_pos);
             if (dist > f.focusFindRange)
-                continue;
+            continue;
 
             if (dist < minDist)
             {
@@ -189,11 +191,11 @@ public class PlayerCamera : GameCamera
         // then cycle with the queue as long as there is
         // no new ppl in range
         if (chosenOne==null && (alreadyFocusedQ.Count==0))
-            resetFocus();
+        resetFocus();
         else if (chosenOne==null)
-            secondaryFocus = alreadyFocusedQ.Dequeue();
+        secondaryFocus = alreadyFocusedQ.Dequeue();
         else
-            secondaryFocus = chosenOne;
+        secondaryFocus = chosenOne;
 
         alreadyFocusedQ.Enqueue(secondaryFocus);
         showFocus(true);

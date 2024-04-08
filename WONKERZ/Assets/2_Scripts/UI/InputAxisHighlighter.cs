@@ -54,7 +54,7 @@ void OnDisable()
     {
         // if (Access.PlayerInputsManager().player1 == currentMgr)
         // {
-        //     Debug.Log("IM_Player1");
+        //     this.Log("IM_Player1");
         // }      
         if (requiresTriggerModificator)
         {

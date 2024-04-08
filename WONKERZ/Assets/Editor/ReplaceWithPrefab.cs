@@ -49,6 +49,8 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Reflection;
 using UnityEngine.SceneManagement;
+
+using Schnibble;
 namespace Community
 {
     /// <summary>
@@ -382,7 +384,7 @@ namespace Community
                     }
                     else
                     {
-                        Debug.LogError("The selected object cannot be renamed, as there are several naming schemes used");
+                        this.LogError("The selected object cannot be renamed, as there are several naming schemes used");
                     }
                 }
             }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
 
+using Schnibble;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -26,7 +28,7 @@ public class TSTHookMgr : MonoBehaviour
 
     void OnSceneClose(Scene scene)
     {
-        Debug.Log("Hook deactive");
+        this.Log("Hook deactive");
         if (hook==null)
             return;
         if (scene == hook.gameObject.scene)
@@ -38,7 +40,7 @@ public class TSTHookMgr : MonoBehaviour
 
     void OnSceneOpen(Scene scene, OpenSceneMode mode)
     {
-        Debug.Log("Hook active");
+        this.Log("Hook active");
         if (hook==null)
             return;
         if (scene == hook.gameObject.scene)

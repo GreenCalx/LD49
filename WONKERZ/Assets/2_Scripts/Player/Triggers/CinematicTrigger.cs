@@ -51,7 +51,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
     {
         if (isSkippable && triggered && !!skipUIInst)
         {
-            //Debug.Log("skip vote : " + skipVotes.Count);
+            //this.Log("skip vote : " + skipVotes.Count);
             if (skipVotes.Count > 0) {
                 elapsedSkipTime += Time.deltaTime;
             } else {
@@ -86,7 +86,7 @@ public class CinematicTrigger : MonoBehaviour, IControllable
 
     public void EndCinematic()
     {
-        Log("End Cinematic");
+        this.Log("End Cinematic");
 
         if (freezePlayer)
         {

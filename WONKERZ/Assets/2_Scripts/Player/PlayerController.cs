@@ -649,6 +649,7 @@ public class PlayerController : MonoBehaviour, IControllable
 
     void OnAfterLoadScene() {
         Access.invalidate();
+        car.car.constraintSolver.solver.bodyInterface.Init();
     }
     //------ end scene listeners
 

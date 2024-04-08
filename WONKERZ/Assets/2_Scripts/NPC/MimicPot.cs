@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+using Schnibble;
+
 public class MimicPot : MonoBehaviour
 {
     public GameObject mimicVersionRef;
@@ -39,7 +41,7 @@ public class MimicPot : MonoBehaviour
 
         if (!agent.isOnNavMesh)
         {
-            Debug.Log("Agent not on navmesh.");
+            this.Log("Agent not on navmesh.");
             NavMeshHit navHit;
             int layermask = NavMesh.GetAreaFromName("MimicPot");
             NavMesh.SamplePosition (transform.position, out navHit, agent.height*2, -1 * layermask);
@@ -57,10 +59,10 @@ public class MimicPot : MonoBehaviour
             if (invulTimeAfterTrigger > elapsedInvulTimeAfterTrigger)
             { elapsedInvulTimeAfterTrigger += Time.deltaTime; }
 
-            Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow, 3f);
+            UnityEngine.Debug.DrawRay(transform.position, transform.forward * 5, Color.yellow, 3f);
             if (!agent.isOnNavMesh)
             {
-                Debug.LogWarning("Agent is not on Navmesh. Waiting for Unity's link agent/navmesh.");
+                this.LogWarn("Agent is not on Navmesh. Waiting for Unity's link agent/navmesh.");
                 return;
             }
 
@@ -70,7 +72,7 @@ public class MimicPot : MonoBehaviour
 
                 if (playerInPathForNextPoint())
                 {
-                     inReversedPath = !inReversedPath;
+                    inReversedPath = !inReversedPath;
                 }
                 //tryGoToNextPoint();
 
@@ -78,7 +80,7 @@ public class MimicPot : MonoBehaviour
                 if (Vector3.Distance( agent.destination, transform.position) <= agent.stoppingDistance)
                 { 
                     if (!agent.hasPath)
-                        tryGoToNextPoint(); 
+                    tryGoToNextPoint(); 
                 }
             }
             else if (!agent.hasPath)
@@ -118,7 +120,7 @@ public class MimicPot : MonoBehaviour
     {
         if (mimicPath.Count <= 0)
         {
-            Debug.LogWarning("Empty Path on MimicPot.");
+            this.LogWarn("Empty Path on MimicPot.");
             return;
         }
 
@@ -134,7 +136,7 @@ public class MimicPot : MonoBehaviour
 
         NavMesh.SamplePosition (mimicPath[pathIndex].position, out navHit, dist, -1 * layermask);
         
-        Debug.DrawRay(navHit.position, transform.up * 10, Color.green, 0.5f);
+        UnityEngine.Debug.DrawRay(navHit.position, transform.up * 10, Color.green, 0.5f);
         agent.SetDestination(navHit.position);
     }
 
@@ -142,7 +144,7 @@ public class MimicPot : MonoBehaviour
     {
         if (mimicPath.Count <= 0)
         {
-            Debug.LogWarning("Empty Path on MimicPot.");
+            this.LogWarn("Empty Path on MimicPot.");
             return;
         }
         pathIndex = (pathIndex > 0) ? pathIndex-1 : mimicPath.Count-1;
@@ -161,7 +163,7 @@ public class MimicPot : MonoBehaviour
     {
         if (!mimicTriggered)
         {
-            Debug.Log("MIMIC");
+            this.Log("MIMIC");
             spawnMimic();
             agent.enabled = true;
 
@@ -169,7 +171,7 @@ public class MimicPot : MonoBehaviour
             elapsedInvulTimeAfterTrigger = 0f;
 
             if ((agent==null) || (mimicPath==null))
-            { Debug.LogError("Missing NavMeshAgent or Path on Mimic Pot."); Destroy(gameObject); }
+            { this.LogError("Missing NavMeshAgent or Path on Mimic Pot."); Destroy(gameObject); }
             tryGoToNextPoint();
 
         }
@@ -185,10 +187,10 @@ public class MimicPot : MonoBehaviour
 
         MeshCollider mc = GetComponentInChildren<MeshCollider>();
         if (!!mc)
-            mc.enabled = false;
+        mc.enabled = false;
         MeshRenderer mr = GetComponentInChildren<MeshRenderer>();
         if (!!mr)
-            mr.enabled = false;
+        mr.enabled = false;
         Destroy(mc.gameObject);
 
         // Play SFX
@@ -199,7 +201,7 @@ public class MimicPot : MonoBehaviour
         foreach (MeshRenderer rend in mrs)
         {
             if (!rend.gameObject.name.Contains("_cell"))
-                continue;
+            continue;
             
             rend.transform.parent = null;
             
@@ -218,17 +220,17 @@ public class MimicPot : MonoBehaviour
     void OnCollisionEnter(Collision iCollision)
     {
         if (!mimicTriggered)
-            return;
+        return;
         
         if (invulTimeAfterTrigger > elapsedInvulTimeAfterTrigger)
-            return;
+        return;
 
         if (Utils.collisionIsPlayer(iCollision))
         {
             trackEvent.setSolved();
 
             if (!!mimicCompleteSFX)
-                Schnibble.Utils.SpawnAudioSource( mimicCompleteSFX, transform);
+            Schnibble.Utils.SpawnAudioSource( mimicCompleteSFX, transform);
 
             if (!!mimicBreakPS)
             {

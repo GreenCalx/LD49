@@ -890,11 +890,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2705171154291085488, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
       propertyPath: m_Name
-      value: Player_
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 2705171154291085488, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2705171154291085491, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
       propertyPath: m_RootOrder
@@ -957,11 +957,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!64 &1914865992 stripped
-MeshCollider:
-  m_CorrespondingSourceObject: {fileID: 1914865992, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-  m_PrefabInstance: {fileID: 6486285002600036647}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1953887952 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5027294951062732548, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
@@ -1705,7 +1700,7 @@ PrefabInstance:
     - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
       propertyPath: collider
       value: 
-      objectReference: {fileID: 1914865992}
+      objectReference: {fileID: 0}
     - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
       propertyPath: suspension.maxLength
       value: 3
@@ -1724,7 +1719,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8298073304116635024, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
       propertyPath: m_Name
-      value: Player
+      value: Player_
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298073304116635024, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8298073304116635027, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
       propertyPath: m_RootOrder

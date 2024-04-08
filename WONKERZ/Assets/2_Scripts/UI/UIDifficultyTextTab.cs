@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Schnibble;
 using Schnibble.UI;
 
 public class UIDifficultyTextTab : UITextTab
@@ -19,7 +20,7 @@ public class UIDifficultyTextTab : UITextTab
     {
         base.activate();
 
-        Debug.Log("Difficulty selected : " + difficulty);
+        this.Log("Difficulty selected : " + difficulty);
         UIDifficultyChoice p = Parent as UIDifficultyChoice;
         p.chosen_difficulty = difficulty;
         p.choice_made = true;

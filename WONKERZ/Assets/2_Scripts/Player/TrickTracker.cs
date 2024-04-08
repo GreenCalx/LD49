@@ -131,7 +131,7 @@ public class TrickTracker : MonoBehaviour
                     //     StopCoroutine(trickRecordCo);
                     // trickRecordCo = StartCoroutine(TrickRecordCo(0.1f));
 
-                    UnityEngine.Debug.Log("open line");
+                    this.Log("open line");
                     trickUI.recordingTrick();
                     initRotationsRecord();
                     recordRotations();
@@ -194,15 +194,15 @@ public class TrickTracker : MonoBehaviour
 
             if (accumulated_x >= threshold)
             {
-                UnityEngine.Debug.Log("trick on x");
+                this.Log("trick on x");
             }
             if (accumulated_y >= threshold)
             {
-                UnityEngine.Debug.Log("trick on y");
+                this.Log("trick on y");
             }
             if (accumulated_z >= threshold)
             {
-                UnityEngine.Debug.Log("trick on z");
+                this.Log("trick on z");
             }
 
             previous_rpf_x = rpf_x;
@@ -210,10 +210,10 @@ public class TrickTracker : MonoBehaviour
             previous_rpf_z = rpf_z;
         }
 
-        UnityEngine.Debug.Log("v RECORD RESULT v");
-        UnityEngine.Debug.Log("acc x " + accumulated_x);
-        UnityEngine.Debug.Log("acc y " + accumulated_y);
-        UnityEngine.Debug.Log("acc z " + accumulated_z);
+        this.Log("v RECORD RESULT v");
+        this.Log("acc x " + accumulated_x);
+        this.Log("acc y " + accumulated_y);
+        this.Log("acc z " + accumulated_z);
 
         yield return null;
     }

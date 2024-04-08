@@ -78,7 +78,7 @@ public class TommyEnemy : WkzEnemy
     // Unique methods
     public void CallThrowBalls()
     {
-        Log(gameObject.name + " CallThrowBalls");
+        this.Log(gameObject.name + " CallThrowBalls");
         LaunchAction(ThrowBallsCo(this));
     }
 
@@ -86,7 +86,7 @@ public class TommyEnemy : WkzEnemy
     {
         if ((throwables==null)||(throwables.Count<=0))
         {
-            Log(gameObject.name + " No throwables to throw");
+            this.Log(gameObject.name + " No throwables to throw");
             yield break;
         }
 

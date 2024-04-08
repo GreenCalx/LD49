@@ -126,19 +126,19 @@ public class WilliamEnemy : WkzEnemy
     /// LOCAL
     public void CallGuard()
     {
-        Log(gameObject.name + " CallGuard");
+        this.Log(gameObject.name + " CallGuard");
         LaunchAction(Guard(this));
     }
 
     public void CallLariat()
     {
-        Log(gameObject.name + " CallLariat");
+        this.Log(gameObject.name + " CallLariat");
         LaunchAction(LariatSpin(this));
     }
 
     public void CallDirectHit()
     {
-        Log(gameObject.name + " CallDirectHit");
+        this.Log(gameObject.name + " CallDirectHit");
         LaunchAction(DirectHit(this, coordinator.playerDetector.GetTarget().transform.position));
     }
 
@@ -185,7 +185,7 @@ public class WilliamEnemy : WkzEnemy
             lariat_destination = GetNextLimitPosition(lariat_destination, 50f);
             if (!agent.SetDestination(lariat_destination))
             {
-                LogError("William : Failed to attack player");
+                this.LogError("William : Failed to attack player");
             }
         }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Schnibble;
 
 public class SpinPowerObject : MonoBehaviour
 
@@ -39,10 +40,10 @@ public class SpinPowerObject : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        Debug.Log("SpinPowerObject collision : " + iCol.gameObject.name);
+        this.Log("SpinPowerObject collision : " + iCol.gameObject.name);
         Rigidbody collider_rb = iCol.gameObject.GetComponent<Rigidbody>();
         if (!!collider_rb)
-            collider_rb = iCol.gameObject.GetComponentInChildren<Rigidbody>();
+        collider_rb = iCol.gameObject.GetComponentInChildren<Rigidbody>();
 
         if (!!collider_rb)
         {
@@ -73,7 +74,7 @@ public class SpinPowerObject : MonoBehaviour
         //Ground gnd = iCol.collider.GetComponent<Ground>();
         //if (!!gnd)
         //{
-            //if (gnd.GI.Type == Ground.EType.WATER)
+        //if (gnd.GI.Type == Ground.EType.WATER)
         //{
         //PowerController PC = Access.Player().gameObject.GetComponent<PowerController>();
         //PC.setNextPower(0);

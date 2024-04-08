@@ -333,7 +333,7 @@ public class CameraManager : MonoBehaviour, IControllable
         // Debug Cam switches below
         string new_cam_name = ((iNewCam==null)?"null":iNewCam.gameObject.name);
         string prev_cam_name = ((active_camera==null)?"null":active_camera.gameObject.name);
-        Log("CamSwitch : " +  new_cam_name  + " FROM " + prev_cam_name);
+        this.Log("CamSwitch : " +  new_cam_name  + " FROM " + prev_cam_name);
 
 
         active_camera = iNewCam;
@@ -401,7 +401,7 @@ public class CameraManager : MonoBehaviour, IControllable
 
         if ((prev_tp==null)||(new_tp==null))
         {
-            LogWarning("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
+            this.LogWarn("Can't switch ToonPipeline. Previous or New Pipeline is missing from camera.");
             return;
         }
 
