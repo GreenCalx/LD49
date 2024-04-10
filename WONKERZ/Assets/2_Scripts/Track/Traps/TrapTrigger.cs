@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrapTrigger : MonoBehaviour
-{
-
-    public List<Trap> toTrigger;
-
-    void OnTriggerEnter(Collider iCollider)
+namespace Wonkerz {
+    public class TrapTrigger : MonoBehaviour
     {
-        if (Utils.isPlayer(iCollider.gameObject))
+
+        public List<Trap> toTrigger;
+
+        void OnTriggerEnter(Collider iCollider)
         {
-            foreach (Trap t in toTrigger)
+            if (Utils.isPlayer(iCollider.gameObject))
             {
-                t.OnTrigger();
+                foreach (Trap t in toTrigger)
+                {
+                    t.OnTrigger();
+                }
             }
         }
     }

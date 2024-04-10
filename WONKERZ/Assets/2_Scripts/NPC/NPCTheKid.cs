@@ -3,62 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-public class NPCTheKid : NPCDialog
+namespace Wonkerz
 {
-    [Header("#NPCTheKid")]
-    public Transform challengeDestination;
-    public List<GameObject> tagAsLava;
-    public Material LavaMaterial;
-    public GameObject bloomPPVolumeHandle;
 
-    public bool challenge_complete = false;
-
-    // Start is called before the first frame update
-    void Start()
+    public class NPCTheKid : NPCDialog
     {
-    }
+        [Header("#NPCTheKid")]
+        public Transform challengeDestination;
+        public List<GameObject> tagAsLava;
+        public Material LavaMaterial;
+        public GameObject bloomPPVolumeHandle;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        public bool challenge_complete = false;
 
-    public void LaunchFloorIsLava()
-    {
-        foreach(GameObject go in tagAsLava)
+        // Start is called before the first frame update
+        void Start()
         {
-            if (go.GetComponent<LavaTag>()!=null)
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        public void LaunchFloorIsLava()
+        {
+            foreach (GameObject go in tagAsLava)
+            {
+                if (go.GetComponent<LavaTag>() != null)
                 continue;
 
-            LavaTag LT = go.AddComponent(typeof(LavaTag)) as LavaTag;
-            LT.enable(LavaMaterial);
+                LavaTag LT = go.AddComponent(typeof(LavaTag)) as LavaTag;
+                LT.enable(LavaMaterial);
+            }
+            bloomPPVolumeHandle.SetActive(true);
+
+            StartCoroutine(PlayerInChallenge());
         }
-        bloomPPVolumeHandle.SetActive(true);
 
-        StartCoroutine(PlayerInChallenge());
-    }
-
-    public void StopFloorIsLava()
-    {
-        foreach(GameObject go in tagAsLava)
+        public void StopFloorIsLava()
         {
-            LavaTag LT = go.GetComponent<LavaTag>();
-            if (LT==null)
+            foreach (GameObject go in tagAsLava)
+            {
+                LavaTag LT = go.GetComponent<LavaTag>();
+                if (LT == null)
                 continue;
-        
-            LT.disable();
-        }
-        bloomPPVolumeHandle.SetActive(false);
-    }
 
-    IEnumerator PlayerInChallenge()
-    {
-        PlayerController pc = Access.Player();
-        while (pc.IsAlive() && !challenge_complete)
-        {
-            yield return null;
+                LT.disable();
+            }
+            bloomPPVolumeHandle.SetActive(false);
         }
-        StopFloorIsLava();
+
+        IEnumerator PlayerInChallenge()
+        {
+            PlayerController pc = Access.Player();
+            while (pc.IsAlive() && !challenge_complete)
+            {
+                yield return null;
+            }
+            StopFloorIsLava();
+        }
     }
 }

@@ -501,33 +501,36 @@ MonoBehaviour:
   parts:
   - animatee: {fileID: 2303219278622720507}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 100
     axisOfAnimation: 1
     maxAngle: -80
     initialRotation: {x: 0, y: 0, z: 0}
   - animatee: {fileID: 7402246981312717887}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 100
     axisOfAnimation: 1
     maxAngle: 80
     initialRotation: {x: 0, y: 0, z: 0}
   - animatee: {fileID: 5469017149970256304}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 200
     axisOfAnimation: 0
     maxAngle: -90
@@ -3042,33 +3045,36 @@ MonoBehaviour:
   parts:
   - animatee: {fileID: 7163872986680849735}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 100
     axisOfAnimation: 1
     maxAngle: 80
     initialRotation: {x: 0, y: 0, z: 0}
   - animatee: {fileID: 4171480460441316262}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 100
     axisOfAnimation: 1
     maxAngle: -80
     initialRotation: {x: 0, y: 0, z: 0}
   - animatee: {fileID: 653457840675327168}
     spring:
-      rest: 0
-      max: 1
-      min: 0
-      f: 1
-      dr: 0.1
+      restLength: 0
+      maxLength: 0
+      minLength: 0
+      currentLength: 0
+      stiffness: 0
+      damp: 0
     animationMultiplier: 200
     axisOfAnimation: 0
     maxAngle: 90
@@ -20595,6 +20601,30 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737662364433289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3914737662364433295, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
       propertyPath: m_ConnectedBody
       value: 
@@ -20904,6 +20934,11 @@ SphereCollider:
   m_CorrespondingSourceObject: {fileID: 3914737663345435617, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_PrefabInstance: {fileID: 3462074562624191792}
   m_PrefabAsset: {fileID: 0}
+--- !u!153 &457171785963364053 stripped
+ConfigurableJoint:
+  m_CorrespondingSourceObject: {fileID: 3914737663345435621, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457171785963364140 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3914737663345435164, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
@@ -20921,10 +20956,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 457171785612267760}
-  collider: {fileID: 457171785963364049}
-  rb: {fileID: 457171785963364048}
+  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  frictionMultiplier: 10
+  axle: {fileID: 457171786284451493}
   suspension:
     bodyA:
       rid: -2
@@ -20939,41 +20975,33 @@ MonoBehaviour:
     damping: 0
     locked: 0
     renderer: {fileID: 0}
-  display_renderer: {fileID: 0}
+  car: {fileID: 457171785612267760}
+  virtual_body:
+    rid: -2
+  renderer: {fileID: 0}
+  mat: {fileID: 0}
+  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   debug_renderer: {fileID: 0}
-  susChassisAnchor: {x: 0, y: 0, z: 0}
-  susChassisDirection: {x: 0, y: 0, z: 0}
-  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  axle: {fileID: 457171786284451493}
   grounded: 0
   omega:
     value: 0
-  steerAngle:
-    value: 0
-  frictionMultiplier: 0
-  mat: {fileID: 0}
-  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   slip: 0
   inertia:
     value: 48
   contactImpulse: {x: 0, y: 0, z: 0}
-  accelerationTorque:
-    value: 0
-  availableBrakeTorque:
-    value: 0
-  frameAcceleration: {x: 0, y: 0, z: 0}
-  excessTorque:
-    value: 0
-  excessBrakeTorque:
-    value: 0
-  longDir: {x: 0, y: 0, z: 0}
-  latDir: {x: 0, y: 0, z: 0}
+  collider: {fileID: 457171785963364049}
+  rb: {fileID: 457171785963364048}
+  cj: {fileID: 457171785963364053}
   references:
     version: 2
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+--- !u!153 &457171786123029600 stripped
+ConfigurableJoint:
+  m_CorrespondingSourceObject: {fileID: 3914737663572234576, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457171786123029627 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3914737663572234571, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
@@ -20991,10 +21019,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 457171785612267760}
-  collider: {fileID: 457171786123029628}
-  rb: {fileID: 457171786123029631}
+  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  frictionMultiplier: 10
+  axle: {fileID: 457171785912692761}
   suspension:
     bodyA:
       rid: -2
@@ -21009,36 +21038,23 @@ MonoBehaviour:
     damping: 0
     locked: 0
     renderer: {fileID: 0}
-  display_renderer: {fileID: 0}
+  car: {fileID: 457171785612267760}
+  virtual_body:
+    rid: -2
+  renderer: {fileID: 1256191032912904809}
+  mat: {fileID: 0}
+  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   debug_renderer: {fileID: 0}
-  susChassisAnchor: {x: 0, y: 0, z: 0}
-  susChassisDirection: {x: 0, y: 0, z: 0}
-  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  axle: {fileID: 457171785912692761}
   grounded: 0
   omega:
     value: 0
-  steerAngle:
-    value: 0
-  frictionMultiplier: 0
-  mat: {fileID: 0}
-  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   slip: 0
   inertia:
     value: 48
   contactImpulse: {x: 0, y: 0, z: 0}
-  accelerationTorque:
-    value: 0
-  availableBrakeTorque:
-    value: 0
-  frameAcceleration: {x: 0, y: 0, z: 0}
-  excessTorque:
-    value: 0
-  excessBrakeTorque:
-    value: 0
-  longDir: {x: 0, y: 0, z: 0}
-  latDir: {x: 0, y: 0, z: 0}
+  collider: {fileID: 457171786123029628}
+  rb: {fileID: 457171786123029631}
+  cj: {fileID: 457171786123029600}
   references:
     version: 2
     RefIds:
@@ -21052,6 +21068,11 @@ SphereCollider:
 --- !u!54 &457171786123029631 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 3914737663572234575, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!153 &457171786220377056 stripped
+ConfigurableJoint:
+  m_CorrespondingSourceObject: {fileID: 3914737663636041424, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_PrefabInstance: {fileID: 3462074562624191792}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &457171786220377083 stripped
@@ -21071,10 +21092,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 457171785612267760}
-  collider: {fileID: 457171786220377084}
-  rb: {fileID: 457171786220377087}
+  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  frictionMultiplier: 10
+  axle: {fileID: 457171786284451493}
   suspension:
     bodyA:
       rid: -2
@@ -21089,36 +21111,23 @@ MonoBehaviour:
     damping: 0
     locked: 0
     renderer: {fileID: 0}
-  display_renderer: {fileID: 0}
+  car: {fileID: 457171785612267760}
+  virtual_body:
+    rid: -2
+  renderer: {fileID: 0}
+  mat: {fileID: 0}
+  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   debug_renderer: {fileID: 0}
-  susChassisAnchor: {x: 0, y: 0, z: 0}
-  susChassisDirection: {x: 0, y: 0, z: 0}
-  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  axle: {fileID: 457171786284451493}
   grounded: 0
   omega:
     value: 0
-  steerAngle:
-    value: 0
-  frictionMultiplier: 0
-  mat: {fileID: 0}
-  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   slip: 0
   inertia:
     value: 48
   contactImpulse: {x: 0, y: 0, z: 0}
-  accelerationTorque:
-    value: 0
-  availableBrakeTorque:
-    value: 0
-  frameAcceleration: {x: 0, y: 0, z: 0}
-  excessTorque:
-    value: 0
-  excessBrakeTorque:
-    value: 0
-  longDir: {x: 0, y: 0, z: 0}
-  latDir: {x: 0, y: 0, z: 0}
+  collider: {fileID: 457171786220377084}
+  rb: {fileID: 457171786220377087}
+  cj: {fileID: 457171786220377056}
   references:
     version: 2
     RefIds:
@@ -21145,6 +21154,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b3ed7094635944898365021ee28fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!23 &457171786490633925 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3914737661729547253, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &457171786794157750 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3914737662364433286, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
@@ -21162,10 +21176,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 457171785612267760}
-  collider: {fileID: 457171786794157755}
-  rb: {fileID: 457171786794157754}
+  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  frictionMultiplier: 10
+  axle: {fileID: 457171785912692761}
   suspension:
     bodyA:
       rid: -2
@@ -21180,36 +21195,23 @@ MonoBehaviour:
     damping: 0
     locked: 0
     renderer: {fileID: 0}
-  display_renderer: {fileID: 0}
-  debug_renderer: {fileID: 0}
-  susChassisAnchor: {x: 0, y: 0, z: 0}
-  susChassisDirection: {x: 0, y: 0, z: 0}
-  brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  axle: {fileID: 457171785912692761}
+  car: {fileID: 457171785612267760}
+  virtual_body:
+    rid: -2
+  renderer: {fileID: 1256191031880028334}
+  mat: {fileID: 2100000, guid: b21c918bdf3738349a0652ea73ae98ce, type: 2}
+  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
+  debug_renderer: {fileID: 457171786490633925}
   grounded: 0
   omega:
     value: 0
-  steerAngle:
-    value: 0
-  frictionMultiplier: 0
-  mat: {fileID: 0}
-  debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   slip: 0
   inertia:
     value: 48
   contactImpulse: {x: 0, y: 0, z: 0}
-  accelerationTorque:
-    value: 0
-  availableBrakeTorque:
-    value: 0
-  frameAcceleration: {x: 0, y: 0, z: 0}
-  excessTorque:
-    value: 0
-  excessBrakeTorque:
-    value: 0
-  longDir: {x: 0, y: 0, z: 0}
-  latDir: {x: 0, y: 0, z: 0}
+  collider: {fileID: 457171786794157755}
+  rb: {fileID: 457171786794157754}
+  cj: {fileID: 457171786794157759}
   references:
     version: 2
     RefIds:
@@ -21225,9 +21227,24 @@ SphereCollider:
   m_CorrespondingSourceObject: {fileID: 3914737662364433291, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_PrefabInstance: {fileID: 3462074562624191792}
   m_PrefabAsset: {fileID: 0}
+--- !u!153 &457171786794157759 stripped
+ConfigurableJoint:
+  m_CorrespondingSourceObject: {fileID: 3914737662364433295, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &653457840675327168 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4114687011963859440, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1256191031880028334 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2406366333472927134, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+  m_PrefabInstance: {fileID: 3462074562624191792}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &1256191032912904809 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2406366334208147289, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_PrefabInstance: {fileID: 3462074562624191792}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4171480460441316262 stripped

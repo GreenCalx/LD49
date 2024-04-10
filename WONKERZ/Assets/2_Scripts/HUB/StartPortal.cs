@@ -4,51 +4,36 @@ using Schnibble;
 using System.Collections;
 using System.Collections.Generic;
 
-/// STARTING POINT FOR HUB
-// > ACTIVATES TRICKS AUTO
-public class StartPortal : AbstractCameraPoint
+namespace Wonkerz
 {
-    [Header("Behaviour")]
-    public bool forceSinglePlayer = false;
-    public bool enable_tricks = false;
-    public bool deleteAfterSpawn = false;
-    public GameCamera.CAM_TYPE camera_type;
-    public bool isTutorialStartPortal = false; 
-    public GameObject UIHandle;  // for tricktracker
-
-    [Header("Optionals")]
-    public Transform facingPoint;
-    public CinematicTrigger entryLevelCinematic;
-
-    [Header("Debug")]
-    public bool bypassCinematic = true;
-
-    // Start is called before the first frame updatezd
-    void Start()
+    /// STARTING POINT FOR HUB
+    // > ACTIVATES TRICKS AUTO
+    public class StartPortal : AbstractCameraPoint
     {
         PlayerController pc = Access.Player();
 
         init(pc);
 
-        if (enable_tricks)
-        activateTricks();
+            if (enable_tricks)
+            activateTricks();
 
         if (forceSinglePlayer)
         {
             pc.inputMgr = Access.PlayerInputsManager().player1;
         }
 
-        if (!bypassCinematic)
-        {
-            if (entryLevelCinematic!=null)
+            if (!bypassCinematic)
             {
                 relocatePlayer(pc);
                 entryLevelCinematic.StartCinematic();
                 StartCoroutine(waitEntryLevelCinematic(pc));
             }
+
         }
 
-    }
+        void init()
+        {
+            Access.Player().Freeze();
 
     void init(PlayerController pc)
     {
@@ -66,38 +51,30 @@ public class StartPortal : AbstractCameraPoint
             Destroy(gameObject);
         }
 
-        if (isTutorialStartPortal)
-        {
-            initTutorial();
-        }
+            if (isTutorialStartPortal)
+            {
+                initTutorial();
+            }
 
         pc.UnFreeze();
     }
 
-    void initTutorial()
-    {
-        CheckPointManager cpm = Access.CheckPointManager();
-        TrackManager tm = Access.TrackManager();
-        if (!!cpm && !!tm)
+        void initTutorial()
         {
-            tm.track_score.selected_diff = DIFFICULTIES.NONE;
-            tm.launchTrack(Constants.SN_INTRO);
-            cpm.init();
+            CheckPointManager cpm = Access.CheckPointManager();
+            TrackManager tm = Access.TrackManager();
+            if (!!cpm && !!tm)
+            {
+                tm.track_score.selected_diff = DIFFICULTIES.NONE;
+                tm.launchTrack(Constants.SN_INTRO);
+                cpm.init();
+            }
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    IEnumerator waitEntryLevelCinematic(PlayerController iPC)
-    {
-        iPC.Freeze();
-        while(!entryLevelCinematic.cinematicDone)
+        // Update is called once per frame
+        void Update()
         {
-            yield return new WaitForSeconds(0.1f);
+
         }
         iPC.UnFreeze();
         init(iPC);
@@ -110,15 +87,31 @@ public class StartPortal : AbstractCameraPoint
         pc.GetTransform().rotation = Quaternion.identity;
         if (facingPoint != null)
         {
-            pc.GetTransform().LookAt(facingPoint.transform);
+            iPC.Freeze();
+            while (!entryLevelCinematic.cinematicDone)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            iPC.UnFreeze();
+            init();
         }
 
-        if (pc.GetRigidbody())
+        public void relocatePlayer()
         {
-            pc.GetRigidbody().velocity = Vector3.zero;
-            pc.GetRigidbody().angularVelocity = Vector3.zero;
+            PlayerController pc = Access.Player();
+            pc.GetTransform().position = transform.position;
+            pc.GetTransform().rotation = Quaternion.identity;
+            if (facingPoint != null)
+            {
+                pc.GetTransform().LookAt(facingPoint.transform);
+            }
+
+            if (pc.GetRigidbody())
+            {
+                pc.GetRigidbody().velocity = Vector3.zero;
+                pc.GetRigidbody().angularVelocity = Vector3.zero;
+            }
         }
-    }
 
     public void relocatePlayer()
     {
@@ -134,6 +127,6 @@ public class StartPortal : AbstractCameraPoint
             tt.activate_tricks = true; // activate default in hub
             tt.init(UIHandle);
         }
-    }
 
+    }
 }

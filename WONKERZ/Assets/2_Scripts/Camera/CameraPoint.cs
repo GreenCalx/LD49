@@ -1,32 +1,36 @@
 using UnityEngine;
 
-public class CameraPoint : AbstractCameraPoint
+namespace Wonkerz
 {
 
-    // Start is called before the first frame update
-    void Start()
+    public class CameraPoint : AbstractCameraPoint
     {
 
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
+        }
 
-    }
+        // Update is called once per frame
+        void Update()
+        {
 
-    void OnTriggerEnter(Collider iCollider)
-    {
+        }
 
-    }
+        void OnTriggerEnter(Collider iCollider)
+        {
 
-    void OnTriggerStay(Collider iCollider)
-    {
-        Access.CheckPointManager().last_camerapoint = this;
-    }
+        }
 
-    void OnTriggerExit(Collider iCollider)
-    {
+        void OnTriggerStay(Collider iCollider)
+        {
+            Access.CheckPointManager().last_camerapoint = this;
+        }
 
+        void OnTriggerExit(Collider iCollider)
+        {
+
+        }
     }
 }

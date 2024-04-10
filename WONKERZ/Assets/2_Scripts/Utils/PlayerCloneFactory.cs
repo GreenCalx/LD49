@@ -6,151 +6,154 @@ using UnityEngine;
 
 using Schnibble;
 
-public sealed class PlayerCloneFactory
-{
+namespace Wonkerz {
 
-    public IEnumerator SpawnPhysxClone(Transform iParent = null, UnityEvent iCallback = null)
+    public sealed class PlayerCloneFactory
     {
-        GameObject clone = GetPhysxClone();
-        clone.transform.parent = iParent;
-        yield return null; // wait 1 frame for component destruction
-        clone.SetActive(true);
-        if (iCallback!=null)
-            iCallback.Invoke();
-    }
 
-
-    public readonly System.Type[] FILTER_0 = 
-    {   
-        typeof(DeathController),
-        typeof(PlayerController), 
-        typeof(CarController),
-        typeof(TrickTracker),
-        typeof(PowerController),
-        typeof(AudioSource),
-        typeof(AudioListener),
-        typeof(ParticleSystem),
-        typeof(Light),
-        typeof(MotorSoundRenderer),
-        typeof(PlayerCarProcAnimator)
-    };
-
-    private PlayerCloneFactory() {}
-    private static PlayerCloneFactory instance;
-    public static PlayerCloneFactory GetInstance()
-    {
-        if (instance==null)
+        public IEnumerator SpawnPhysxClone(Transform iParent = null, UnityEvent iCallback = null)
         {
-            instance = new PlayerCloneFactory();
+            GameObject clone = GetPhysxClone();
+            clone.transform.parent = iParent;
+            yield return null; // wait 1 frame for component destruction
+            clone.SetActive(true);
+            if (iCallback!=null)
+            iCallback.Invoke();
         }
-        return instance;
-    }
 
-    // ---
 
-    private GameObject GetPhysxClone()
-    {
-        // Player Ref
-        GameObject player = Access.Player().gameObject;
+        public readonly System.Type[] FILTER_0 = 
+            {   
+                typeof(DeathController),
+                typeof(PlayerController), 
+                typeof(CarController),
+                typeof(TrickTracker),
+                typeof(PowerController),
+                typeof(AudioSource),
+                typeof(AudioListener),
+                typeof(ParticleSystem),
+                typeof(Light),
+                typeof(MotorSoundRenderer),
+                typeof(PlayerCarProcAnimator)
+            };
 
-        // Create empty root
-        GameObject clone = new GameObject();
-        // clone.transform.position = player.transform.position;
-        // clone.transform.rotation = player.transform.rotation;
-        // clone.transform.localScale = player.transform.localScale;
-        clone.name = "DeathClone";
-        clone.SetActive(false);
+        private PlayerCloneFactory() {}
+        private static PlayerCloneFactory instance;
+        public static PlayerCloneFactory GetInstance()
+        {
+            if (instance==null)
+            {
+                instance = new PlayerCloneFactory();
+            }
+            return instance;
+        }
+
         // ---
 
-        // Create PlayerClone under root
-        GameObject pClone = GameObject.Instantiate(player, clone.transform);
-        pClone.SetActive(false);
+        private GameObject GetPhysxClone()
+        {
+            // Player Ref
+            GameObject player = Access.Player().gameObject;
 
-        // Recursive clean of clone based on filter
-        // Destroy uneedeed components
-        filter(ref pClone, FILTER_0);
+            // Create empty root
+            GameObject clone = new GameObject();
+            // clone.transform.position = player.transform.position;
+            // clone.transform.rotation = player.transform.rotation;
+            // clone.transform.localScale = player.transform.localScale;
+            clone.name = "DeathClone";
+            clone.SetActive(false);
+            // ---
 
-        // Decorate remaining
-        decorateMeshFilters(ref pClone);
+            // Create PlayerClone under root
+            GameObject pClone = GameObject.Instantiate(player, clone.transform);
+            pClone.SetActive(false);
 
-        // Activate player clone
-        pClone.SetActive(true);
+            // Recursive clean of clone based on filter
+            // Destroy uneedeed components
+            filter(ref pClone, FILTER_0);
+
+            // Decorate remaining
+            decorateMeshFilters(ref pClone);
+
+            // Activate player clone
+            pClone.SetActive(true);
         
-        return clone;
-    }
-
-    private void decorateMeshFilters(ref GameObject iToDecorate)
-    {
-        // Decorate self
-        // Deco constraint : MeshFilter
-        MeshFilter mf = iToDecorate.GetComponent<MeshFilter>();
-        if (mf!=null)
-        {
-            //this.Log("decorate " + iToDecorate.name);
-            // Deco0 : Add Rigidbody
-            Rigidbody rb = iToDecorate.gameObject.GetComponent<Rigidbody>();
-            if (rb==null)
-                 rb = iToDecorate.gameObject.AddComponent<Rigidbody>();
-
-            // Deco1 : Add Collider
-            MeshCollider mc = iToDecorate.gameObject.AddComponent<MeshCollider>();
-            mc.convex    = true;
-
-            // Deco2 : Change Collision Layer
-            iToDecorate.gameObject.layer = LayerMask.NameToLayer("No Player Collision");
+            return clone;
         }
 
-        iToDecorate.gameObject.SetActive(true);
-
-        // Call decorate on children, if exists
-        foreach (Transform child in iToDecorate.transform)
+        private void decorateMeshFilters(ref GameObject iToDecorate)
         {
-            GameObject child_go = child.gameObject;
-            decorateMeshFilters(ref child_go);
-        }
-
-    }
-
-    private void filter(ref GameObject iToFilter, System.Type[] iFilter)
-    {
-        int n_types = iFilter.Length;
-     
-        // Filter self
-        var comps = iToFilter.GetComponents(typeof(Component));
-        foreach( var c in comps)
-        {
-            for ( int i=0; i<n_types ; i++)
+            // Decorate self
+            // Deco constraint : MeshFilter
+            MeshFilter mf = iToDecorate.GetComponent<MeshFilter>();
+            if (mf!=null)
             {
-                Component[] typeComps;
-                typeComps = c.GetComponents(iFilter[i]);
-                for (int j=0; j < typeComps.Length ; j++)
-                { 
-                    // Disabling behaviors to ensure no Awake()
-                    // slips thru on SetActive(true) later on.
-                    try {
-                        Behaviour b = (Behaviour)typeComps[j];
-                        if (!!b)
-                        { 
-                            b.enabled = false; 
-                            //this.Log( "- disabling : " +  b.name); 
-                        }
-                    } catch( InvalidCastException ice ) 
+                //this.Log("decorate " + iToDecorate.name);
+                // Deco0 : Add Rigidbody
+                Rigidbody rb = iToDecorate.gameObject.GetComponent<Rigidbody>();
+                if (rb==null)
+                rb = iToDecorate.gameObject.AddComponent<Rigidbody>();
+
+                // Deco1 : Add Collider
+                MeshCollider mc = iToDecorate.gameObject.AddComponent<MeshCollider>();
+                mc.convex    = true;
+
+                // Deco2 : Change Collision Layer
+                iToDecorate.gameObject.layer = LayerMask.NameToLayer("No Player Collision");
+            }
+
+            iToDecorate.gameObject.SetActive(true);
+
+            // Call decorate on children, if exists
+            foreach (Transform child in iToDecorate.transform)
+            {
+                GameObject child_go = child.gameObject;
+                decorateMeshFilters(ref child_go);
+            }
+
+        }
+
+        private void filter(ref GameObject iToFilter, System.Type[] iFilter)
+        {
+            int n_types = iFilter.Length;
+     
+            // Filter self
+            var comps = iToFilter.GetComponents(typeof(Component));
+            foreach( var c in comps)
+            {
+                for ( int i=0; i<n_types ; i++)
+                {
+                    Component[] typeComps;
+                    typeComps = c.GetComponents(iFilter[i]);
+                    for (int j=0; j < typeComps.Length ; j++)
+                    { 
+                        // Disabling behaviors to ensure no Awake()
+                        // slips thru on SetActive(true) later on.
+                        try {
+                            Behaviour b = (Behaviour)typeComps[j];
+                            if (!!b)
+                            { 
+                                b.enabled = false; 
+                                //this.Log( "- disabling : " +  b.name); 
+                            }
+                        } catch( InvalidCastException ice ) 
                     { /* expected on pure components */}
 
-                    GameObject.Destroy(typeComps[j]); 
+                        GameObject.Destroy(typeComps[j]); 
+                    }
                 }
             }
-        }
         
-        // Call filter on children, if exists
-        foreach (Transform child in iToFilter.transform)
-        {
-            //this.Log("filtering " + child.gameObject.name);
-            GameObject child_go = child.gameObject;
-            filter(ref child_go, iFilter);
-        }
+            // Call filter on children, if exists
+            foreach (Transform child in iToFilter.transform)
+            {
+                //this.Log("filtering " + child.gameObject.name);
+                GameObject child_go = child.gameObject;
+                filter(ref child_go, iFilter);
+            }
 
+
+        }
 
     }
-
 }

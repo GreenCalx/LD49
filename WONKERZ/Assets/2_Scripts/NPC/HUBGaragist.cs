@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+namespace Wonkerz {
 
-public class HUBGaragist : MonoBehaviour
-{
-    public string name = "";
-    public string trackname = "";
-    // Start is called before the first frame update
-    void Start()
+    public class HUBGaragist : MonoBehaviour
     {
-        CollectiblesManager cm = Access.CollectiblesManager();
-        if (cm.hasGaragist(trackname))
+        public string name = "";
+        public string trackname = "";
+        // Start is called before the first frame update
+        void Start()
         {
-            for (int i = 0; i < transform.childCount; i++)
+            CollectiblesManager cm = Access.CollectiblesManager();
+            if (cm.hasGaragist(trackname))
             {
-                transform.GetChild(i).gameObject.SetActive(true);
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    transform.GetChild(i).gameObject.SetActive(true);
+                }
             }
         }
     }

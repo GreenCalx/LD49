@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wonkerz
+{
 public class LandMine : Bomb
 {
     [Header("ProximityMine")]
@@ -55,48 +57,48 @@ public class LandMine : Bomb
                     updateLandMineColor();
                 }
             }
-        }
 
     }
 
-    public void movePoints()
-    {
-        Vector3[] otherVerts = attachedGroundToDeform.originalVertices;
-        Vector3 localColPos = transform.InverseTransformPoint(transform.position);
- 
-        float distance;
-        for (int i = 0; i < otherVerts.Length; i++)
+        public void movePoints()
         {
-            distance = Vector3.Distance(transform.position, attachedGroundToDeform.transform.TransformPoint(otherVerts[i]));
-            if (distance <= explosionRange)
+            Vector3[] otherVerts = attachedGroundToDeform.originalVertices;
+            Vector3 localColPos = transform.InverseTransformPoint(transform.position);
+
+            float distance;
+            for (int i = 0; i < otherVerts.Length; i++)
             {
-                attachedGroundToDeform.StartDisplacement(otherVerts[i]);
+                distance = Vector3.Distance(transform.position, attachedGroundToDeform.transform.TransformPoint(otherVerts[i]));
+                if (distance <= explosionRange)
+                {
+                    attachedGroundToDeform.StartDisplacement(otherVerts[i]);
+                }
             }
+            //attachedGroundToDeform.UpdateMesh(otherVerts);
+
         }
-        //attachedGroundToDeform.UpdateMesh(otherVerts);
 
-    }
-
-    private void updateLandMineColor()
-    {
-        if (triggeredColorRamp==null)
+        private void updateLandMineColor()
+        {
+            if (triggeredColorRamp == null)
             return;
 
-        float width = triggeredColorRamp.width;
-        float time_ratio = Mathf.Clamp(elapsedTimeBeforeExplosion / timeBeforeExplosion, 0f, 1f);
-        
-        Color newcolor = triggeredColorRamp.GetPixel((int)(time_ratio*width),0);
-        MeshRenderer mr = GetComponent<MeshRenderer>();
-        if (!!mr)
-        {
-            mr.material.SetColor("_Color", newcolor);
+            float width = triggeredColorRamp.width;
+            float time_ratio = Mathf.Clamp(elapsedTimeBeforeExplosion / timeBeforeExplosion, 0f, 1f);
+
+            Color newcolor = triggeredColorRamp.GetPixel((int)(time_ratio * width), 0);
+            MeshRenderer mr = GetComponent<MeshRenderer>();
+            if (!!mr)
+            {
+                mr.material.SetColor("_Color", newcolor);
+            }
+
+
+            Vector3 zoneDecalScale = new Vector3(initZoneDecalScale.x * time_ratio, initZoneDecalScale.y * time_ratio, initZoneDecalScale.z * time_ratio);
+            zoneDecal.transform.localScale = zoneDecalScale;
+            zoneDecal.transform.localPosition = Vector3.zero;
+            zoneDecal.SetAnimationTime(1f);
         }
 
-
-        Vector3 zoneDecalScale = new Vector3( initZoneDecalScale.x * time_ratio, initZoneDecalScale.y * time_ratio , initZoneDecalScale.z * time_ratio);
-        zoneDecal.transform.localScale = zoneDecalScale;
-        zoneDecal.transform.localPosition = Vector3.zero;
-        zoneDecal.SetAnimationTime(1f);
     }
-
 }

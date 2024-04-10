@@ -3,32 +3,34 @@ using UnityEngine.SceneManagement;
 using Schnibble;
 using Schnibble.Managers;
 
-public class ExitToTitle : MonoBehaviour, IControllable
-{
-    public bool enabler;
-    // Start is called before the first frame update
-    void Start()
+namespace Wonkerz {
+    public class ExitToTitle : MonoBehaviour, IControllable
     {
-        Access.PlayerInputsManager().player1.Attach(this as IControllable);
-    }
-
-    void OnDestroy()
-    {
-        Access.PlayerInputsManager().player1.Detach(this as IControllable);
-    }
-
-    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
-    {
-        if (enabler)
+        public bool enabler;
+        // Start is called before the first frame update
+        void Start()
         {
-            if ((Entry.Get(PlayerInputs.GetIdx("Cancel")) as GameInputButton).GetState().down)
-            SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+            Access.PlayerInputsManager().player1.Attach(this as IControllable);
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+        void OnDestroy()
+        {
+            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+        }
 
+        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        {
+            if (enabler)
+            {
+                if ((Entry.Get(PlayerInputs.GetIdx("Cancel")) as GameInputButton).GetState().down)
+                SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+            }
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
     }
 }

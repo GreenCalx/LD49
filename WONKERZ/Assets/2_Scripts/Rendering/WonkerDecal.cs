@@ -4,35 +4,39 @@ using UnityEngine;
 using Schnibble;
 using Schnibble.Rendering;
 
-
-public class WonkerDecal : MonoBehaviour
+namespace Wonkerz
 {
-    [Header("# WonkerDecal")]
-    public DecalRenderer decalRenderer;
-    private CameraManager CM;
 
-    void Start()
+
+    public class WonkerDecal : MonoBehaviour
     {
-        CM = Access.CameraManager();
-        if (decalRenderer.cam==null)
+        [Header("# WonkerDecal")]
+        public DecalRenderer decalRenderer;
+        private CameraManager CM;
+
+        void Start()
         {
-            decalRenderer.SetCamera(CM.active_camera?.cam);
-        }
-    }
-
-    public void SetAnimationTime(float t)
-    {
-        decalRenderer.decalMat.SetFloat("_AnimationTime", t);
-    }
-
-    void Update()
-    {
-        // TODO : Subscribe to cam manager to get updated
-        if (decalRenderer.cam!=CM.active_camera.cam)
-        {
-            this.Log("cam change on decal");
-            decalRenderer.SetCamera(CM.active_camera.cam);
+            CM = Access.CameraManager();
+            if (decalRenderer.cam == null)
+            {
+                decalRenderer.SetCamera(CM.active_camera?.cam);
+            }
         }
 
+        public void SetAnimationTime(float t)
+        {
+            decalRenderer.decalMat.SetFloat("_AnimationTime", t);
+        }
+
+        void Update()
+        {
+            // TODO : Subscribe to cam manager to get updated
+            if (decalRenderer.cam != CM.active_camera.cam)
+            {
+                this.Log("cam change on decal");
+                decalRenderer.SetCamera(CM.active_camera.cam);
+            }
+
+        }
     }
 }

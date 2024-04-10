@@ -3,40 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class GameProgressConditional : MonoBehaviour
-{
-    public UniqueEvents.UEVENTS gameProgressEventID;
-
-    [Header("Behaviors on EventID")]
-    public bool destroyOnStart = true;
-    public bool activateOnStart = false;
-
-
-    void Start()
+namespace Wonkerz {
+    public class GameProgressConditional : MonoBehaviour
     {
-        if (activateOnStart)
-        {
-            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
-            {
-                foreach(Transform t in transform)
-                {
-                    t.gameObject.SetActive(true);
-                }
-            }            
-        }
+        public UniqueEvents.UEVENTS gameProgressEventID;
 
-        if (destroyOnStart)
+        [Header("Behaviors on EventID")]
+        public bool destroyOnStart = true;
+        public bool activateOnStart = false;
+
+
+        void Start()
         {
-            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+            if (activateOnStart)
             {
-                foreach(Transform t in transform)
+                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
                 {
-                    Destroy(t.gameObject);
+                    foreach(Transform t in transform)
+                    {
+                        t.gameObject.SetActive(true);
+                    }
+                }            
+            }
+
+            if (destroyOnStart)
+            {
+                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+                {
+                    foreach(Transform t in transform)
+                    {
+                        Destroy(t.gameObject);
+                    }
+                    Destroy(gameObject);
                 }
-                Destroy(gameObject);
             }
         }
+
+
     }
-
-
 }

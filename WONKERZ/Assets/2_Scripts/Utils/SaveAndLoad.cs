@@ -4,165 +4,168 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using Schnibble;
 
-interface ISaveLoad
+namespace Wonkerz
 {
-    object GetData();
-}
 
-
-[System.Serializable]
-public class EntityData
-{
-    public string ResourcesPath;
-    public virtual void OnLoad(GameObject gameObject) { }
-}
-
-
-public static class SaveAndLoad
-{
-    public static string fileName = "";
-
-    [HideInInspector]
-    public static ArrayList datas = new ArrayList();
-
-    private static void updateFileName(ref string iFileName)
+    interface ISaveLoad
     {
-        string path = Access.GameProgressSaveManager().profileDataFilePath;
-        fileName = Path.Combine(path, iFileName);
+        object GetData();
     }
 
-    public static bool save(string iFileName)
+
+    [System.Serializable]
+    public class EntityData
     {
-        updateFileName(ref iFileName);
-
-        if (File.Exists(fileName))
-        { File.Delete(fileName); }
-
-        FileStream fs = new FileStream(fileName, FileMode.Create);
-        BinaryFormatter formatter = new BinaryFormatter();
-
-        ArrayList save_datas = new ArrayList();
-        foreach (object o in datas)
-        {
-            ISaveLoad saveable_o = (ISaveLoad)o;
-            save_datas.Add(saveable_o.GetData());
-        }
-
-        try
-        {
-            formatter.Serialize(fs, save_datas);
-        }
-        catch (System.Runtime.Serialization.SerializationException e)
-        {
-            SchLog.LogError("Failed to serialize : " + e.Message);
-            return false;
-        }
-        finally
-        {
-            fs.Close();
-        }
-
-        save_datas.Clear();
-        save_datas = null;
-        formatter = null;
-        fs = null;
-
-        return true;
+        public string ResourcesPath;
+        public virtual void OnLoad(GameObject gameObject) { }
     }
 
-    public static bool load(string iFileName)
+
+    public static class SaveAndLoad
     {
-        updateFileName(ref iFileName);
+        public static string fileName = "";
 
-        if (!File.Exists(fileName))
-        { return false; }
+        [HideInInspector]
+        public static ArrayList datas = new ArrayList();
 
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
+        private static void updateFileName(ref string iFileName)
         {
+            string path = Access.GameProgressSaveManager().profileDataFilePath;
+            fileName = Path.Combine(path, iFileName);
+        }
+
+        public static bool save(string iFileName)
+        {
+            updateFileName(ref iFileName);
+
+            if (File.Exists(fileName))
+            { File.Delete(fileName); }
+
+            FileStream fs = new FileStream(fileName, FileMode.Create);
             BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList)formatter.Deserialize(fs);
+
+            ArrayList save_datas = new ArrayList();
+            foreach (object o in datas)
+            {
+                ISaveLoad saveable_o = (ISaveLoad)o;
+                save_datas.Add(saveable_o.GetData());
+            }
+
+            try
+            {
+                formatter.Serialize(fs, save_datas);
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to serialize : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            save_datas.Clear();
+            save_datas = null;
             formatter = null;
+            fs = null;
+
+            return true;
         }
-        catch (System.Runtime.Serialization.SerializationException e)
+
+        public static bool load(string iFileName)
         {
-            SchLog.LogError("Failed to deserialize profile : " + e.Message);
-            return false;
+            updateFileName(ref iFileName);
+
+            if (!File.Exists(fileName))
+            { return false; }
+
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                load_datas = (ArrayList)formatter.Deserialize(fs);
+                formatter = null;
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to deserialize profile : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>(ed.ResourcesPath)));
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
         }
-        finally
+
+        // TODO : Make me Generic
+        public static bool loadGarageProfile(string iFileName, UIGarageProfile target)
         {
-            fs.Close();
+            updateFileName(ref iFileName);
+
+            if (!File.Exists(fileName))
+            { return false; }
+
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                load_datas = (ArrayList)formatter.Deserialize(fs);
+                formatter = null;
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to deserialize profile : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(target.gameObject);
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
         }
 
-        datas.Clear();
-        foreach (object o in load_datas)
+        #if false
+        public static bool loadGarageTest(string iFileName, UIGarageTestData target)
         {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(UnityEngine.Object.Instantiate<GameObject>(Resources.Load<GameObject>(ed.ResourcesPath)));
-        }
+            updateFileName(ref iFileName);
 
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
+            if (!File.Exists(fileName))
+            { return false; }
 
-        return true;
-    }
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
 
-    // TODO : Make me Generic
-    public static bool loadGarageProfile(string iFileName, UIGarageProfile target)
-    {
-        updateFileName(ref iFileName);
-
-        if (!File.Exists(fileName))
-        { return false; }
-
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList)formatter.Deserialize(fs);
-            formatter = null;
-        }
-        catch (System.Runtime.Serialization.SerializationException e)
-        {
-            SchLog.LogError("Failed to deserialize profile : " + e.Message);
-            return false;
-        }
-        finally
-        {
-            fs.Close();
-        }
-
-        datas.Clear();
-        foreach (object o in load_datas)
-        {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(target.gameObject);
-        }
-
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
-
-        return true;
-    }
-
-    #if false
-    public static bool loadGarageTest(string iFileName, UIGarageTestData target)
-    {
-        updateFileName(ref iFileName);
-
-        if (!File.Exists(fileName))
-        { return false; }
-
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
+            try
         {
             BinaryFormatter formatter = new BinaryFormatter();
             load_datas = (ArrayList)formatter.Deserialize(fs);
@@ -178,141 +181,142 @@ public static class SaveAndLoad
             fs.Close();
         }
 
-        datas.Clear();
-        foreach (object o in load_datas)
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(target.gameObject);
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
+        }
+        #endif
+
+
+        public static bool loadCollectiblesJar(string iFileName, CollectiblesManager.CollectibleJar target)
         {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(target.gameObject);
+            updateFileName(ref iFileName);
+
+            if (!File.Exists(fileName))
+            { return false; }
+
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                load_datas = (ArrayList)formatter.Deserialize(fs);
+                formatter = null;
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to deserialize jar : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(null);
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
         }
 
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
+        public static bool loadTrackScore(string iFileName, TrackManager target)
+        {
+            updateFileName(ref iFileName);
 
-        return true;
+            if (!File.Exists(fileName))
+            { return false; }
+
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                load_datas = (ArrayList)formatter.Deserialize(fs);
+                formatter = null;
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to deserialize track score : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(null);
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
+        }
+
+        public static bool loadBountyMatrix(string iFileName, BountyArray target)
+        {
+            updateFileName(ref iFileName);
+
+            if (!File.Exists(fileName))
+            { return false; }
+
+            FileStream fs = new FileStream(fileName, FileMode.Open);
+            ArrayList load_datas;
+
+            try
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                load_datas = (ArrayList)formatter.Deserialize(fs);
+                formatter = null;
+            }
+            catch (System.Runtime.Serialization.SerializationException e)
+            {
+                SchLog.LogError("Failed to deserialize bounty matrix : " + e.Message);
+                return false;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+            datas.Clear();
+            foreach (object o in load_datas)
+            {
+                EntityData ed = (EntityData)o;
+                ed.OnLoad(null);
+            }
+
+            load_datas.Clear();
+            load_datas = null;
+            fs = null;
+
+            return true;
+        }
+
+
     }
-    #endif
-
-
-    public static bool loadCollectiblesJar(string iFileName, CollectiblesManager.CollectibleJar target)
-    {
-        updateFileName(ref iFileName);
-
-        if (!File.Exists(fileName))
-        { return false; }
-
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList)formatter.Deserialize(fs);
-            formatter = null;
-        }
-        catch (System.Runtime.Serialization.SerializationException e)
-        {
-            SchLog.LogError("Failed to deserialize jar : " + e.Message);
-            return false;
-        }
-        finally
-        {
-            fs.Close();
-        }
-
-        datas.Clear();
-        foreach (object o in load_datas)
-        {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(null);
-        }
-
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
-
-        return true;
-    }
-
-    public static bool loadTrackScore(string iFileName, TrackManager target)
-    {
-        updateFileName(ref iFileName);
-
-        if (!File.Exists(fileName))
-        { return false; }
-
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList)formatter.Deserialize(fs);
-            formatter = null;
-        }
-        catch (System.Runtime.Serialization.SerializationException e)
-        {
-            SchLog.LogError("Failed to deserialize track score : " + e.Message);
-            return false;
-        }
-        finally
-        {
-            fs.Close();
-        }
-
-        datas.Clear();
-        foreach (object o in load_datas)
-        {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(null);
-        }
-
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
-
-        return true;
-    }
-
-    public static bool loadBountyMatrix(string iFileName, BountyArray target)
-    {
-        updateFileName(ref iFileName);
-
-        if (!File.Exists(fileName))
-        { return false; }
-
-        FileStream fs = new FileStream(fileName, FileMode.Open);
-        ArrayList load_datas;
-
-        try
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            load_datas = (ArrayList)formatter.Deserialize(fs);
-            formatter = null;
-        }
-        catch (System.Runtime.Serialization.SerializationException e)
-        {
-            SchLog.LogError("Failed to deserialize bounty matrix : " + e.Message);
-            return false;
-        }
-        finally
-        {
-            fs.Close();
-        }
-
-        datas.Clear();
-        foreach (object o in load_datas)
-        {
-            EntityData ed = (EntityData)o;
-            ed.OnLoad(null);
-        }
-
-        load_datas.Clear();
-        load_datas = null;
-        fs = null;
-
-        return true;
-    }
-
-
 }

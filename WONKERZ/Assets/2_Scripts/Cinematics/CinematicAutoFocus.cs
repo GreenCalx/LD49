@@ -2,37 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CinematicAutoFocus : MonoBehaviour
+namespace Wonkerz
 {
-    public CameraFocusable camFocus;
-    public bool showFocus = false;
 
-    private bool isOn = false;
-
-    // Start is called before the first frame update
-    public void Launch()
+    public class CinematicAutoFocus : MonoBehaviour
     {
-        PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
+        public CameraFocusable camFocus;
+        public bool showFocus = false;
 
-        camFocus.enableFocusActions = false;
-        cam.SetSecondaryFocus(camFocus, showFocus);
+        private bool isOn = false;
 
-        isOn = true;
-    }
+        // Start is called before the first frame update
+        public void Launch()
+        {
+            PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
 
-    public void Stop()
-    {
-        PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
-        cam.resetFocus();
+            camFocus.enableFocusActions = false;
+            cam.SetSecondaryFocus(camFocus, showFocus);
 
-        camFocus.enableFocusActions = true;
+            isOn = true;
+        }
 
-        isOn = false;
-    }
+        public void Stop()
+        {
+            PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
+            cam.resetFocus();
 
-    void OnDestroy()
-    {
-        if (isOn)
+            camFocus.enableFocusActions = true;
+
+            isOn = false;
+        }
+
+        void OnDestroy()
+        {
+            if (isOn)
             Stop();
+        }
     }
 }

@@ -1,41 +1,45 @@
 using Schnibble;
 
-public class FPSCamera : PlayerCamera
+namespace Wonkerz
 {
-    void Awake()
-    {
-        init();
-    }
 
-    // Start is called before the first frame update
-    void Start()
+    public class FPSCamera : PlayerCamera
     {
-        init();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (playerRef == null)
+        void Awake()
         {
-            this.LogWarn("Bad ref on player in FPSCamera.");
-            playerRef = Access.Player().GetTransform().gameObject;
-        }
-        transform.position = playerRef.transform.position;
-        transform.rotation = playerRef.transform.rotation;
-    }
-
-    public override void init()
-    {
-        camType = CAM_TYPE.FPS;
-
-        if (playerRef == null)
-        {
-            this.LogWarn("Bad ref on player in FPSCamera.");
-            playerRef = Access.Player().GetTransform().gameObject;
+            init();
         }
 
-        transform.position = playerRef.transform.position;
-        transform.rotation = playerRef.transform.rotation;
+        // Start is called before the first frame update
+        void Start()
+        {
+            init();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (playerRef == null)
+            {
+                this.LogWarn("Bad ref on player in FPSCamera.");
+                playerRef = Access.Player().GetTransform().gameObject;
+            }
+            transform.position = playerRef.transform.position;
+            transform.rotation = playerRef.transform.rotation;
+        }
+
+        public override void init()
+        {
+            camType = CAM_TYPE.FPS;
+
+            if (playerRef == null)
+            {
+                this.LogWarn("Bad ref on player in FPSCamera.");
+                playerRef = Access.Player().GetTransform().gameObject;
+            }
+
+            transform.position = playerRef.transform.position;
+            transform.rotation = playerRef.transform.rotation;
+        }
     }
 }

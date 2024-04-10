@@ -1,97 +1,99 @@
-
-public class Trick
+namespace Wonkerz
 {
-    public enum TRICK_TYPE { GROUND = 0, AIR = 1 };
-    public enum TRICK_NATURE
+    public class Trick
     {
-        UNDEFINED = 0,
-        NEUTRAL = 1,
-        FLAT = 2,
-        BASIC = 3,
-        CHAINED = 4,
-        IGNORE = 5
-    };
-    public string name;
-    public int value;
-    public TrickCondition condition;
-    public TrickChainCondition chainCondition;
-
-    public TRICK_TYPE type;
-    public TRICK_NATURE nature;
-
-    public Trick(TRICK_NATURE iNature, string iName, int iValue, TrickCondition iCond)
-    {
-        name = iName;
-        value = iValue;
-        condition = iCond;
-        chainCondition = null;
-        nature = iNature;
-
-        deduceType(iCond);
-    }
-
-    public Trick(string iName, int iValue, TrickChainCondition iCond, TRICK_NATURE iNature = TRICK_NATURE.CHAINED)
-    {
-        name = iName;
-        value = iValue;
-        chainCondition = iCond;
-        condition = null;
-        nature = iNature;
-    }
-
-    private void deduceType(TrickCondition iTC)
-    {
-        if (iTC.wheels != null)
+        public enum TRICK_TYPE { GROUND = 0, AIR = 1 };
+        public enum TRICK_NATURE
         {
-            foreach (bool wheelOnGround in iTC.wheels)
+            UNDEFINED = 0,
+            NEUTRAL = 1,
+            FLAT = 2,
+            BASIC = 3,
+            CHAINED = 4,
+            IGNORE = 5
+        };
+        public string name;
+        public int value;
+        public TrickCondition condition;
+        public TrickChainCondition chainCondition;
+
+        public TRICK_TYPE type;
+        public TRICK_NATURE nature;
+
+        public Trick(TRICK_NATURE iNature, string iName, int iValue, TrickCondition iCond)
+        {
+            name = iName;
+            value = iValue;
+            condition = iCond;
+            chainCondition = null;
+            nature = iNature;
+
+            deduceType(iCond);
+        }
+
+        public Trick(string iName, int iValue, TrickChainCondition iCond, TRICK_NATURE iNature = TRICK_NATURE.CHAINED)
+        {
+            name = iName;
+            value = iValue;
+            chainCondition = iCond;
+            condition = null;
+            nature = iNature;
+        }
+
+        private void deduceType(TrickCondition iTC)
+        {
+            if (iTC.wheels != null)
             {
-                if (wheelOnGround)
+                foreach (bool wheelOnGround in iTC.wheels)
                 {
-                    type = TRICK_TYPE.GROUND;
-                    return;
+                    if (wheelOnGround)
+                    {
+                        type = TRICK_TYPE.GROUND;
+                        return;
+                    }
                 }
             }
+
+            // if not ground, is air.
+            type = TRICK_TYPE.AIR;
+            return;
         }
 
-        // if not ground, is air.
-        type = TRICK_TYPE.AIR;
-        return;
-    }
-
-    public bool check(TrickTracker iTT)
-    {
-        if (type == TRICK_TYPE.GROUND)
+        public bool check(TrickTracker iTT)
         {
-            return condition.compare_wheels(iTT);
+            if (type == TRICK_TYPE.GROUND)
+            {
+                return condition.compare_wheels(iTT);
+            }
+            else if (type == TRICK_TYPE.AIR)
+            {
+                return condition.compare_air(iTT);
+            }
+
+            return false;
         }
-        else if (type == TRICK_TYPE.AIR)
+
+        public void chain(Trick iOther)
         {
-            return condition.compare_air(iTT);
+
         }
 
-        return false;
-    }
+        public bool isNeutral()
+        {
+            return nature == TRICK_NATURE.NEUTRAL;
+        }
+        public bool isBasic()
+        {
+            return nature == TRICK_NATURE.BASIC;
+        }
+        public bool isFlat()
+        {
+            return nature == TRICK_NATURE.FLAT;
+        }
 
-    public void chain(Trick iOther)
-    {
-
-    }
-
-    public bool isNeutral()
-    {
-        return nature == TRICK_NATURE.NEUTRAL;
-    }
-    public bool isBasic()
-    {
-        return nature == TRICK_NATURE.BASIC;
-    }
-    public bool isFlat()
-    {
-        return nature == TRICK_NATURE.FLAT;
-    }
-
-    public bool isChained()
-    {
-        return nature == TRICK_NATURE.CHAINED;
+        public bool isChained()
+        {
+            return nature == TRICK_NATURE.CHAINED;
+        }
     }
 }

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wonkerz {
+
 // Not MVC cause as this is only use for the intro scene, integrating 
 public class IntroTutorialTriggers : MonoBehaviour
 {
@@ -52,7 +54,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollFirstCheckpoint()
     {
         if (firstCheckPointDone)
-            return;
+        return;
 
         if (CPM.last_checkpoint != CPM.race_start)
         {
@@ -64,10 +66,10 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollPlayerRespawned()
     {
         if (panelTutoDone)
-            return;
+        return;
 
         if (!firstCheckPointDone)
-            return;
+        return;
 
         // this.Log("P STATE : " + PC.generalStates.GetState().name);
         // if (PC.generalStates.GetState().name == "Dead")
@@ -81,7 +83,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollPlayerStuck()
     {
         if (getUpTutoDone)
-            return;
+        return;
         
         bool playerIsActive = PC.IsInMenu();
         bool playerIsGrounded = PC.TouchGroundAll();
@@ -91,34 +93,35 @@ public class IntroTutorialTriggers : MonoBehaviour
         
 
         if (!playerIsActive && !playerIsGrounded && playerHasLowSpeed)
-                                            {
-                                                elapsedTimeStuckDetection += Time.deltaTime;
+        {
+            elapsedTimeStuckDetection += Time.deltaTime;
             if (elapsedTimeStuckDetection >= timeThrStuckDetection)
             {
                 SpawnWindow(getUpTutoWindow);
                 getUpTutoDone = true; 
-                                            }
+            }
         } else {
             elapsedTimeStuckDetection = 0f;
         }
-        }
+    }
 
     public void pollFirstNut()
     {
         if (firstNutTutoDone)
-            return;
+        return;
 
         if (CM.getCollectedNuts() > 0)
         {
             SpawnWindow(firstNutTutoWindow);
             firstNutTutoDone = true;
-            }
-            }
+        }
+    }
 
     private void SpawnWindow(UITutorialStopWindow iWindow)
     {
         if (!!tutoWindow_Inst)
-            Destroy(tutoWindow_Inst.gameObject);
+        Destroy(tutoWindow_Inst.gameObject);
         tutoWindow_Inst = Instantiate(iWindow);
     }
+}
 }

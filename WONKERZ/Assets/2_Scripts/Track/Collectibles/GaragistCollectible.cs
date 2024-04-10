@@ -1,10 +1,12 @@
 
-public class GaragistCollectible : AbstractCollectible
-{
-    public string name = "Garager";
-    
-    protected override void OnCollect()
+namespace Wonkerz {
+    public class GaragistCollectible : AbstractCollectible
     {
-        Access.CollectiblesManager().applyCollectEffect(this);
+        public string name = "Garager";
+    
+        protected override void OnCollect()
+        {
+            Access.CollectiblesManager().applyCollectEffect(this);
+        }
     }
 }

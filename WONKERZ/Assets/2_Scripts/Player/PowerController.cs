@@ -3,158 +3,161 @@ using UnityEngine;
 
 using Schnibble;
 using Schnibble.Managers;
-
-public class PowerController : MonoBehaviour
+namespace Wonkerz
 {
-    public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
 
-    [Header("References for powers")]
-    public GameObject turboParticles;
-    public GameObject SpinPowerObject_Ref;
-    [Header("Powers")]
-    public List<ICarPower> powers;
-    public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
-    public ICarPower currentPower;
-    public ICarPower nextPower;
-
-    // Private cache
-    private UIPowerWheel uiPowerWheel;
-
-    void Awake()
+    public class PowerController : MonoBehaviour
     {
-        powers = new List<ICarPower>()
-        {
-            new NeutralCarPower(),
-            new SpinCarPower(SpinPowerObject_Ref),
-            new WaterCarPower(),
-            new PlaneCarPower(),
-            new SpiderCarPower()
-        };
-    }
+        public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        showUI(false);
-        
-        // Load Unlocked powers
-        // unlock everything in the meantime
-        CollectiblesManager CM = Access.CollectiblesManager();
-        foreach (ICarPower cp in powers)
+        [Header("References for powers")]
+        public GameObject turboParticles;
+        public GameObject SpinPowerObject_Ref;
+        [Header("Powers")]
+        public List<ICarPower> powers;
+        public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
+        public ICarPower currentPower;
+        public ICarPower nextPower;
+
+        // Private cache
+        private UIPowerWheel uiPowerWheel;
+
+        void Awake()
         {
-            unlockedPowers.Add(cp, true);
+            powers = new List<ICarPower>()
+            {
+                new NeutralCarPower(),
+                new SpinCarPower(SpinPowerObject_Ref),
+                new WaterCarPower(),
+                new PlaneCarPower(),
+                new SpiderCarPower()
+            };
         }
-        currentPower = powers[0];
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (currentPower.turnOffTriggers())
+        // Start is called before the first frame update
+        void Start()
         {
-            nextPower = powers[0];
-            tryTriggerPower();
+            showUI(false);
+
+            // Load Unlocked powers
+            // unlock everything in the meantime
+            CollectiblesManager CM = Access.CollectiblesManager();
+            foreach (ICarPower cp in powers)
+            {
+                unlockedPowers.Add(cp, true);
+            }
+            currentPower = powers[0];
         }
-        if (currentPower!=null)
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (currentPower.turnOffTriggers())
+            {
+                nextPower = powers[0];
+                tryTriggerPower();
+            }
+            if (currentPower != null)
             refreshPower();
-    }
+        }
 
-    public bool isInNeutralPowerMode()
-    {
-        return (currentPower != powers[0]); // neutral power
-    }
-
-    public void refreshPower()
-    {
-        if (currentPower != null)
-        currentPower.onRefresh();
-    }
-
-    public void tryTriggerPower()
-    {
-        if (nextPower != null)
+        public bool isInNeutralPowerMode()
         {
-            //activate
-            this.Log("Next power :" + nextPower.name);
-            if (currentPower!=null)
+            return (currentPower != powers[0]); // neutral power
+        }
+
+        public void refreshPower()
+        {
+            if (currentPower != null)
+            currentPower.onRefresh();
+        }
+
+        public void tryTriggerPower()
+        {
+            if (nextPower != null)
+            {
+                //activate
+                this.Log("Next power :" + nextPower.name);
+                if (currentPower != null)
                 currentPower.onDisableEffect();
-            currentPower = nextPower;
-            currentPower.applyDirectEffect();
+                currentPower = nextPower;
+                currentPower.applyDirectEffect();
+            }
+            nextPower = null; // reset next power
         }
-        nextPower = null; // reset next power
-    }
 
-    public void setNextPower(int iPowerIndex)
-    {
-        if ((iPowerIndex < 0) || (iPowerIndex >= powers.Count))
-        { nextPower = null; return; }
-
-        ICarPower carpower = powers[iPowerIndex];
-        if (carpower == null)
-        { nextPower = null; return; }
-
-        if (!!unlockedPowers[carpower])
+        public void setNextPower(int iPowerIndex)
         {
-            nextPower = carpower;
+            if ((iPowerIndex < 0) || (iPowerIndex >= powers.Count))
+            { nextPower = null; return; }
+
+            ICarPower carpower = powers[iPowerIndex];
+            if (carpower == null)
+            { nextPower = null; return; }
+
+            if (!!unlockedPowers[carpower])
+            {
+                nextPower = carpower;
+            }
+            else
+            {
+                this.Log("Power is locked : " + carpower.name);
+            }
         }
-        else
-        {
-            this.Log("Power is locked : " + carpower.name);
-        }
-    }
 
-    public void applyPowerEffectInInputs(GameInput[] iEntry, PlayerController iCC)
-    {
-        if (currentPower != null)
+        public void applyPowerEffectInInputs(GameInput[] iEntry, PlayerController iCC)
         {
-            currentPower.applyEffectInInputs(iEntry, iCC);
+            if (currentPower != null)
+            {
+                currentPower.applyEffectInInputs(iEntry, iCC);
+            }
         }
-    }
 
-    public void showUI(bool iToggle)
-    {
-        // if (uiPowerWheel == null)
-        // {
-        //     uiPowerWheel = Access.UIPowerWheel();
-        // }
-        // if (!!uiPowerWheel)
-        // {
-        //     uiPowerWheel.showWheel(iToggle);
-        // }
-        // else
-        // {
-        //     this.LogWarn("Unable to find UIPowerWheel.");
-        // }
-    }
+        public void showUI(bool iToggle)
+        {
+            // if (uiPowerWheel == null)
+            // {
+            //     uiPowerWheel = Access.UIPowerWheel();
+            // }
+            // if (!!uiPowerWheel)
+            // {
+            //     uiPowerWheel.showWheel(iToggle);
+            // }
+            // else
+            // {
+            //     this.LogWarn("Unable to find UIPowerWheel.");
+            // }
+        }
 
-    public void showIndicator(PowerWheelPlacement iPlacement)
-    {
-        if (uiPowerWheel == null)
+        public void showIndicator(PowerWheelPlacement iPlacement)
         {
-            uiPowerWheel = Access.UIPowerWheel();
+            if (uiPowerWheel == null)
+            {
+                uiPowerWheel = Access.UIPowerWheel();
+            }
+            if (!!uiPowerWheel)
+            {
+                uiPowerWheel.showSelector(iPlacement);
+            }
+            else
+            {
+                this.LogWarn("Unable to find UIPowerWheel.");
+            }
         }
-        if (!!uiPowerWheel)
-        {
-            uiPowerWheel.showSelector(iPlacement);
-        }
-        else
-        {
-            this.LogWarn("Unable to find UIPowerWheel.");
-        }
-    }
 
-    public void hideIndicators()
-    {
-        if (uiPowerWheel == null)
-        { uiPowerWheel = Access.UIPowerWheel(); }
+        public void hideIndicators()
+        {
+            if (uiPowerWheel == null)
+            { uiPowerWheel = Access.UIPowerWheel(); }
 
-        if (!!uiPowerWheel)
-        {
-            uiPowerWheel.hideAll();
-        }
-        else
-        {
-            this.LogWarn("Unable to find UIPowerWheel.");
+            if (!!uiPowerWheel)
+            {
+                uiPowerWheel.hideAll();
+            }
+            else
+            {
+                this.LogWarn("Unable to find UIPowerWheel.");
+            }
         }
     }
 }

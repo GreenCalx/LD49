@@ -1,32 +1,34 @@
-
-public class UIGarage : UIGaragePanel
+namespace Wonkerz
 {
-    private GarageEntry garageEntry;
-
-    protected override void Awake()
+    public class UIGarage : UIGaragePanel
     {
-        base.Awake();
-        inputMgr = Access.PlayerInputsManager().player1;
-    }
+        private GarageEntry garageEntry;
 
-    override public void deactivate()
-    {
-        base.deactivate();
-        garageEntry.closeGarage();
-    }
+        protected override void Awake()
+        {
+            base.Awake();
+            inputMgr = Access.PlayerInputsManager().player1;
+        }
 
-    public GarageEntry getGarageEntry()
-    {
-        return garageEntry;
-    }
+        override public void deactivate()
+        {
+            base.deactivate();
+            garageEntry.closeGarage();
+        }
 
-    public void setGarageEntry(GarageEntry iGE)
-    {
-        garageEntry = iGE;
-    }
+        public GarageEntry getGarageEntry()
+        {
+            return garageEntry;
+        }
 
-    public void closeGarage()
-    {
-        garageEntry.closeGarage();
+        public void setGarageEntry(GarageEntry iGE)
+        {
+            garageEntry = iGE;
+        }
+
+        public void closeGarage()
+        {
+            garageEntry.closeGarage();
+        }
     }
 }

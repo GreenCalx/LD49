@@ -1,6 +1,8 @@
 using UnityEngine;
 using Schnibble;
 
+namespace Wonkerz {
+
 public class CheckPoint : AbstractCameraPoint
 {
     [Header("v CheckPoint v")]
@@ -23,7 +25,7 @@ public class CheckPoint : AbstractCameraPoint
     void Start()
     {
         if (checkpoint_name=="")
-            checkpoint_name = gameObject.name;
+        checkpoint_name = gameObject.name;
 
         CPM = Access.CheckPointManager();
     }
@@ -37,18 +39,18 @@ public class CheckPoint : AbstractCameraPoint
     void OnTriggerEnter(Collider iCol)
     {
         if (!activateCPFromColliderTrigger)
-            return;
+        return;
 
         if (triggered)
-            return;
+        return;
 
         if (!Utils.colliderIsPlayer(iCol))
-            return;
+        return;
 
         triggerCheckPoint();
 
         if (!!checkpoint_SFX)
-            checkpoint_SFX.Play();
+        checkpoint_SFX.Play();
     }
 
     public void triggerCheckPoint()
@@ -62,4 +64,5 @@ public class CheckPoint : AbstractCameraPoint
         return respawn_location.gameObject;
     }
 
+}
 }
