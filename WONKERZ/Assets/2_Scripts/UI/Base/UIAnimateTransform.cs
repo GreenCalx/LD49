@@ -1,8 +1,8 @@
 using UnityEngine;
 using static Schnibble.Physics;
 
-namespace Wonkerz
-{
+namespace Wonkerz {
+    
     public class UIAnimateTransform : MonoBehaviour
     {
         public enum Mode { FAIL, SUCCESS };
