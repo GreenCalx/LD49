@@ -179,8 +179,8 @@ namespace Wonkerz
             if (focus == null)
             {
                 player.inputMgr.Attach(this as IControllable);
-                focus = playerRef.transform;
             }
+            focus = playerRef.transform;
             focusPoint = focus.position;
 
             resetView();

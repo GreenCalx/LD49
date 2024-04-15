@@ -103,13 +103,65 @@ namespace Wonkerz {
             cache.invalidate();
         }
 
+        // Generic function to get mgr from manager object.
+        public static T Get<T>() {
+            if (typeof(T) == typeof(PlayerController)      ) return cache.getObject<T>(Constants.GO_PLAYER      , true)  ;
+            if (typeof(T) == typeof(CheckPointManager)     ) return cache.getObject<T>(Constants.GO_CPManager   , false) ;
+            if (typeof(T) == typeof(UIGarageTestManager)   ) return cache.getObject<T>(Constants.GO_TESTMANAGER , false) ;
+            if (typeof(T) == typeof(PhysicsMaterialManager)) return cache.getObject<T>(Constants.GO_PHYSXMATMGR , false) ;
+            if (typeof(T) == typeof(UIGarage)              ) return cache.getObject<T>(Constants.GO_UIGARAGE    , false) ;
+            if (typeof(T) == typeof(SoundManagerLoop)      ) return cache.getObject<T>(Constants.GO_SOUNDMANAGER, false) ;
+            SchLog.LogError("[Access] Trying to get unknown object : maybe you meant to use GetMgr?");
+            return default(T);
+        }
+
+        public static T GetMgr<T>() {
+            return cache.getObject<T>(Constants.GO_MANAGERS, false);
+        }
+
+        public static T GetUI<T>() {
+            return cache.getObject<T>(Constants.GO_PLAYERUI, true);
+        }
+        // end : Generic function to get mgr from manager object.
+
         public static PlayerInputsManager PlayerInputsManager()
         {
             return cache.getObject<PlayerInputsManager>(Constants.GO_MANAGERS, false);
         }
+
         public static CameraManager CameraManager()
         {
             return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);
+        }
+
+        public static SceneLoader SceneLoader()
+        {
+            return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
+        }
+
+        public static CollectiblesManager CollectiblesManager()
+        {
+            return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
+        }
+
+        public static PlayerCosmeticsManager PlayerCosmeticsManager()
+        {
+            return cache.getObject<PlayerCosmeticsManager>(Constants.GO_MANAGERS, false);
+        }
+
+        public static TrackManager TrackManager()
+        {
+            return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);
+        }
+
+        public static BountyArray BountyArray()
+        {
+            return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
+        }
+
+        public static GameProgressSaveManager GameProgressSaveManager()
+        {
+            return cache.getObject<GameProgressSaveManager>(Constants.GO_MANAGERS, false);
         }
 
         public static UIGarageTestManager TestManager()
@@ -137,35 +189,11 @@ namespace Wonkerz {
             return cache.getObject<SoundManagerLoop>(Constants.GO_SOUNDMANAGER, false);
         }
 
-        public static SceneLoader SceneLoader()
+        public static PhysicsMaterialManager PhysicsMaterialManager()
         {
-            return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
+            return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
         }
 
-
-        public static CollectiblesManager CollectiblesManager()
-        {
-            return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static PlayerCosmeticsManager PlayerCosmeticsManager()
-        {
-            return cache.getObject<PlayerCosmeticsManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static TrackManager TrackManager()
-        {
-            return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static BountyArray BountyArray()
-        {
-            return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
-        }
-        public static GameProgressSaveManager GameProgressSaveManager()
-        {
-            return cache.getObject<GameProgressSaveManager>(Constants.GO_MANAGERS, false);
-        }
 
         public static UISpeedAndLifePool UISpeedAndLifePool()
         {
@@ -204,10 +232,6 @@ namespace Wonkerz {
             return cache.getObject<UITrackEvent>(Constants.GO_PLAYERUI, true);
         }
 
-        public static PhysicsMaterialManager PhysicsMaterialManager()
-        {
-            return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
-        }
 
     }
 }

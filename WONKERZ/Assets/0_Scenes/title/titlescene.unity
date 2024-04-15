@@ -570,7 +570,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: ------ MANAGERS ------
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7221775441846003746, guid: f9b3ae4c960f9f941b70f5c58ed43a06, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f9b3ae4c960f9f941b70f5c58ed43a06, type: 3}
 --- !u!1 &705507993
 GameObject:
@@ -892,10 +893,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 2705171154291085488, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2705171154291085491, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -940,23 +937,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2787543525527478033, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
-      propertyPath: car_new
-      value: 
-      objectReference: {fileID: 1625565461}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
---- !u!114 &1625565461 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 457171785612267761, guid: fbb923cd699e1aa49bd45af97de40685, type: 3}
-  m_PrefabInstance: {fileID: 1625565460}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1953887952 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5027294951062732548, guid: 7166e3a38a06cdd40a3d1de1437763c4, type: 3}
@@ -1697,26 +1679,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-      propertyPath: collider
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-      propertyPath: suspension.maxLength
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-      propertyPath: suspension.minLength
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-      propertyPath: suspension.stiffness
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1914865993, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
-      propertyPath: suspension.restLength
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 8298073304116635024, guid: 7914edff16485794d84943cebe8a2b80, type: 3}
       propertyPath: m_Name
       value: Player_

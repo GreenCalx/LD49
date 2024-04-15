@@ -20,6 +20,47 @@ namespace Wonkerz
         }
     }
 
+    public class BoatState : PlayerState, IControllable
+    {
+        public BoatState(PlayerController player) : base(player, "boat")
+        {
+        }
+
+        public override void OnEnter(FSMBase fsm)
+        {
+            var player = (fsm as PlayerFSM).GetPlayer();
+            player.ActivateMode(player.boat.gameObject, player.boat.rb);
+        }
+        public override void OnExit(FSMBase fsm)
+        {
+            var player = (fsm as PlayerFSM).GetPlayer();
+            player.DeactivateMode(player.boat.gameObject);
+        }
+
+        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        {
+            var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
+            if (airplaneMode != null)
+            {
+                if (airplaneMode.GetState().down)
+                {
+                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+                }
+            }
+
+            var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
+            if (boatMode != null)
+            {
+                if (boatMode.GetState().down)
+                {
+                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                }
+            }
+
+            player.boat.ProcessInputs(currentMgr, Entry);
+        }
+    }
+
     public class AirplaneState : PlayerState, IControllable
     {
         private class GeneralAirAction : GroundState.GeneralGroundAction { }
@@ -32,12 +73,12 @@ namespace Wonkerz
         public override void OnEnter(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateAirplane();
+            player.ActivateMode(player.plane.gameObject, player.plane.plane.rb);
         }
         public override void OnExit(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
-            player.DeactivateAirplane();
+            player.DeactivateMode(player.plane.gameObject);
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
@@ -48,6 +89,15 @@ namespace Wonkerz
                 if (airplaneMode.GetState().down)
                 {
                     player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                }
+            }
+
+            var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
+            if (boatMode != null)
+            {
+                if (boatMode.GetState().down)
+                {
+                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
                 }
             }
 
@@ -63,6 +113,9 @@ namespace Wonkerz
                 player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
                 player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
             }
+
+
+            player.plane.ProcessInputs(currentMgr, Entry);
         }
     }
 
@@ -147,7 +200,7 @@ namespace Wonkerz
                 #if false
                 if (player.car_old)
                 {
-                    var playerCar = player.car_old;
+                    var playerCar = player.car_old
                     // Speed effect on camera
                     // update camera FOV/DIST if a PlayerCamera
                     CameraManager CamMgr = Access.CameraManager();
@@ -192,17 +245,42 @@ namespace Wonkerz
         public override void OnEnter(FSMBase fsm)
         {
             base.OnEnter(fsm);
-            (fsm as PlayerFSM).GetPlayer().ActivateCar();
+            var player = (fsm as PlayerFSM).GetPlayer();
+            player.ActivateMode(player.car.gameObject, player.car.car.chassis.rb.GetPhysXBody());
         }
 
         public override void OnExit(FSMBase fsm)
         {
             base.OnExit(fsm);
-            (fsm as PlayerFSM).GetPlayer().DeactivateCar();
+            (fsm as PlayerFSM).GetPlayer().DeactivateMode(player.car.gameObject);
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
         {
+            // paraglider
+            if (!player.IsInMenu())
+            {
+                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
+                if (airplaneMode != null)
+                {
+                    if (airplaneMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+                    }
+                }
+
+                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
+                if (boatMode != null)
+                {
+                    if (boatMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
+                    }
+                }
+
+                player.car.ProcessInputs(currentMgr, Entry);
+            }
+
             #if false
             if (player.car_old)
             {
@@ -306,18 +384,6 @@ namespace Wonkerz
                     }
                 }
 
-                // paraglider
-                if (!player.IsInMenu())
-                {
-                    var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-                    if (airplaneMode != null)
-                    {
-                        if (airplaneMode.GetState().down)
-                        {
-                            player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
-                        }
-                    }
-                }
             }
             #endif
         }
@@ -361,14 +427,14 @@ namespace Wonkerz
             states[(int)States.Init] = new FSMState("Init");
             states[(int)States.Car] = new GroundState(player);
             states[(int)States.Plane] = new AirplaneState(player);
+            states[(int)States.Boat] = new BoatState(player);
 
             var initState = states[(int)States.Init];
             var carState = states[(int)States.Car];
-            var aitplaneState = states[(int)States.Plane];
+            var airplaneState = states[(int)States.Plane];
+            var boatState = states[(int)States.Plane];
 
             globalTransitions.Add(new FSMNullTransition(initState));
-
-            //initState.transitions.Add(new GroundTransition(carState));
 
             ForceState(initState);
         }
@@ -543,14 +609,11 @@ namespace Wonkerz
         //private GameObject carPrefab;
         //private GameObject carInstance;
 
+        [Header("States")]
         public SchCarController car;
-        //public CarController car_old;
+        public SchBoatController boat;
+        public SchPlaneController plane;
         public Accumulator turn;
-
-        //public GameObject boatPrefab;
-        private GameObject boatInstance;
-        //public GameObject planePrefab;
-        private GameObject planeInstance;
 
         public AudioSource audioSource;
         public AudioClip damageSound;
@@ -901,99 +964,29 @@ namespace Wonkerz
             Access.CameraManager().launchDeathCam();
         }
 
-        public void ActivateCar()
-        {
-            car.gameObject.SetActive(true);
-            inputMgr.Attach(car as IControllable);
-            current.rb = car.car.chassis.rb.GetPhysXBody();
+        public void ActivateMode(GameObject go, Rigidbody rb) {
+            go.SetActive(true);
+
+            if (current.rb)
+            {
+                rb.transform.position = current.rb.transform.position;
+                rb.transform.rotation = current.rb.transform.rotation;
+                rb.velocity = current.rb.velocity;
+                rb.angularVelocity = current.rb.angularVelocity;
+                rb.isKinematic = current.rb.isKinematic;
+            }
+
+            current.rb = rb;
+
             Access.CameraManager().OnTargetChange(GetTransform());
-
-            #if false
-            if (car_new)
-            {
-                carInstance.SetActive(true);
-                inputMgr.Attach(car_new as IControllable);
-                currentRB = car_new.rb;
-                Access.CameraManager().OnTargetChange(GetTransform());
-            }
-            if (car_old)
-            {
-
-                carInstance.SetActive(true);
-                inputMgr.Attach(car_old as IControllable);
-
-                foreach (var axle in car_old.axles)
-                {
-                    if (axle.right != null)
-                    {
-                        var go = axle.right.AsGameObject();
-                        if (go) go.SetActive(true);
-                    }
-
-                    if (axle.left != null)
-                    {
-                        var go = axle.left.AsGameObject();
-                        if (go) go.SetActive(true);
-                    }
-                }
-                currentRB = car_old.rb;
-                Access.CameraManager().OnTargetChange(GetTransform());
-            }
-            #endif
         }
 
-        public void DeactivateCar()
-        {
-            car.gameObject.SetActive(false);
-            inputMgr.Detach(car as IControllable);
-            current.rb = null;
+        public void DeactivateMode(GameObject go) {
+            go.SetActive(false);
+            // IMPORTANT: do not set to null as the position/rotation needs to be copied to
+            // init the next rb.
+            //current.rb = null;
             Access.CameraManager().OnTargetChange(GetTransform());
-
-            #if false
-            if (car_new)
-            {
-                carInstance.SetActive(false);
-                inputMgr.Detach(car_new as IControllable);
-                currentRB = null;
-                Access.CameraManager().OnTargetChange(GetTransform());
-            }
-
-            if (car_old)
-            {
-                carInstance.SetActive(false);
-                inputMgr.Detach(car_old as IControllable);
-                // enable object that might not be part of us, aka the wheel colliders
-                foreach (var axle in car_old.axles)
-                {
-                    if (axle.right != null)
-                    {
-                        var go = axle.right.AsGameObject();
-                        if (go) go.SetActive(false);
-                    }
-
-                    if (axle.left != null)
-                    {
-                        var go = axle.left.AsGameObject();
-                        if (go) go.SetActive(false);
-                    }
-                }
-
-                currentRB = null;
-                Access.CameraManager().OnTargetChange(GetTransform());
-            }
-            #endif
-        }
-
-        public void ActivateAirplane()
-        {
-            planeInstance.SetActive(true);
-            current.rb = planeInstance.GetComponent<Rigidbody>();
-        }
-
-        public void DeactivateAirplane()
-        {
-            planeInstance.SetActive(false);
-            current.rb = null;
         }
 
         public bool IsInMenu() { return isInMenu; }
@@ -1093,6 +1086,7 @@ namespace Wonkerz
                 }
             }
             #endif
+
 
             // Specific states control
             var generalInputs = (generalStates.GetState() as IControllable);

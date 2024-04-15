@@ -23,7 +23,7 @@ namespace Schnibble {
         public float maxTorque = 200.0f;
         // end cleanup
 
-        void IControllable.ProcessInputs(InputManager mgr, GameController inputs) {
+        public void ProcessInputs(InputManager mgr, GameController inputs) {
             // set car input values.
             var accelInput = inputs.Get((int)PlayerInputs.InputCode.Accelerator) as GameInputAxis;
             if (accelInput != null) car.engine.throttle = accelInput.GetState().valueSmooth;

@@ -7,15 +7,9 @@ using Schnibble.Managers;
 namespace Schnibble {
     public class SchBoatController : MonoBehaviour, Managers.IControllable
     {
-        public SchBoatMotor motor;
-        public WonkPlayerInputManager inputMgr;
-        void Start() {
-            inputMgr.player1.Attach(this);
-        }
+        public Rigidbody rb;
 
-        void Destroy() {
-            inputMgr.player1.Detach(this);
-        }
+        public SchBoatMotor motor;
 
         public void ProcessInputs(Managers.InputManager currentManager, Managers.GameController inputs) {
             // set car input values.
