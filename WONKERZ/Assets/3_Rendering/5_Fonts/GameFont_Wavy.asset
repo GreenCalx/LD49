@@ -55,8 +55,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bangers Atlas Material
-  m_Shader: {fileID: 4800000, guid: f71b868d0caacb149b0251b66971f631, type: 3}
-  m_ValidKeywords: []
+  m_Shader: {fileID: 4800000, guid: 6b0d0f61aa81d634fba65589bfdfb407, type: 3}
+  m_ValidKeywords:
+  - GLOW_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -76,7 +77,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 51abe7732b92e1342aba29089358544f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -91,6 +92,8 @@ Material:
     m_Floats:
     - _Ambient: 0.5
     - _Amplitude: 1
+    - _AmplitudeX: 0
+    - _AmplitudeY: 0
     - _Bevel: 0.5
     - _BevelClamp: 0
     - _BevelOffset: 0
@@ -101,28 +104,36 @@ Material:
     - _ColorMask: 15
     - _CullMode: 0
     - _Diffuse: 0.5
-    - _FaceDilate: 0
-    - _FaceUVSpeedX: 0
-    - _FaceUVSpeedY: 0
+    - _FaceAmplitudeX: 0.02
+    - _FaceAmplitudeY: 0.02
+    - _FaceDilate: 1
+    - _FaceFrequencyX: 10
+    - _FaceFrequencyY: 10
+    - _FaceUVSpeedX: -1
+    - _FaceUVSpeedY: 0.5
+    - _FaceWaveSpeedX: 20
+    - _FaceWaveSpeedY: 20
+    - _FrequencyX: 0
+    - _FrequencyY: 0
     - _Glossiness: 0.5
     - _GlowInner: 0.05
     - _GlowOffset: 0
-    - _GlowOuter: 0.05
-    - _GlowPower: 0.75
+    - _GlowOuter: 0.753
+    - _GlowPower: 0.502
     - _GradientScale: 10
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
     - _Metallic: 0
-    - _OutlineSoftness: 0
+    - _OutlineSoftness: 1
     - _OutlineUVSpeedX: 0
     - _OutlineUVSpeedY: 0
     - _OutlineWidth: 0.31
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 0.9
-    - _ScaleRatioB: 0.73125
-    - _ScaleRatioC: 0.73125
+    - _ScaleRatioA: 0.36036035
+    - _ScaleRatioB: 0
+    - _ScaleRatioC: 0
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -142,16 +153,18 @@ Material:
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
     - _VertexOffsetY: 0
+    - _WaveSpeedX: 0
+    - _WaveSpeedY: 0
     - _Wavelength: 50
     - _WeightBold: 0.75
     - _WeightNormal: 0
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _Color: {r: 0.36124954, g: 0.45180163, b: 0.7735849, a: 1}
-    - _EmissionColor: {r: 0.2838149, g: 0, b: 1, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
+    - _FaceColor: {r: 3.584684, g: 0.5702906, b: 7.780393, a: 1}
+    - _GlowColor: {r: 4.3890452, g: 4.988236, b: 0, a: 1}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
