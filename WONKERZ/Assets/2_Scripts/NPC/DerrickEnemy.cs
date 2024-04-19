@@ -61,6 +61,7 @@ public class DerrickEnemy : WkzEnemy
             idle_timer += Time.deltaTime;
             return;
         }
+        idle_timer = 0f;
 
         // Try to pair at least 1 derrick in priority if solo
         if (pairedDerricks.Count == 0)
