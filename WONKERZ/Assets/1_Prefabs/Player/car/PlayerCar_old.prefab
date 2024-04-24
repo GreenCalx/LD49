@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &174221843
 Transform:
   m_ObjectHideFlags: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  sus: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  susDef: {fileID: 11400000, guid: 5806ce3ed0973d94883f59256c36d2de, type: 2}
   frictionMultiplier: 0
   axle: {fileID: 0}
   suspension:
@@ -190,8 +190,8 @@ MonoBehaviour:
     minLength: 0.35
     stiffness: 0.43
     damping: 0.03
-    locked: 0
     renderer: {fileID: 0}
+    debugColor: {r: 0, g: 0, b: 0, a: 0}
   car: {fileID: 6486285002600036653}
   body:
     rid: -2
@@ -208,32 +208,25 @@ MonoBehaviour:
   inertia:
     value: 0
   contactImpulse: {x: 0, y: 0, z: 0}
-  schcollider:
+  schCollider:
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
+    scale: {x: 1, y: 1, z: 1}
+    parent: {fileID: 0}
+    centerOfMass: {x: 0, y: 0, z: 0}
+    mass:
+      value: 0
+    density:
+      value: 0
+    halfHeight: 1
+    radius: 1
+    wheelCollider: {fileID: 1914865993}
     castColliders:
       min: {fileID: 1264655806}
       minRB: {fileID: 1264655805}
-      max: {fileID: 174221845}
-      maxRB: {fileID: 174221844}
       maxCastDistanceOffset: 0
       colliderInst: {fileID: 0}
-    suspension:
-      bodyA:
-        rid: -2
-      bodyB:
-        rid: -2
-      bodyA_anchor: {x: 0, y: 0, z: 0}
-      bodyB_anchor: {x: 0, y: 0, z: 0}
-      restLength: 0
-      maxLength: 0
-      minLength: 0
-      stiffness: 0
-      damping: 0
-      locked: 0
-      renderer: {fileID: 0}
-    radius: 0
-    width: 0
     filterCollidersFromCollisions: []
-    wheelCollider: {fileID: 0}
   references:
     version: 2
     RefIds:
@@ -754,7 +747,7 @@ GameObject:
   - component: {fileID: 6805822982274583837}
   - component: {fileID: 8189520037205332052}
   m_Layer: 8
-  m_Name: PlayerCar2
+  m_Name: PlayerCar_old
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -865,7 +858,7 @@ MonoBehaviour:
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
   steeringDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
+    def: {fileID: 11400000, guid: 2ce8d0fc8cd2374468475aa06229ea8f, type: 2}
   brakeDifferential:
     currentValue: 0
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
@@ -899,13 +892,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb:
+    position: {x: 0, y: 0, z: 0}
+    rotation: {x: 0, y: 0, z: 0, w: 0}
+    scale: {x: 0, y: 0, z: 0}
+    parent: {fileID: 0}
     rb: {fileID: 6486285002600036649}
   width:
-    value: 2
+    value: 6
   height:
     value: 2
   length:
-    value: 4
+    value: 8
   localCenterOfMass: {x: 0, y: 0, z: 0}
   overrideMass: 1
   mass:
@@ -1148,7 +1145,7 @@ MonoBehaviour:
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
   steeringDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
+    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
 --- !u!114 &6805822982274583837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1177,7 +1174,7 @@ MonoBehaviour:
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
   steeringDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
+    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
 --- !u!114 &8189520037205332052
 MonoBehaviour:
   m_ObjectHideFlags: 0
