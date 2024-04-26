@@ -7,6 +7,8 @@ using Schnibble.AI;
 public class SubmarineEnemy : WkzEnemy
 {
     [Header("Submarine")]
+    public float speedInAggro = 60f;
+    public float speedOufOfAggro = 10f;
     public float min_dist = 50f;
     public float max_dist = 150f;
     public float timeBetweenAction = 1f;
@@ -27,6 +29,7 @@ public class SubmarineEnemy : WkzEnemy
         ai_init();
         idle_timer = 0f;
         extraSearch_timer = 0f;
+        agent.speed = speedOufOfAggro;
     }
 
     // Update is called once per frame
@@ -39,6 +42,7 @@ public class SubmarineEnemy : WkzEnemy
     {
         Debug.Log("Submarine : On Aggro");
         extraSearch_timer = 0f;
+        agent.speed = speedInAggro;
 
         // Launch Player filature
 
@@ -121,7 +125,16 @@ public class SubmarineEnemy : WkzEnemy
             currStrategy = SchAIStrategies.AGENT_STRAT.NONE;
             agent.SetDestination(lastKnownTargetPosition);
         }
+        agent.speed = speedOufOfAggro;
+    }
 
+    protected override void NotInAggro()
+    {
+        Vector3 nextPos = GetNextPositionFromCoordinator();
+        if (!agent.SetDestination(nextPos))
+        {  // Destination can be above navmesh ?
+            Debug.LogWarning("Failed to find path");
+        }
     }
 
     protected override void PreLaunchAction()
