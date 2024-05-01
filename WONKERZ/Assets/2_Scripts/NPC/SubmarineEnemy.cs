@@ -4,6 +4,8 @@ using UnityEngine;
 
 using Schnibble.AI;
 
+namespace Wonkerz {
+
 public class SubmarineEnemy : WkzEnemy
 {
     [Header("Submarine")]
@@ -158,4 +160,5 @@ public class SubmarineEnemy : WkzEnemy
         Destroy(gameObject);
     }
 
+}
 }
