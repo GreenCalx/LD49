@@ -115,7 +115,7 @@ namespace Wonkerz
                     HashSet<string> collected;
                     jar.TryGetValue(scene_name, out collected);
                     if (collected.Count <= 0)
-                    return;
+                        return;
                     collected.Remove(iAC.gameObject.name);
                 }
 
@@ -126,7 +126,7 @@ namespace Wonkerz
                     HashSet<string> collected;
                     jar.TryGetValue(scene_name, out collected);
                     if (collected.Count <= 0)
-                    return;
+                        return;
                     collected.Remove(iGameObjectName);
                 }
 
@@ -135,7 +135,7 @@ namespace Wonkerz
                     HashSet<string> collected;
                     jar.TryGetValue(iSceneName, out collected);
                     if (collected.Count <= 0)
-                    return false;
+                        return false;
                     return collected.Contains(iAC.gameObject.name);
                 }
 
@@ -177,9 +177,9 @@ namespace Wonkerz
             public UniqueJar<CageKeyCollectible> CageKeyjar;
             public UniqueJar<GaragistCollectible> Garagistjar;
 
-        // Infinites
-        public int collectedNuts;
-        public int collectedGoldenTickets;
+            // Infinites
+            public int collectedNuts;
+            public int collectedGoldenTickets;
 
             // serializable data
             public JarData jarData;
@@ -189,19 +189,19 @@ namespace Wonkerz
 
             }
 
-        public void init()
-        {
-            collectedNuts = 0;
-            collectedGoldenTickets = 0;
-            WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
-            CageKeyjar = new UniqueJar<CageKeyCollectible>();
-            Garagistjar = new UniqueJar<GaragistCollectible>();
-        }
+            public void init()
+            {
+                collectedNuts = 0;
+                collectedGoldenTickets = 0;
+                WONKERZjar = new UniqueJar<CollectibleWONKERZ>();
+                CageKeyjar = new UniqueJar<CageKeyCollectible>();
+                Garagistjar = new UniqueJar<GaragistCollectible>();
+            }
 
             object ISaveLoad.GetData()
             {
                 if (jarData == null)
-                jarData = new JarData();
+                    jarData = new JarData();
                 jarData.Garagistjar = Garagistjar;
 
                 return jarData;
@@ -230,10 +230,10 @@ namespace Wonkerz
                 {
                     collectedNuts++;
                 }
-            }
-            if (iAC is GoldenTicketCollectible)
-            {
-                collectedGoldenTickets++;
+                if (iAC is GoldenTicketCollectible)
+                {
+                    collectedGoldenTickets++;
+                }
             }
         }
 
@@ -279,11 +279,11 @@ namespace Wonkerz
             // currentTurbo = turboValueAtStart;
         }
 
-    public void resetInfCollectibles()
-    {
-        jar.collectedNuts = 0;
-        jar.collectedGoldenTickets = 0;
-    }
+        public void resetInfCollectibles()
+        {
+            jar.collectedNuts = 0;
+            jar.collectedGoldenTickets = 0;
+        }
 
         public void loadJars()
         {
@@ -314,123 +314,123 @@ namespace Wonkerz
             return true;
         }
 
-    public int getCollectedTickets()
-    {
-        return jar.collectedGoldenTickets;
-    }
-
-    public int getCollectedNuts()
-    {
-        return jar.collectedNuts;
-    }
-
-        public void loseNuts(int remove_n)
+        public int getCollectedTickets()
         {
-            var clamp = jar.collectedNuts > 0;
-
-            jar.collectedNuts -= remove_n;
-
-            if (clamp)
-            jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
-
-            Access.UISpeedAndLifePool().updateLifePool();
+            return jar.collectedGoldenTickets;
         }
 
-        public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
-        {
-            return iCollectibleHandle.GetComponentsInChildren<T>(true).Length;
-        }
-
-        public void changeCollectMod(COLLECT_MOD iCollectMod)
-        {
-            if (iCollectMod != collectMod)
-            {
-                // break combo
-                collectModCombo = 0;
-                collectMod = iCollectMod;
-
-                // update collectibles skin
-                foreach (AbstractCollectible ac in allCollectiblesInCurrStage)
-                {
-                    MeshRenderer mr = ac.gameObject.GetComponent<MeshRenderer>();
-                    if (iCollectMod == COLLECT_MOD.HELL)
-                    mr.material = hellModeMat;
-                    else
-                    mr.material = heavenModeMat;
-                }
-
-                // update player skin
-
+        public int getCollectedNuts()
+           {
+               return jar.collectedNuts;
             }
-            collectModCombo++;
-        }
 
-        public void applyCollectEffect(AbstractCollectible AC)
-        {
-            if (AC is CollectibleNut)
+            public void loseNuts(int remove_n)
             {
-                if (collectMod == COLLECT_MOD.HELL)
+                var clamp = jar.collectedNuts > 0;
+
+                jar.collectedNuts -= remove_n;
+
+                if (clamp)
+                jar.collectedNuts = Mathf.Max(0, jar.collectedNuts);
+
+                Access.UISpeedAndLifePool().updateLifePool();
+            }
+
+            public int getCollectableCollectible<T>(GameObject iCollectibleHandle) where T : AbstractCollectible
+            {
+                return iCollectibleHandle.GetComponentsInChildren<T>(true).Length;
+            }
+
+            public void changeCollectMod(COLLECT_MOD iCollectMod)
+            {
+                if (iCollectMod != collectMod)
                 {
-                    // currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
-                    // Access.UITurboAndSaves().updateTurboBar(currentTurbo);
+                    // break combo
+                    collectModCombo = 0;
+                    collectMod = iCollectMod;
+
+                    // update collectibles skin
+                    foreach (AbstractCollectible ac in allCollectiblesInCurrStage)
+                    {
+                        MeshRenderer mr = ac.gameObject.GetComponent<MeshRenderer>();
+                        if (iCollectMod == COLLECT_MOD.HELL)
+                        mr.material = hellModeMat;
+                        else
+                        mr.material = heavenModeMat;
+                    }
+
+                    // update player skin
+
+                }
+                collectModCombo++;
+            }
+
+            public void applyCollectEffect(AbstractCollectible AC)
+            {
+                if (AC is CollectibleNut)
+                {
+                    if (collectMod == COLLECT_MOD.HELL)
+                    {
+                        // currentTurbo = (currentTurbo >= 1f) ? 1f : currentTurbo + nutTurboConvertValue;
+                        // Access.UITurboAndSaves().updateTurboBar(currentTurbo);
+                    }
+                    else
+                    {
+                        jar.collect(AC);
+                        Access.UISpeedAndLifePool().updateLifePool();
+                    }
+                    allCollectiblesInCurrStage.Remove(AC);
                 }
                 else
                 {
                     jar.collect(AC);
-                    Access.UISpeedAndLifePool().updateLifePool();
                 }
-                allCollectiblesInCurrStage.Remove(AC);
+
             }
-            else
+
+            public void subscribe(AbstractCollectible AC)
             {
-                jar.collect(AC);
+                allCollectiblesInCurrStage.RemoveAll(item => item == null);
+                if (!allCollectiblesInCurrStage.Exists(x => x.gameObject.name == AC.gameObject.name))
+                allCollectiblesInCurrStage.Add(AC);
             }
 
-        }
-
-        public void subscribe(AbstractCollectible AC)
-        {
-            allCollectiblesInCurrStage.RemoveAll(item => item == null);
-            if (!allCollectiblesInCurrStage.Exists(x => x.gameObject.name == AC.gameObject.name))
-            allCollectiblesInCurrStage.Add(AC);
-        }
-
-        public bool hasWONKERZLetter(CollectibleWONKERZ.LETTERS iLetter, string iScene = "")
-        {
-            string sceneName = (iScene == "") ? SceneManager.GetActiveScene().name : iScene;
-
-            string letterAsStr = Enum.GetName(typeof(CollectibleWONKERZ.LETTERS), iLetter);
-
-            HashSet<string> collected = jar.WONKERZjar.GetValues(sceneName);
-            if ((collected == null) || (collected.Count <= 0))
-            return false;
-
-            foreach (string e in jar.WONKERZjar.GetValues(sceneName))
+            public bool hasWONKERZLetter(CollectibleWONKERZ.LETTERS iLetter, string iScene = "")
             {
-                if (letterAsStr == e)
-                return true;
+                string sceneName = (iScene == "") ? SceneManager.GetActiveScene().name : iScene;
+
+                string letterAsStr = Enum.GetName(typeof(CollectibleWONKERZ.LETTERS), iLetter);
+
+                HashSet<string> collected = jar.WONKERZjar.GetValues(sceneName);
+                if ((collected == null) || (collected.Count <= 0))
+                return false;
+
+                foreach (string e in jar.WONKERZjar.GetValues(sceneName))
+                {
+                    if (letterAsStr == e)
+                    return true;
+                }
+
+                return false;
             }
 
-            return false;
+            public bool hasCageKey(string iSceneName)
+            {
+                HashSet<string> collected = jar.CageKeyjar.GetValues(iSceneName);
+                if ((collected == null) || (collected.Count <= 0))
+                return false;
+
+                return (collected.Count >= 1); // only one can be collected in a scene
+            }
+
+            public bool hasGaragist(string iSceneName)
+            {
+                HashSet<string> collected = jar.Garagistjar.GetValues(iSceneName);
+                if ((collected == null) || (collected.Count <= 0))
+                return false;
+
+                return (collected.Count >= 1); // only one can be collected in a scene
+            }
+
         }
-
-        public bool hasCageKey(string iSceneName)
-        {
-            HashSet<string> collected = jar.CageKeyjar.GetValues(iSceneName);
-            if ((collected == null) || (collected.Count <= 0))
-            return false;
-
-            return (collected.Count >= 1); // only one can be collected in a scene
-        }
-
-        public bool hasGaragist(string iSceneName)
-        {
-            HashSet<string> collected = jar.Garagistjar.GetValues(iSceneName);
-            if ((collected == null) || (collected.Count <= 0))
-            return false;
-
-            return (collected.Count >= 1); // only one can be collected in a scene
-        }
-
-    }
 }

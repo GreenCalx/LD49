@@ -5,73 +5,78 @@ using UnityEngine.Events;
 using System.Linq;
 using Schnibble;
 
-public class GoldenTicketGate : MonoBehaviour
+
+namespace Wonkerz
 {
-    public Transform self_gateRef;
-    public Transform gateOpened;
-    public Transform gateClosed;
-
-    public int goldenTicketNeeded;
-    public PlayerDetector playerDetector;
-
-    public float gateOpenTime = 1f;
-    [Header("Internals")]
-    public bool isOpened = false;
-    
-    void Start()
+    public class GoldenTicketGate : MonoBehaviour
     {
-        if (!isOpened)
+        public Transform self_gateRef;
+        public Transform gateOpened;
+        public Transform gateClosed;
+
+        public int goldenTicketNeeded;
+        public PlayerDetector playerDetector;
+
+        public float gateOpenTime = 1f;
+        [Header("Internals")]
+        public bool isOpened = false;
+
+        void Start()
         {
-            StartCoroutine(closeGate(0f));
-        } else
-        {
-            StartCoroutine(openGate(0f));
+            if (!isOpened)
+            {
+                StartCoroutine(closeGate(0f));
+            }
+            else
+            {
+                StartCoroutine(openGate(0f));
+            }
         }
-    }
 
-    public void tryOpenGate()
-    {
-        if (isOpened)
-            return;
-        
-        if (Access.CollectiblesManager().getCollectedTickets() >= goldenTicketNeeded)
+        public void tryOpenGate()
         {
-            StartCoroutine(openGate(gateOpenTime));
-            isOpened = true;
+            if (isOpened)
+                return;
+
+            if (Access.CollectiblesManager().getCollectedTickets() >= goldenTicketNeeded)
+            {
+                StartCoroutine(openGate(gateOpenTime));
+                isOpened = true;
+            }
+
         }
-        
-    }
 
-    IEnumerator openGate(float iOpenTime)
-    {
-        float elapsedTime = 0f;
-        Vector3 dest = gateOpened.position;
-        while (elapsedTime < iOpenTime)
+        IEnumerator openGate(float iOpenTime)
         {
-            self_gateRef.position = Vector3.Lerp(self_gateRef.position, dest, (elapsedTime / iOpenTime));
-            elapsedTime += Time.deltaTime;
+            float elapsedTime = 0f;
+            Vector3 dest = gateOpened.position;
+            while (elapsedTime < iOpenTime)
+            {
+                self_gateRef.position = Vector3.Lerp(self_gateRef.position, dest, (elapsedTime / iOpenTime));
+                elapsedTime += Time.deltaTime;
 
-            // Yield here
+                // Yield here
+                yield return null;
+            }
+            self_gateRef.position = dest;
             yield return null;
-        } 
-        self_gateRef.position = dest;
-        yield return null;
-    }
+        }
 
-    IEnumerator closeGate(float iCloseTime)
-    {
-        float elapsedTime = 0f;
-        Vector3 dest = gateClosed.position;
-        while (elapsedTime < iCloseTime)
+        IEnumerator closeGate(float iCloseTime)
         {
-            self_gateRef.position = Vector3.Lerp(self_gateRef.position, dest, (elapsedTime / iCloseTime));
-            elapsedTime += Time.deltaTime;
+            float elapsedTime = 0f;
+            Vector3 dest = gateClosed.position;
+            while (elapsedTime < iCloseTime)
+            {
+                self_gateRef.position = Vector3.Lerp(self_gateRef.position, dest, (elapsedTime / iCloseTime));
+                elapsedTime += Time.deltaTime;
 
-            // Yield here
+                // Yield here
+                yield return null;
+            }
+            self_gateRef.position = dest;
             yield return null;
-        } 
-        self_gateRef.position = dest;
-        yield return null;
-    }
+        }
 
+    }
 }
