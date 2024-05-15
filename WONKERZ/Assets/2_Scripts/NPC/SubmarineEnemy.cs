@@ -149,6 +149,10 @@ public class SubmarineEnemy : WkzEnemy
     public override void kill()
     {
         Debug.Log("KILL");
+        // if multiple submarines are on player it will overwrite for one
+        // uypdate round, probably not noticeable IG
+        trapOctoPump.setTargetInSight(false);
+
         ai_kill();
 
         Destroy(gameObject);

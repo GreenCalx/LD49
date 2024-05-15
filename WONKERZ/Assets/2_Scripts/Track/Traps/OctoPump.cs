@@ -31,15 +31,15 @@ public class OctoPump : MonoBehaviour
             }
             if (projectile_Inst!=null)
             {
-                HomingMortar asMortar = projectile_Inst.GetComponent<HomingMortar>();
-                asMortar.positionTarget = lastKnownTargetPosition;
                 return;
             }
 
             projectile_Inst = canon.Fire();
+            HomingMortar asMortar = projectile_Inst.GetComponent<HomingMortar>();
+            asMortar.positionTarget = lastKnownTargetPosition;
+
             foreach(ParticleSystem PS in PS_CanonSmoke)
             { PS.Play(); }
-
 
             cooldown = 0f;
         } else {
@@ -47,11 +47,11 @@ public class OctoPump : MonoBehaviour
              {
                 cooldown -= Time.deltaTime;
                 cooldown = Mathf.Clamp(cooldown, 0f, CanonCooldown);
-
              }
         }
     }
-    public void Fire()
+
+    public void updateEyeNeedles()
     {
 
     }

@@ -26,37 +26,39 @@ public class StartPortal : AbstractCameraPoint
     // Start is called before the first frame updatezd
     void Start()
     {
-        init();
+        PlayerController pc = Access.Player();
+
+        init(pc);
 
         if (enable_tricks)
             activateTricks();
 
         if (forceSinglePlayer)
         {
-            Access.Player().inputMgr = Access.PlayerInputsManager().player1;
+            pc.inputMgr = Access.PlayerInputsManager().player1;
         }
 
         if (!bypassCinematic)
         {
             if (entryLevelCinematic!=null)
             {
-                relocatePlayer();
+                relocatePlayer(pc);
                 entryLevelCinematic.StartCinematic();
-                StartCoroutine(waitEntryLevelCinematic(Access.Player()));
+                StartCoroutine(waitEntryLevelCinematic(pc));
             }
         }
 
     }
 
-    void init()
+    void init(PlayerController pc)
     {
-        Access.Player().Freeze();
+        pc.Freeze();
 
-        relocatePlayer();
+        relocatePlayer(pc);
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
             Access.CameraManager()?.changeCamera(camera_type, false);
 
-        var states = Access.Player().vehicleStates;
+        var states = pc.vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
         
         if (deleteAfterSpawn)
@@ -69,7 +71,7 @@ public class StartPortal : AbstractCameraPoint
             initTutorial();
         }
 
-        Access.Player().UnFreeze();
+        pc.UnFreeze();
     }
 
     void initTutorial()
@@ -98,12 +100,11 @@ public class StartPortal : AbstractCameraPoint
             yield return new WaitForSeconds(0.1f);
         }
         iPC.UnFreeze();
-        init();
+        init(iPC);
     }
 
-    public void relocatePlayer()
+    public void relocatePlayer(PlayerController pc)
     {
-        PlayerController pc = Access.Player();
         pc.transform.position = transform.position;
         pc.transform.rotation = Quaternion.identity;
         if (facingPoint != null)
@@ -112,6 +113,11 @@ public class StartPortal : AbstractCameraPoint
         }
         pc.rb.velocity = Vector3.zero;
         pc.rb.angularVelocity = Vector3.zero;
+    }
+
+    public void relocatePlayer()
+    {
+        relocatePlayer(Access.Player());
     }
 
     // needed in intro as there is no startline, also for the hub, maybe?

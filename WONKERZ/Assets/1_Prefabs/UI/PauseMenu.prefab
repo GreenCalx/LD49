@@ -2372,11 +2372,35 @@ MonoBehaviour:
   Parent: {fileID: 0}
   onSelect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5480134562950895303}
+        m_TargetAssemblyTypeName: Schnibble.UI.UIPanelTabbed, SchUX
+        m_MethodName: select
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   selected_color: {r: 1, g: 1, b: 1, a: 1}
   onDeselect:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5480134562950895303}
+        m_TargetAssemblyTypeName: Schnibble.UI.UISelectableElement, SchUX
+        m_MethodName: deselect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   deselected_color: {r: 0.3679245, g: 0.3679245, b: 0.3679245, a: 1}
   onActivate:
     m_PersistentCalls:
@@ -2482,6 +2506,7 @@ MonoBehaviour:
   inheritsInputMgr: 0
   selector_latch: 0.2
   cancelDeactivatePanel: 1
+  inputMgrIsUnique: 1
   tabs:
   - {fileID: 6347815450125897671}
   - {fileID: 1083657764902074107}
@@ -3386,6 +3411,7 @@ MonoBehaviour:
   inheritsInputMgr: 1
   selector_latch: 0.2
   cancelDeactivatePanel: 1
+  inputMgrIsUnique: 1
   tabs:
   - {fileID: 1511917490750509316}
   - {fileID: 2861933061510234146}

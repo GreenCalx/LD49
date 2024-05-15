@@ -1,12 +1,19 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HomingMortar : MonoBehaviour
+public class HomingMortar : Bomb
 {
+    [Header("Refs")]
+    public Transform self_BallMesh;
+    public LineRenderer self_AtkWarnLine;
+    public Transform self_DistLabelCanvas;
+    public TMPro.TextMeshProUGUI self_DistLabel;
     [Header("Tweaks")]
+    public float initHeightFromTarget = 1000f;
+    public float startDownImpulse = 1f;
     public float timeBeforeFallingOnTarget = 2f;
-    public GameObject explosionEffect;
     [Header("Internals")]
     public bool isFalling = false;
     public Vector3 positionTarget;
@@ -18,8 +25,8 @@ public class HomingMortar : MonoBehaviour
     {
         elapsedTime = 0f;
         isFalling = false;
-        rb = GetComponent<Rigidbody>();
-        sc = GetComponent<SphereCollider>();
+        rb = self_BallMesh.GetComponent<Rigidbody>();
+        sc = self_BallMesh.GetComponent<SphereCollider>();
         sc.enabled = false;
     }
 
@@ -31,30 +38,45 @@ public class HomingMortar : MonoBehaviour
             if (elapsedTime < timeBeforeFallingOnTarget)
             {
                 elapsedTime += Time.deltaTime;
+                //self_BallMesh.position = new Vector3(positionTarget.x, positionTarget.y + initHeightFromTarget, positionTarget.z);
                 return;
             }
+
+            // let it fall !
+
             rb.velocity = Vector3.zero;
             sc.enabled = true;
+
+            self_BallMesh.position = new Vector3(positionTarget.x, positionTarget.y + initHeightFromTarget, positionTarget.z);
+            rb.AddForce(Vector3.up * startDownImpulse * -1, ForceMode.Impulse);
+
             isFalling = true;
         }
-        transform.position = new Vector3(positionTarget.x, transform.position.y, positionTarget.z);
+
+        UpdateAtkWarnLine();
+        
     }
 
-    void OnCollisionEnter(Collision iCol)
+    public void UpdateAtkWarnLine()
     {
-        explode();
+        if (self_AtkWarnLine==null)
+            return;
+
+        self_AtkWarnLine.SetPosition(0, self_BallMesh.position);
+        self_AtkWarnLine.SetPosition(1, positionTarget);
+
+        if (self_DistLabel==null)
+            return;
+
+        float dist = Vector3.Distance(self_BallMesh.position, positionTarget);
+        float vel = rb.velocity.magnitude;
+
+        float time = MathF.Round( (dist / vel), 1);
+
+        self_DistLabel.text = time.ToString() + "s";
+        self_DistLabelCanvas.transform.position = positionTarget;
+
+
     }
 
-    public void explode()
-    {
-        // GFX
-        if (!!explosionEffect)
-        {
-            GameObject explosion = Instantiate(explosionEffect, transform.position, Quaternion.identity);
-            explosion.transform.localScale = transform.localScale * 1.2f;
-            explosion.GetComponent<ExplosionEffect>().runEffect();
-        }
-
-        Destroy(gameObject);
-    }
 }

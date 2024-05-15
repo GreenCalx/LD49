@@ -63,21 +63,21 @@ public class UIDifficultyChoice : UIPanelTabbed
         switch (chosen_difficulty)
         {
             case DIFFICULTIES.EASY:
-                string str = (Constants.EASY_N_PANELS < 99) ? Constants.EASY_N_PANELS.ToString() : "inf";
+                string str = (Constants.EASY_N_PANELS < 99) ? Constants.EASY_N_PANELS.ToString() : "infinite";
                 panelHintTxt.text = str;
-                cpHintTxt.text = "YES";
+                cpHintTxt.text = "available";
                 break;
             case DIFFICULTIES.MEDIUM:
                 panelHintTxt.text = Constants.MEDIUM_N_PANELS.ToString();
-                cpHintTxt.text = "YES";
+                cpHintTxt.text = "available";
                 break;
             case DIFFICULTIES.HARD:
                 panelHintTxt.text = Constants.HARD_N_PANELS.ToString();
-                cpHintTxt.text = "YES";
+                cpHintTxt.text = "available";
                 break;
             case DIFFICULTIES.IRONMAN:
                 panelHintTxt.text = Constants.IRONMAN_N_PANELS.ToString();
-                cpHintTxt.text = "NO";
+                cpHintTxt.text = "none";
                 break;
             default:
                 break;

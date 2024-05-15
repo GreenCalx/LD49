@@ -70,6 +70,9 @@ public class StartLine : MonoBehaviour
         Scene currentScene = SceneManager.GetActiveScene();
         Access.TrackManager().launchTrack(currentScene.name);
 
+        var states =Access.Player().vehicleStates;
+        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+
         if (enable_tricks)
             activateTricks();
 
