@@ -38,6 +38,7 @@ public struct Constants
     public const string SN_WATERWORLD_TRACK = "WaterWorldTrack";
     public const string SN_SKYCASTLE_TRACK = "SkyCastleTrack";
     public const string SN_JUNKYARD_TRACK = "JunkyardTrack";
+    public const string SN_ONLINE = "OnlineGameRoom";
     public static readonly string[] SN_TRACKS = { SN_DESERT_TOWER, SN_GROTTO_TRACK, SN_WATERWORLD_TRACK, SN_SKYCASTLE_TRACK, SN_JUNKYARD_TRACK};
 
 
@@ -54,6 +55,8 @@ public struct Constants
     public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
     public const string GO_PLAYERUI = "PlayerUI";
     public const string GO_PHYSXMATMGR = "PhysicsMaterialManager";
+    public const string GO_OFFGAMEMGR = "OfflineGameManager";
+    public const string GO_ONGAMEMGR = "OnlineGameManager";
 
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";

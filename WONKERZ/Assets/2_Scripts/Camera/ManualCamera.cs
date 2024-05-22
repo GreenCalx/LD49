@@ -70,6 +70,8 @@ public class ManualCamera : PlayerCamera, IControllable
         updateSecondaryFocus();
         if (focus!=null)
             DrawRay(focus.position, focus.forward*10, Color.blue);
+        else
+            init();
     }
 
     void OnDestroy()
@@ -157,9 +159,13 @@ public class ManualCamera : PlayerCamera, IControllable
     {
         if (focus == null)
         {
-            Access.Player().inputMgr.Attach(this as IControllable);
-            playerRef = Utils.getPlayerRef();
-            focus = playerRef.transform;
+            PlayerController pc = Access.Player();
+            if (pc==null)
+                return;
+            playerRef = pc.gameObject;
+            //pc.inputMgr.Attach(this as IControllable);
+            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            focus = Access.Player().transform;
         }
         focusPoint = focus.position;
 

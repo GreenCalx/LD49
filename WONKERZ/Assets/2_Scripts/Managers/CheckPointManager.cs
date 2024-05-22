@@ -53,7 +53,7 @@ public class CheckPointManager : MonoBehaviour, IControllable
 
     void Start()
     {
-        init();
+        //init();
     }
 
     public void init()
@@ -63,7 +63,6 @@ public class CheckPointManager : MonoBehaviour, IControllable
             this.LogWarn("NO checkpoints in CP manager. Should be auto. No CPs at all or Init order of CPs versus CPM ?");
             findCheckpoints();
         }
-
 
         player = Access.Player();
         uiPlayer = Access.UISpeedAndLifePool();

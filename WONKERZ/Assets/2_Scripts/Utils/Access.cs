@@ -15,6 +15,7 @@ public class Access
         private GameObject GO_UIGARAGE;
         private GameObject GO_UIPLAYER;
         private GameObject GO_PHYSXMATMGR;
+        private GameObject GO_OFFGAMEMGR;
         /* IF WE WANT TO ECO GetComponent<> call..
         public InputManager         IM;
         public ResolutionManager    RM;
@@ -69,7 +70,11 @@ public class Access
             } else if (iHolder == Constants.GO_PHYSXMATMGR)
             {
                 handler = checkCacheObject(iHolder, ref GO_PHYSXMATMGR);
+            } else if ( iHolder == Constants.GO_OFFGAMEMGR)
+            {
+                handler = checkCacheObject(iHolder, ref GO_OFFGAMEMGR);
             }
+
             else
             {
                 this.LogWarn("Trying to access : " + iHolder + " as holding object, but is absent from cache.");
@@ -91,6 +96,7 @@ public class Access
             GO_SOUNDMANAGER = null;
             GO_UIPLAYER = null;
             GO_PHYSXMATMGR = null;
+            GO_OFFGAMEMGR = null;
         }
     }
 
@@ -99,6 +105,11 @@ public class Access
     public static void invalidate()
     {
         cache.invalidate();
+    }
+
+    public static GameSettings GameSettings()
+    {
+        return cache.getObject<GameSettings>(Constants.GO_MANAGERS, false);
     }
 
     public static PlayerInputsManager PlayerInputsManager()
@@ -122,6 +133,11 @@ public class Access
 
     public static PlayerController Player()
     {
+        // GameSettings GS = Access.GameSettings();
+        // if (GS.IsOnline)
+        // {
+        //     return cache.getObject<PlayerController>(GS.OnlinePlayerAlias, true);
+        // }
         return cache.getObject<PlayerController>(Constants.GO_PLAYER, true);
     }
 
@@ -205,6 +221,11 @@ public class Access
     public static PhysicsMaterialManager PhysicsMaterialManager()
     {
         return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
+    }
+
+    public static OfflineGameManager OfflineGameManager()
+    {
+        return cache.getObject<OfflineGameManager>(Constants.GO_OFFGAMEMGR, false);
     }
 
 }

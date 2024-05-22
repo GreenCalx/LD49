@@ -60,6 +60,7 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchDemo()
     {
-        Access.SceneLoader().loadScene(Constants.SN_DESERT_TOWER);
+        Destroy(Access.Player().gameObject);
+        Access.SceneLoader().loadScene("OfflineRoom");
     }
 }

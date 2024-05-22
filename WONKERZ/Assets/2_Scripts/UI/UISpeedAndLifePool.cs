@@ -27,7 +27,6 @@ public class UISpeedAndLifePool : MonoBehaviour
     private bool nutAnimMutex;
     void Start()
     {
-        player = Access.Player();
         CM = Access.CollectiblesManager();
 
         updateLastCPTriggered("x");
@@ -40,14 +39,29 @@ public class UISpeedAndLifePool : MonoBehaviour
         updateLifePool();
     }
 
+    public void LinkToPlayer(PlayerController iPC)
+    {
+        player = iPC;
+
+        updateSpeedCounter();
+        updateLifePool();
+    }
+
     void Update()
     {
+        if (player==null)
+        { return;}
+
         updateSpeedCounter();
         updateLifePool();
     }
 
     public void updateSpeedCounter()
     {
+        if (player==null)
+        {
+            return;
+        }
         var PlayerVelocity = player.rb.velocity.magnitude;
         CarController cc = player.car;
         float max_speed = cc.maxTorque;

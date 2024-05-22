@@ -11,9 +11,20 @@ public class GameProgressConditional : MonoBehaviour
     public bool destroyOnStart = true;
     public bool activateOnStart = false;
 
+    public bool enabledIfOnline = false;
+
 
     void Start()
     {
+        if (Access.GameSettings().IsOnline)
+        {
+            foreach(Transform t in transform)
+            {
+                t.gameObject.SetActive(enabledIfOnline);
+            }
+            return;
+        }
+
         if (activateOnStart)
         {
             if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))

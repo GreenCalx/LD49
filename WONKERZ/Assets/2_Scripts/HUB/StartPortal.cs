@@ -8,6 +8,7 @@ using System.Collections.Generic;
 // > ACTIVATES TRICKS AUTO
 public class StartPortal : AbstractCameraPoint
 {
+    public PlayerController pc;
     [Header("Behaviour")]
     public bool forceSinglePlayer = false;
     public bool enable_tricks = false;
@@ -26,7 +27,14 @@ public class StartPortal : AbstractCameraPoint
     // Start is called before the first frame updatezd
     void Start()
     {
-        PlayerController pc = Access.Player();
+        reStart();
+    }
+
+    public void reStart()
+    {
+        LinkToPlayer();
+        if (pc==null)
+            return;
 
         init(pc);
 
@@ -48,6 +56,12 @@ public class StartPortal : AbstractCameraPoint
             }
         }
 
+        Access.CheckPointManager().init();
+    }
+
+    void LinkToPlayer()
+    {
+        pc = Access.Player();
     }
 
     void init(PlayerController pc)
@@ -89,7 +103,10 @@ public class StartPortal : AbstractCameraPoint
     // Update is called once per frame
     void Update()
     {
-
+        if (pc==null)
+        {
+            reStart();
+        }
     }
 
     IEnumerator waitEntryLevelCinematic(PlayerController iPC)

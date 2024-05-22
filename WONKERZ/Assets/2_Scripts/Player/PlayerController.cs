@@ -569,7 +569,8 @@ public class PlayerController : MonoBehaviour, IControllable
 
     void OnDestroy()
     {
-        inputMgr.Detach(this);
+        if (!!inputMgr)
+            inputMgr.Detach(this);
 
         var sceneLoader = Access.SceneLoader();
         if (sceneLoader) {

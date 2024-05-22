@@ -27,12 +27,28 @@ public class CheckListEntry : MonoBehaviour, IControllable
     void Start()
     {
         playerInCheckList = false;
-        Access.Player().inputMgr.Attach(this as IControllable);
+        //Access.Player().inputMgr.Attach(this as IControllable);
     }
 
     void OnDestroy()
     {
         Access.Player()?.inputMgr.Detach(this as IControllable);
+    }
+
+    void OnTriggerEnter(Collider iCollider)
+    {
+        if (Utils.colliderIsPlayer(iCollider))
+        {
+            Access.Player().inputMgr.Attach(this as IControllable);
+        }
+    }
+
+    void OnTriggerExit(Collider iCollider)
+    {
+        if (Utils.colliderIsPlayer(iCollider))
+        {
+            Access.Player().inputMgr.Detach(this as IControllable);
+        }        
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
