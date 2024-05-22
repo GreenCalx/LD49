@@ -95,24 +95,8 @@ namespace Wonkerz
             iPC.UnFreeze();
             init();
         }
-
-        public void relocatePlayer()
-        {
-            PlayerController pc = Access.Player();
-            pc.GetTransform().position = transform.position;
-            pc.GetTransform().rotation = Quaternion.identity;
-            if (facingPoint != null)
-            {
-                pc.GetTransform().LookAt(facingPoint.transform);
-            }
-
-            if (pc.GetRigidbody())
-            {
-                pc.GetRigidbody().velocity = Vector3.zero;
-                pc.GetRigidbody().angularVelocity = Vector3.zero;
-            }
-        }
-
+    }
+    
     public void relocatePlayer()
     {
         relocatePlayer(Access.Player());

@@ -31,7 +31,7 @@ namespace Wonkerz
         void Update()
         {
             // TODO : Subscribe to cam manager to get updated
-            if (decalRenderer.cam != CM.active_camera.cam)
+            if (CM != null && decalRenderer.cam != CM.active_camera.cam)
             {
                 this.Log("cam change on decal");
                 decalRenderer.SetCamera(CM.active_camera.cam);

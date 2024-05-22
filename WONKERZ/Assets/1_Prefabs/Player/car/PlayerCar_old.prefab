@@ -109,7 +109,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 62ad5886cec7d044faf96ab7766d5790, type: 2}
+  m_Mesh: {fileID: 4300000, guid: 22c83831e93701d46872f52a85eb733d, type: 2}
 --- !u!54 &1264655805
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
-  susDef: {fileID: 11400000, guid: 5806ce3ed0973d94883f59256c36d2de, type: 2}
+  susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
   frictionMultiplier: 0
   axle: {fileID: 0}
   suspension:
@@ -190,19 +190,23 @@ MonoBehaviour:
     minLength: 0.35
     stiffness: 0.43
     damping: 0.03
+    mode: 0
+    warmStarting: 0
     renderer: {fileID: 0}
     debugColor: {r: 0, g: 0, b: 0, a: 0}
   car: {fileID: 6486285002600036653}
   body:
     rid: -2
-  virtual_body:
+  col:
     rid: -2
-  renderer: {fileID: 0}
+  renderer: {fileID: 7198812512147510374}
   mat: {fileID: 0}
   debugSettings: {fileID: 11400000, guid: baf2cfba135c0c04589d05f68acb4fda, type: 2}
   debug_renderer: {fileID: 7198812512147510374}
   grounded: 0
   omega:
+    value: 0
+  steerAngle:
     value: 0
   slip: 0
   inertia:
@@ -3080,6 +3084,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5593257399178741604, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4300000, guid: 22c83831e93701d46872f52a85eb733d, type: 2}
     - target: {fileID: 5593257399178741605, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -3124,7 +3132,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5593257399178741607, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
 --- !u!4 &7151558485642442539 stripped
 Transform:
