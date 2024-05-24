@@ -75,7 +75,7 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         // track is on !
-        gameTime = 0f;
+        gameTime = gameDuration;
         gameLaunched = true;
     }
 
@@ -88,9 +88,9 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator GameLoop()
     {
-        while (gameTime < gameDuration)
+        while (gameTime > 0)
         {
-            gameTime += Time.deltaTime;
+            gameTime -= Time.deltaTime;
             yield return null;
         }
 

@@ -193,7 +193,10 @@ public class Access
 
     public static UISecondaryFocus UISecondaryFocus()
     {
-        return cache.getObject<UISecondaryFocus>(Constants.GO_PLAYERUI, true);
+        if (GameSettings().IsOnline)
+            return cache.getObject<UISecondaryFocus>(Constants.GO_UIONPLAYER, true);
+        else
+            return cache.getObject<UISecondaryFocus>(Constants.GO_PLAYERUI, true);
     }
 
     public static UIBountyUnlocked UIBountyUnlocked()

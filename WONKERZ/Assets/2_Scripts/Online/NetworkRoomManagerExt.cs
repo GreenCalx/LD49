@@ -65,8 +65,6 @@ using Mirror;
             return true;
         }
 
-
-
         // public override GameObject OnRoomServerCreateGamePlayer(NetworkConnectionToClient conn, GameObject roomPlayer)
         // {
 

@@ -15,6 +15,10 @@ public class OnlinePlayerController : NetworkBehaviour
     public PlayerController self_PlayerController;
     public Transform self_carMeshHandle;
     public Transform self_weightMeshHandle;
+    public GameObject prefabCameraFocusable;
+
+    [Header("Internals")]
+    public Transform cameraFocusable;
 
     public override void OnStartServer()
     {
@@ -38,6 +42,10 @@ public class OnlinePlayerController : NetworkBehaviour
             // make car visible
             self_carMeshHandle.gameObject.SetActive(true);
             self_weightMeshHandle.gameObject.SetActive(true);
+
+            // add a camera focusable
+            cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
+
         }
     }
 
@@ -47,6 +55,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             gameObject.name = Constants.GO_PLAYER;
             Access.OfflineGameManager().localPlayer = this;
+            Access.GameSettings().IsOnline = true;
 
             if (self_PlayerController==null)
                 self_PlayerController = GetComponent<PlayerController>();
