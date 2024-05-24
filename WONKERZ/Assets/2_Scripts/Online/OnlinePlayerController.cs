@@ -9,6 +9,7 @@ public class OnlinePlayerController : NetworkBehaviour
     [Header("OnlinePlayerController")]
     public string onlinePlayerName;
     public NetworkConnectionToClient connectionToClient;
+    public OnlineCollectibleBag bag;
 
     [Header("Mand Refs")]
     public PlayerController self_PlayerController;
@@ -49,6 +50,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
             if (self_PlayerController==null)
                 self_PlayerController = GetComponent<PlayerController>();
+
             StartCoroutine(initCo());
         } 
     }
@@ -76,11 +78,11 @@ public class OnlinePlayerController : NetworkBehaviour
         //  var states = self_PlayerController.vehicleStates;
         //  states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
 
-        while(Access.UISpeedAndLifePool()==null)
+        while(Access.UIPlayerOnline()==null)
         {
             yield return null;
         }
-        Access.UISpeedAndLifePool().LinkToPlayer(self_PlayerController);
+        Access.UIPlayerOnline().LinkToPlayer(this);
 
         
         while(Access.CameraManager()==null)

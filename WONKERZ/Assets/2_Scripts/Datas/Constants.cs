@@ -54,6 +54,7 @@ public struct Constants
     public const string GO_UIGARAGE = "UIGarage";
     public const string GO_TESTMANAGER = "GARAGEUI_CARTEST";
     public const string GO_PLAYERUI = "PlayerUI";
+    public const string GO_UIONPLAYER = "OnlinePlayerUI";
     public const string GO_PHYSXMATMGR = "PhysicsMaterialManager";
     public const string GO_OFFGAMEMGR = "OfflineGameManager";
     public const string GO_ONGAMEMGR = "OnlineGameManager";

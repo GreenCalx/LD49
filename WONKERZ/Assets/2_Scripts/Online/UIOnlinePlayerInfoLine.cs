@@ -24,6 +24,7 @@ public class UIOnlinePlayerInfoLine : MonoBehaviour
     public void Refresh(OnlinePlayerController iPlayer)
     {
         playerName.text = iPlayer.onlinePlayerName;
+        playerNuts.text = iPlayer.bag.nuts.ToString();
 
     }
 }

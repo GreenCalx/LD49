@@ -16,6 +16,7 @@ public class Access
         private GameObject GO_UIPLAYER;
         private GameObject GO_PHYSXMATMGR;
         private GameObject GO_OFFGAMEMGR;
+        private GameObject GO_UIONPLAYER;
         /* IF WE WANT TO ECO GetComponent<> call..
         public InputManager         IM;
         public ResolutionManager    RM;
@@ -73,6 +74,9 @@ public class Access
             } else if ( iHolder == Constants.GO_OFFGAMEMGR)
             {
                 handler = checkCacheObject(iHolder, ref GO_OFFGAMEMGR);
+            } else if ( iHolder == Constants.GO_UIONPLAYER)
+            {
+                handler = checkCacheObject(iHolder, ref GO_UIONPLAYER);
             }
 
             else
@@ -97,6 +101,7 @@ public class Access
             GO_UIPLAYER = null;
             GO_PHYSXMATMGR = null;
             GO_OFFGAMEMGR = null;
+            GO_UIONPLAYER = null; 
         }
     }
 
@@ -223,9 +228,15 @@ public class Access
         return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
     }
 
+    // ONLINE MODE
     public static OfflineGameManager OfflineGameManager()
     {
         return cache.getObject<OfflineGameManager>(Constants.GO_OFFGAMEMGR, false);
+    }
+
+    public static UIPlayerOnline UIPlayerOnline()
+    {
+        return cache.getObject<UIPlayerOnline>(Constants.GO_UIONPLAYER, false);
     }
 
 }
