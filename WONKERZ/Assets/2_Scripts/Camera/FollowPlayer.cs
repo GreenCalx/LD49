@@ -1,58 +1,63 @@
 using UnityEngine;
 
-public class FollowPlayer : PlayerCamera
+namespace Wonkerz
 {
-    public Vector3 Distance;
-    public float LerpMult;
-    public bool Active = true;
-    public CheckPointManager CPM;
 
-    // Start is called before the first frame update
-    
-    void Awake()
+    public class FollowPlayer : PlayerCamera
     {
-        camType = CAM_TYPE.OLD_TRACK;
-        cam = GetComponent<Camera>();
-        initial_FOV = cam.fieldOfView;
-    }
+        public Vector3 Distance;
+        public float LerpMult;
+        public bool Active = true;
+        public CheckPointManager CPM;
 
-    void Start()
-    {
+        // Start is called before the first frame update
 
-    }
+        void Awake()
+        {
+            camType = CAM_TYPE.OLD_TRACK;
+            cam = GetComponent<Camera>();
+            initial_FOV = cam.fieldOfView;
+        }
 
-    public override void init() 
-    {
-        playerRef = Utils.getPlayerRef();
-        //CPM = FindObjectOfType<CheckPointManager>();
-        CPM = Access.CheckPointManager();
-    }
+        void Start()
+        {
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (!Active) 
+        }
+
+        public override void init()
+        {
+            //CPM = FindObjectOfType<CheckPointManager>();
+            CPM = Access.CheckPointManager();
+
+            playerRef = Access.Player().GetTransform().gameObject;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (!Active)
             return;
-        if (!CPM)
+            if (!CPM)
             init();
 
 
-        Distance = CPM.last_camerapoint.CamDescEnd.position;
+            Distance = CPM.last_camerapoint.CamDescEnd.position;
 
-        var FinalPosition = playerRef.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
-        var FinalPositionDirection = playerRef.transform.position - FinalPosition;
-        var MaxDistancePosition = (FinalPosition - (FinalPositionDirection * LerpMult));
-        var MaxDistance = MaxDistancePosition.magnitude;
+            var FinalPosition = playerRef.transform.position + Distance.x * Vector3.right + Distance.y * Vector3.up + Distance.z * Vector3.forward;
+            var FinalPositionDirection = playerRef.transform.position - FinalPosition;
+            var MaxDistancePosition = (FinalPosition - (FinalPositionDirection * LerpMult));
+            var MaxDistance = MaxDistancePosition.magnitude;
 
-        var MaxDistanceMagn = (MaxDistancePosition - FinalPosition).magnitude;
+            var MaxDistanceMagn = (MaxDistancePosition - FinalPosition).magnitude;
 
-        var CurrentDistance = (transform.position - FinalPosition).magnitude;
+            var CurrentDistance = (transform.position - FinalPosition).magnitude;
 
-        var Lerp = (CurrentDistance / MaxDistanceMagn);
+            var Lerp = (CurrentDistance / MaxDistanceMagn);
 
-        transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
+            transform.position = Vector3.Lerp(transform.position, FinalPosition, Lerp);
 
-        transform.LookAt(playerRef.transform.position);
+            transform.LookAt(playerRef.transform.position);
 
+        }
     }
 }

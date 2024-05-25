@@ -17,7 +17,7 @@ public class Tornado : MonoBehaviour
         {
             // apply upward force
             var RB = CC.GetComponent<Rigidbody>();
-            RB.AddForceAtPosition(-transform.up * Force, CC.centerOfMass.transform.position, ForceMode.VelocityChange);
+            //RB.AddForceAtPosition(-transform.up * Force, CC.centerOfMass.transform.position, ForceMode.VelocityChange);
         }
     }
 

@@ -4,12 +4,13 @@ using UnityEngine;
 using Schnibble;
 using static Schnibble.Physics;
 
+#if false
 public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 {
-    #if SCH_SUSPENSION_V2
     public class SchSandTrapRigidBody : SchRigidBody {
         GameObject obj;
         public float MaxForce;
+        /*
         public override Vector3 GetVelocityAtPoint(Vector3 worldPosition)
         {
             var maxLength = obj.transform.lossyScale.x;
@@ -22,14 +23,14 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
 
             return velocity;
         }
+         */
     }
 
-    public SchSandTrapRigidBody rb;
-    #else
-    public SchRigidBody rb;
-    #endif
+    public SchRigidBody rb_old;
+    public SchSandTrapRigidBody rb_new;
     public void Awake() {
-        irb = rb.irb;
+        if (rb_old)
+        irb = rb_old.irb;
     }
 
     public void OnCollisionStay(Collision c)
@@ -38,3 +39,4 @@ public class SchSandTrapRigidBodyBehaviour : SchRigidBodyBehaviourBase
         //colliderRB.AddForce(rb.GetVelocityAtPoint(colliderRB.position) - colliderRB.velocity, ForceMode.VelocityChange);
     }
 }
+#endif
