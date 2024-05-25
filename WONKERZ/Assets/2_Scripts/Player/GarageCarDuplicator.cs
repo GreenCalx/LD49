@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GarageCarDuplicator : MonoBehaviour
-{
-    void Start()
+namespace Wonkerz {
+    public class GarageCarDuplicator : MonoBehaviour
     {
-        Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
-    }
+        void Start()
+        {
+            Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
+        }
 
-    void OnDestroy()
-    {
-       Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
+        void OnDestroy()
+        {
+            Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
+        }
     }
 }

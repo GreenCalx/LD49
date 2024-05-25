@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+using static Schnibble.Physics;
+
+namespace Wonkerz {
+
 public class TrickUI : MonoBehaviour
 {
     // BOTTOM
@@ -20,7 +24,7 @@ public class TrickUI : MonoBehaviour
             var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring)
             {
-                spring.spring.rest = 0;
+                spring.spring.restLength = 0;
             }
         }
 
@@ -35,7 +39,7 @@ public class TrickUI : MonoBehaviour
             var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring)
             {
-                spring.spring.rest = 1;
+                spring.spring.restLength = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
@@ -55,7 +59,7 @@ public class TrickUI : MonoBehaviour
             var spring = TRICKNAME.GetComponent<SpringMono>();
             if (spring)
             {
-                spring.spring.rest = 1;
+                spring.spring.restLength = 1;
             }
 
             var animation = TRICKNAME.GetComponent<UIAnimateTransform>();
@@ -69,31 +73,31 @@ public class TrickUI : MonoBehaviour
     public void displayTrick(string iTrick)
     {
         if (!!TRICKNAME)
-            TRICKNAME.SetText(iTrick);
+        TRICKNAME.SetText(iTrick);
     }
 
     public void displayScore(int iScore)
     {
         if (iScore <= 0)
-            SCORE.SetText("");
+        SCORE.SetText("");
         else
-            SCORE.SetText(iScore.ToString());
+        SCORE.SetText(iScore.ToString());
     }
 
     public void displayTricklineScore(int iScore)
     {
         if (iScore <= 0)
-            TRICKLINE_SCORE.SetText("0");
+        TRICKLINE_SCORE.SetText("0");
         else
-            TRICKLINE_SCORE.SetText(iScore.ToString());
+        TRICKLINE_SCORE.SetText(iScore.ToString());
     }
 
     public void displayTrackScore(int iScore)
     {
         if (iScore <= 0)
-            TRACKSCORE.SetText("0");
+        TRACKSCORE.SetText("0");
         else
-            TRACKSCORE.SetText(iScore.ToString());
+        TRACKSCORE.SetText(iScore.ToString());
     }
 
     public void displayTricklineTricks(List<Trick> iTricks)
@@ -108,4 +112,5 @@ public class TrickUI : MonoBehaviour
     }
 
 
+}
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UI;
 
+using Schnibble;
+
 public class SchnibbleFBXImporter : AssetPostprocessor
 {
     readonly static string kCollider = "_collider";
@@ -78,7 +80,7 @@ public class SchnibbleFBXImporter : AssetPostprocessor
             var mat = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(unityMaterials[0]));
             if (unityMaterials.Length > 1)
             {
-                Debug.LogWarning("[Material] Found more than one material with name containing : " + source.name + " => using first possible one : " + mat.name);
+                this.LogWarning("[Material] Found more than one material with name containing : " + source.name + " => using first possible one : " + mat.name);
             }
             return mat;
         }
@@ -86,11 +88,11 @@ public class SchnibbleFBXImporter : AssetPostprocessor
         var defaultMat = Resources.Load<Material>(defaultSchnibbleErrorMaterial);
         if (defaultMat == null)
         {
-            Debug.LogError("[Material] Default material not found, will use StandardMaterial");
+            this.LogError("[Material] Default material not found, will use StandardMaterial");
         }
         else
         {
-            Debug.LogWarning(" [Material] Material will be default one instead of : " + source.name);
+            this.LogWarning(" [Material] Material will be default one instead of : " + source.name);
         }
 
         return defaultMat;
@@ -193,25 +195,25 @@ public class SchnibbleFBXImporter : AssetPostprocessor
     // remove every parametric string in the fbx filename
     static string CleanUpFilename(string filename)
     {
-    //var name = filename.ToLower();
+        //var name = filename.ToLower();
         var name = filename;
 
-    name = name.Replace(kColliderMesh, "");
-    name = name.Replace(kColliderMeshConvex, "");
-    name = name.Replace(kColliderBox, "");
-    name = name.Replace(kColliderSphere, "");
-    name = name.Replace(kNoMesh, "");
+        name = name.Replace(kColliderMesh, "");
+        name = name.Replace(kColliderMeshConvex, "");
+        name = name.Replace(kColliderBox, "");
+        name = name.Replace(kColliderSphere, "");
+        name = name.Replace(kNoMesh, "");
 
-    return name;
-}
+        return name;
+    }
 
     static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths, bool didDomainReload)
     {
-    foreach (string str in importedAssets)
+        foreach (string str in importedAssets)
         {
-        // only apply to fbx files
+            // only apply to fbx files
             if (str.EndsWith("fbx"))
-        {
+            {
                 var filepath = System.IO.Path.GetDirectoryName(str);
                 var prefabname = CleanUpFilename(System.IO.Path.GetFileName(str)).Replace(".fbx", ".prefab");
                 var prefabfullpath = System.IO.Path.Join(filepath, prefabname);
@@ -232,30 +234,30 @@ public class SchnibbleFBXImporter : AssetPostprocessor
                         PrefabUtility.SaveAsPrefabAssetAndConnect(go, prefabfullpath, InteractionMode.AutomatedAction, out bool success);
                         if (!success)
                         {
-                            Debug.LogError("Could not create prefab from fbx");
-}
+                            SchLog.LogError("Could not create prefab from fbx");
+                        }
                         GameObject.DestroyImmediate(go);
-}
+                    }
                     else
-{
-    Debug.LogError("Cannot find FBX file.");
-    }
-    }
-    }
-}
-foreach (string str in deletedAssets)
-{
-    Debug.Log("Deleted Asset: " + str);
-}
+                    {
+                        SchLog.LogError("Cannot find FBX file.");
+                    }
+                }
+            }
+        }
+        foreach (string str in deletedAssets)
+        {
+            SchLog.Log("Deleted Asset: " + str);
+        }
 
-for (int i = 0; i < movedAssets.Length; i++)
-{
-    Debug.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
-}
+        for (int i = 0; i < movedAssets.Length; i++)
+        {
+            SchLog.Log("Moved Asset: " + movedAssets[i] + " from: " + movedFromAssetPaths[i]);
+        }
 
-if (didDomainReload)
-{
-    Debug.Log("Domain has been reloaded");
-    }
+        if (didDomainReload)
+        {
+            SchLog.Log("Domain has been reloaded");
+        }
     }
 }

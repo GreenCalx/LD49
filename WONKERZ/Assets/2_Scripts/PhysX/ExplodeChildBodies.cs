@@ -2,47 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExplodeChildBodies : MonoBehaviour
-{
-    public Rigidbody[] childBodies;
-    private bool triggered = false;
-    public float forceStr = 10f;
-    public Vector3 directionSteer;
+namespace Wonkerz {
 
-    // Start is called before the first frame update
-    void Start()
+    public class ExplodeChildBodies : MonoBehaviour
     {
-        childBodies = GetComponentsInChildren<Rigidbody>(true);
-    }
+        public Rigidbody[] childBodies;
+        private bool triggered = false;
+        public float forceStr = 10f;
+        public Vector3 directionSteer;
 
-    // Update is called once per frame
-    public void triggerExplosion()
-    {
-        if (triggered)
-            return;
-        explodeChilds();
-        triggered = true;
-    }
-
-    public void setExplosionDirToPlayerVelocity()
-    {
-        directionSteer = Access.Player().rb.velocity.normalized;
-        forceStr = Access.Player().rb.velocity.magnitude;
-    }
-
-    void explodeChilds()
-    {
-        int n_bodies = childBodies.Length;
-        for ( int i=0; i < n_bodies ; i++)
+        // Start is called before the first frame update
+        void Start()
         {
-            Rigidbody rb = childBodies[i];
-            //Vector3 randDirection = Random.insideUnitCircle.normalized;
-            //Vector3 dir = randDirection + directionSteer;
-            rb.isKinematic = false;
-
-            rb.AddForce(directionSteer*forceStr, ForceMode.Impulse);
-            Debug.DrawRay(rb.gameObject.transform.position, directionSteer*forceStr,  Color.red);
+            childBodies = GetComponentsInChildren<Rigidbody>(true);
         }
-        //Destroy(gameObject);
+
+        // Update is called once per frame
+        public void triggerExplosion()
+        {
+            if (triggered)
+            return;
+            explodeChilds();
+            triggered = true;
+        }
+
+        public void setExplosionDirToPlayerVelocity()
+        {
+            directionSteer = Access.Player().GetRigidbody().velocity.normalized;
+            forceStr = Access.Player().GetRigidbody().velocity.magnitude;
+        }
+
+        void explodeChilds()
+        {
+            int n_bodies = childBodies.Length;
+            for ( int i=0; i < n_bodies ; i++)
+            {
+                Rigidbody rb = childBodies[i];
+                //Vector3 randDirection = Random.insideUnitCircle.normalized;
+                //Vector3 dir = randDirection + directionSteer;
+                rb.isKinematic = false;
+
+                rb.AddForce(directionSteer*forceStr, ForceMode.Impulse);
+                Debug.DrawRay(rb.gameObject.transform.position, directionSteer*forceStr,  Color.red);
+            }
+            //Destroy(gameObject);
+        }
     }
 }

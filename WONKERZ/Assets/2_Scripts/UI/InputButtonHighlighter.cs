@@ -6,57 +6,59 @@ using Schnibble;
 using Schnibble.Managers;
 using System;
 
-public class InputButtonHighlighter : MonoBehaviour, IControllable
-{
-    [Header("MAND")]
-    public Image self_imgRef;
-    [Header("Tweaks")]
-    public PlayerInputs.InputCode key;
-    public Color baseColor;
-    public Color highlightColor;
-
-    [Header("Internals")]
-    public bool highlight = false;
-
-    void Start()
+namespace Wonkerz {
+    public class InputButtonHighlighter : MonoBehaviour, IControllable
     {
-        Access.Player().inputMgr.Attach(this as IControllable);
-    }
+        [Header("MAND")]
+        public Image self_imgRef;
+        [Header("Tweaks")]
+        public PlayerInputs.InputCode key;
+        public Color baseColor;
+        public Color highlightColor;
 
-    void OnDestroy()
-    {
-        try{
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
-        } catch (NullReferenceException e) {
-            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
-        }
-    }
+        [Header("Internals")]
+        public bool highlight = false;
 
-    void Update()
-    {
-        if (highlight)
-            self_imgRef.color = highlightColor;
-        else
-            self_imgRef.color = baseColor;
-    }
-
-
-    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
-    {
-        GameInputButton inputButton = Entry.Get((int)key) as GameInputButton;
-        if (null!=inputButton)
+        void Start()
         {
-            if (inputButton.GetState().down)
-            {
-                highlight = true;
+            Access.Player().inputMgr.Attach(this as IControllable);
+        }
+
+        void OnDestroy()
+        {
+            try{
+                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            } catch (NullReferenceException e) {
+                this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
             }
-            else if (inputButton.GetState().heldDown)
+        }
+
+        void Update()
+        {
+            if (highlight)
+            self_imgRef.color = highlightColor;
+            else
+            self_imgRef.color = baseColor;
+        }
+
+
+        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        {
+            GameInputButton inputButton = Entry.Get((int)key) as GameInputButton;
+            if (null!=inputButton)
             {
-                highlight = true;
-            }
-            else if (inputButton.GetState().up)
-            {
-                highlight = false;
+                if (inputButton.GetState().down)
+                {
+                    highlight = true;
+                }
+                else if (inputButton.GetState().heldDown)
+                {
+                    highlight = true;
+                }
+                else if (inputButton.GetState().up)
+                {
+                    highlight = false;
+                }
             }
         }
     }

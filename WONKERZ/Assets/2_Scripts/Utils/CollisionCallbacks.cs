@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class CollisionCallbacks : MonoBehaviour
+namespace Wonkerz
 {
-    public UnityEvent OnCollisionEnterCallback;
-    public bool playerOnly = true;
-
-    void OnCollisionEnter(Collision iCollision)
+    public class CollisionCallbacks : MonoBehaviour
     {
-        if (playerOnly)
+        public UnityEvent OnCollisionEnterCallback;
+        public bool playerOnly = true;
+
+        void OnCollisionEnter(Collision iCollision)
         {
-            if (!Utils.collisionIsPlayer(iCollision))
+            if (playerOnly)
             {
-                return;
+                if (!Utils.collisionIsPlayer(iCollision))
+                {
+                    return;
+                }
             }
+
+            if (OnCollisionEnterCallback != null)
+            OnCollisionEnterCallback.Invoke();
         }
 
-        if (OnCollisionEnterCallback!=null)
-            OnCollisionEnterCallback.Invoke();
     }
-
 }

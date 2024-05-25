@@ -5,63 +5,65 @@ using UnityEngine;
 using TMPro;
 using Schnibble.UI;
 
-public class UIDifficultyChoice : UIPanelTabbed
-{
-    [HideInInspector]
-    public bool choice_made = false;
+namespace Wonkerz {
 
-    [HideInInspector]
-    public DIFFICULTIES chosen_difficulty = DIFFICULTIES.EASY;
-
-    [Header("MAND")]
-    public GameObject childUIToActivate;
-
-    public TextMeshProUGUI trackNameTxt;
-    public TextMeshProUGUI panelHintTxt;
-    public TextMeshProUGUI cpHintTxt;
-
-    void Awake()
+    public class UIDifficultyChoice : UIPanelTabbed
     {
-        base.Awake();
-        inputMgr = Access.PlayerInputsManager().player1;
-    }
+        [HideInInspector]
+        public bool choice_made = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        string target_scene = Access.SceneLoader().targetScene;
-        if (Array.Exists(Constants.SN_TRACKS, e => e == target_scene))
+        [HideInInspector]
+        public DIFFICULTIES chosen_difficulty = DIFFICULTIES.EASY;
+
+        [Header("MAND")]
+        public GameObject childUIToActivate;
+
+        public TextMeshProUGUI trackNameTxt;
+        public TextMeshProUGUI panelHintTxt;
+        public TextMeshProUGUI cpHintTxt;
+
+        void Awake()
         {
-            // activate menu
-            trackNameTxt.text = target_scene;
-            childUIToActivate.SetActive(true);
-            Access.SceneLoader().lockScene();
-            onActivate.Invoke();
-
-        } else {
-            Destroy(gameObject);
-        }
-        updateUIFromDiff();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (choice_made)
-        {
-            Access.TrackManager().track_score.selected_diff = chosen_difficulty;
-            Access.SceneLoader().unlockScene();
-            onDeactivate.Invoke();
-            Destroy(gameObject);
+            base.Awake();
+            inputMgr = Access.PlayerInputsManager().player1;
         }
 
-        updateUIFromDiff();
-    }
-
-    private void updateUIFromDiff()
-    {
-        switch (chosen_difficulty)
+        // Start is called before the first frame update
+        void Start()
         {
+            string target_scene = Access.SceneLoader().targetScene;
+            if (Array.Exists(Constants.SN_TRACKS, e => e == target_scene))
+            {
+                // activate menu
+                trackNameTxt.text = target_scene;
+                childUIToActivate.SetActive(true);
+                Access.SceneLoader().lockScene();
+                onActivate.Invoke();
+
+            } else {
+                Destroy(gameObject);
+            }
+            updateUIFromDiff();
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (choice_made)
+            {
+                Access.TrackManager().track_score.selected_diff = chosen_difficulty;
+                Access.SceneLoader().unlockScene();
+                onDeactivate.Invoke();
+                Destroy(gameObject);
+            }
+
+            updateUIFromDiff();
+        }
+
+        private void updateUIFromDiff()
+        {
+            switch(chosen_difficulty)
+            {
             case DIFFICULTIES.EASY:
                 string str = (Constants.EASY_N_PANELS < 99) ? Constants.EASY_N_PANELS.ToString() : "infinite";
                 panelHintTxt.text = str;
@@ -81,11 +83,12 @@ public class UIDifficultyChoice : UIPanelTabbed
                 break;
             default:
                 break;
+            }
         }
-    }
 
-    override public void activate()
-    {
-        base.activate();
+        override public void activate()
+        {
+            base.activate();
+        }
     }
 }

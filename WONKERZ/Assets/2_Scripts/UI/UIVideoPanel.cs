@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+using Schnibble;
 using Schnibble.UI;
 
 public class UIVideoPanel : UIPanelTabbed
@@ -73,7 +74,7 @@ public class UIVideoPanel : UIPanelTabbed
     public void OnTargetFPSChanged(string value){
         if (System.Int32.TryParse(value, out var number)){
             Application.targetFrameRate = number;
-            Debug.Log(number);
+            this.Log(number.ToString());
         }
     }
 

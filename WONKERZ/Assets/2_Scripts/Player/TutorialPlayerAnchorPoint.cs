@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class TutorialPlayerAnchorPoint : MonoBehaviour
-{
-    private bool triggered = false;
+namespace Wonkerz {
 
-    void Update()
+    [RequireComponent(typeof(Rigidbody))]
+    public class TutorialPlayerAnchorPoint : MonoBehaviour
     {
-        if (triggered)
+        private bool triggered = false;
+
+        void Update()
         {
-            transform.localPosition = Vector3.zero; 
-            transform.localRotation = Quaternion.identity;
+            if (triggered)
+            {
+                transform.localPosition = Vector3.zero; 
+                transform.localRotation = Quaternion.identity;
+            }
         }
-    }
 
-    public void trigger()
-    {
-        transform.parent = Access.Player().transform;
-        triggered = true;
-    }
+        public void trigger()
+        {
+            transform.parent = Access.Player().transform;
+            triggered = true;
+        }
 
-    public void delete()
-    {
-        Destroy(this.gameObject);
+        public void delete()
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

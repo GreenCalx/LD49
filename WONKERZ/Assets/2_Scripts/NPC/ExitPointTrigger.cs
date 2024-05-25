@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class ExitPointTrigger : MonoBehaviour
+namespace Wonkerz
 {
-    void OnTriggerStay(Collider iCollider)
+    public class ExitPointTrigger : MonoBehaviour
     {
-        NPC_SQR sqr = iCollider.GetComponent<NPC_SQR>();
-        if (!!sqr)
+        void OnTriggerStay(Collider iCollider)
+        {
+            NPC_SQR sqr = iCollider.GetComponent<NPC_SQR>();
+            if (!!sqr)
             sqr.exitReached = true;
+        }
     }
 }

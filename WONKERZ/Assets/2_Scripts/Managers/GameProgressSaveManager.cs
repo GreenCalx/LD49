@@ -4,13 +4,15 @@ using UnityEngine;
 using System;
 using System.IO;
 
+using Schnibble;
+
 /*******************************************************************
-*   
-*    ______________________________________________________________
-*   |
-*   |______________________________________________________________
-*
-********************************************************************/
+ *   
+ *    ______________________________________________________________
+ *   |
+ *   |______________________________________________________________
+ *
+ ********************************************************************/
 public class GameProgressSaveManager : MonoBehaviour
 {
     [System.Serializable]
@@ -63,7 +65,7 @@ public class GameProgressSaveManager : MonoBehaviour
             // no file found, try to create a new one then call again the Load(). If it fails twice we give up.
             if (errorAtLoad)
             {
-                Debug.LogError("GameProgressSaveManager::Failed to locate/load fail for profile "+ activeProfile);
+                this.LogError("GameProgressSaveManager::Failed to locate/load fail for profile "+ activeProfile);
                 return;
             }
             
@@ -105,25 +107,25 @@ public class GameProgressSaveManager : MonoBehaviour
     public bool IsUniqueEventDone(UniqueEvents.UEVENTS iEventID)
     {
         if (iEventID==UniqueEvents.UEVENTS.NONE)
-            return true;
+        return true;
         return gameProgressData.uniqueEventsDone.Contains(iEventID);
     }
 
     // >> SET specific game data of GameProgressData
-     public void notifyUniqueEventDone(UniqueEvents.UEVENTS iEventID)
-     {
+    public void notifyUniqueEventDone(UniqueEvents.UEVENTS iEventID)
+    {
         if (iEventID==UniqueEvents.UEVENTS.NONE)
-            return;
+        return;
 
-         if (gameProgressData == null)
-            gameProgressData = new GameProgressData();
+        if (gameProgressData == null)
+        gameProgressData = new GameProgressData();
 
         if (!gameProgressData.uniqueEventsDone.Contains(iEventID))
         {
             gameProgressData.uniqueEventsDone.Add(iEventID);
             Save();
         }
-     }
+    }
 
     public List<string> GetAvailableProfileNames()
     {
@@ -133,7 +135,7 @@ public class GameProgressSaveManager : MonoBehaviour
         foreach (string dir in dirs) {
             string p_name = dir.Replace(fp_prefix, "");
             p_name = p_name.Replace(fp_suffix, "");
-            Debug.Log(p_name);
+            this.Log(p_name);
             retval.Add(p_name);
         }
         return retval;
@@ -143,7 +145,7 @@ public class GameProgressSaveManager : MonoBehaviour
     {
         string path = fp_prefix + "/" + iProfileName;
         if (!Directory.Exists(path))
-            return;
+        return;
 
         System.IO.DirectoryInfo di = new DirectoryInfo(path);
         foreach (FileInfo file in di.GetFiles())

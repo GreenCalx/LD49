@@ -2,26 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Schnibble;
 using Schnibble.UI;
 
-public class UIDifficultyTextTab : UITextTab
-{
-    public DIFFICULTIES difficulty;
+namespace Wonkerz {
 
-    override public void select()
+    public class UIDifficultyTextTab : UITextTab
     {
-        UIDifficultyChoice p = Parent as UIDifficultyChoice;
-        p.chosen_difficulty = difficulty;
-        base.select();
-    }
+        public DIFFICULTIES difficulty;
 
-    override public void activate()
-    {
-        base.activate();
+        override public void select()
+        {
+            UIDifficultyChoice p = Parent as UIDifficultyChoice;
+            p.chosen_difficulty = difficulty;
+            base.select();
+        }
 
-        Debug.Log("Difficulty selected : " + difficulty);
-        UIDifficultyChoice p = Parent as UIDifficultyChoice;
-        p.chosen_difficulty = difficulty;
-        p.choice_made = true;
+        override public void activate()
+        {
+            base.activate();
+
+            this.Log("Difficulty selected : " + difficulty);
+            UIDifficultyChoice p = Parent as UIDifficultyChoice;
+            p.chosen_difficulty = difficulty;
+            p.choice_made = true;
+        }
     }
 }

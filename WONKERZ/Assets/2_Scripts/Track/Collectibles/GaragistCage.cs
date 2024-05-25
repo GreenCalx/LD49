@@ -1,44 +1,51 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
-public class GaragistCage : MonoBehaviour
+namespace Wonkerz
 {
-    public string openingKeyName;
 
-    public Animator cageAnim;
-    private string openCageAnimParm = "unlock";
-
-    public GaragistCollectible garagist;
-    public NPCGaragist NPC;
-    public string trackname = "";
-
-    void Start()
+    public class GaragistCage : MonoBehaviour
     {
-        if (Access.CollectiblesManager().hasGaragist(trackname))
+        public string openingKeyName;
+
+        public Animator cageAnim;
+        private string openCageAnimParm = "unlock";
+
+        public GaragistCollectible garagist;
+        public NPCGaragist NPC;
+        public string trackname = "";
+
+        void Start()
         {
-            gameObject.SetActive(false);
-        } else {
-            NPC.setJailed();
+            if (Access.CollectiblesManager().hasGaragist(trackname))
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                NPC.setJailed();
+            }
         }
-    }
 
 
-    public void TryOpenCage()
-    {
-        if (NPC.isFree)
+        public void TryOpenCage()
+        {
+            if (NPC.isFree)
             return;
 
-        string scene_name = SceneManager.GetActiveScene().name;
-        if (Access.CollectiblesManager().hasCageKey(scene_name))
-        {
-            // open cage
-            cageAnim.SetBool(openCageAnimParm, true);
+            string scene_name = SceneManager.GetActiveScene().name;
+            if (Access.CollectiblesManager().hasCageKey(scene_name))
+            {
+                // open cage
+                cageAnim.SetBool(openCageAnimParm, true);
 
-            NPC.setFree();
-            garagist.ForceCollect();
-        } else {
-            NPC.StartTalk();
+                NPC.setFree();
+                garagist.ForceCollect();
+            }
+            else
+            {
+                NPC.StartTalk();
+            }
         }
-    }
 
+    }
 }

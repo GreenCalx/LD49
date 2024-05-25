@@ -1,22 +1,24 @@
 using UnityEngine;
 using Schnibble;
 
-public class CageKeyCollectible : AbstractCollectible
-{
-    public string trackname = "";
-    public AudioSource keyCollect_SFX;
-    void Start()
+namespace Wonkerz {
+    public class CageKeyCollectible : AbstractCollectible
     {
-        if (Access.CollectiblesManager().hasCageKey(trackname))
+        public string trackname = "";
+        public AudioSource keyCollect_SFX;
+        void Start()
         {
-            gameObject.SetActive(false);
+            if (Access.CollectiblesManager().hasCageKey(trackname))
+            {
+                gameObject.SetActive(false);
+            }
         }
-    }
 
-    protected override void OnCollect()
-    {
-        Schnibble.Utils.SpawnAudioSource(keyCollect_SFX, transform);
-        Access.CollectiblesManager().applyCollectEffect(this);
-        Destroy(gameObject);
+        protected override void OnCollect()
+        {
+            Schnibble.Utils.SpawnAudioSource(keyCollect_SFX, transform);
+            Access.CollectiblesManager().applyCollectEffect(this);
+            Destroy(gameObject);
+        }
     }
 }

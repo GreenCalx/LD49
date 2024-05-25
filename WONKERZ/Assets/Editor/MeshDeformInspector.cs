@@ -60,7 +60,7 @@ namespace Schnibble {
                         //if (mesh.normalsForQuadMesh)
                         //    Debug.DrawLine(handleTransform.TransformPoint(verts[i]), handleTransform.TransformPoint(normals[i]) + handleTransform.TransformPoint(verts[i]), Color.green, 10.0f, true);
                         //else
-                        Debug.DrawLine(handleTransform.TransformPoint(verts[i]), handleTransform.TransformPoint(normals[i]), Color.green, 10.0f, true);
+                        UnityEngine.Debug.DrawLine(handleTransform.TransformPoint(verts[i]), handleTransform.TransformPoint(normals[i]), Color.green, 10.0f, true);
                     }
                 }
 

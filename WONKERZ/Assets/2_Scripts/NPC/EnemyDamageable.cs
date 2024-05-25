@@ -4,38 +4,43 @@ using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
 
-public class EnemyDamageable : MonoBehaviour
+namespace Wonkerz
 {
-    [Header("MAND")]
-    public WkzEnemy attachedEnemy;
-    [Header("Tweaks")]
-    public bool damageOnSpinOnly = true;
-    public int hitpoints = 1;
-    
-
-    private int currHP;
-
-    void Start()
+    public class EnemyDamageable : MonoBehaviour
     {
-        currHP = hitpoints;
-    }
+        [Header("MAND")]
+        public WkzEnemy attachedEnemy;
+        [Header("Tweaks")]
+        public bool damageOnSpinOnly = true;
+        public int hitpoints = 1;
 
-    void OnCollisionEnter(Collision iCol)
-    {
-        if (damageOnSpinOnly)
+
+        private int currHP;
+
+        void Start()
         {
-            SpinPowerObject spo = iCol.gameObject.GetComponent<SpinPowerObject>();
-            if (!!spo)
+            currHP = hitpoints;
+        }
+
+        void OnCollisionEnter(Collision iCol)
+        {
+            if (damageOnSpinOnly)
+            {
+                SpinPowerObject spo = iCol.gameObject.GetComponent<SpinPowerObject>();
+                if (!!spo)
+                {
+                    currHP--;
+                }
+            }
+            else
             {
                 currHP--;
             }
-        } else {
-            currHP--;
-        }
 
-        if (currHP <= 0)
-        {
-            attachedEnemy.kill();
+            if (currHP <= 0)
+            {
+                attachedEnemy.kill();
+            }
         }
     }
 }

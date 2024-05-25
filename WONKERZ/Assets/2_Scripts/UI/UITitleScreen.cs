@@ -5,61 +5,63 @@ using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
 
-public class UITitleScreen : UIPanelTabbed
-{
-    public UIPanelTabbed confirmExitPanel;
-    public UIPanelTabbed nameEntryPanel;
-    public UIProfileCards profilePanel;
+namespace Wonkerz {
+    public class UITitleScreen : UIPanelTabbed
+    {
+        public UIPanelTabbed confirmExitPanel;
+        public UIPanelTabbed nameEntryPanel;
+        public UIProfileCards profilePanel;
 
     
-    void Start()
-    {
-        inputMgr = Access.PlayerInputsManager().player1;
-
-        activate();
-        cancelDeactivatePanel = false;
-    }
-
-    void OnDestroy()
-    {
-        deactivate();
-    }
-    protected override void ProcessInputs(InputManager currentMgr, GameController entry){
-        base.ProcessInputs(currentMgr, entry);
-
-        if ((entry.Get(PlayerInputs.GetIdx(inputCancel)) as GameInputButton).GetState().down)
+        void Start()
         {
-            // propose to quit to desktop
-            confirmExitPanel.onActivate?.Invoke();
+            inputMgr = Access.PlayerInputsManager().player1;
+
+            activate();
+            cancelDeactivatePanel = false;
         }
-    }
 
-    public void launchNewGame()
-    {
-        nameEntryPanel.onActivate?.Invoke();
+        void OnDestroy()
+        {
+            deactivate();
+        }
+        protected override void ProcessInputs(InputManager currentMgr, GameController entry){
+            base.ProcessInputs(currentMgr, entry);
 
-        profilePanel.mode = UIProfileCards.FD_MODE.WRITE;
-        // profilePanel.onActivate?.Invoke();
+            if ((entry.Get(PlayerInputs.GetIdx(inputCancel)) as GameInputButton).GetState().down)
+            {
+                // propose to quit to desktop
+                confirmExitPanel.onActivate?.Invoke();
+            }
+        }
 
-        // Access.SceneLoader().loadScene(Constants.SN_INTRO);
-    }
+        public void launchNewGame()
+        {
+            nameEntryPanel.onActivate?.Invoke();
 
-    public void launchLoadGame()
-    {
-        // Access.CollectiblesManager().loadJars();
-        // Access.GameProgressSaveManager().Load();
+            profilePanel.mode = UIProfileCards.FD_MODE.WRITE;
+            // profilePanel.onActivate?.Invoke();
 
-        // Access.SceneLoader().loadScene(Constants.SN_HUB);
-        profilePanel.mode = UIProfileCards.FD_MODE.READ;
-        profilePanel.onActivate?.Invoke();
-    }
+            // Access.SceneLoader().loadScene(Constants.SN_INTRO);
+        }
 
-    public void quitGame(){
-        Schnibble.Utils.ExitGame();
-    }
+        public void launchLoadGame()
+        {
+            // Access.CollectiblesManager().loadJars();
+            // Access.GameProgressSaveManager().Load();
 
-    public void launchDemo()
-    {
-        Access.SceneLoader().loadScene(Constants.SN_DESERT_TOWER);
+            // Access.SceneLoader().loadScene(Constants.SN_HUB);
+            profilePanel.mode = UIProfileCards.FD_MODE.READ;
+            profilePanel.onActivate?.Invoke();
+        }
+
+        public void quitGame(){
+            Schnibble.Utils.ExitGame();
+        }
+
+        public void launchDemo()
+        {
+            Access.SceneLoader().loadScene(Constants.SN_DESERT_TOWER);
+        }
     }
 }

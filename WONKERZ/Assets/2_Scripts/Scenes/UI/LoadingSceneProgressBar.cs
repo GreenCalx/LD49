@@ -1,19 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Image))]
-public class LoadingSceneProgressBar : MonoBehaviour
+namespace Wonkerz
 {
-    Image progressBar;
 
-    void Start()
+    [RequireComponent(typeof(Image))]
+    public class LoadingSceneProgressBar : MonoBehaviour
     {
-        progressBar = GetComponent<Image>();
-    }
+        Image progressBar;
+
+        void Start()
+        {
+            progressBar = GetComponent<Image>();
+        }
 
 
-    void Update()
-    {
-        progressBar.fillAmount = Access.SceneLoader().operationProgress;
+        void Update()
+        {
+            progressBar.fillAmount = Access.SceneLoader().operationProgress;
+        }
     }
 }

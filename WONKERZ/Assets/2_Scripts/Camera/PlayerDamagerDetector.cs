@@ -3,96 +3,101 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Child of a player camera
-// Display dangers behind the player
-// ATM, designed to have 3 of em for leftCorner/Middle/RightCorner with their respective uis
-// alpha of UIToDisplay defined by the closest distance within damagers in range
-public class PlayerDamagerDetector : MonoBehaviour
-{
-    public GameObject UIToDisplay_Ref;
-    private GameObject UIToDisplay_Inst;
-    public bool dangerInRange = false;
-    private List<PlayerDamager> damagersInRange;
+using Schnibble;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        damagersInRange = new List<PlayerDamager>();
-    }
+namespace Wonkerz {
 
-    void Update()
+    // Child of a player camera
+    // Display dangers behind the player
+    // ATM, designed to have 3 of em for leftCorner/Middle/RightCorner with their respective uis
+    // alpha of UIToDisplay defined by the closest distance within damagers in range
+    public class PlayerDamagerDetector : MonoBehaviour
     {
-        if (dangerInRange)
+        public GameObject UIToDisplay_Ref;
+        private GameObject UIToDisplay_Inst;
+        public bool dangerInRange = false;
+        private List<PlayerDamager> damagersInRange;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            updateDangerInRange();
-            refreshUI();
-        } else if (!!UIToDisplay_Inst) {
-            hideUI();
-        }
-    }
-
-    void hideUI()
-    {
-        Destroy(UIToDisplay_Inst);
-        UIToDisplay_Inst = null;
-    }
-
-    void refreshUI()
-    {
-        if (UIToDisplay_Inst==null)
-        { 
-            Transform parent = Access.UISpeedAndLifePool().transform.parent;
-            UIToDisplay_Inst = Instantiate<GameObject>(UIToDisplay_Ref, parent); 
+            damagersInRange = new List<PlayerDamager>();
         }
 
-        Image img = UIToDisplay_Inst.GetComponentInChildren<Image>();
-        if (img==null)
+        void Update()
         {
-            Debug.LogError("Image missing on ui to display given to playerdamagerdetector.");
-            return;
-        }
-
-        float closestDistToPlayer = 9999f;
-        Vector3 playerPos = Access.Player().transform.position;
-        foreach(PlayerDamager pd in damagersInRange)
-        {
-            float dist = Vector3.Distance(playerPos, pd.transform.position);
-            if (dist < closestDistToPlayer)
+            if (dangerInRange)
             {
-                closestDistToPlayer = dist;
+                updateDangerInRange();
+                refreshUI();
+            } else if (!!UIToDisplay_Inst) {
+                hideUI();
             }
         }
 
-        // Alpha ramp with closts object..
-        //img.color.a = 0.5f;
+        void hideUI()
+        {
+            Destroy(UIToDisplay_Inst);
+            UIToDisplay_Inst = null;
+        }
+
+        void refreshUI()
+        {
+            if (UIToDisplay_Inst==null)
+            { 
+                Transform parent = Access.UISpeedAndLifePool().transform.parent;
+                UIToDisplay_Inst = Instantiate<GameObject>(UIToDisplay_Ref, parent); 
+            }
+
+            Image img = UIToDisplay_Inst.GetComponentInChildren<Image>();
+            if (img==null)
+            {
+                this.LogError("Image missing on ui to display given to playerdamagerdetector.");
+                return;
+            }
+
+            float closestDistToPlayer = 9999f;
+            Vector3 playerPos = Access.Player().transform.position;
+            foreach(PlayerDamager pd in damagersInRange)
+            {
+                float dist = Vector3.Distance(playerPos, pd.transform.position);
+                if (dist < closestDistToPlayer)
+                {
+                    closestDistToPlayer = dist;
+                }
+            }
+
+            // Alpha ramp with closts object..
+            //img.color.a = 0.5f;
         
-    }
+        }
 
-    void OnTriggerStay(Collider iCollider)
-    {
-        PlayerDamager pd = iCollider.gameObject.GetComponent<PlayerDamager>();
-        if (!!pd)
+        void OnTriggerStay(Collider iCollider)
         {
-            if (!damagersInRange.Contains(pd))
+            PlayerDamager pd = iCollider.gameObject.GetComponent<PlayerDamager>();
+            if (!!pd)
+            {
+                if (!damagersInRange.Contains(pd))
                 damagersInRange.Add(pd);
-            updateDangerInRange();
+                updateDangerInRange();
+            }
         }
-    }
 
-    void OnTriggerExit(Collider iCollider)
-    {
-        PlayerDamager pd = iCollider.gameObject.GetComponent<PlayerDamager>();
-        if (!!pd)
+        void OnTriggerExit(Collider iCollider)
         {
-            if (damagersInRange.Contains(pd))
+            PlayerDamager pd = iCollider.gameObject.GetComponent<PlayerDamager>();
+            if (!!pd)
+            {
+                if (damagersInRange.Contains(pd))
                 damagersInRange.Remove(pd);
-            updateDangerInRange();
+                updateDangerInRange();
+            }
         }
-    }
 
-    void updateDangerInRange()
-    {
-        damagersInRange.RemoveAll(e => e == null);
-        dangerInRange = (damagersInRange.Count > 0 );
+        void updateDangerInRange()
+        {
+            damagersInRange.RemoveAll(e => e == null);
+            dangerInRange = (damagersInRange.Count > 0 );
+        }
     }
 }

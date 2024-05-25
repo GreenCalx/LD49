@@ -1,100 +1,102 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
+namespace Wonkerz {
 
-public class ClippingPlane : MonoBehaviour
-{
-    public List<Material> mats;
-    private float triggerPlaneClipping;
-    public bool clipAbovePlane = true;
-
-    private Plane plane;
-    private Vector4 planeRepresentation;
-
-    private MeshRenderer MR;
-    private Material selfMat;
-
-    // Start is called before the first frame update
-    void Start()
+    public class ClippingPlane : MonoBehaviour
     {
-        triggerPlaneClipping = 0;
+        public List<Material> mats;
+        private float triggerPlaneClipping;
+        public bool clipAbovePlane = true;
 
-        plane = new Plane(transform.up, transform.position);
-        planeRepresentation = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+        private Plane plane;
+        private Vector4 planeRepresentation;
 
-        MR = GetComponent<MeshRenderer>();
-        selfMat = MR.material;
+        private MeshRenderer MR;
+        private Material selfMat;
 
-        refresh();
-    }
-
-    // Update is called once per frame
-    private void refresh()
-    {
-        // refresh for clipping
-        foreach (Material mat in mats)
+        // Start is called before the first frame update
+        void Start()
         {
-            // Not working with new GBuffer
-            //mat.SetVector("_Plane", planeRepresentation);
-            //mat.SetFloat("_TriggerPlaneClipping", triggerPlaneClipping);
-            //mat.SetFloat("_ClipAbovePlane", (clipAbovePlane ? 1f : 0f));
+            triggerPlaneClipping = 0;
+
+            plane = new Plane(transform.up, transform.position);
+            planeRepresentation = new Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.distance);
+
+            MR = GetComponent<MeshRenderer>();
+            selfMat = MR.material;
+
+            refresh();
         }
-    }
 
-    private void refreshPortalTrigger(bool iStatus)
-    {
-        PortalTrigger pt = GetComponentInChildren<PortalTrigger>();
-        if (!!pt)
-        { pt.isActive = iStatus; }
-    }
-
-    void OnTriggerEnter(Collider iCol)
-    {
-        if (Utils.colliderIsPlayer(iCol))
+        // Update is called once per frame
+        private void refresh()
         {
-            HUBPortal hub_p = GetComponentInParent<HUBPortal>();
-            if (!!hub_p)
+            // refresh for clipping
+            foreach (Material mat in mats)
             {
-                if (!!hub_p.activeClippingPortal)
-                    return;
-                else
-                {
-                    hub_p.setActiveClippingPortal(this.gameObject);
-                    triggerPlaneClipping = 1;
-                    refresh();
-                    refreshPortalTrigger(true);
-                }
+                // Not working with new GBuffer
+                //mat.SetVector("_Plane", planeRepresentation);
+                //mat.SetFloat("_TriggerPlaneClipping", triggerPlaneClipping);
+                //mat.SetFloat("_ClipAbovePlane", (clipAbovePlane ? 1f : 0f));
             }
-
         }
-    }
 
-    void OnTriggerStay(Collider iCol)
-    {
-        if (Utils.colliderIsPlayer(iCol) && (triggerPlaneClipping > 0))
+        private void refreshPortalTrigger(bool iStatus)
         {
-            // refresh self ripple
-            Vector3 rippleOrig = Vector3.ProjectOnPlane(Access.Player().transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z));
-            selfMat.SetVector("_RippleOrigin",
-                new Vector4(rippleOrig.x,
-                             rippleOrig.y,
-                             rippleOrig.z,
-                             0
-            ));
+            PortalTrigger pt = GetComponentInChildren<PortalTrigger>();
+            if (!!pt)
+            { pt.isActive = iStatus; }
         }
-    }
 
-    void OnTriggerExit(Collider iCol)
-    {
-        if (Utils.colliderIsPlayer(iCol))
+        void OnTriggerEnter(Collider iCol)
         {
-            HUBPortal hub_p = GetComponentInParent<HUBPortal>();
-            if (!!hub_p && (hub_p.activeClippingPortal == this.gameObject))
+            if (Utils.colliderIsPlayer(iCol))
             {
-                hub_p.activeClippingPortal = null;
-                triggerPlaneClipping = 0;
-                refresh();
-                refreshPortalTrigger(false);
+                HUBPortal hub_p = GetComponentInParent<HUBPortal>();
+                if (!!hub_p)
+                {
+                    if (!!hub_p.activeClippingPortal)
+                    return;
+                    else
+                    {
+                        hub_p.setActiveClippingPortal(this.gameObject);
+                        triggerPlaneClipping = 1;
+                        refresh();
+                        refreshPortalTrigger(true);
+                    }
+                }
+
+            }
+        }
+
+        void OnTriggerStay(Collider iCol)
+        {
+            if (Utils.colliderIsPlayer(iCol) && (triggerPlaneClipping > 0))
+            {
+                // refresh self ripple
+                Vector3 rippleOrig = Vector3.ProjectOnPlane(Access.Player().transform.position, new Vector3(plane.normal.x, plane.normal.y, plane.normal.z));
+                selfMat.SetVector("_RippleOrigin",
+                    new Vector4(rippleOrig.x,
+                        rippleOrig.y,
+                        rippleOrig.z,
+                        0
+                    ));
+            }
+        }
+
+        void OnTriggerExit(Collider iCol)
+        {
+            if (Utils.colliderIsPlayer(iCol))
+            {
+                HUBPortal hub_p = GetComponentInParent<HUBPortal>();
+                if (!!hub_p && (hub_p.activeClippingPortal == this.gameObject))
+                {
+                    hub_p.activeClippingPortal = null;
+                    triggerPlaneClipping = 0;
+                    refresh();
+                    refreshPortalTrigger(false);
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-
+namespace Wonkerz {
 /*
 * A Camera for UI only scenes
 */
@@ -24,4 +24,4 @@ public class UICamera : GameCamera
     {
         
     }
-}
+}}

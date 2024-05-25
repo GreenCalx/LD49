@@ -3,85 +3,87 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
-/**
-*   Loads Hub Scene to retrieve Player/Managers then loads back current scene
-*  before deleting itself.
-*  Purpose : Test play scenes without going thru hub portal
-*/
+namespace Wonkerz {
+    /**
+     *   Loads Hub Scene to retrieve Player/Managers then loads back current scene
+     *  before deleting itself.
+     *  Purpose : Test play scenes without going thru hub portal
+     */
 
-public class TstHubHook : MonoBehaviour
-{
-    [Header("Reset game progress unique events")]
-    public bool resetGameProgressEvents = false;
-    public bool loadDebugGameProgress = true;
-    public string debugProfileName = "";
-
-    private readonly string pivotScene = Constants.SN_TITLE;
-    private string hookedScene = "";
-    private bool killMe = false;
-    // Start is called before the first frame update
-    void Awake()
+    public class TstHubHook : MonoBehaviour
     {
-        killMe = false;
+        [Header("Reset game progress unique events")]
+        public bool resetGameProgressEvents = false;
+        public bool loadDebugGameProgress = true;
+        public string debugProfileName = "";
 
-        GameObject[] gos = GameObject.FindGameObjectsWithTag("TstHubHook");
-        if (gos.Length > 1)
-        { // duplicate when back to hooked scene
-            Destroy(gameObject);
-            return;
+        private readonly string pivotScene = Constants.SN_TITLE;
+        private string hookedScene = "";
+        private bool killMe = false;
+        // Start is called before the first frame update
+        void Awake()
+        {
+            killMe = false;
+
+            GameObject[] gos = GameObject.FindGameObjectsWithTag("TstHubHook");
+            if (gos.Length > 1)
+            { // duplicate when back to hooked scene
+                Destroy(gameObject);
+                return;
+            }
+
+            hookedScene = SceneManager.GetActiveScene().name;
+            // Keep this object alive until the end of the process
+            DontDestroyOnLoad(gameObject);
+            // Load hub
+            SceneManager.LoadScene(pivotScene, LoadSceneMode.Single);
+            // wait for the hub to be loaded before loading back the hook
+            StartCoroutine(loadPivot());
+            // kill self when hook is loaded back
+            StartCoroutine(killWhenBackToHook());
         }
 
-        hookedScene = SceneManager.GetActiveScene().name;
-        // Keep this object alive until the end of the process
-        DontDestroyOnLoad(gameObject);
-        // Load hub
-        SceneManager.LoadScene(pivotScene, LoadSceneMode.Single);
-        // wait for the hub to be loaded before loading back the hook
-        StartCoroutine(loadPivot());
-        // kill self when hook is loaded back
-        StartCoroutine(killWhenBackToHook());
-    }
+        IEnumerator loadPivot()
+        {
+            while (SceneManager.GetActiveScene().name != pivotScene)
+            { yield return null; }
 
-    IEnumerator loadPivot()
-    {
-        while (SceneManager.GetActiveScene().name != pivotScene)
-        { yield return null; }
-
-        if (resetGameProgressEvents)
+            if (resetGameProgressEvents)
             resetUniqueEvents();
-        if (loadDebugGameProgress)
+            if (loadDebugGameProgress)
             loadGameProgress();
 
-        Access.SceneLoader().loadScene(hookedScene);
+            Access.SceneLoader().loadScene(hookedScene);
 
-        killMe = true;
+            killMe = true;
+        }
+
+        IEnumerator killWhenBackToHook()
+        {
+            while (!killMe)
+            { yield return null; }
+
+            while (SceneManager.GetActiveScene().name != hookedScene)
+            { yield return null; }
+
+            while (!SceneManager.GetActiveScene().isLoaded)
+            { yield return null; }
+
+            Destroy(gameObject);
+        }
+
+        private void resetUniqueEvents()
+        {
+            Access.GameProgressSaveManager().ResetAndSave();
+        }
+
+        private void loadGameProgress()
+        {
+            Access.GameProgressSaveManager().activeProfile = debugProfileName;
+            Access.GameProgressSaveManager().Load();
+
+            Access.CollectiblesManager().loadJars();
+        }
+
     }
-
-    IEnumerator killWhenBackToHook()
-    {
-        while (!killMe)
-        { yield return null; }
-
-        while (SceneManager.GetActiveScene().name != hookedScene)
-        { yield return null; }
-
-        while (!SceneManager.GetActiveScene().isLoaded)
-        { yield return null; }
-
-        Destroy(gameObject);
-    }
-
-    private void resetUniqueEvents()
-    {
-        Access.GameProgressSaveManager().ResetAndSave();
-    }
-
-    private void loadGameProgress()
-    {
-        Access.GameProgressSaveManager().activeProfile = debugProfileName;
-        Access.GameProgressSaveManager().Load();
-
-        Access.CollectiblesManager().loadJars();
-    }
-
 }

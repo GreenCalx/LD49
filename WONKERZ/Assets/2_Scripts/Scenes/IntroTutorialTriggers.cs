@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Wonkerz {
+
 // Not MVC cause as this is only use for the intro scene, integrating 
 public class IntroTutorialTriggers : MonoBehaviour
 {
@@ -52,7 +54,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollFirstCheckpoint()
     {
         if (firstCheckPointDone)
-            return;
+        return;
 
         if (CPM.last_checkpoint != CPM.race_start)
         {
@@ -64,12 +66,12 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollPlayerRespawned()
     {
         if (panelTutoDone)
-            return;
+        return;
 
         if (!firstCheckPointDone)
-            return;
+        return;
 
-        // Debug.Log("P STATE : " + PC.generalStates.GetState().name);
+        // this.Log("P STATE : " + PC.generalStates.GetState().name);
         // if (PC.generalStates.GetState().name == "Dead")
         if (CPM.saveStateLoaded)
         {
@@ -81,11 +83,14 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollPlayerStuck()
     {
         if (getUpTutoDone)
-            return;
+        return;
         
         bool playerIsActive = PC.IsInMenu();
         bool playerIsGrounded = PC.TouchGroundAll();
-        bool playerHasLowSpeed = PC.car.GetCurrentSpeed() < 5f;
+
+        //bool playerHasLowSpeed = (PC.car_old ? PC.car_old.GetCurrentSpeed() : PC.car_new.GetCurrentSpeed()) < 5f;
+        bool playerHasLowSpeed = true;
+        
 
         if (!playerIsActive && !playerIsGrounded && playerHasLowSpeed)
         {
@@ -103,7 +108,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     public void pollFirstNut()
     {
         if (firstNutTutoDone)
-            return;
+        return;
 
         if (CM.getCollectedNuts() > 0)
         {
@@ -115,7 +120,8 @@ public class IntroTutorialTriggers : MonoBehaviour
     private void SpawnWindow(UITutorialStopWindow iWindow)
     {
         if (!!tutoWindow_Inst)
-            Destroy(tutoWindow_Inst.gameObject);
+        Destroy(tutoWindow_Inst.gameObject);
         tutoWindow_Inst = Instantiate(iWindow);
     }
+}
 }
