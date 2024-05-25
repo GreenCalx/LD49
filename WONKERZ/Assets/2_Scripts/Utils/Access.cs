@@ -194,7 +194,6 @@ namespace Wonkerz {
             return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
         }
 
-
         public static UISpeedAndLifePool UISpeedAndLifePool()
         {
             return cache.getObject<UISpeedAndLifePool>(Constants.GO_PLAYERUI, true);
