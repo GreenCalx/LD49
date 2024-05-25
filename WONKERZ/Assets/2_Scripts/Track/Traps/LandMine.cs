@@ -4,61 +4,64 @@ using UnityEngine;
 
 namespace Wonkerz
 {
-public class LandMine : Bomb
-{
-    [Header("ProximityMine")]
-    public bool isProximityMine = true;
-    public WonkerDecal zoneDecal;
-    public PlayerDetector playerDetector;
-    public Texture2D triggeredColorRamp;
-    [Header("Refs")]
-    public MeshDeform attachedGroundToDeform;
-
-    public float timeBeforeExplosion = 1f;
-    private float elapsedTimeBeforeExplosion = 0f;
-
-    private bool isTriggered = false;
-
-    private Vector3 initZoneDecalScale;
-
-    // Start is called before the first frame update
-    void Start()
+    public class LandMine : Bomb
     {
-        if (!!zoneDecal)
-            initZoneDecalScale = zoneDecal.transform.localScale;
-        elapsedTimeBeforeExplosion = 0f;
-        isTriggered = false;
-        if (isProximityMine)
-            updateLandMineColor();
-    }
+        [Header("ProximityMine")]
+        public bool isProximityMine = true;
+        public WonkerDecal zoneDecal;
+        public PlayerDetector playerDetector;
+        public Texture2D triggeredColorRamp;
+        [Header("Refs")]
+        public MeshDeform attachedGroundToDeform;
 
-    // Update is called once per frame
-    void Update()
-    {
+        public float timeBeforeExplosion = 1f;
+        private float elapsedTimeBeforeExplosion = 0f;
 
-        if (isProximityMine)
+        private bool isTriggered = false;
+
+        private Vector3 initZoneDecalScale;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            isTriggered = playerDetector.playerInRange;
+            if (!!zoneDecal)
+            initZoneDecalScale = zoneDecal.transform.localScale;
+            elapsedTimeBeforeExplosion = 0f;
+            isTriggered = false;
+            if (isProximityMine)
+            updateLandMineColor();
+        }
 
-            if (isTriggered)
+        // Update is called once per frame
+        void Update()
+        {
+
+            if (isProximityMine)
             {
-                if (elapsedTimeBeforeExplosion > timeBeforeExplosion)
+                isTriggered = playerDetector.playerInRange;
+
+                if (isTriggered)
                 {
-                    explode();
-                    movePoints();
-                }
-                elapsedTimeBeforeExplosion += Time.deltaTime;
-                updateLandMineColor();
-            } else {
-                if (elapsedTimeBeforeExplosion > 0f)
-                {
-                    elapsedTimeBeforeExplosion -= Time.deltaTime;
-                    elapsedTimeBeforeExplosion = Mathf.Clamp(elapsedTimeBeforeExplosion, 0f, timeBeforeExplosion);
+                    if (elapsedTimeBeforeExplosion > timeBeforeExplosion)
+                    {
+                        explode();
+                        movePoints();
+                    }
+                    elapsedTimeBeforeExplosion += Time.deltaTime;
                     updateLandMineColor();
                 }
-            }
+                else
+                {
+                    if (elapsedTimeBeforeExplosion > 0f)
+                    {
+                        elapsedTimeBeforeExplosion -= Time.deltaTime;
+                        elapsedTimeBeforeExplosion = Mathf.Clamp(elapsedTimeBeforeExplosion, 0f, timeBeforeExplosion);
+                        updateLandMineColor();
+                    }
+                }
 
-    }
+            }
+        }
 
         public void movePoints()
         {

@@ -4,60 +4,76 @@ using Schnibble;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Wonkerz
-{
+namespace Wonkerz { 
     /// STARTING POINT FOR HUB
     // > ACTIVATES TRICKS AUTO
     public class StartPortal : AbstractCameraPoint
     {
-        PlayerController pc = Access.Player();
+        [Header("Behaviour")]
+        public bool forceSinglePlayer = false;
+        public bool enable_tricks = false;
+        public bool deleteAfterSpawn = false;
+        public GameCamera.CAM_TYPE camera_type;
+        public bool isTutorialStartPortal = false;
+        public GameObject UIHandle;  // for tricktracker
 
-        init(pc);
+        [Header("Optionals")]
+        public Transform facingPoint;
+        public CinematicTrigger entryLevelCinematic;
+
+        [Header("Debug")]
+        public bool bypassCinematic = true;
+
+        // Start is called before the first frame updatezd
+        void Start()
+        {
+            PlayerController pc = Access.Player();
+
+            init(pc);
 
             if (enable_tricks)
             activateTricks();
 
-        if (forceSinglePlayer)
-        {
-            pc.inputMgr = Access.PlayerInputsManager().player1;
-        }
+            if (forceSinglePlayer)
+            {
+                pc.inputMgr = Access.PlayerInputsManager().player1;
+            }
 
             if (!bypassCinematic)
             {
-                relocatePlayer(pc);
-                entryLevelCinematic.StartCinematic();
-                StartCoroutine(waitEntryLevelCinematic(pc));
+                if (entryLevelCinematic != null)
+                {
+                    relocatePlayer(pc);
+                    entryLevelCinematic.StartCinematic();
+                    StartCoroutine(waitEntryLevelCinematic(pc));
+                }
             }
 
         }
 
-        void init()
+        void init(PlayerController pc)
         {
-            Access.Player().Freeze();
+            pc.Freeze();
 
-    void init(PlayerController pc)
-    {
-        pc.Freeze();
+            relocatePlayer(pc);
+            if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
+            Access.CameraManager()?.changeCamera(camera_type, false);
 
-        relocatePlayer(pc);
-        if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
-        Access.CameraManager()?.changeCamera(camera_type, false);
+            var states = pc.vehicleStates;
+            states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
 
-        var states = pc.vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
-        
-        if (deleteAfterSpawn)
-        {
-            Destroy(gameObject);
-        }
+            if (deleteAfterSpawn)
+            {
+                Destroy(gameObject);
+            }
 
             if (isTutorialStartPortal)
             {
                 initTutorial();
             }
 
-        pc.UnFreeze();
-    }
+            pc.UnFreeze();
+        }
 
         void initTutorial()
         {
@@ -76,16 +92,8 @@ namespace Wonkerz
         {
 
         }
-        iPC.UnFreeze();
-        init(iPC);
-    }
 
-    public void relocatePlayer(PlayerController pc)
-    {
-        PlayerController pc = Access.Player();
-        pc.GetTransform().position = transform.position;
-        pc.GetTransform().rotation = Quaternion.identity;
-        if (facingPoint != null)
+        IEnumerator waitEntryLevelCinematic(PlayerController iPC)
         {
             iPC.Freeze();
             while (!entryLevelCinematic.cinematicDone)
@@ -93,23 +101,39 @@ namespace Wonkerz
                 yield return new WaitForSeconds(0.1f);
             }
             iPC.UnFreeze();
-            init();
+            init(iPC);
         }
-    }
-    
-    public void relocatePlayer()
-    {
-        relocatePlayer(Access.Player());
-    }
 
-    // needed in intro as there is no startline, also for the hub, maybe?
-    private void activateTricks()
-    {
-        TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
-        if (!!tt)
+        public void relocatePlayer(PlayerController pc)
         {
-            tt.activate_tricks = true; // activate default in hub
-            tt.init(UIHandle);
+            pc.GetTransform().position = transform.position;
+            pc.GetTransform().rotation = Quaternion.identity;
+            if (facingPoint != null)
+            {
+                pc.GetTransform().LookAt(facingPoint.transform);
+            }
+
+            if (pc.GetRigidbody())
+            {
+                pc.GetRigidbody().velocity = Vector3.zero;
+                pc.GetRigidbody().angularVelocity = Vector3.zero;
+            }
+        }
+
+        public void relocatePlayer()
+        {
+            relocatePlayer(Access.Player());
+        }
+
+        // needed in intro as there is no startline, also for the hub, maybe?
+        private void activateTricks()
+        {
+            TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
+            if (!!tt)
+            {
+                tt.activate_tricks = true; // activate default in hub
+                tt.init(UIHandle);
+            }
         }
 
     }
