@@ -211,6 +211,8 @@ MonoBehaviour:
   inertia:
     value: 0
   contactImpulse: {x: 0, y: 0, z: 0}
+  minOmega: -100
+  maxOmega: 100
   schCollider:
     position: {x: 0, y: 0, z: 0}
     rotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
@@ -882,6 +884,8 @@ MonoBehaviour:
   weightControlMaxZ: 2.84
   wheelColliderPrefab: {fileID: 1914865990}
   constraintSolver: {fileID: 8189520037205332052}
+  tractionControl: 1
+  brakeControl: 1
 --- !u!114 &6486285002600036651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,17 +955,17 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0.8
-      inSlope: -0.06584431
-      outSlope: -0.06584431
+      inSlope: -0.8381192
+      outSlope: -0.8381192
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.23945706
+      inWeight: 0.21938433
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxTorque:
-    value: 10000
+    value: 8000
   engineBrakeTorque:
     value: 50
   engineInertia: 40
@@ -3081,7 +3085,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5593257399178741602, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5593257399178741604, guid: aa0cb4d2c044dae48b0fbbd1a434e6de, type: 3}
       propertyPath: m_Mesh

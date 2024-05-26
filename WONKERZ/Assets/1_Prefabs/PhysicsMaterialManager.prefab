@@ -14661,9 +14661,10 @@ MonoBehaviour:
   initElements:
   - unityMaterial: {fileID: 13400000, guid: cf9aa22a9cf9e8140a536bf0bc1eb78c, type: 2}
     schGroundMaterial:
-      needUpdateMesh: 0
-      friction: {x: 3.62, y: 0}
-      type: 0
+      staticFriction: {x: 0, y: 0}
+      dynamicFriction: {x: 0, y: 0}
+      bounciness: 0
+      rollingResistance: 0.1
       depthPerturbation: {x: 0, y: 0, z: 0}
       groundMarks: {fileID: 0}
       slipMarks: {fileID: 0}
@@ -14671,43 +14672,42 @@ MonoBehaviour:
       slipEmitter: {fileID: 1668748614}
       groundSound: {fileID: 0}
       slipSound: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
-      objectToWorld: []
-      objectToWorldSlip: []
-      cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-      meshTopCorner: {x: 0.5, y: 0.5, z: 0.5}
-      meshBotCorner: {x: -0.5, y: -0.5, z: -0.5}
-      meshCenter: {x: 0, y: 0, z: 0}
-      bufferName: DefaultMarks
-      vIdx: 0
-      tIdx: 0
-      groundMarksMesh: {fileID: 0}
-      groundMarksMaterial: {fileID: 0}
-      groundMarksMaterialSlip: {fileID: 2100000, guid: c37c17ac27f20db45b5b05f262a5b649, type: 2}
-      slipMarksMesh: {fileID: 0}
-      cam: {fileID: 0}
-  - unityMaterial: {fileID: 13400000, guid: 27dae97a2c01bcf4dbd006f4e6535e78, type: 2}
+  - unityMaterial: {fileID: 13400000, guid: b0cb988120aab6944b89d8c95f633689, type: 2}
     schGroundMaterial:
-      needUpdateMesh: 0
-      friction: {x: 3.62, y: 0}
-      type: 1
+      staticFriction: {x: 0, y: 0}
+      dynamicFriction: {x: 0, y: 0}
+      bounciness: 0
+      rollingResistance: 0
       depthPerturbation: {x: 0, y: 0, z: 0}
       groundMarks: {fileID: 0}
       slipMarks: {fileID: 0}
-      groundEmitter: {fileID: 1512993101}
-      slipEmitter: {fileID: 1997992296}
-      groundSound: {fileID: 8300000, guid: a48df4a5dd2d4d347b5eba22a53e7c1e, type: 3}
+      groundEmitter: {fileID: 0}
+      slipEmitter: {fileID: 1668748614}
+      groundSound: {fileID: 0}
       slipSound: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
-      objectToWorld: []
-      objectToWorldSlip: []
-      cube: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-      meshTopCorner: {x: 0.5, y: 0.5, z: 0.5}
-      meshBotCorner: {x: -0.5, y: -0.5, z: -0.5}
-      meshCenter: {x: 0, y: 0, z: 0}
-      bufferName: DesertMarks
-      vIdx: 0
-      tIdx: 0
-      groundMarksMesh: {fileID: 0}
-      groundMarksMaterial: {fileID: 2100000, guid: 902fb423f2793ba4b904204565f2fe87, type: 2}
-      groundMarksMaterialSlip: {fileID: 0}
-      slipMarksMesh: {fileID: 0}
-      cam: {fileID: 0}
+  - unityMaterial: {fileID: 13400000, guid: edc4d1f693411fb4fb5825759e09c51b, type: 2}
+    schGroundMaterial:
+      staticFriction: {x: 0, y: 0}
+      dynamicFriction: {x: 0, y: 0}
+      bounciness: 0
+      rollingResistance: 0
+      depthPerturbation: {x: 0, y: 0, z: 0}
+      groundMarks: {fileID: 0}
+      slipMarks: {fileID: 0}
+      groundEmitter: {fileID: 0}
+      slipEmitter: {fileID: 1668748614}
+      groundSound: {fileID: 0}
+      slipSound: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  - unityMaterial: {fileID: 13400000, guid: f39f686b4e2e9b0448cea36d83774809, type: 2}
+    schGroundMaterial:
+      staticFriction: {x: 0.1, y: 0.1}
+      dynamicFriction: {x: 0, y: 0}
+      bounciness: 0
+      rollingResistance: 0
+      depthPerturbation: {x: 0, y: 0, z: 0}
+      groundMarks: {fileID: 0}
+      slipMarks: {fileID: 0}
+      groundEmitter: {fileID: 0}
+      slipEmitter: {fileID: 1668748614}
+      groundSound: {fileID: 0}
+      slipSound: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
