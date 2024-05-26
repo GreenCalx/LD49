@@ -18,7 +18,7 @@ namespace Schnibble {
         public SpeedTrailEffect speedEffect;
 
         public float jumpElapsedTime = 0.0f;
-        public float jumpTime = 0.5f;
+        public float jumpTime = 1.0f;
 
         public float maxTorque = 200.0f;
         // end cleanup
@@ -46,16 +46,21 @@ namespace Schnibble {
 
             var jump = inputs.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton;
             if (jump != null) {
-                if (jump.GetState().heldDown)
+                if (jump.GetState().up)
+                {
+                    // start jump phase
+                    var lerp = Mathf.Clamp(jumpElapsedTime / jumpTime, 0.0f, 1.0f);
+                    car.StartJump(lerp);
+                    // reset
+                    jumpElapsedTime = 0.0f;
+                    car.SetSuspensionTargetPosition(jumpElapsedTime);
+                }
+                else if (jump.GetState().heldDown)
                 {
                     jumpElapsedTime += Time.deltaTime;
 
                     var lerp = Mathf.Clamp(jumpElapsedTime / jumpTime, 0.0f, 1.0f);
                     car.SetSuspensionTargetPosition(lerp);
-                } else {
-                    // reset
-                    jumpElapsedTime = 0.0f;
-                    car.SetSuspensionTargetPosition(jumpElapsedTime);
                 }
             }
 
