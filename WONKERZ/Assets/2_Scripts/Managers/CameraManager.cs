@@ -99,6 +99,16 @@ public class CameraManager : MonoBehaviour, IControllable
     // Might need to change if we decide to make a Spyro style entry in the level thru portals
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        ResetMgr();
+    }
+
+    public void ResetMgr()
+    {
+        // if (active_camera!=null)
+        // {
+        //     active_camera.gameObject.SetActive(false);
+        // }
+
         // refresh cameras and disable active_camera
         active_camera = null;
         cameras.Clear();
@@ -113,14 +123,13 @@ public class CameraManager : MonoBehaviour, IControllable
                 operateCameraSwitch(initCam.nextCam);
             }
         }
-
     }
 
     // Find Camera from its type within current scene
     // Only one per CAM_TYPE is retrieved for now as we don't need more
     // Thus if we want to have multiple cameras for the hub, we'll need to update
     // this logic.
-    private GameCamera findCameraInScene(GameCamera.CAM_TYPE iType)
+    public GameCamera findCameraInScene(GameCamera.CAM_TYPE iType)
     {
         GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
         GameCamera retval = null;
@@ -387,7 +396,7 @@ public class CameraManager : MonoBehaviour, IControllable
         return false;
     }
 
-    private void switchToonPipeline(GameObject prevCam, GameObject newCam)
+    public void switchToonPipeline(GameObject prevCam, GameObject newCam)
     {
         ToonPipeline prev_tp    = prevCam.GetComponent<ToonPipeline>();
         ToonPipeline new_tp     = newCam.GetComponent<ToonPipeline>();

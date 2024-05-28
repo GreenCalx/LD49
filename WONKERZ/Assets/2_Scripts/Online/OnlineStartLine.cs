@@ -33,6 +33,22 @@ public class OnlineStartLine : NetworkBehaviour
     private UIStartTrack UIStartTrackInst = null;
 
 
+    void Start()
+    {
+        StartCoroutine(SignUpToOfflineMgr());
+    }
+    
+    IEnumerator SignUpToOfflineMgr()
+    {
+        OfflineGameManager OGM = Access.OfflineGameManager();
+        while (OGM==null)
+        {
+            OGM = Access.OfflineGameManager();
+            yield return null;
+        }
+        OGM.startLine = this;        
+    }
+
     public void init(PlayerController iPC)
     {
         PC = iPC;

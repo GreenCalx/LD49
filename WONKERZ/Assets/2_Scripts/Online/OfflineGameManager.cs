@@ -20,19 +20,19 @@ public class OfflineGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-        // Wait For LocalPlayer
-
-        
-        // Wait for all players
-        sessionIsReadyToGo = false;
-        StartCoroutine(WaitForOtherPlayers());
+        refreshSession();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void refreshSession()
+    {
+        sessionIsReadyToGo = false;
+        StartCoroutine(WaitForOtherPlayers());
     }
 
     IEnumerator WaitForOtherPlayers()
@@ -45,6 +45,10 @@ public class OfflineGameManager : MonoBehaviour
         }
 
         while(localPlayer==null)
+        {
+            yield return null;
+        }
+        while (startLine==null)
         {
             yield return null;
         }

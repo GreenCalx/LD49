@@ -23,6 +23,10 @@ public class OnlinePlayerController : NetworkBehaviour
     public override void OnStartServer()
     {
         // disable client stuff
+        if (isServer)
+        {
+            self_carMeshHandle.gameObject.SetActive(true);
+        }
     }
 
     public override void OnStartClient()
@@ -47,6 +51,8 @@ public class OnlinePlayerController : NetworkBehaviour
             cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
 
         }
+
+
     }
 
     public override void OnStartLocalPlayer()
@@ -84,8 +90,12 @@ public class OnlinePlayerController : NetworkBehaviour
     {
         self_PlayerController.Freeze();
 
-        //  var states = self_PlayerController.vehicleStates;
-        //  states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+        // Wait additive scenes to be laoded
+
+        while(!NetworkRoomManagerExt.singleton.subsceneLoaded)
+        {
+            yield return null;
+        }
 
         while(Access.UIPlayerOnline()==null)
         {
@@ -93,11 +103,11 @@ public class OnlinePlayerController : NetworkBehaviour
         }
         Access.UIPlayerOnline().LinkToPlayer(this);
 
-        
         while(Access.CameraManager()==null)
         {
             yield return null;
         }
+        // Force Init Camera Init ?
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         
         while(self_PlayerController.vehicleStates==null)

@@ -3,25 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class OnlineStartPortal : MonoBehaviour
-{
-    public List<GameObject> broadcastPlayerTo;
+using Mirror;
 
+public class OnlineStartPortal : NetworkBehaviour
+{
     [Header("Internals Exposed")]
-    public PlayerController attachedPlayer;
+    [SyncVar]
+    public OnlinePlayerController attachedPlayer;
     [Header("Tweaks")]
     public GameCamera.CAM_TYPE camera_type;
     public bool deleteAfterSpawn;
     public Transform facingPoint;
     private bool playerIsAttached = false;
+    public int seed;
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        // TODO : All portals triggers this shit thus linking to same player multiple times
-        // > need to only care about its "local spawn"
-        //  use a trigger again instead of this search ?
         StartCoroutine(WaitPlayerForInit());
     }
 
@@ -31,27 +29,10 @@ public class OnlineStartPortal : MonoBehaviour
         
     }
 
-    // void OnTriggerEnter(Collider iCollider)
-    // {
-    //     if (Utils.colliderIsPlayer(iCollider))
-    //     {
-    //         attachedPlayer = iCollider.GetComponent<PlayerController>();
-
-    //         init();
-    //         playerIsAttached = true;
-
-    //         if (deleteAfterSpawn)
-    //         {
-    //             Destroy(gameObject);
-    //         }
-    //     }
-    // }
-
     IEnumerator WaitPlayerForInit()
     {
         while (attachedPlayer==null)
         {
-            attachedPlayer = Access.Player();
             yield return null;
         }
         init();
@@ -64,36 +45,43 @@ public class OnlineStartPortal : MonoBehaviour
 
     void init()
     {
-        attachedPlayer.Freeze();
+        //attachedPlayer.self_PlayerController.Freeze();
 
-        //relocatePlayer();
+        if (isServer)
+            StartCoroutine(RelocatePlayer());
         
-        
-        // Camera
+        // // Camera
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
-            Access.CameraManager()?.changeCamera(camera_type, false);
-
-        var states = attachedPlayer.vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+             Access.CameraManager()?.changeCamera(camera_type, false);
         
         if (deleteAfterSpawn)
         {
             Destroy(gameObject);
         }
 
-        attachedPlayer.UnFreeze();
+        //attachedPlayer.self_PlayerController.UnFreeze();
     }
 
-    public void relocatePlayer()
+    [ServerCallback]
+    IEnumerator RelocatePlayer()
     {
+        while (attachedPlayer==null)
+        {
+            yield return null;
+        }
+
+        attachedPlayer.self_PlayerController.UnFreeze();
+
         attachedPlayer.transform.position = transform.position;
         attachedPlayer.transform.rotation = Quaternion.identity;
         if (facingPoint != null)
         {
             attachedPlayer.transform.LookAt(facingPoint.transform);
         }
-        attachedPlayer.rb.velocity = Vector3.zero;
-        attachedPlayer.rb.angularVelocity = Vector3.zero;
+        attachedPlayer.self_PlayerController.rb.velocity = Vector3.zero;
+        attachedPlayer.self_PlayerController.rb.angularVelocity = Vector3.zero;
+
+        attachedPlayer.self_PlayerController.Freeze();
     }
 
 }

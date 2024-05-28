@@ -19,6 +19,7 @@ public class UIPlayerOnline : MonoBehaviour
     public TextMeshProUGUI  nAvailablePanels;
     public TextMeshProUGUI idOfLastCPTriggered;
 
+    public bool showTrackTime = false;
     public TextMeshProUGUI onlineTrackTime;
 
     [Header("Internals")]
@@ -37,8 +38,8 @@ public class UIPlayerOnline : MonoBehaviour
         OverDriveUIHandle.gameObject.SetActive(false);
         nutAnimMutex = false;
 
-        updateSpeedCounter();
-        updateLifePool();
+        // updateSpeedCounter();
+        // updateLifePool();
     }
 
     public void LinkToPlayer(OnlinePlayerController iOPC)
@@ -62,6 +63,20 @@ public class UIPlayerOnline : MonoBehaviour
 
     private void updateTrackTime()
     {
+        if (!showTrackTime)
+        {
+            if (onlineTrackTime.gameObject.activeSelf)
+            {
+                onlineTrackTime.gameObject.SetActive(false);
+            }
+            return;
+        }
+
+        if (!onlineTrackTime.gameObject.activeSelf)
+        {
+            onlineTrackTime.gameObject.SetActive(true);
+        }
+
         float trackTime = NetworkRoomManagerExt.singleton.onlineGameManager.gameTime;
         int trackTime_val_min = (int)(trackTime / 60);
         if (trackTime_val_min<0)
@@ -114,7 +129,6 @@ public class UIPlayerOnline : MonoBehaviour
     public void updateLifePool()
     {
         int n_nuts = onlinePlayer.bag.nuts;
-
 
         lifePool.text = (n_nuts > 0) ? n_nuts.ToString() : "0";
 

@@ -27,6 +27,8 @@ public class WonkerDecal : MonoBehaviour
 
     void Update()
     {
+        if (CM.active_camera==null)
+            return;
         // TODO : Subscribe to cam manager to get updated
         if (decalRenderer.cam!=CM.active_camera.cam)
         {

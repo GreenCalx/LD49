@@ -62,7 +62,7 @@ public class DeathController : MonoBehaviour
         if (!!cc && !!mr && !!mf)
         {
             // Get Player ref  
-            GameObject p = Access.Player().gameObject;
+            GameObject p = GetComponentInParent<PlayerController>().gameObject;
             MeshFilter[] pRends = p.GetComponentsInChildren<MeshFilter>();
             int n_parts = pRends.Length;
             for (int i=0; i < n_parts; i++)

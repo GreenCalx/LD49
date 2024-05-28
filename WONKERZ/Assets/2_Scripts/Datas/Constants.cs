@@ -39,6 +39,8 @@ public struct Constants
     public const string SN_SKYCASTLE_TRACK = "SkyCastleTrack";
     public const string SN_JUNKYARD_TRACK = "JunkyardTrack";
     public const string SN_ONLINE = "OnlineGameRoom";
+    public const string SN_OPENCOURSE = "OpenCourseScene";
+    public const string SN_ONLINETRIAL = "TrialScene";
     public static readonly string[] SN_TRACKS = { SN_DESERT_TOWER, SN_GROTTO_TRACK, SN_WATERWORLD_TRACK, SN_SKYCASTLE_TRACK, SN_JUNKYARD_TRACK};
 
 
