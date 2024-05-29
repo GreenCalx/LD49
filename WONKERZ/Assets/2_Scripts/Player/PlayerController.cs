@@ -232,6 +232,31 @@ namespace Wonkerz
                     partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
                 }
                 #endif
+
+                var playerCarController = player.car;
+                var playerCar           = playerCarController.car;
+                var effectRatio         = Mathf.Clamp(((float)playerCar.GetCurrentSpeedInKmH() - playerCarController.speedEffect.thresholdSpeedInKmH) / playerCarController.speedEffect.maxSpeedInKmH, 0.0f, 1.0f);
+                // Speed effect on camera
+                // update camera FOV/DIST if a PlayerCamer
+                CameraManager CamMgr = Access.CameraManager();
+                if (CamMgr?.active_camera is PlayerCamera)
+                {
+                    PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                    pc.applySpeedEffect(effectRatio);
+                }
+
+                var particles = playerCarController.speedEffect.particles;
+
+                var e = particles.emission;
+                e.enabled = effectRatio != 0.0f;
+
+                var relativeWindDir = playerCar.chassis.rb.GetLinearVelocity();
+                particles.transform.LookAt(playerCar.chassis.rb.GetPosition() + relativeWindDir);
+
+                var lifemin  = 0.2f;
+                var lifemax  = 0.6f;
+                var partmain = particles.main;
+                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
             }
         }
 

@@ -10,9 +10,11 @@ namespace Schnibble {
         [System.Serializable]
         public struct SpeedTrailEffect
         {
-            public GameObject particles;
-            [Range(0, 1)]
-            public float threshold;
+            public ParticleSystem particles;
+
+            public float thresholdSpeedInKmH;
+
+            public float maxSpeedInKmH;
         }
         [Header("Effects")]
         public SpeedTrailEffect speedEffect;
