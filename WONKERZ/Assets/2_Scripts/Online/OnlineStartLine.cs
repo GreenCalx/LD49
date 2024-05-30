@@ -4,22 +4,24 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Schnibble;
+using Schnibble.Managers;
 
 using Mirror;
 
-public class OnlineStartLine : NetworkBehaviour
+public class OnlineStartLine : NetworkBehaviour, IControllable
 {
     [Header("MAND")]
     //public string track_name;
+    
     public GameObject UIStartTrackRef;
     public AudioSource  startLineCrossed_SFX;
     public GameObject meshModelHandle;
+    public GameObject UIReadyUpHandle;
+    public GameObject UIIsReadyHandle;
     public bool destroyOnActivation = true;
 
     public bool enable_tricks = false;
     public GameObject UIHandle; // for tricktracker
-
-    public bool is_rdy_to_launch = false;
 
     public CinematicTrigger entryCinematicTrigger;
 
@@ -28,44 +30,96 @@ public class OnlineStartLine : NetworkBehaviour
     public AudioClip countDownSFX1;
 
     [Header("Internal")]
-    private PlayerController PC;
+    public bool playerReadyUp = false;
+    public OnlinePlayerController OPC;
+    public OfflineGameManager OffMGR;
 
     private UIStartTrack UIStartTrackInst = null;
 
 
     void Start()
     {
-        StartCoroutine(SignUpToOfflineMgr());
-    }
-    
-    IEnumerator SignUpToOfflineMgr()
-    {
-        OfflineGameManager OGM = Access.OfflineGameManager();
-        while (OGM==null)
-        {
-            OGM = Access.OfflineGameManager();
-            yield return null;
-        }
-        OGM.startLine = this;        
+        playerReadyUp = false;
+        UIReadyUpHandle.SetActive(false);
+        UIIsReadyHandle.SetActive(false);
+        if (isClient)
+            StartCoroutine(InitCo());
+        else
+            Destroy(gameObject);
     }
 
-    public void init(PlayerController iPC)
+    void OnDestroy()
     {
-        PC = iPC;
-        transform.position = PC.transform.position;
+        if (isClient)
+            Access.Player().inputMgr.Detach(this as IControllable);
+    }
+    
+    IEnumerator InitCo()
+    {
+        OffMGR = Access.OfflineGameManager();
+        while (OffMGR == null)
+        {
+            OffMGR = Access.OfflineGameManager();
+            yield return null;
+        }
+        OffMGR.startLine = this;
+
+        while(OPC==null)    
+        {
+            OPC = Access.Player()?.GetComponent<OnlinePlayerController>();
+            yield return null;
+        }
+        init();
+
+        UIReadyUpHandle.SetActive(true);
+        while(!playerReadyUp)
+        {
+            yield return null;
+        }
+        UIReadyUpHandle.SetActive(false);
+        UIIsReadyHandle.SetActive(true);
+        if (isServer)
+            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(OPC, true);
+        if (isClientOnly)
+            OPC.CmdNotifyOGMPlayerReady();
+        // notify someone this startline is gut to go
+    }
+
+
+
+    public void init()
+    {
+        transform.position = OPC.transform.position;
+        OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
     }
 
     public void launchCountdown()
     {
+        UIIsReadyHandle.SetActive(false);
 
-        if (PC==null)
+        if (OPC==null)
             return;
 
         if (UIStartTrackInst==null)
         {
             UIStartTrackInst = Instantiate(UIStartTrackRef).GetComponent<UIStartTrack>();
 
-            StartCoroutine(countdownCo(PC));
+            StartCoroutine(countdownCo());
+        }
+    }
+
+    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+    {
+        if (playerReadyUp)
+            return;
+
+        var start = Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton;
+        if (start != null)
+        {
+            if (start.GetState().down)
+            {
+                playerReadyUp = true;
+            }
         }
     }
 
@@ -77,14 +131,14 @@ public class OnlineStartLine : NetworkBehaviour
         }
 
         // Reset track infinite collectibles
-        Access.CollectiblesManager().resetInfCollectibles();
+        // Access.CollectiblesManager().resetInfCollectibles();
 
         // start line crossed !! gogogo
-        Scene currentScene = SceneManager.GetActiveScene();
-        Access.TrackManager().launchTrack(currentScene.name);
+        // Scene currentScene = SceneManager.GetActiveScene();
+        // Access.TrackManager().launchTrack(currentScene.name);
 
-        var states =Access.Player().vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+        // var states =Access.Player().vehicleStates;
+        // states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
 
         if (enable_tricks)
             activateTricks();
@@ -92,14 +146,18 @@ public class OnlineStartLine : NetworkBehaviour
         StartCoroutine(postCountdown());
     }
 
-    IEnumerator countdownCo(PlayerController iPC)
+    IEnumerator countdownCo()
     {
-        iPC.Freeze();
+        OPC.self_PlayerController.Freeze();
 
         OnlineGameManager OGM = NetworkRoomManagerExt.singleton.onlineGameManager;
         while (OGM==null)
         {
             OGM = NetworkRoomManagerExt.singleton.onlineGameManager;
+            yield return null;
+        }
+        while(OGM.countdownElapsed > 0.1f) // not synced yet
+        {
             yield return null;
         }
 
@@ -124,11 +182,15 @@ public class OnlineStartLine : NetworkBehaviour
 
         UIStartTrackInst.updateDisplay(OGM.countdownElapsed);
         launchTrack();
-        iPC.UnFreeze();
+
+        OPC.self_PlayerController.UnFreeze();
     }
 
     IEnumerator postCountdown()
     {
+        if (!isClient)
+            yield break;
+
         // if (destroyOnActivation)
         // {
         //     Destroy(gameObject);
@@ -138,6 +200,8 @@ public class OnlineStartLine : NetworkBehaviour
         yield return new WaitForSeconds(2f);
         
         Destroy(UIStartTrackInst.gameObject);
+
+        OffMGR.startLine = null;
         gameObject.SetActive(false);
 
     }
@@ -159,7 +223,7 @@ public class OnlineStartLine : NetworkBehaviour
 
     private void activateTricks()
     {
-        TrickTracker tt = PC.gameObject.GetComponent<TrickTracker>();
+        TrickTracker tt = OPC.gameObject.GetComponent<TrickTracker>();
         if (!!tt)
         {
             tt.activate_tricks = true; // activate default in hub

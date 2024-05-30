@@ -52,7 +52,7 @@ public class OfflineGameManager : MonoBehaviour
         {
             yield return null;
         }
-        startLine.init(localPlayer.self_PlayerController);
+        //startLine.init(localPlayer.self_PlayerController);
         sessionIsReadyToGo = true;
 
         while (!NetworkRoomManagerExt.singleton.onlineGameManager.allPlayersLoadedInLobby)

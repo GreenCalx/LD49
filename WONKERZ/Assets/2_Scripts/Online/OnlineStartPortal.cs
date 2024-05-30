@@ -35,6 +35,12 @@ public class OnlineStartPortal : NetworkBehaviour
         {
             yield return null;
         }
+        if (!attachedPlayer.isLocalPlayer)
+        {
+            yield break;
+        }
+
+
         init();
         playerIsAttached  = true;
         if (deleteAfterSpawn)
@@ -46,9 +52,7 @@ public class OnlineStartPortal : NetworkBehaviour
     void init()
     {
         //attachedPlayer.self_PlayerController.Freeze();
-
-        if (isServer)
-            StartCoroutine(RelocatePlayer());
+        StartCoroutine(RelocatePlayer());
         
         // // Camera
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
@@ -58,30 +62,30 @@ public class OnlineStartPortal : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-
         //attachedPlayer.self_PlayerController.UnFreeze();
     }
 
-    [ServerCallback]
     IEnumerator RelocatePlayer()
     {
+        if (isServerOnly)
+            yield break;
+
+        if (!attachedPlayer.isLocalPlayer)
+            yield break;
+
         while (attachedPlayer==null)
         {
             yield return null;
         }
 
-        attachedPlayer.self_PlayerController.UnFreeze();
+         if (isClientOnly)
+         {
+            //attachedPlayer.RpcRelocate(transform.position, facingPoint);
+            attachedPlayer.Relocate(transform.position, facingPoint);
+         } else if (isClient && isServer) {
+             attachedPlayer.Relocate(transform.position, facingPoint);
+         }
 
-        attachedPlayer.transform.position = transform.position;
-        attachedPlayer.transform.rotation = Quaternion.identity;
-        if (facingPoint != null)
-        {
-            attachedPlayer.transform.LookAt(facingPoint.transform);
-        }
-        attachedPlayer.self_PlayerController.rb.velocity = Vector3.zero;
-        attachedPlayer.self_PlayerController.rb.angularVelocity = Vector3.zero;
-
-        attachedPlayer.self_PlayerController.Freeze();
     }
 
 }

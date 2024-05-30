@@ -55,6 +55,37 @@ public class OnlinePlayerController : NetworkBehaviour
 
     }
 
+    [Command]
+    public void CmdNotifyOGMPlayerReady()
+    {
+        NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(this, true);
+    }
+
+    [ClientRpc]
+    public void RpcRelocate(Vector3 iNewPos, Transform iFacingPoint)
+    {
+        Relocate(iNewPos, iFacingPoint);
+    }
+
+    [Client]
+    public void Relocate(Vector3 iNewPos, Transform iFacingPoint)
+    {
+        //self_PlayerController.Freeze();
+
+        transform.position = iNewPos;
+        transform.rotation = Quaternion.identity;
+
+        if (iFacingPoint != null)
+        {
+            self_PlayerController.transform.LookAt(iFacingPoint);
+        }
+
+        self_PlayerController.rb.velocity = Vector3.zero;
+        self_PlayerController.rb.angularVelocity = Vector3.zero;
+
+        //self_PlayerController.UnFreeze();
+    }
+
     public override void OnStartLocalPlayer()
     {
         if (isLocalPlayer)

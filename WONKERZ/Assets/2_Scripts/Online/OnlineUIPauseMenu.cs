@@ -56,6 +56,12 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
+
+        if (!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
+        {
+            return;
+        }
+
         if ((Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton).GetState().down)
         {
             updateTrackDetails();

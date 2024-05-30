@@ -113,7 +113,26 @@ public class CameraManager : MonoBehaviour, IControllable
         active_camera = null;
         cameras.Clear();
 
-        // Set to init cam
+        foreach( GameCamera cam in findCamerasInScene())
+        {
+            cameras.Add(cam.camType, cam);
+        }
+        
+
+        if (cameras.Count==0)
+        {
+            this.Log("CameraManager :: No GameCamera in loaded scene");
+            return;
+        }
+
+        // Should be UI cam only
+        if (cameras.Count==1)
+        {
+            operateCameraSwitch(cameras[0]);
+            return;
+        }
+
+        // If multiple cams : Set to init cam first
         changeCamera(GameCamera.CAM_TYPE.INIT, false);
         if (active_camera!=null)
         {
@@ -146,7 +165,7 @@ public class CameraManager : MonoBehaviour, IControllable
         return retval;
     }
 
-    private List<GameCamera> findCamerasInScene(GameCamera.CAM_TYPE iType)
+    private List<GameCamera> findCamerasInScene(GameCamera.CAM_TYPE iType = GameCamera.CAM_TYPE.UNDEFINED)
     {
         GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
         List<GameCamera> retval = new List<GameCamera>();
@@ -154,6 +173,11 @@ public class CameraManager : MonoBehaviour, IControllable
         for (int i = 0; i < game_cams.Length; i++)
         {
             GameCamera currcam = game_cams[i];
+            if (iType == GameCamera.CAM_TYPE.UNDEFINED)
+            {
+                retval.Add(currcam);
+                continue;
+            }
             if (currcam.camType == iType)
             {
                 retval.Add(currcam);
@@ -308,11 +332,14 @@ public class CameraManager : MonoBehaviour, IControllable
                 return;
         }
 
-
-        if ((active_camera==null)&&(iNewCam.camType!=GameCamera.CAM_TYPE.INIT))
+        if (iNewCam.camType!=GameCamera.CAM_TYPE.UI)
         {
-            changeCamera(GameCamera.CAM_TYPE.INIT, false);
+            if ((active_camera==null)&&(iNewCam.camType!=GameCamera.CAM_TYPE.INIT))
+            {
+                changeCamera(GameCamera.CAM_TYPE.INIT, false);
+            }
         }
+
 
         bool sceneTransition =  
             (active_camera!=null)&&
@@ -320,7 +347,7 @@ public class CameraManager : MonoBehaviour, IControllable
             (iNewCam.camType!=GameCamera.CAM_TYPE.INIT);
 
 
-        if (active_camera != null)
+        if ((active_camera != null)&&(active_camera.GetComponent<ToonPipeline>()!=null))
         {
             switchToonPipeline(active_camera.gameObject, iNewCam.gameObject);
 

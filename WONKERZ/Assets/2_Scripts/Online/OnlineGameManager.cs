@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq; 
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
@@ -21,6 +22,7 @@ public class OnlineGameManager : NetworkBehaviour
     public string selectedTrial = "RaceTrial01";
     [Header("INTERNALS")]
     public SyncList<OnlinePlayerController> uniquePlayers  = new SyncList<OnlinePlayerController>();
+    public SyncDictionary<OnlinePlayerController, bool> PlayersReadyDict = new SyncDictionary<OnlinePlayerController, bool>();
     public int expectedPlayersFromLobby;
     [SyncVar]
     public bool allPlayersLoadedInLobby = false;
@@ -56,10 +58,48 @@ public class OnlineGameManager : NetworkBehaviour
         {
             uniquePlayers.Add(iOPC);
         }
+        if (!PlayersReadyDict.ContainsKey(iOPC))
+        {
+            PlayersReadyDict.Add(iOPC, false);
+        }
     }
 
-    [Command]
-    public void CmdFreezePlayers(bool iState)
+    [ServerCallback]
+    public void AskPlayersToReadyUp()
+    {
+        foreach ( OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
+        {
+            PlayersReadyDict[opc] = false;
+        }
+        //PlayersReadyDict.Keys.ForEach(e => PlayersReadyDict[e] = false);
+    }
+
+    [ServerCallback]
+    public bool ArePlayersReady()
+    {
+        bool retval = true;
+        foreach ( OnlinePlayerController opc in PlayersReadyDict.Keys)
+        {
+            retval &= PlayersReadyDict[opc];
+            if (!retval)
+                return retval;
+        }
+        return retval;
+    }
+
+    [ServerCallback]
+    public void NotifyPlayerIsReady(OnlinePlayerController iOPC, bool iState)
+    {
+        if (!PlayersReadyDict.ContainsKey(iOPC))
+        {
+            Debug.Log("OnlineGameManager::CmdNotifyPlayerIsReady() | Player is not registered");
+            return;
+        }
+        PlayersReadyDict[iOPC] = iState;
+    }
+
+    [ClientRpc]
+    public void RpcFreezePlayers(bool iState)
     {
         if (iState)
             Access.Player().Freeze();
@@ -80,6 +120,8 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator WaitTrialSessions()
     {
+        allPlayersLoadedInLobby = false;
+
         while (!openCourseUnLoaded)
         {
             openCourseUnLoaded = NetworkRoomManagerExt.singleton.subsceneUnloaded;
@@ -91,13 +133,36 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
+        OfflineGameManager OGM = Access.OfflineGameManager();
+        while (OGM == null)
+        {
+            yield return null;
+        }
         while (trialManager==null)
         {
             yield return null;
         }
+        OGM.startLine = trialManager.onlineStartLine;
 
-        Access.OfflineGameManager().startLine = trialManager.onlineStartLine;
+        while ( !OGM.sessionIsReadyToGo)
+        {
+            yield return null;
+        }
+
         //Access.CameraManager().changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        allPlayersLoadedInLobby = true;
+        if (isServer)
+            RpcFreezePlayers(true);
+
+        if (isServer)
+            AskPlayersToReadyUp();
+        while (!ArePlayersReady())
+        {
+            yield return null;
+        }
+        countdownElapsed = 0f;
+
+
     }
 
     IEnumerator TrialLoop()
@@ -119,15 +184,36 @@ public class OnlineGameManager : NetworkBehaviour
         {
             yield return null;
         }
+
+        if (isClient)
+        {
+            OfflineGameManager OGM = Access.OfflineGameManager();
+            while (OGM == null)
+            {
+                yield return null;
+            }
+            while ( !OGM.sessionIsReadyToGo)
+            {
+                yield return null;
+            }
+
+        }
+
         allPlayersLoadedInLobby = true;
-
-
+        while (!ArePlayersReady())
+        {
+            yield return null;
+        }
     }
 
     IEnumerator Countdown()
     {
         countdownElapsed = 0f;
+
+        // while (Access.OfflineGameManager().startLine==null)
+        // { yield return null; }
         RpcLaunchOnlineStartLine();
+        
         while (countdownElapsed < countdown)
         {
             countdownElapsed += Time.deltaTime;
@@ -135,8 +221,12 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         // track is on !
+        if (isServer)
+            RpcFreezePlayers(false);
         gameTime = gameDuration;
         gameLaunched = true;
+
+
     }
 
     [ClientRpc]
@@ -150,7 +240,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcLaunchOnlineStartLine()
     {
         OfflineGameManager offgm = Access.OfflineGameManager();
-        offgm.startLine.init(Access.Player());
+        //offgm.startLine.init(offgm.localPlayer.self_PlayerController);
         offgm.startLine.launchCountdown();
     }
 
@@ -172,6 +262,7 @@ public class OnlineGameManager : NetworkBehaviour
         // Post Game
         RpcShowUITrackTime(false);
 
+        gameLaunched = false;
         yield return LoadTrialScene();
         //yield return SendPlayersToTrial();
 
