@@ -63,6 +63,14 @@ namespace Wonkerz
             lbl += " KMH";
             speedText.SetText(lbl);
             #endif
+
+            PlayerController pc = Access.Player();
+            var speed = (float)pc.car.car.GetCurrentSpeedInKmH_FromWheels();
+            // TODO: compute max theoretical speed from car specs.
+            var maxSpeed = 300.00f;
+            var ratio = Mathf.Clamp01(Mathf.Abs(speed) / maxSpeed);
+            speedBar.fillAmount = ratio;
+            speedText.SetText(((int)speed).ToString());
         }
 
         public void updateLifePool()
