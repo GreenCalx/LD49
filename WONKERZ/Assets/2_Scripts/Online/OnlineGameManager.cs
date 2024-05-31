@@ -23,9 +23,10 @@ public class OnlineGameManager : NetworkBehaviour
     [Header("INTERNALS")]
     public SyncList<OnlinePlayerController> uniquePlayers  = new SyncList<OnlinePlayerController>();
     public SyncDictionary<OnlinePlayerController, bool> PlayersReadyDict = new SyncDictionary<OnlinePlayerController, bool>();
+    public SyncDictionary<OnlinePlayerController, bool> PlayersLoadedDict = new SyncDictionary<OnlinePlayerController, bool>();
     public int expectedPlayersFromLobby;
-    [SyncVar]
-    public bool allPlayersLoadedInLobby = false;
+    // [SyncVar]
+    // public bool allPlayersLoadedInLobby = false;
     [SyncVar]
     public float countdownElapsed = 0f;
     [SyncVar]
@@ -38,7 +39,7 @@ public class OnlineGameManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        allPlayersLoadedInLobby = false;
+        //allPlayersLoadedInLobby = false;
 
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
@@ -52,6 +53,8 @@ public class OnlineGameManager : NetworkBehaviour
         
     }
 
+
+
     public void AddPlayer(OnlinePlayerController iOPC)
     {
         if (!uniquePlayers.Contains(iOPC))
@@ -61,6 +64,10 @@ public class OnlineGameManager : NetworkBehaviour
         if (!PlayersReadyDict.ContainsKey(iOPC))
         {
             PlayersReadyDict.Add(iOPC, false);
+        }
+        if (!PlayersLoadedDict.ContainsKey(iOPC))
+        {
+            PlayersLoadedDict.Add(iOPC, false);
         }
     }
 
@@ -72,6 +79,15 @@ public class OnlineGameManager : NetworkBehaviour
             PlayersReadyDict[opc] = false;
         }
         //PlayersReadyDict.Keys.ForEach(e => PlayersReadyDict[e] = false);
+    }
+
+    [ServerCallback]
+    public void AskPlayersToLoad()
+    {
+        foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys.ToList())
+        {
+            PlayersLoadedDict[opc] = false;
+        }
     }
 
     [ServerCallback]
@@ -88,14 +104,40 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [ServerCallback]
+    public bool AllPlayersLoaded()
+    {
+        bool retval = true;
+        foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys)
+        {
+            retval &= PlayersLoadedDict[opc];
+            if (!retval)
+                return retval;
+        }
+        return retval;
+    }
+
+    [ServerCallback]
     public void NotifyPlayerIsReady(OnlinePlayerController iOPC, bool iState)
     {
         if (!PlayersReadyDict.ContainsKey(iOPC))
         {
             Debug.Log("OnlineGameManager::CmdNotifyPlayerIsReady() | Player is not registered");
-            return;
+            AddPlayer(iOPC);
+            //return;
         }
         PlayersReadyDict[iOPC] = iState;
+    }
+
+    [ServerCallback]
+    public void NotifyPlayerHasLoaded(OnlinePlayerController iOPC, bool iState)
+    {
+        if (!PlayersLoadedDict.ContainsKey(iOPC))
+        {
+            Debug.Log("OnlineGameManager::NotifyPlayerHasLoaded | Player is not registered");
+            //return;
+            AddPlayer(iOPC);
+        }
+        PlayersLoadedDict[iOPC] = iState;
     }
 
     [ClientRpc]
@@ -120,7 +162,13 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator WaitTrialSessions()
     {
-        allPlayersLoadedInLobby = false;
+        //allPlayersLoadedInLobby = false;
+
+        // if (isServer)
+            AskPlayersToLoad();
+
+        // if (isServer)
+            RpcFreezePlayers(true);
 
         while (!openCourseUnLoaded)
         {
@@ -133,36 +181,48 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        OfflineGameManager OGM = Access.OfflineGameManager();
-        while (OGM == null)
-        {
-            yield return null;
-        }
-        while (trialManager==null)
-        {
-            yield return null;
-        }
-        OGM.startLine = trialManager.onlineStartLine;
+        // DEAD CODE : Coroutine is server only
+        // if (isClient)
+        // {
+        //     OfflineGameManager OGM = Access.OfflineGameManager();
+        //     while (OGM == null)
+        //     {
+        //         yield return null;
+        //     }
+        //     while (trialManager == null)
+        //     {
+        //         yield return null;
+        //     }
+        //     OGM.startLine = trialManager.onlineStartLine;
 
-        while ( !OGM.sessionIsReadyToGo)
-        {
-            yield return null;
-        }
+        //     while (!OGM.sessionIsReadyToGo)
+        //     {
+        //         yield return null;
+        //     }
+
+        //     NotifyPlayerHasLoaded(OGM.localPlayer, true);
+        // }
 
         //Access.CameraManager().changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-        allPlayersLoadedInLobby = true;
-        if (isServer)
-            RpcFreezePlayers(true);
+        //allPlayersLoadedInLobby = true;
+        // if (isServer)
+        // {
+            while (!AllPlayersLoaded())
+            {
+                yield return null;
+            }
+        // }
 
-        if (isServer)
-            AskPlayersToReadyUp();
+        //if (isServer)
+        RpcNotifyOfflineMgrAllPlayersLoaded();
+
+        AskPlayersToReadyUp();
         while (!ArePlayersReady())
         {
             yield return null;
         }
+
         countdownElapsed = 0f;
-
-
     }
 
     IEnumerator TrialLoop()
@@ -178,6 +238,7 @@ public class OnlineGameManager : NetworkBehaviour
         while(!openCourseLoaded)
         {
             openCourseLoaded = NetworkRoomManagerExt.singleton.subsceneLoaded;
+            
             yield return null;
         }
         while (uniquePlayers.Count != expectedPlayersFromLobby)
@@ -185,21 +246,31 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        if (isClient)
+        // DEAD CODE - Coroutinne is server only
+        // if (isClient)
+        // {
+        //     OfflineGameManager OGM = Access.OfflineGameManager();
+        //     while (OGM == null)
+        //     {
+        //         yield return null;
+        //     }
+        //     while ( !OGM.sessionIsReadyToGo)
+        //     {
+        //         yield return null;
+        //     }
+        //     if (isServer)
+        //         NotifyPlayerHasLoaded(OGM.localPlayer, true);
+        //     else if (isClientOnly)
+        //         CmdNotifyPlayerHasLoaded(OGM.localPlayer, true);
+        // }
+
+        //allPlayersLoadedInLobby = true;
+        while(!AllPlayersLoaded())
         {
-            OfflineGameManager OGM = Access.OfflineGameManager();
-            while (OGM == null)
-            {
-                yield return null;
-            }
-            while ( !OGM.sessionIsReadyToGo)
-            {
-                yield return null;
-            }
-
+            yield return null;
         }
+        RpcNotifyOfflineMgrAllPlayersLoaded();
 
-        allPlayersLoadedInLobby = true;
         while (!ArePlayersReady())
         {
             yield return null;
@@ -227,6 +298,13 @@ public class OnlineGameManager : NetworkBehaviour
         gameLaunched = true;
 
 
+    }
+
+    [ClientRpc]
+    public void RpcNotifyOfflineMgrAllPlayersLoaded()
+    {
+        OfflineGameManager offgm = Access.OfflineGameManager();
+        offgm.allPlayersHaveLoaded = true;
     }
 
     [ClientRpc]

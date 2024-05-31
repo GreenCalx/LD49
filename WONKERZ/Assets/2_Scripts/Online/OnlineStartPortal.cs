@@ -20,7 +20,8 @@ public class OnlineStartPortal : NetworkBehaviour
 
     void Start()
     {
-        StartCoroutine(WaitPlayerForInit());
+        if (isClient)
+            StartCoroutine(WaitPlayerForInit());
     }
 
     // Update is called once per frame
@@ -83,7 +84,7 @@ public class OnlineStartPortal : NetworkBehaviour
             //attachedPlayer.RpcRelocate(transform.position, facingPoint);
             attachedPlayer.Relocate(transform.position, facingPoint);
          } else if (isClient && isServer) {
-             attachedPlayer.Relocate(transform.position, facingPoint);
+            attachedPlayer.Relocate(transform.position, facingPoint);
          }
 
     }

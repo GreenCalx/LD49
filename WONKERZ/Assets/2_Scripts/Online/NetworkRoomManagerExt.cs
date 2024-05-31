@@ -23,10 +23,12 @@ using Mirror;
         
         public ONLINE_GAME_STATE gameState = ONLINE_GAME_STATE.NONE;
 
-        public bool subsceneLoaded;
-        public bool subsceneUnloaded;
 
-    public string selectedTrial = "";
+        // Must be inited to true for correct AnySceneOperationOngoing()
+        public bool subsceneLoaded = true;
+        public bool subsceneUnloaded = true;
+
+        public string selectedTrial = "";
         
         
 
@@ -66,6 +68,12 @@ using Mirror;
                 loadSceneMode = LoadSceneMode.Additive
             });
             subsceneLoaded = true;
+        }
+
+        public bool AnySceneOperationOngoing()
+        {
+            return  !NetworkRoomManagerExt.singleton.subsceneLoaded || 
+                    !NetworkRoomManagerExt.singleton.subsceneUnloaded;
         }
 
         public void unloadOpenCourse()
@@ -220,6 +228,9 @@ using Mirror;
                 // set to false to hide it in the game scene
                 showStartButton = false;
 
+                // initialize scene load status
+                subsceneLoaded = true;
+                subsceneUnloaded = true;
                 ServerChangeScene(GameplayScene);
             }
         }

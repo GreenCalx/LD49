@@ -61,6 +61,7 @@ public class OnlinePlayerController : NetworkBehaviour
         NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(this, true);
     }
 
+
     [ClientRpc]
     public void RpcRelocate(Vector3 iNewPos, Transform iFacingPoint)
     {
@@ -105,6 +106,7 @@ public class OnlinePlayerController : NetworkBehaviour
     public void CmdInformPlayerHasLoaded()
     {
         NetworkRoomManagerExt.singleton.onlineGameManager.AddPlayer(this);
+        NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(this, true);
     }
 
     public override void OnStopLocalPlayer()

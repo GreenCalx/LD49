@@ -44,8 +44,8 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         UIIsReadyHandle.SetActive(false);
         if (isClient)
             StartCoroutine(InitCo());
-        else
-            Destroy(gameObject);
+        // else if (isServerOnly)
+        //     Destroy(gameObject);
     }
 
     void OnDestroy()
@@ -70,7 +70,25 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
             yield return null;
         }
         init();
+        
+        //
 
+        if (OPC.isServer)
+        {
+            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded())
+            {
+                yield return null;
+            }
+        } else if (OPC.isClientOnly)
+        {
+            while(!OffMGR.allPlayersHaveLoaded)
+            {
+                yield return null;
+            }
+        }
+
+
+        //
         UIReadyUpHandle.SetActive(true);
         while(!playerReadyUp)
         {

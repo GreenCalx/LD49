@@ -12,6 +12,8 @@ public class OfflineGameManager : MonoBehaviour
     public OnlineStartLine startLine;
     [Header("Internals")]
     public bool sessionIsReadyToGo = false;
+    public bool allPlayersHaveLoaded = false;
+
     public OnlinePlayerController localPlayer;
 
     public List<OnlinePlayerController> remotePlayers;
@@ -32,6 +34,7 @@ public class OfflineGameManager : MonoBehaviour
     public void refreshSession()
     {
         sessionIsReadyToGo = false;
+        allPlayersHaveLoaded = false;
         StartCoroutine(WaitForOtherPlayers());
     }
 
@@ -40,6 +43,11 @@ public class OfflineGameManager : MonoBehaviour
         UIWaitForPlayers.SetActive(true);
 
         while (NetworkRoomManagerExt.singleton.onlineGameManager==null)
+        {
+            yield return null;
+        }
+
+        while (NetworkRoomManagerExt.singleton.AnySceneOperationOngoing())
         {
             yield return null;
         }
@@ -53,13 +61,29 @@ public class OfflineGameManager : MonoBehaviour
             yield return null;
         }
         //startLine.init(localPlayer.self_PlayerController);
+        if (localPlayer.isServer)
+        {
+            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(localPlayer, true);
+            allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
+            while (!allPlayersHaveLoaded)
+            {
+                // Information given by OnlineGameManager
+                yield return null;
+            }
+        }
+        else if (localPlayer.isClientOnly)
+        {
+            localPlayer.CmdInformPlayerHasLoaded();
+
+            while (!allPlayersHaveLoaded) // modified via callback from OnlineGameMgr
+            {
+                // Information given by OnlineGameManager
+                yield return null;
+            }
+        }
+            
         sessionIsReadyToGo = true;
 
-        while (!NetworkRoomManagerExt.singleton.onlineGameManager.allPlayersLoadedInLobby)
-        {
-            // Information given by OnlineGameManager
-            yield return null;
-        }   
         
         UIWaitForPlayers.SetActive(false);
         //localPlayer.self_PlayerController.UnFreeze();

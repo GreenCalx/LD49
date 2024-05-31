@@ -16,7 +16,9 @@ public class OnlineTrialManager : NetworkBehaviour
     void Start()
     {
         NetworkRoomManagerExt.singleton.onlineGameManager.trialManager = this;
-        DispatchPlayersToPortals();
+        
+        if (isServer)
+            DispatchPlayersToPortals();
     
     }
 
@@ -26,6 +28,7 @@ public class OnlineTrialManager : NetworkBehaviour
         
     }
 
+    [Server]
     protected void DispatchPlayersToPortals()
     {
         foreach( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
