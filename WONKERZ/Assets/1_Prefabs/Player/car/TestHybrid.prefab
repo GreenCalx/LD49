@@ -914,10 +914,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -0.10194722
-      outSlope: -0.10194722
+      time: -0.0005637574
+      value: 0.6963227
+      inSlope: 0.32962927
+      outSlope: 0.32962927
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -946,73 +946,25 @@ MonoBehaviour:
   maxTorque:
     value: 1000
   engineBrakeTorque:
-    value: 0
+    value: 100
   engineInertia: 40
   idleRPM:
     value: 0
   maxRPM:
-    value: 9000
-  gearRatioCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.2687359
-      value: 15.478626
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 13.71785
-      value: 15.410007
-      inSlope: Infinity
-      outSlope: -0.007171633
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.5339751
-    - serializedVersion: 3
-      time: 36.03665
-      value: 12.453583
-      inSlope: -Infinity
-      outSlope: -Infinity
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 57.71531
-      value: 8.991154
-      inSlope: -145.3339
-      outSlope: -0.117911376
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.19775286
-    - serializedVersion: 3
-      time: 86.96797
-      value: 5.06291
-      inSlope: -Infinity
-      outSlope: -Infinity
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 129.39503
-      value: 1.0343094
-      inSlope: -0.09150226
-      outSlope: -0.09150226
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  gear: 0
+    value: 2000
+  gearRatios:
+  - 5
+  - 2
+  - 1
+  - 0.5
+  gear: 1
+  shiftTime: 0.3
+  shiftTimeCurrent: 0
+  shiftLock: 1
+  shiftLockCurrent: 0
+  shiftGearUpRPMRatio: 0.8
+  shiftGearDownRPMRatio: 0.2
+  transmissionRatio: 4
   throttle: 0
   clutch: 0
   targetOmega:
@@ -1198,6 +1150,7 @@ GameObject:
   - component: {fileID: 3054614579651218093}
   - component: {fileID: 3054614579651218092}
   - component: {fileID: 3054614579651218095}
+  - component: {fileID: 294774424}
   m_Layer: 0
   m_Name: FR
   m_TagString: Untagged
@@ -1238,7 +1191,7 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 10
+  frictionMultiplier: 1
   axle: {fileID: 3054614580344067640}
   suspension:
     bodyA:
@@ -1282,6 +1235,7 @@ MonoBehaviour:
   contactImpulse: {x: 0, y: 0, z: 0}
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
+  markIndex: 0
   collider: {fileID: 3054614579651218093}
   rb: {fileID: 3054614579651218092}
   cj: {fileID: 3054614579651218095}
@@ -1416,6 +1370,37 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &294774424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054614579651218128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 0}
+  highHit: {fileID: 0}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionSettings:
+    thresholdMin: 2
+    thresholdHigh: 10
+    thresholdMax: 50
+    minVolume: 0.1
+    maxVolume: 0.2
+  mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  wheel: {fileID: 3054614579651218094}
 --- !u!1 &3054614579770359676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1461,6 +1446,7 @@ GameObject:
   - component: {fileID: 3054614580072342166}
   - component: {fileID: 3054614580072342169}
   - component: {fileID: 3054614580072342168}
+  - component: {fileID: 963806688}
   m_Layer: 0
   m_Name: FL
   m_TagString: Untagged
@@ -1501,7 +1487,7 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 10
+  frictionMultiplier: 1
   axle: {fileID: 3054614580344067640}
   suspension:
     bodyA:
@@ -1545,6 +1531,7 @@ MonoBehaviour:
   contactImpulse: {x: 0, y: 0, z: 0}
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
+  markIndex: 0
   collider: {fileID: 3054614580072342166}
   rb: {fileID: 3054614580072342169}
   cj: {fileID: 3054614580072342168}
@@ -1679,6 +1666,37 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &963806688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054614580072342170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 0}
+  highHit: {fileID: 0}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionSettings:
+    thresholdMin: 2
+    thresholdHigh: 10
+    thresholdMax: 50
+    minVolume: 0.1
+    maxVolume: 0.2
+  mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  wheel: {fileID: 3054614580072342167}
 --- !u!1 &3054614580294333464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1692,6 +1710,7 @@ GameObject:
   - component: {fileID: 3054614580294333460}
   - component: {fileID: 3054614580294333463}
   - component: {fileID: 3054614580294333462}
+  - component: {fileID: 1833596157}
   m_Layer: 0
   m_Name: RR
   m_TagString: Untagged
@@ -1732,7 +1751,7 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 10
+  frictionMultiplier: 1
   axle: {fileID: 3054614580543907603}
   suspension:
     bodyA:
@@ -1776,6 +1795,7 @@ MonoBehaviour:
   contactImpulse: {x: 0, y: 0, z: 0}
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
+  markIndex: 0
   collider: {fileID: 3054614580294333460}
   rb: {fileID: 3054614580294333463}
   cj: {fileID: 3054614580294333462}
@@ -1910,6 +1930,37 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &1833596157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054614580294333464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 0}
+  highHit: {fileID: 0}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionSettings:
+    thresholdMin: 2
+    thresholdHigh: 10
+    thresholdMax: 50
+    minVolume: 0.1
+    maxVolume: 0.2
+  mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  wheel: {fileID: 3054614580294333465}
 --- !u!1 &3054614580344067642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2283,6 +2334,7 @@ GameObject:
   - component: {fileID: 3054614580673810317}
   - component: {fileID: 3054614580673810316}
   - component: {fileID: 3054614580673810319}
+  - component: {fileID: 948251596}
   m_Layer: 0
   m_Name: RL
   m_TagString: Untagged
@@ -2323,7 +2375,7 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 10
+  frictionMultiplier: 1
   axle: {fileID: 3054614580543907603}
   suspension:
     bodyA:
@@ -2367,6 +2419,7 @@ MonoBehaviour:
   contactImpulse: {x: 0, y: 0, z: 0}
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
+  markIndex: 0
   collider: {fileID: 3054614580673810317}
   rb: {fileID: 3054614580673810316}
   cj: {fileID: 3054614580673810319}
@@ -2501,6 +2554,37 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &948251596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054614580673810353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 0}
+  highHit: {fileID: 0}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
+  frictionSettings:
+    thresholdMin: 2
+    thresholdHigh: 10
+    thresholdMax: 50
+    minVolume: 0.1
+    maxVolume: 0.2
+  mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  wheel: {fileID: 3054614580673810318}
 --- !u!1 &3054614580798337337
 GameObject:
   m_ObjectHideFlags: 0
@@ -2513,6 +2597,7 @@ GameObject:
   - component: {fileID: 3054614580798337332}
   - component: {fileID: 3054614580798337333}
   - component: {fileID: 3054614580798337335}
+  - component: {fileID: 421464412}
   m_Layer: 0
   m_Name: Chassis
   m_TagString: Untagged
@@ -2601,6 +2686,36 @@ MonoBehaviour:
   axles:
   - {fileID: 3054614580344067640}
   - {fileID: 3054614580543907603}
+--- !u!114 &421464412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3054614580798337337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdde5038738cad6469d54b76ec1107b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 8300000, guid: 9e72f4df1ba03f747ada02b0356d9e16, type: 3}
+  highHit: {fileID: 8300000, guid: 556f69ea19f7dec488acc336ec362e32, type: 3}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 200
+    thresholdMax: 300
+    minVolume: 1
+    maxVolume: 1
+  frictionLow: {fileID: 8300000, guid: ae1179cc898d38d40867b6782d4bf382, type: 3}
+  frictionHigh: {fileID: 8300000, guid: 6c2ba1ee1fe2c1341a4529d02e597096, type: 3}
+  frictionSettings:
+    thresholdMin: 2
+    thresholdHigh: 5
+    thresholdMax: 10
+    minVolume: 0.5
+    maxVolume: 1
+  mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
 --- !u!1 &3054614580802513171
 GameObject:
   m_ObjectHideFlags: 0
@@ -3404,14 +3519,22 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 6336808365317858226, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: m_Pitch
       value: -0.24
       objectReference: {fileID: 0}
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: m_Volume
-      value: 0.4
+      value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: cb664cb4e5f9a10498da411bb401ef94, type: 3}
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 
@@ -3471,6 +3594,10 @@ PrefabInstance:
     - target: {fileID: 6336808365317858229, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: Player
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6336808365317858229, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
+      propertyPath: minPitch
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
