@@ -1,13 +1,250 @@
-using UnityEngine;
-using System;
-using Schnibble;
 using Schnibble.Managers;
-using static UnityEngine.Physics;
-using static UnityEngine.Debug;
+using UnityEngine;
+using static Schnibble.Physics;
 
 namespace Wonkerz
 {
 
+    public class ManualCamera : PlayerCamera, IControllable
+    {
+        //    '-.  angle
+        //       '-.
+        // C ------- Target
+        //    length
+        public struct CameraCone
+        {
+            public float angle;
+            public float length;
+        };
+
+        public float orbitSpeedDegPerSec = 45.0f;
+        public float distance            = 30.0f;
+        public float height              = 10.0f;
+        public float lookAheadMul        = 1.0f;
+
+        public bool autoAlign = true;
+
+        public SchSpring positionSpring;
+        public SchSpring rotationSpring;
+
+        Vector3    targetPosition;
+        Quaternion targetRotation;
+        Vector3    focusPoint;
+        Vector3    lastPosition;
+
+        public void forceAngles(bool iForce, Vector2 forceAngle)
+        {
+#if false
+            autoAlign = iForce;
+            if (!iForce) return;
+
+            orbitAngles = forceAngle;
+            //transform.localRotation = Quaternion.Euler(orbitAngles);
+#endif
+        }
+
+        public void Start()
+        {
+            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+        }
+
+        public bool AutomaticRotation(float dt)
+        {
+            var playerRB = playerRef.GetComponent<Rigidbody>();
+            focusPoint = playerRef.transform.position;
+            if (playerRB)
+            {
+                var playerVelocity = playerRB.velocity;
+                focusPoint += lookAheadMul * playerRB.velocity;
+
+                var dir = Vector3.Dot(playerVelocity, cam.transform.forward);
+                if (dir > 0.0f)
+                {
+                    var diff = focusPoint - cam.transform.position;
+                    var diffSize = diff.magnitude;
+                    diff /= diffSize;
+
+                    targetPosition = cam.transform.position + (diffSize - distance) * diff;
+                }
+                else
+                {
+                    var diff = focusPoint - cam.transform.position;
+                    var diffSize = diff.magnitude;
+                    diff /= diffSize;
+
+                    targetPosition = cam.transform.position + (diffSize - distance) * diff;
+                }
+
+                targetPosition.y = focusPoint.y + height;
+
+                Schnibble.Debug.DrawWireSphere(0.1f, focusPoint, 4, 4, Color.magenta);
+
+                positionSpring.Activate();
+
+                return true;
+            }
+
+
+            return false;
+        }
+
+        public bool ManualRotation(float dt)
+        {
+            // Manual camera : update from inputs.
+            var input = frameInput.average;
+            if ( (input.x*input.x + input.y*input.y) == 0.0f) return false;
+            var focusPoint = playerRef.transform.position;
+            var forward = (focusPoint - cam.transform.position);
+            var diff = forward.magnitude;
+            forward /= diff;
+            var up = Vector3.up;
+
+            // TODO: take care of corner case.
+            var dot = Vector3.Dot(forward, up);
+            if (Mathf.Sign(dot) != Mathf.Sign(input.x) && Mathf.Abs(dot) >= 0.99f)
+            {
+                input.x = 0.0f;
+            }
+            // arclength = radius * angle.
+            // radius is magnitude of forward with y = 0
+            // hence we scale back the input.y by the radius of the normalized radius,
+            // which in turn gives us a normalized input in term of arclength.
+            var radius = Vector3.Scale(forward, new Vector3(1, 0, 1)).magnitude;
+            var inputScaled = new Vector2(input.y * radius * orbitSpeedDegPerSec * dt, input.x * dt * orbitSpeedDegPerSec);
+
+            targetRotation *= Quaternion.AngleAxis(inputScaled.x, Vector3.up) * Quaternion.AngleAxis(inputScaled.y, Vector3.right);
+            targetPosition = focusPoint - targetRotation * Vector3.forward * diff;
+
+            positionSpring.Deactivate();
+
+            return true;
+        }
+
+        public void UpdateCameraPositionAndRotationFromTarget(Vector3 targetPosition, Quaternion targetRotation, float dt) {
+            Vector3 errorPosition = targetPosition - cam.transform.position;
+            lastPosition = cam.transform.position;
+
+            if (positionSpring.IsActive())
+            {
+                // update position and rotation according to spring values.
+                var distance = errorPosition.magnitude;
+                if (distance > positionSpring.maxLength || distance < positionSpring.minLength) {
+                    positionSpring.Deactivate();
+                    cam.transform.position = targetPosition;
+                } else {
+                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
+
+                    cam.transform.position += (positionSpring.stiffness * errorPosition - positionSpring.damp * errorVelocity) * dt;
+                }
+            } else {
+                cam.transform.position = targetPosition;
+            }
+            // transform is not what we assumed, recompute rotation.
+            var forward = (focusPoint - cam.transform.position);
+            var up = Vector3.up;
+
+            targetRotation = Quaternion.LookRotation(forward, up);
+            cam.transform.rotation = targetRotation;
+        }
+
+        public void LateUpdate()
+        {
+            var dt = Time.deltaTime;
+            // Update directions.
+            if (!HasFocus())
+            {
+                // Manual > automatic.
+                focusPoint = playerRef.transform.position;
+                var forward = (focusPoint - cam.transform.position);
+                var up      = Vector3.up;
+
+                targetRotation = Quaternion.LookRotation(forward, up);
+                targetPosition = cam.transform.position;
+
+                if (!ManualRotation(dt)) {
+                    AutomaticRotation(dt);
+                }
+            }
+
+            UpdateCameraPositionAndRotationFromTarget(targetPosition, targetRotation, dt);
+
+            frameInput.Reset();
+        }
+
+        public bool StartFocus()
+        {
+            if (!findFocus()) return false;
+
+            //distance += camDistIncrease;
+            //focusInputLock = true;
+            return true;
+        }
+
+        public bool StopFocus()
+        {
+            resetFocus();
+            //distance -= camDistIncrease;
+            //focusInputLock = true;
+            return true;
+        }
+
+        public bool CanFocus()
+        {
+            return !focusInputLock;
+        }
+
+        public bool CanSwitchFocus()
+        {
+            return HasFocus() && elapsedTimeFocusChange >= focusChangeInputLatch;
+        }
+
+        public bool HasFocus()
+        {
+            return secondaryFocus != null;
+        }
+
+        Schnibble.Math.AccumulatorV2 frameInput;
+        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        {
+            if (!HasFocus())
+            {
+                // input is cameraY, cameraX, because it represents the axis of rotation.
+                // therefor, trying to move the camera left (cameraX) means rotating around Y orbitaly.
+                Vector2 multiplier = new Vector2(InputSettings.InverseCameraMappingX ? -1f : 1f, InputSettings.InverseCameraMappingY ? -1f : 1f);
+                var current = new Vector2(
+                    (Entry.Get((int)PlayerInputs.InputCode.CameraY) as GameInputAxis).GetState().valueRaw,
+                    -(Entry.Get((int)PlayerInputs.InputCode.CameraX) as GameInputAxis).GetState().valueRaw);
+
+                frameInput.Add(current);
+            }
+
+            // View reset
+            if ((Entry.Get((int)PlayerInputs.InputCode.CameraReset) as GameInputButton).GetState().down)
+            {
+                resetView();
+            }
+
+            // Camera targeting
+            // set secondary focus
+            var focusInput = (Entry.Get((int)PlayerInputs.InputCode.CameraFocus) as GameInputButton).GetState();
+
+            if (focusInputLock) focusInputLock = !focusInput.up;
+
+            if (CanFocus())
+            {
+                if (focusInput.down && HasFocus()) StopFocus();
+                else StartFocus();
+
+                if (CanSwitchFocus())
+                {
+                    var focus_change_val = ((Entry.Get((int)PlayerInputs.InputCode.CameraFocusChange) as GameInputAxis)).GetState().valueRaw;
+                    if (focus_change_val != 0.0f) changeFocus();
+                }
+            }
+        }
+    }
+
+#if false
     public class ManualCamera : PlayerCamera, IControllable
     {
         [Header("ManualCamera")]
@@ -167,7 +404,6 @@ namespace Wonkerz
 
         }
 
-        // Game camera overrides
         public override void init()
         {
             var player = Access.Player();
@@ -469,4 +705,5 @@ namespace Wonkerz
             return true;
         }
     }
+#endif
 }

@@ -21,6 +21,8 @@ namespace Wonkerz
         }
         public FOVEffect fov;
 
+        public PlayerController player;
+
         public GameObject playerRef;
         [Header("Camera Focus")]
         public float breakFocusDistance = 60f;
@@ -85,13 +87,14 @@ namespace Wonkerz
             showFocus(iShow);
         }
 
-        protected void findFocus()
+        protected bool findFocus()
         {
             showFocus(false);
             alreadyFocusedQ = new Queue<CameraFocusable>();
 
             PlayerController p = Access.Player();
-            Vector3 p_pos = p.GetTransform().position;
+            Vector3 p_pos = Vector3.zero;
+            if (p != null) p_pos = p.GetTransform().position;
 
             float minDist = float.MaxValue;
             CameraFocusable chosenOne = null;
@@ -118,6 +121,8 @@ namespace Wonkerz
                 alreadyFocusedQ.Enqueue(secondaryFocus);
                 showFocus(true);
             }
+
+            return secondaryFocus != null;
         }
 
         public void resetFocus()
@@ -204,6 +209,8 @@ namespace Wonkerz
 
             alreadyFocusedQ.Enqueue(secondaryFocus);
             showFocus(true);
+
+            elapsedTimeFocusChange = 0.0f;
         }
 
         public void OnFocusRemove(CameraFocusable iFocusable)
