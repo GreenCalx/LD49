@@ -11,6 +11,9 @@ public enum ONLINE_COLLECTIBLES {
 
 public class OnlineCollectible : NetworkBehaviour
 {
+    public bool IsCollectible = false;
+    public float timeBeforeBeingCollectible = 0.2f;
+
     public ONLINE_COLLECTIBLES collectibleType;
     public int value = 1;
     [SyncVar]
@@ -19,10 +22,27 @@ public class OnlineCollectible : NetworkBehaviour
     public ParticleSystem self_onCollectPS;
     public AudioSource onCollectSound;
 
+    private float elapsedTimeBeforeBeingCollectible = 0f;
+
+    void Start()
+    {
+        elapsedTimeBeforeBeingCollectible =  0f;
+        IsCollectible = false;
+    }
+
+    void Update()
+    {
+        if (!IsCollectible)
+        {
+            elapsedTimeBeforeBeingCollectible += Time.deltaTime;
+            IsCollectible = elapsedTimeBeforeBeingCollectible >= timeBeforeBeingCollectible;
+        }
+    }
+
     [ServerCallback]
     void OnTriggerStay(Collider iCollider)
     {
-        if (collected)
+        if (collected || !IsCollectible)
             return;
 
         AbstractCollector AC = iCollider.gameObject.GetComponent<AbstractCollector>();

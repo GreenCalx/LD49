@@ -16,9 +16,13 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public bool openCourseUnLoaded = false;
 
+    [Header("References")]
+    public OnlineUIPostGame uiPostGame_sceneObject;
+
     [Header("Tweaks")] // not the right place ?
     public uint countdown; // in seconds
     public uint gameDuration = 180; // in Seconds
+    public uint postGameDuration = 30;
     public string selectedTrial = "RaceTrial01";
     [Header("INTERNALS")]
     public SyncList<OnlinePlayerController> uniquePlayers  = new SyncList<OnlinePlayerController>();
@@ -32,6 +36,8 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public float gameTime;
     [SyncVar]
+    public float postGameTime = 0f;
+    [SyncVar]
     public bool gameLaunched;
 
     public OnlineTrialManager trialManager;
@@ -39,12 +45,15 @@ public class OnlineGameManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //allPlayersLoadedInLobby = false;
 
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
         if (isServer)
+        {
+            
             StartCoroutine(StartOnlineGame());
+        }
+            
     }
 
     // Update is called once per frame
@@ -157,6 +166,7 @@ public class OnlineGameManager : NetworkBehaviour
         yield return StartCoroutine(WaitTrialSessions());
         yield return StartCoroutine(Countdown());
         yield return StartCoroutine(TrialLoop());
+        yield return StartCoroutine(PostGame());
 
     }
 
@@ -181,39 +191,11 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        // DEAD CODE : Coroutine is server only
-        // if (isClient)
-        // {
-        //     OfflineGameManager OGM = Access.OfflineGameManager();
-        //     while (OGM == null)
-        //     {
-        //         yield return null;
-        //     }
-        //     while (trialManager == null)
-        //     {
-        //         yield return null;
-        //     }
-        //     OGM.startLine = trialManager.onlineStartLine;
-
-        //     while (!OGM.sessionIsReadyToGo)
-        //     {
-        //         yield return null;
-        //     }
-
-        //     NotifyPlayerHasLoaded(OGM.localPlayer, true);
-        // }
-
-        //Access.CameraManager().changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-        //allPlayersLoadedInLobby = true;
-        // if (isServer)
-        // {
             while (!AllPlayersLoaded())
             {
                 yield return null;
             }
-        // }
 
-        //if (isServer)
         RpcNotifyOfflineMgrAllPlayersLoaded();
 
         AskPlayersToReadyUp();
@@ -231,6 +213,41 @@ public class OnlineGameManager : NetworkBehaviour
         {
             yield return null;
         }
+        // player ranks availables
+
+    }
+
+    IEnumerator PostGame()
+    {
+        gameLaunched = false;
+        RpcDisplayPostGameUI(true);
+
+        AskPlayersToReadyUp();
+        postGameTime = postGameDuration;
+        while (!ArePlayersReady())
+        {
+            postGameTime -= Time.deltaTime;
+            if (postGameTime <= 0f )
+            {
+                break;
+            }
+
+            foreach(OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
+            {
+                if (PlayersReadyDict[opc])
+                {
+                    opc.connectionToClient.Disconnect();
+                }
+            }
+            yield return null;
+        }
+
+        //unload
+        NetworkRoomManagerExt.singleton.unloadSelectedTrial();
+
+        // shutdown server
+        RpcDisconnectPlayers();
+        NetworkServer.Shutdown();
     }
 
     IEnumerator WaitSessions()
@@ -241,30 +258,14 @@ public class OnlineGameManager : NetworkBehaviour
             
             yield return null;
         }
+        RpcDisplayPostGameUI(false);
+
         while (uniquePlayers.Count != expectedPlayersFromLobby)
         {
             yield return null;
         }
 
-        // DEAD CODE - Coroutinne is server only
-        // if (isClient)
-        // {
-        //     OfflineGameManager OGM = Access.OfflineGameManager();
-        //     while (OGM == null)
-        //     {
-        //         yield return null;
-        //     }
-        //     while ( !OGM.sessionIsReadyToGo)
-        //     {
-        //         yield return null;
-        //     }
-        //     if (isServer)
-        //         NotifyPlayerHasLoaded(OGM.localPlayer, true);
-        //     else if (isClientOnly)
-        //         CmdNotifyPlayerHasLoaded(OGM.localPlayer, true);
-        // }
 
-        //allPlayersLoadedInLobby = true;
         while(!AllPlayersLoaded())
         {
             yield return null;
@@ -301,6 +302,19 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [ClientRpc]
+    public void RpcDisconnectPlayers()
+    {
+        NetworkClient.Disconnect();
+        Access.SceneLoader().loadScene(Constants.SN_TITLE);
+    }
+
+    [ClientRpc]
+    public void RpcDisplayPostGameUI(bool iState)
+    {
+        uiPostGame_sceneObject.gameObject.SetActive(iState);
+    }
+
+    [ClientRpc]
     public void RpcNotifyOfflineMgrAllPlayersLoaded()
     {
         OfflineGameManager offgm = Access.OfflineGameManager();
@@ -318,7 +332,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcLaunchOnlineStartLine()
     {
         OfflineGameManager offgm = Access.OfflineGameManager();
-        //offgm.startLine.init(offgm.localPlayer.self_PlayerController);
+
         offgm.startLine.launchCountdown();
     }
 
@@ -342,13 +356,11 @@ public class OnlineGameManager : NetworkBehaviour
 
         gameLaunched = false;
         yield return LoadTrialScene();
-        //yield return SendPlayersToTrial();
 
     }
 
     IEnumerator LoadTrialScene()
     {   
-        //CmdFreezePlayers(true);
 
         // Unload open course on server and load trial
         NetworkRoomManagerExt.singleton.unloadOpenCourse();
@@ -361,11 +373,6 @@ public class OnlineGameManager : NetworkBehaviour
         if (isServer)
             RpcRefreshOfflineGameMgr();
 
-        // while ( !trialLoaded || !openCourseUnLoaded )
-        // {
-        //     yield return null;
-        // }   
-        // Access.CameraManager().changeCamera(GameCamera.CAM_TYPE.INIT, false);
         yield break;
     }
 }

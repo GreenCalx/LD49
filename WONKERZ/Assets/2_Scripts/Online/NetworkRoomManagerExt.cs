@@ -104,6 +104,18 @@ using Mirror;
             subsceneLoaded = true;
         }
 
+        public void unloadSelectedTrial()
+        {
+            StartCoroutine(ServerUnloadSelectedTrial());
+        }
+
+        IEnumerator ServerUnloadSelectedTrial()
+        {
+            subsceneUnloaded = false;
+            yield return SceneManager.UnloadSceneAsync(selectedTrial);
+            subsceneUnloaded = true;
+        }
+
         public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
         {
             if (sceneOperation == SceneOperation.UnloadAdditive)

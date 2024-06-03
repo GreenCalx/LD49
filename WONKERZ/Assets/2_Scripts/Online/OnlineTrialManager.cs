@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 using Mirror;
 
@@ -10,6 +11,8 @@ public class OnlineTrialManager : NetworkBehaviour
     public List<OnlineStartPortal> startPositions;
     public OnlineStartLine onlineStartLine;
     [Header("Internals")]
+    public SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
+    [SyncVar]
     public bool trialIsOver = false;
 
     // Start is called before the first frame update
@@ -42,5 +45,41 @@ public class OnlineTrialManager : NetworkBehaviour
                 }
             }
         }
+    }
+
+    public void NotifyLocalPlayerFinished()
+    {
+        OnlinePlayerController localPC = Access.OfflineGameManager().localPlayer;
+        if (localPC.isClientOnly)
+        {
+            localPC.CmdNotifyPlayerFinishedTrial();
+        } else { // isServer
+            NotifyPlayerHasFinished(localPC);
+        }
+        localPC.self_PlayerController.Freeze();
+    }
+    
+    [Command]
+    public void CmdNotifyPlayerHasFinished(OnlinePlayerController iOPC)
+    {
+        NotifyPlayerHasFinished(iOPC);
+        
+    }
+    
+    [ServerCallback]
+    public void NotifyPlayerHasFinished(OnlinePlayerController iOPC)
+    {
+        if (dicPlayerTrialFinishPositions.ContainsKey(iOPC))
+            return;
+
+        dicPlayerTrialFinishPositions.Add(iOPC, dicPlayerTrialFinishPositions.Count+1);
+
+        trialIsOver = AllPlayersFinished();
+    }
+
+    [ServerCallback]
+    public bool AllPlayersFinished()
+    {
+        return (dicPlayerTrialFinishPositions.Count == NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers.Count);
     }
 }

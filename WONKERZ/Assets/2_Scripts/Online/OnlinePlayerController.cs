@@ -56,11 +56,28 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     [Command]
+    public void CmdNotifyPlayerFinishedTrial()
+    {
+        if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)
+        {
+            // that would be a very bad error
+            return;
+        }
+        NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
+        
+    }
+
+    [Command]
     public void CmdNotifyOGMPlayerReady()
     {
         NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(this, true);
     }
 
+    [Command]
+    public void CmdBreakObject(OnlineBreakableObject iOBO)
+    {
+        iOBO.BreakObject(this);
+    }
 
     [ClientRpc]
     public void RpcRelocate(Vector3 iNewPos, Transform iFacingPoint)
