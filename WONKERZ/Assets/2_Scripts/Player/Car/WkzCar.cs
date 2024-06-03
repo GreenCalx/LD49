@@ -162,7 +162,8 @@ namespace Wonkerz
 
         public void SetCarCenterOfMass()
         {
-            chassis.rb.SetCenterOfMassLocal(chassis.localCenterOfMass + new Vector3(weightRoll.average * weightControlMaxX, 0f, weightPitch.average * weightControlMaxZ));
+            var offset = new Vector3(weightRoll.average * weightControlMaxX, 0f, weightPitch.average * weightControlMaxZ);
+            chassis.OffsetCenterOfMass(offset);
         }
 
         public void SetCarAerialTorque(float dt)
