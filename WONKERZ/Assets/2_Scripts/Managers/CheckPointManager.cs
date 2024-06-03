@@ -313,14 +313,7 @@ namespace Wonkerz {
 
         public void OnPlayerRespawn(Transform respawnSource)
         {
-            // reset player physx
-            Rigidbody rb2d = player.GetRigidbody();
-            if (!!rb2d)
-            {
-                rb2d.velocity = Vector3.zero;
-                rb2d.angularVelocity = Vector3.zero;
-            }
-
+            player.ForceVelocity(Vector3.zero, Vector3.zero);
             // invalidate trick
             if (!!TT && TT.activate_tricks)
             {
@@ -349,8 +342,7 @@ namespace Wonkerz {
                 loadLastCP(false);
             } else {
 
-                player.GetTransform().position = ss_pos;
-                player.GetTransform().rotation = ss_rot;
+                player.ForceTransform(ss_pos, ss_rot);
                 OnPlayerRespawn(saveStateMarkerInst.transform);
             }
 

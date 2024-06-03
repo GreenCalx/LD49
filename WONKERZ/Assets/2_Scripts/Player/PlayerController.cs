@@ -29,8 +29,9 @@ namespace Wonkerz
         public override void OnEnter(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateMode(player.boat.gameObject, player.boat.rb);
+            player.ActivateMode(player.boat.gameObject, player.boat.boat.rb);
         }
+
         public override void OnExit(FSMBase fsm)
         {
             var player = (fsm as PlayerFSM).GetPlayer();
@@ -101,20 +102,6 @@ namespace Wonkerz
                 }
             }
 
-            var weightXAxis = Entry.Get((int)PlayerInputs.InputCode.WeightX) as GameInputAxis;
-            var weightYAxis = Entry.Get((int)PlayerInputs.InputCode.WeightY) as GameInputAxis;
-            if (weightXAxis != null)
-            {
-                player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
-                player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
-            }
-            if (weightYAxis != null)
-            {
-                player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
-                player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
-            }
-
-
             player.plane.ProcessInputs(currentMgr, Entry);
         }
     }
@@ -128,66 +115,15 @@ namespace Wonkerz
             {
                 var player = (fsm as PlayerFSM).GetPlayer();
 
-                #if false
-                if (player.car_old)
+                player.flags[PlayerController.FJump] = !player.TouchGround();
+                if (!player.TouchGround())
                 {
-                    player.TryJump();
-                    player.flags[PlayerController.FJump] = !player.TouchGround();
-                    // apply jump correction
-
-                    // IMPORTANT toffa : sometimes fixedUpdate could be called multiple times if the framerate dips.
-                    // but it would take a value of 0 that is wrong because we reset at the end of the first fixedUpdate frame.
-                    if (player.jump.diPitchUnscaled.count != 0 && player.jump.diRollUnscaled.count != 0)
-                    {
-                        if (!player.TouchGround())
-                        {
-                            var torque = new Vector3(player.jump.diMaxForce * player.jump.diPitchUnscaled.average,
-                                0,
-                                -player.jump.diMaxForce * player.jump.diRollUnscaled.average);
-                            torque = player.car_old.transform.TransformDirection(torque);
-                            player.car_old.rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
-                        }
-                        else
-                        {
-                            player.SetCarCenterOfMass();
-                        }
-
-                        // very bad design for now.
-                        var weightIndPos = player.car_old.centerOfMassInitial + new Vector3(player.jump.diRollUnscaled.average * player.weightControlMaxX,
-                            player.weightIndicatorHeight,
-                            player.jump.diPitchUnscaled.average * player.weightControlMaxZ);
-
-                        player.weightIndicator.transform.position = player.car_old.centerOfMass.transform.parent.TransformPoint(weightIndPos);
-                    }
+                    player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
                 }
-                #endif
-            }
-        }
-
-        private class UpdateWheelBasis : FSMAction
-        {
-            public override void Execute(FSMBase fsm)
-            {
-                var player = (fsm as PlayerFSM).GetPlayer();
-
-                #if false
-                if (player.car_old)
+                else
                 {
-                    foreach (var axle in player.car_old.axles)
-                    {
-                        if (axle.isSteerable)
-                        {
-                            axle.right.basis = GetBasis(player.car_old.transform.up,
-                                Quaternion.AngleAxis(player.car_old.maxSteeringAngle_deg * player.turn.average, player.car_old.transform.up) * player.car_old.transform.forward);
-                        }
-                        else
-                        {
-                            axle.right.basis = GetBasis(player.car_old.transform.up, player.car_old.transform.forward);
-                        }
-                        axle.left.basis = axle.right.basis;
-                    }
+                    player.car.GetCar().SetCarCenterOfMass();
                 }
-                #endif
             }
         }
 
@@ -197,45 +133,9 @@ namespace Wonkerz
             {
                 var player = (fsm as PlayerFSM).GetPlayer();
 
-                #if false
-                if (player.car_old)
-                {
-                    var playerCar = player.car_old
-                    // Speed effect on camera
-                    // update camera FOV/DIST if a PlayerCamera
-                    CameraManager CamMgr = Access.CameraManager();
-                    if (CamMgr?.active_camera is PlayerCamera)
-                    {
-                        PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
-                        pc.applySpeedEffect(playerCar.GetCurrentSpeed() / playerCar.maxTorque);
-                    }
-
-                    var SpeedDirection = playerCar.rb.velocity;
-                    var particules = playerCar.speedEffect.particles.GetComponent<ParticleSystem>();
-                    if (SpeedDirection.magnitude / playerCar.maxTorque > playerCar.speedEffect.threshold)
-                    {
-                        var e = particules.emission;
-                        e.enabled = true;
-                    }
-                    else
-                    {
-                        var e = particules.emission;
-                        e.enabled = false;
-                    }
-
-                    particules.transform.LookAt(playerCar.transform.position + SpeedDirection);
-                    var lifemin = 0.2f;
-                    var lifemax = 0.6f;
-                    var speedmin = 20f;
-                    var speedmax = 100f;
-                    var partmain = particules.main;
-                    partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, Mathf.Clamp01((SpeedDirection.magnitude - speedmin) / (speedmax - speedmin)));
-                }
-                #endif
-
                 var playerCarController = player.car;
                 var playerCar           = playerCarController.car;
-                var effectRatio         = Mathf.Clamp(((float)playerCar.GetCurrentSpeedInKmH() - playerCarController.speedEffect.thresholdSpeedInKmH) / playerCarController.speedEffect.maxSpeedInKmH, 0.0f, 1.0f);
+                var effectRatio = (playerCar as WkzCar).GetSpeedEffectRatio();
                 // Speed effect on camera
                 // update camera FOV/DIST if a PlayerCamer
                 CameraManager CamMgr = Access.CameraManager();
@@ -245,7 +145,7 @@ namespace Wonkerz
                     pc.applySpeedEffect(effectRatio);
                 }
 
-                var particles = playerCarController.speedEffect.particles;
+                var particles = (playerCar as WkzCar).speedEffect.particles;
 
                 var e = particles.emission;
                 e.enabled = effectRatio != 0.0f;
@@ -262,7 +162,6 @@ namespace Wonkerz
 
         public GroundState(PlayerController player) : base(player, "ground")
         {
-            this.actions.Add(new UpdateWheelBasis());
             this.actions.Add(new SpeedEffect());
             this.fixedActions.Add(new GeneralGroundAction());
         }
@@ -272,6 +171,8 @@ namespace Wonkerz
             base.OnEnter(fsm);
             var player = (fsm as PlayerFSM).GetPlayer();
             player.ActivateMode(player.car.gameObject, player.car.car.chassis.rb.GetPhysXBody());
+            // car also need to reset wheels velocity.
+            player.car.GetCar().ResetWheels();
         }
 
         public override void OnExit(FSMBase fsm)
@@ -304,95 +205,6 @@ namespace Wonkerz
                 }
 
                 player.car.ProcessInputs(currentMgr, Entry);
-            }
-
-            #if false
-            if (player.car_old)
-            {
-                var jumpButton = Entry.Get((int)PlayerInputs.InputCode.Jump) as GameInputButton;
-                if (jumpButton != null)
-                {
-                    var jumpButtonState = jumpButton.GetState();
-                    if (jumpButtonState.heldDown)
-                    {
-                        player.SetSpringSizeMinAndLock();
-                    }
-                    else
-                    {
-                        if (jumpButtonState.up)
-                        {
-                            player.jump.applyForceMultiplier = true;
-                        }
-                        player.ResetSpringSizeMinAndUnlock();
-                    }
-                }
-
-                var turboButton = Entry.Get((int)PlayerInputs.InputCode.Turbo) as GameInputButton;
-                if (turboButton != null)
-                {
-                    if (turboButton.GetState().heldDown)
-                    {
-                        player.useTurbo();
-                    }
-                }
-
-                var handbrakeButton = Entry.Get((int)PlayerInputs.InputCode.Handbrake) as GameInputButton;
-                if (handbrakeButton != null)
-                {
-                    if (handbrakeButton.GetState().heldDown)
-                    {
-                        player.SetHandbrake(true);
-                    }
-                }
-
-                // makes car torque control a power
-                //var weightControlButton = (Entry.Get((int)PlayerInputs.InputCode.WeightControl) as GameInputButton);
-                //if (weightControlButton != null)
-                {
-                    //if (weightControlButton.GetState().heldDown)
-                    {
-                        var weightXAxis = Entry.Get((int)PlayerInputs.InputCode.WeightX) as GameInputAxis;
-                        var weightYAxis = Entry.Get((int)PlayerInputs.InputCode.WeightY) as GameInputAxis;
-
-                        if (weightXAxis != null)
-                        {
-                            player.jump.diRollUnscaled.Add(weightXAxis.GetState().valueSmooth);
-                            player.jump.diRoll.Add(weightXAxis.GetState().valueSmooth); //* Time.deltaTime;
-                        }
-
-                        if (weightYAxis != null)
-                        {
-                            player.jump.diPitchUnscaled.Add(weightYAxis.GetState().valueSmooth);
-                            player.jump.diPitch.Add(weightYAxis.GetState().valueSmooth); //* Time.deltaTime;
-                        }
-                    }
-
-
-                }
-
-                var accelerationAxis = Entry.Get((int)PlayerInputs.InputCode.Accelerator) as GameInputAxis;
-                if (accelerationAxis != null)
-                {
-                    var acceleration = Mathf.Clamp01(accelerationAxis.GetState().valueSmooth);
-                    if (acceleration != 0f)
-                    player.car_old.currentRPM.Add(acceleration);
-                }
-
-                var breakAxis = Entry.Get((int)PlayerInputs.InputCode.Break) as GameInputAxis;
-                if (breakAxis != null)
-                {
-                    var breaks = Mathf.Clamp01(breakAxis.GetState().valueSmooth);
-                    if (breaks != 0f)
-                    player.car_old.currentRPM.Add(-breaks);
-                }
-                // todo toffa : this is very weird...check this at some point
-
-                var turnAxis = Entry.Get((int)PlayerInputs.InputCode.Turn) as GameInputAxis;
-                if (turnAxis != null)
-                {
-                    if (turnAxis.GetState().valueSmooth != 0f)
-                    player.turn.Add(turnAxis.GetState().valueSmooth);
-                }
 
                 // powers
                 // spin
@@ -408,9 +220,7 @@ namespace Wonkerz
                         }
                     }
                 }
-
             }
-            #endif
         }
     };
 
@@ -568,30 +378,6 @@ namespace Wonkerz
         public GameObject onDeathClone;
 
         [System.Serializable]
-        public struct Jump
-        {
-            public bool isStarting;
-            public bool suspensionLock;
-            public bool applyForceMultiplier;
-            public float value;
-            // di
-            public Accumulator diPitch;
-            public Accumulator diRoll;
-            public Accumulator diPitchUnscaled;
-            public Accumulator diRollUnscaled;
-            public float diMaxForce;
-
-            public AudioClip[] sounds;
-        }
-        [Header("Jump")]
-        public Jump jump;
-
-        public float weightControlMaxX = 1;
-        public float weightControlMaxZ = 2;
-        public GameObject weightIndicator;
-        public float weightIndicatorHeight;
-
-        [System.Serializable]
         public struct Turbo
         {
             public bool infinite;
@@ -635,11 +421,9 @@ namespace Wonkerz
         //private GameObject carInstance;
 
         [Header("States")]
-        public SchCarController car;
-        public SchBoatController boat;
-        public SchPlaneController plane;
-        public Accumulator turn;
-
+        public WkzCarController car;
+        public WkzBoatController boat;
+        public WkzGliderController plane;
         public AudioSource audioSource;
         public AudioClip damageSound;
 
@@ -805,88 +589,11 @@ namespace Wonkerz
         {
             generalStates.FixedUpdate();
             vehicleStates.FixedUpdate();
-
-            SetHandbrake(false);
-            turn.Reset();
-            jump.diRollUnscaled.Reset();
-            jump.diPitchUnscaled.Reset();
         }
 
         public WonkerDecal jumpDecal;
 
         #if false
-        public void ResetSpringSizeMinAndUnlock()
-        {
-            foreach (var axle in car_old.axles)
-            {
-                var suspensionRight = axle.right.suspension;
-                suspensionRight.SetMinLength(car_old.springMin);
-                suspensionRight.SetMaxLength(car_old.springMax);
-                suspensionRight.SetRestLength(car_old.springRestPercent);
-
-
-                var suspensionLeft = axle.left.suspension;
-                suspensionLeft.SetMinLength(car_old.springMin);
-                suspensionLeft.SetMaxLength(car_old.springMax);
-                suspensionLeft.SetRestLength(car_old.springRestPercent);
-            }
-            car_old.overrideMaxSpring = false;
-        }
-
-        public void SetSpringSizeMinAndLock()
-        {
-            springElapsedCompression += Time.deltaTime;
-            float springCompVal = Mathf.Lerp(car_old.springMax, car_old.springMin + 0.1f, springElapsedCompression / springCompressionTime);
-            springCompVal = Mathf.Min(1, springCompVal);
-
-
-            float springJumpFactor = jumpCompressionOverTime.Evaluate(Mathf.Min(1, springElapsedCompression / springCompressionTime));
-
-            jumpDecal.SetAnimationTime(springJumpFactor);
-            foreach (var axle in car_old.axles)
-            {
-                var suspensionRight = axle.right.suspension;
-                suspensionRight.SetMinLength(car_old.springMin);
-                suspensionRight.SetMaxLength(springCompVal);
-                suspensionRight.SetRestLength(car_old.springRestPercent);
-
-
-                var suspensionLeft = axle.left.suspension;
-                suspensionLeft.SetMinLength(car_old.springMin);
-                suspensionLeft.SetMaxLength(springCompVal);
-                suspensionLeft.SetRestLength(car_old.springRestPercent);
-            }
-            car_old.overrideMaxSpring = true;
-        }
-
-        public float springCompressionTime = 0.5f;
-        public AnimationCurve jumpCompressionOverTime;
-        public float springElapsedCompression = 0f;
-        public void TryJump()
-        {
-            if (jump.applyForceMultiplier)
-            {
-                float springCompVal = springElapsedCompression / springCompressionTime;
-                springCompVal = Mathf.Min(1, springCompVal);
-                if (springCompVal > 0.5f)
-                {
-                    audioSource.clip = jump.sounds[0];
-                    audioSource.Play(0);
-                }
-                float springJumpFactor = jumpCompressionOverTime.Evaluate(springCompVal);
-
-                foreach (var axle in car_old.axles)
-                {
-                    car_old.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.right.suspension.GetAnchorA(), ForceMode.VelocityChange);
-                    car_old.rb.AddForceAtPosition(jump.value * springJumpFactor * transform.up * (axle.right.isGrounded ? 1 : 0), axle.left.suspension.GetAnchorA(), ForceMode.VelocityChange);
-                }
-                jump.applyForceMultiplier = false;
-                springElapsedCompression = 0f;
-                jumpDecal.SetAnimationTime(0f);
-            }
-
-        }
-
         public void useTurbo()
         {
             // no turbo atm
@@ -916,19 +623,7 @@ namespace Wonkerz
 
         public bool TouchGround()
         {
-            #if false
-            if (car_old)
-            {
-                foreach (var a in car_old.axles)
-                {
-                    if (a.left.isGrounded || a.right.isGrounded)
-                    {
-                        return true; // early return
-                    }
-                }
-            }
-            #endif
-            return false;
+            return true;
         }
 
         private bool isTouchingWater = false;
@@ -939,18 +634,6 @@ namespace Wonkerz
 
         public bool TouchGroundAll()
         {
-            #if false
-            if (car_old)
-            {
-                foreach (var a in car_old.axles)
-                {
-                    if (!a.left.isGrounded || !a.right.isGrounded)
-                    {
-                        return false; // early return
-                    }
-                }
-            }
-            #endif
             return true;
         }
 
@@ -996,9 +679,9 @@ namespace Wonkerz
             {
                 rb.transform.position = current.rb.transform.position;
                 rb.transform.rotation = current.rb.transform.rotation;
-                rb.velocity = current.rb.velocity;
-                rb.angularVelocity = current.rb.angularVelocity;
-                rb.isKinematic = current.rb.isKinematic;
+                rb.velocity           = current.rb.velocity;
+                rb.angularVelocity    = current.rb.angularVelocity;
+                rb.isKinematic        = current.rb.isKinematic;
             }
 
             current.rb = rb;
@@ -1012,6 +695,34 @@ namespace Wonkerz
             // init the next rb.
             //current.rb = null;
             Access.CameraManager().OnTargetChange(GetTransform());
+        }
+
+        public void ForceTransform(Vector3 position, Quaternion rotation) {
+            var t = GetTransform();
+            if (t != null)
+            {
+                t.position = position;
+                t.rotation = rotation;
+
+                if (vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car])
+                {
+                    car.GetCar().ResetWheels();
+                }
+            }
+        }
+
+        public void ForceVelocity(Vector3 linear, Vector3 angular) {
+            var r = GetRigidbody();
+            if (r != null)
+            {
+                r.velocity = linear;
+                r.angularVelocity = angular;
+
+                if (vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car])
+                {
+                    car.GetCar().ResetWheels();
+                }
+            }
         }
 
         public bool IsInMenu() { return isInMenu; }
@@ -1032,29 +743,6 @@ namespace Wonkerz
                 source.mute = false;
             }
         }
-
-        public void SetHandbrake(bool v)
-        {
-            #if false
-            if (car_old)
-            {
-                var rear = car_old.axles[(int)AxleType.rear];
-                rear.left.isHandbraked = v;
-                rear.right.isHandbraked = v;
-
-                var front = car_old.axles[(int)AxleType.front];
-                front.left.isHandbraked = v;
-                front.right.isHandbraked = v;
-            }
-            #endif
-        }
-
-        #if false
-        public void SetCarCenterOfMass()
-        {
-            car_old.centerOfMass.transform.localPosition = car_old.centerOfMassInitial + new Vector3(jump.diRollUnscaled.average * weightControlMaxX, 0f, jump.diPitchUnscaled.average * weightControlMaxZ);
-        }
-        #endif
 
         /// =============== Game Logic ==================
         public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
@@ -1096,23 +784,6 @@ namespace Wonkerz
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-
-            #if false
-            if (car_old)
-            {
-                // dirty fix for respawn when slipping
-                foreach (var a in car_old.axles)
-                {
-                    a.right.slipX = 1;
-                    a.right.slipY = 1;
-
-                    a.left.slipX = 1;
-                    a.left.slipY = 1;
-                }
-            }
-            #endif
-
-
             // Specific states control
             var generalInputs = (generalStates.GetState() as IControllable);
             if (generalInputs != null)

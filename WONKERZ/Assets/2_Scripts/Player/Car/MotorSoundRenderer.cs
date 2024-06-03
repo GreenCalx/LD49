@@ -21,9 +21,7 @@ public class MotorSoundRenderer : MonoBehaviour
         //GetComponent<AudioSource>().pitch = 0.8f + 1 / ((100) / ((float)car.GetCurrentSpeedInKmH()));
 
         //new way
-        var maxRPM = (float)car.engine.maxRPM;
-        var currentRPM = (float)car.engine.rpm;
-        var ratio = currentRPM / maxRPM;
+        var ratio = car.motor.GetRPMRatio();
         source.pitch = Mathf.Clamp(minPitch + ratioMul * (1 - (1 - ratio)*(1-ratio)), minPitch, maxPitch);
     }
 }

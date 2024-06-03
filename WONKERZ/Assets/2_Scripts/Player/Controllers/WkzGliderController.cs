@@ -1,15 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Wonkerz;
+using Schnibble;
 using Schnibble.Managers;
 
-namespace Schnibble {
-    public class SchPlaneController : MonoBehaviour, Managers.IControllable
+namespace Wonkerz {
+    public class WkzGliderController : SchGliderController
     {
-        public SchGliderCollider plane;
+        void Awake() {
+            accelerator = (int)PlayerInputs.InputCode.Accelerator;
+            brake = (int)PlayerInputs.InputCode.Break;
+            turn = (int)PlayerInputs.InputCode.Turn;
+        }
 
-        public void ProcessInputs(Managers.InputManager currentManager, Managers.GameController inputs) {
+        #if false
+        public override void ProcessInputs(InputManager currentManager, GameController inputs) {
+            base.ProcessInputs(currentManager, inputs);
+
+            #if false
             // set car input values.
             var accelInput = inputs.Get((int)PlayerInputs.InputCode.Accelerator) as GameInputAxis;
             if (accelInput != null) plane.accel = accelInput.GetState().valueSmooth * plane.maxAccelAngle;
@@ -31,7 +39,8 @@ namespace Schnibble {
 
             //plane.brakeLeft = Mathf.Clamp(0.0f, plane.maxBrakeAngle, plane.brakeLeft);
             //plane.brakeRight = Mathf.Clamp(0.0f, plane.maxBrakeAngle, plane.brakeRight);
+            #endif
         }
-
+        #endif
     }
 }

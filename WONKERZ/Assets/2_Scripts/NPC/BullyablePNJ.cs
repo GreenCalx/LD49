@@ -47,7 +47,7 @@ public class BullyablePNJ : MonoBehaviour
 
     void OnCollisionEnter(Collision iCol)
     {
-        CarController cc = iCol.gameObject.GetComponent<CarController>();
+        SchCarController cc = iCol.gameObject.GetComponent<SchCarController>();
         if (!cc)
             return;
         enable_stabilization = false;

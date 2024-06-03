@@ -43,19 +43,18 @@ public class GameCamera : MonoBehaviour
     public Camera cam;
     protected float initial_FOV;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
+    public virtual void init() {
+        if (cam == null) cam = GetComponent<Camera>();
+        if (cam != null) {
+            initial_FOV = cam.fieldOfView;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+    public virtual void resetView() {
+        if (cam != null) {
+            cam.transform.localRotation = Quaternion.identity.normalized;
+            cam.transform.localPosition = Vector3.zero;
+            cam.fieldOfView = initial_FOV;
+        }
     }
-
-    public virtual void init() { }
-
-    public virtual void resetView() { }
 }

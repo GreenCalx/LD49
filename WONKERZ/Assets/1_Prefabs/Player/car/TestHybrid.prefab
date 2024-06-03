@@ -838,17 +838,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614579108994910}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: edd152181535b074e96dac8ab33be36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 3054614579108994909}
-  speedEffect:
-    particles: {fileID: 159696682681997720}
-    thresholdSpeedInKmH: 0
-    maxSpeedInKmH: 300
-  jumpElapsedTime: 0
-  jumpTime: 1
-  maxTorque: 200
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!114 &3054614579108994909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -858,16 +857,32 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614579108994910}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
+  m_Script: {fileID: 11500000, guid: 099f63d434cffe84499355c2cdf5c893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rb: {fileID: 3054614580798337332}
+  motor: {fileID: 3054614579108994908}
+  gearBox:
+    currentValue: 0
+    def: {fileID: 11400000, guid: b68d68644834d6744867b2cc5d5ee75e, type: 2}
+    gearRatios:
+    - 10
+    - 5
+    - 3
+    - 1
+    - 0.5
+    gear: 0
+    shiftTime: 0.1
+    shiftTimeCurrent: 0
+    shiftLock: 0.5
+    shiftLockCurrent: 0
+    shiftGearUpRPMRatio: 0.8
+    shiftGearDownRPMRatio: 0.2
+    automatic: 1
+    canBeNeutral: 0
   type: 1
   chassis: {fileID: 3054614580798337335}
-  engine: {fileID: 3054614579108994908}
   torqueDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  speedDifferential:
     currentValue: 0
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
   steeringDifferential:
@@ -878,11 +893,21 @@ MonoBehaviour:
     def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
   handBrakeDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: 28aa2ec9baafed844ae63ba35e1fc2f3, type: 2}
+    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
   forward: 1
+  wheelColliderPrefab: {fileID: 0}
+  constraintSolver: {fileID: 3054614579108994907}
+  tractionControl: 0
+  brakeControl: 0
+  useFrictionCircle: 1
+  speedEffect:
+    particles: {fileID: 159696682681997720}
+    thresholdSpeedInKmH: 20
+    maxSpeedInKmH: 150
   jumpDef:
+    time: 1
     min: 1
-    stiffnessMul: 10
+    stiffnessMul: 100
   weightPitch:
     _valueCount: 0
     _value: 0
@@ -891,13 +916,8 @@ MonoBehaviour:
     _value: 0
   weightControlMaxX: 2
   weightControlMaxZ: 2
-  wheelColliderPrefab: {fileID: 0}
-  constraintSolver: {fileID: 3054614579108994907}
-  tractionControl: 0
-  brakeControl: 0
-  centrifugalForceMul: 3
+  centrifugalForceMul: 1
   minCentrifugalVelocity: 3
-  useFrictionCircle: 1
 --- !u!114 &3054614579108994908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -910,70 +930,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c21ee7e556e0e4f9a490c79c64212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueCurve:
+  normalizedTorqueCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.0005637574
-      value: 0.6963227
-      inSlope: 0.32962927
-      outSlope: 0.32962927
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.703216
-      value: 0.9283091
-      inSlope: -0.3896643
-      outSlope: -0.3896643
+      time: 0.00015640259
+      value: 0.70129395
+      inSlope: 0.07862756
+      outSlope: 0.07862756
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0.107114196
-      outWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0.3975679
     - serializedVersion: 3
-      time: 1.0015259
-      value: 0.38388443
-      inSlope: -1.8250307
-      outSlope: -1.8250307
-      tangentMode: 34
+      time: 0.7435888
+      value: 0.93244946
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0.33333334
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1.0067587
+      value: 0.23109627
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   maxTorque:
-    value: 1000
-  engineBrakeTorque:
     value: 100
+  engineBrakeTorque:
+    value: 50
   engineInertia: 40
   idleRPM:
     value: 0
   maxRPM:
     value: 2000
-  gearRatios:
-  - 5
-  - 2
-  - 1
-  - 0.5
-  gear: 1
-  shiftTime: 0.3
-  shiftTimeCurrent: 0
-  shiftLock: 1
-  shiftLockCurrent: 0
-  shiftGearUpRPMRatio: 0.8
-  shiftGearDownRPMRatio: 0.2
-  transmissionRatio: 4
-  throttle: 0
-  clutch: 0
   targetOmega:
-    value: 0
-  torque:
-    value: 0
-  rpm:
-    value: 0
-  omega:
     value: 0
 --- !u!114 &3054614579108994907
 MonoBehaviour:
@@ -1185,13 +1184,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614579651218128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
+  m_Script: {fileID: 11500000, guid: e18f0596d3bc20e418a02988ad385255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 1
+  frictionMultiplier: 10
   axle: {fileID: 3054614580344067640}
   suspension:
     bodyA:
@@ -1379,7 +1378,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614579651218128}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Script: {fileID: 11500000, guid: b63e0a308a5c77345852cd955bfb9c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lowHit: {fileID: 0}
@@ -1393,14 +1392,14 @@ MonoBehaviour:
   frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionSettings:
-    thresholdMin: 2
-    thresholdHigh: 10
-    thresholdMax: 50
-    minVolume: 0.1
-    maxVolume: 0.2
+    thresholdMin: 0.5
+    thresholdHigh: 5
+    thresholdMax: 10
+    minVolume: 0.05
+    maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
-  wheel: {fileID: 3054614579651218094}
+  gravityScale: 1
 --- !u!1 &3054614579770359676
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,13 +1480,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580072342170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
+  m_Script: {fileID: 11500000, guid: e18f0596d3bc20e418a02988ad385255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 1
+  frictionMultiplier: 10
   axle: {fileID: 3054614580344067640}
   suspension:
     bodyA:
@@ -1675,7 +1674,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580072342170}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Script: {fileID: 11500000, guid: b63e0a308a5c77345852cd955bfb9c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lowHit: {fileID: 0}
@@ -1689,14 +1688,14 @@ MonoBehaviour:
   frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionSettings:
-    thresholdMin: 2
-    thresholdHigh: 10
-    thresholdMax: 50
-    minVolume: 0.1
-    maxVolume: 0.2
+    thresholdMin: 0.5
+    thresholdHigh: 5
+    thresholdMax: 10
+    minVolume: 0.05
+    maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
-  wheel: {fileID: 3054614580072342167}
+  gravityScale: 1
 --- !u!1 &3054614580294333464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1745,13 +1744,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580294333464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
+  m_Script: {fileID: 11500000, guid: e18f0596d3bc20e418a02988ad385255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 1
+  frictionMultiplier: 10
   axle: {fileID: 3054614580543907603}
   suspension:
     bodyA:
@@ -1939,7 +1938,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580294333464}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Script: {fileID: 11500000, guid: b63e0a308a5c77345852cd955bfb9c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lowHit: {fileID: 0}
@@ -1953,14 +1952,14 @@ MonoBehaviour:
   frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionSettings:
-    thresholdMin: 2
-    thresholdHigh: 10
-    thresholdMax: 50
-    minVolume: 0.1
-    maxVolume: 0.2
+    thresholdMin: 0.5
+    thresholdHigh: 5
+    thresholdMax: 10
+    minVolume: 0.05
+    maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
-  wheel: {fileID: 3054614580294333465}
+  gravityScale: 1
 --- !u!1 &3054614580344067642
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,7 +2012,7 @@ MonoBehaviour:
     damping: 0
   torqueDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
+    def: {fileID: 11400000, guid: 075a66b9e1fded64497f33eedd224a7b, type: 2}
   speedDifferential:
     currentValue: -0.04
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
@@ -2161,7 +2160,7 @@ MonoBehaviour:
     damping: 0
   torqueDifferential:
     currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
+    def: {fileID: 11400000, guid: 075a66b9e1fded64497f33eedd224a7b, type: 2}
   speedDifferential:
     currentValue: 0
     def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
@@ -2369,13 +2368,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580673810353}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f76da8b922d4e643bd6b0142d66685c, type: 3}
+  m_Script: {fileID: 11500000, guid: e18f0596d3bc20e418a02988ad385255, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
-  frictionMultiplier: 1
+  frictionMultiplier: 10
   axle: {fileID: 3054614580543907603}
   suspension:
     bodyA:
@@ -2563,7 +2562,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580673810353}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 396c3f20d30f95340ad7e0f904d4c351, type: 3}
+  m_Script: {fileID: 11500000, guid: b63e0a308a5c77345852cd955bfb9c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lowHit: {fileID: 0}
@@ -2577,14 +2576,14 @@ MonoBehaviour:
   frictionLow: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionHigh: {fileID: 8300000, guid: 6c108f6edfa569b4e972383d2890f06c, type: 3}
   frictionSettings:
-    thresholdMin: 2
-    thresholdHigh: 10
-    thresholdMax: 50
-    minVolume: 0.1
-    maxVolume: 0.2
+    thresholdMin: 0.5
+    thresholdHigh: 5
+    thresholdMax: 10
+    minVolume: 0.05
+    maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
-  wheel: {fileID: 3054614580673810318}
+  gravityScale: 1
 --- !u!1 &3054614580798337337
 GameObject:
   m_ObjectHideFlags: 0
@@ -2597,7 +2596,7 @@ GameObject:
   - component: {fileID: 3054614580798337332}
   - component: {fileID: 3054614580798337333}
   - component: {fileID: 3054614580798337335}
-  - component: {fileID: 421464412}
+  - component: {fileID: 8623529322431589955}
   m_Layer: 0
   m_Name: Chassis
   m_TagString: Untagged
@@ -2647,7 +2646,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3054614580798337337}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 36462af8088aa6d4d85249b7bd6359c1, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2686,7 +2685,7 @@ MonoBehaviour:
   axles:
   - {fileID: 3054614580344067640}
   - {fileID: 3054614580543907603}
---- !u!114 &421464412
+--- !u!114 &8623529322431589955
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2695,27 +2694,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 3054614580798337337}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdde5038738cad6469d54b76ec1107b1, type: 3}
+  m_Script: {fileID: 11500000, guid: 9aea330b19b1c8143996e8874f5ac994, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowHit: {fileID: 8300000, guid: 9e72f4df1ba03f747ada02b0356d9e16, type: 3}
-  highHit: {fileID: 8300000, guid: 556f69ea19f7dec488acc336ec362e32, type: 3}
+  lowHit: {fileID: 8300000, guid: 7731f1cc4d948d843afddaf4f85e6be0, type: 3}
+  highHit: {fileID: 8300000, guid: 9e72f4df1ba03f747ada02b0356d9e16, type: 3}
   impactSettings:
     thresholdMin: 0
-    thresholdHigh: 200
+    thresholdHigh: 100
     thresholdMax: 300
-    minVolume: 1
+    minVolume: 0.5
     maxVolume: 1
   frictionLow: {fileID: 8300000, guid: ae1179cc898d38d40867b6782d4bf382, type: 3}
   frictionHigh: {fileID: 8300000, guid: 6c2ba1ee1fe2c1341a4529d02e597096, type: 3}
   frictionSettings:
-    thresholdMin: 2
+    thresholdMin: 0
     thresholdHigh: 5
     thresholdMax: 10
-    minVolume: 0.5
+    minVolume: 0.8
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  gravityScale: 1
 --- !u!1 &3054614580802513171
 GameObject:
   m_ObjectHideFlags: 0
@@ -3521,7 +3521,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6336808365317858226, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: m_Pitch
@@ -3534,7 +3534,7 @@ PrefabInstance:
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: cb664cb4e5f9a10498da411bb401ef94, type: 3}
+      objectReference: {fileID: 8300000, guid: f754c4be40584e64da60cf023848f179, type: 3}
     - target: {fileID: 6336808365317858227, guid: 7bcdd357fb10fbe48b1267a55fba4083, type: 3}
       propertyPath: OutputAudioMixerGroup
       value: 

@@ -24,7 +24,7 @@ namespace Wonkerz {
             if (iGO.GetComponent<Dummy>()!=null)
             return true;
 
-            CarController direct_cc = iGO.GetComponent<CarController>();
+            SchCarController direct_cc = iGO.GetComponent<SchCarController>();
             if (!!direct_cc)
             return true;
             // can also be wheels
@@ -35,7 +35,7 @@ namespace Wonkerz {
             if (iGO.transform.parent == null)
             return false;
 
-            CarController[] parent_cc = iGO.GetComponentsInParent<CarController>();
+            SchCarController[] parent_cc = iGO.GetComponentsInParent<SchCarController>();
             if (parent_cc != null && parent_cc.Length>0)
             return true;
 

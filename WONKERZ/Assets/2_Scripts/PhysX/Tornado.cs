@@ -12,7 +12,7 @@ public class Tornado : MonoBehaviour
 
     void OnTriggerEnter(Collider C)
     {
-        CarController CC = C.gameObject.GetComponent<CarController>();
+        SchCarController CC = C.gameObject.GetComponent<SchCarController>();
         if (CC)
         {
             // apply upward force
@@ -23,7 +23,7 @@ public class Tornado : MonoBehaviour
 
     private void OnTriggerExit(Collider C)
     {
-        CarController CC = C.gameObject.GetComponent<CarController>();
+        SchCarController CC = C.gameObject.GetComponent<SchCarController>();
         if (CC)
         {
             //CC.SetMode(CarController.CarMode.DELTA);

@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &384985052665167889
 Transform:
   m_ObjectHideFlags: 0
@@ -45,7 +45,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384985052665167888}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -69,7 +69,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 20440047
+    m_Bits: 20444143
   m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -99,32 +99,32 @@ MonoBehaviour:
     thresholdPerCent: 0.24
     speed: 1.35
     max: 60
+  player: {fileID: 0}
   playerRef: {fileID: 0}
   breakFocusDistance: 100
   focusChangeInputLatch: 0.2
-  camDistIncrease: 0
+  camDistIncrease: 2
   camFOVIncrease: 0
-  needButtonPressBeforeMove: 0
+  resetSpeed: 10
+  orbitSpeedDegPerSec: 45
+  distance: 20
+  height: 10
+  lookAheadMul: 0.2
   autoAlign: 1
-  focus: {fileID: 0}
-  distance: 32
-  focusRadius: 2
-  focusCentering: 0.5
-  rotationSpeed: 264
-  minVerticalAngle: -5
-  maxVerticalAngle: 45
-  defaultVerticalAngle: 10
-  alignDelay: 0.2
-  alignDelayWithSecondaryFocus: 0
-  alignSmoothRange: 30
-  obstructionMask:
-    serializedVersion: 2
-    m_Bits: 6294263
-  camReverseDetectionThreshold: 77
-  jumpDelay: 0.2
-  jumpMaxFocusRadius: 2
-  jumpFocusRadiusStep: 0.1
-  lastManualRotationTime: 0
+  positionSpring:
+    restLength: 0
+    maxLength: 5
+    minLength: 0
+    currentLength: 0
+    stiffness: 0.8
+    damp: 0.2
+  rotationSpring:
+    restLength: 0
+    maxLength: 0
+    minLength: 0
+    currentLength: 0
+    stiffness: 0
+    damp: 0
 --- !u!114 &367400099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -192,12 +192,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 384985052665167888}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb3bb9a9cf5ebc24683f6980740e9aff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initAtStart: 1
+  initAtStart: 0
   mgr: {fileID: 0}
   clearOITBufferCompute: {fileID: 7200000, guid: 12feb60afb8e93c4aa000c6d9cc9b30a, type: 3}
   outlines: {fileID: 8400000, guid: 5cb644cc780707747a866ce2413d91a7, type: 2}

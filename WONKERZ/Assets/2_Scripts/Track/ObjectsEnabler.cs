@@ -19,7 +19,7 @@ public class ObjectsEnabler : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController player = iCol.GetComponent<CarController>();
+        SchCarController player = iCol.GetComponent<SchCarController>();
         if (!!player)
         {
             foreach (ObjectDisabler od in disablers)
@@ -29,7 +29,7 @@ public class ObjectsEnabler : MonoBehaviour
 
     void OnTriggerStay(Collider iCol)
     {
-        CarController player = iCol.GetComponent<CarController>();
+        SchCarController player = iCol.GetComponent<SchCarController>();
         if (!!player)
         {
             foreach (ObjectDisabler od in disablers)

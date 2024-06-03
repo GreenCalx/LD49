@@ -106,18 +106,15 @@ namespace Wonkerz {
 
         public void relocatePlayer(PlayerController pc)
         {
-            pc.GetTransform().position = transform.position;
-            pc.GetTransform().rotation = Quaternion.identity;
+            var newPosition = transform.position;
+            var newRotation = Quaternion.identity;
             if (facingPoint != null)
             {
-                pc.GetTransform().LookAt(facingPoint.transform);
+                newRotation = Quaternion.LookRotation(facingPoint.transform.position - transform.position);
             }
 
-            if (pc.GetRigidbody())
-            {
-                pc.GetRigidbody().velocity = Vector3.zero;
-                pc.GetRigidbody().angularVelocity = Vector3.zero;
-            }
+            pc.ForceTransform(newPosition, newRotation);
+            pc.ForceVelocity(Vector3.zero, Vector3.zero);
         }
 
         public void relocatePlayer()

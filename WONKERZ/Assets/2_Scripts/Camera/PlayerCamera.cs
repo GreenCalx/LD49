@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using Schnibble;
 namespace Wonkerz
 {
-
     public class PlayerCamera : GameCamera
     {
         [System.Serializable]
@@ -49,14 +48,6 @@ namespace Wonkerz
         private Queue<CameraFocusable> alreadyFocusedQ;
         protected UISecondaryFocus uISecondaryFocus;
 
-
-
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
         // Update is called once per frame
         void Update()
         {
@@ -75,11 +66,6 @@ namespace Wonkerz
 
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, newFOV, Time.deltaTime * fov.speed);
         }
-
-
-        public override void init() { }
-
-        public override void resetView() { }
 
         public void SetSecondaryFocus(CameraFocusable iFocusable, bool iShow)
         {

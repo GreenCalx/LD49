@@ -1,6 +1,8 @@
 using Schnibble.Managers;
 using UnityEngine;
 using static Schnibble.Physics;
+using Schnibble;
+using System;
 
 namespace Wonkerz
 {
@@ -17,6 +19,7 @@ namespace Wonkerz
             public float length;
         };
 
+        public float resetSpeed          = 10.0f;
         public float orbitSpeedDegPerSec = 45.0f;
         public float distance            = 30.0f;
         public float height              = 10.0f;
@@ -27,10 +30,12 @@ namespace Wonkerz
         public SchSpring positionSpring;
         public SchSpring rotationSpring;
 
-        Vector3    targetPosition;
+        bool locked = false;
+
+        Vector3 targetPosition;
         Quaternion targetRotation;
-        Vector3    focusPoint;
-        Vector3    lastPosition;
+        Vector3 focusPoint;
+        Vector3 lastPosition;
 
         public void forceAngles(bool iForce, Vector2 forceAngle)
         {
@@ -43,9 +48,44 @@ namespace Wonkerz
 #endif
         }
 
-        public void Start()
+        void OnDestroy()
         {
-            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            try
+            {
+                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            }
+            catch (NullReferenceException e)
+            {
+                this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
+            }
+        }
+
+        void Start() {
+            init();
+        }
+
+        void Awake() {
+        }
+
+        public override void init()
+        {
+            base.init();
+
+            player = Access.Player();
+            if (player) playerRef = player.GetTransform().gameObject;
+
+            Access.PlayerInputsManager().player1.Attach(this);
+
+            resetView();
+        }
+
+        public override void resetView()
+        {
+            // reset view behing player.
+            locked = true;
+
+            focusPoint = playerRef.transform.position;
+            targetPosition = focusPoint - distance * playerRef.transform.forward + height * Vector3.up;
         }
 
         public bool AutomaticRotation(float dt)
@@ -55,6 +95,7 @@ namespace Wonkerz
             if (playerRB)
             {
                 var playerVelocity = playerRB.velocity;
+
                 focusPoint += lookAheadMul * playerRB.velocity;
 
                 var dir = Vector3.Dot(playerVelocity, cam.transform.forward);
@@ -84,7 +125,6 @@ namespace Wonkerz
                 return true;
             }
 
-
             return false;
         }
 
@@ -92,12 +132,15 @@ namespace Wonkerz
         {
             // Manual camera : update from inputs.
             var input = frameInput.average;
-            if ( (input.x*input.x + input.y*input.y) == 0.0f) return false;
+            if ((input.x * input.x + input.y * input.y) == 0.0f) return false;
+
             var focusPoint = playerRef.transform.position;
             var forward = (focusPoint - cam.transform.position);
             var diff = forward.magnitude;
             forward /= diff;
             var up = Vector3.up;
+
+            targetRotation = Quaternion.LookRotation(forward, up);
 
             // TODO: take care of corner case.
             var dot = Vector3.Dot(forward, up);
@@ -120,25 +163,51 @@ namespace Wonkerz
             return true;
         }
 
-        public void UpdateCameraPositionAndRotationFromTarget(Vector3 targetPosition, Quaternion targetRotation, float dt) {
+        public void UpdateCameraPositionAndRotationFromTarget(Vector3 targetPosition, Quaternion targetRotation, float dt)
+        {
             Vector3 errorPosition = targetPosition - cam.transform.position;
+            positionSpring.currentLength = errorPosition.magnitude;
             lastPosition = cam.transform.position;
 
             if (positionSpring.IsActive())
             {
                 // update position and rotation according to spring values.
                 var distance = errorPosition.magnitude;
-                if (distance > positionSpring.maxLength || distance < positionSpring.minLength) {
+                if (distance > positionSpring.maxLength || distance < positionSpring.minLength)
+                {
+                    #if false
                     positionSpring.Deactivate();
-                    cam.transform.position = targetPosition;
-                } else {
-                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
 
+                    float correction = 0.0f;
+                    if (distance > positionSpring.maxLength)
+                    {
+                        correction = distance - positionSpring.maxLength;
+                    }
+                    if (distance < positionSpring.minLength)
+                    {
+                        correction = distance - positionSpring.minLength;
+                    }
+
+                    cam.transform.position += correction * errorPosition.normalized;
+                    #endif
+                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
+                    cam.transform.position += (positionSpring.stiffness * errorPosition - positionSpring.damp * errorVelocity) * dt * resetSpeed;
+                }
+                else
+                {
+                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
                     cam.transform.position += (positionSpring.stiffness * errorPosition - positionSpring.damp * errorVelocity) * dt;
                 }
-            } else {
+            }
+            else
+            {
                 cam.transform.position = targetPosition;
             }
+
+            // if error is small we unlock the camera.
+            errorPosition = targetPosition - cam.transform.position;
+            if (errorPosition.magnitude < 1f) locked = false;
+
             // transform is not what we assumed, recompute rotation.
             var forward = (focusPoint - cam.transform.position);
             var up = Vector3.up;
@@ -156,12 +225,11 @@ namespace Wonkerz
                 // Manual > automatic.
                 focusPoint = playerRef.transform.position;
                 var forward = (focusPoint - cam.transform.position);
-                var up      = Vector3.up;
+                var up = Vector3.up;
 
-                targetRotation = Quaternion.LookRotation(forward, up);
-                targetPosition = cam.transform.position;
 
-                if (!ManualRotation(dt)) {
+                if (!locked && !ManualRotation(dt))
+                {
                     AutomaticRotation(dt);
                 }
             }

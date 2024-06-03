@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Schnibble;
 
+#if false
 public class VaranBoss : MonoBehaviour
 {
     public Transform t_boss;
@@ -86,3 +87,4 @@ public class VaranBoss : MonoBehaviour
 
 
 }
+#endif

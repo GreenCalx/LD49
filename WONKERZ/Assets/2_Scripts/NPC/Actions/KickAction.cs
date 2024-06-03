@@ -95,7 +95,7 @@ public class KickAction : MonoBehaviour
         if (!kicking)
             return;
 
-        CarController cc = collision.gameObject.GetComponent<CarController>();
+        SchCarController cc = collision.gameObject.GetComponent<SchCarController>();
         Dummy d = collision.gameObject.GetComponent<Dummy>();
         if (!cc && !d)
             return;
@@ -107,7 +107,7 @@ public class KickAction : MonoBehaviour
 
         if (cc != null)
         {
-            Rigidbody rb = cc.GetComponent<Rigidbody>();
+            Rigidbody rb = cc.car.chassis.rb.GetPhysXBody();
             float kickForce = computeKickStrength(rb.mass);
             rb.AddForce(kickDirection * kickForce, forceMode);
         }

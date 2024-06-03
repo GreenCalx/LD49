@@ -20,7 +20,7 @@ public class ObjectDisabler : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        CarController player = iCol.GetComponent<CarController>();
+        SchCarController player = iCol.GetComponent<SchCarController>();
         if (!!player)
         {
             to_disable.SetActive(false);

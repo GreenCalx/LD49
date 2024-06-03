@@ -26,7 +26,7 @@ namespace Wonkerz {
             {   
                 typeof(DeathController),
                 typeof(PlayerController), 
-                typeof(CarController),
+                typeof(SchCarController),
                 typeof(TrickTracker),
                 typeof(PowerController),
                 typeof(AudioSource),

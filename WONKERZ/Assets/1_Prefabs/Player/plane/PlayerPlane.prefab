@@ -653,15 +653,15 @@ GameObject:
   - component: {fileID: 9176791244789910493}
   - component: {fileID: 4732535017245239637}
   - component: {fileID: 1053224296}
-  - component: {fileID: 1053224303}
   - component: {fileID: 2631467612519350596}
+  - component: {fileID: 255891787693028713}
   m_Layer: 8
   m_Name: PlayerPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9176791244789910490
 Transform:
   m_ObjectHideFlags: 0
@@ -760,19 +760,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1053224303
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9176791244789910489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a43e4541f18d50e43b9abfbc94f9f800, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plane: {fileID: 2631467612519350596}
 --- !u!114 &2631467612519350596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -782,20 +769,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 9176791244789910489}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ec7e44cc52ca2945a47adc1671f4763, type: 3}
+  m_Script: {fileID: 11500000, guid: 5aea9d036aac8cf47bf7c799c11228be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 1053224296}
-  maxAccelAngle: 5
-  accel: 0
-  maxBrakeAngle: 20
   brakeLeft: 0
   brakeRight: 0
+  accelerator: 0
+  brake: 0
+  steering: 0
+  rb: {fileID: 1053224296}
+  maxAccelAngle: 5
+  maxBrakeAngle: 20
   right: {fileID: 651632663}
   left: {fileID: 1019106484}
   rightAttach: {fileID: 562420891}
   leftAttach: {fileID: 674218202}
-  rhoSV: 100
+  rhoSV: 20
   windSpeed: {x: 0, y: 0, z: 0}
   wingRight:
     position: {x: 0, y: 0, z: 0}
@@ -815,8 +804,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
+      time: 0.000001013279
+      value: 0.0331828
       inSlope: 0
       outSlope: 0
       tangentMode: 136
@@ -824,10 +813,10 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 64.163765
-      value: 0.023443952
-      inSlope: 0.0010435692
-      outSlope: 0.0010435692
+      time: 8.388649
+      value: 0.05137515
+      inSlope: 0.00080980273
+      outSlope: 0.00080980273
       tangentMode: 136
       weightedMode: 0
       inWeight: 0.33333334
@@ -848,8 +837,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: -0.69659424
-      value: 0.5
+      time: -21.89746
+      value: 0.4959259
+      inSlope: 0.016790336
+      outSlope: 0.016790336
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.087675095
+    - serializedVersion: 3
+      time: 12.74025
+      value: 1.0011902
       inSlope: 0
       outSlope: 0
       tangentMode: 136
@@ -857,17 +855,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 16.98967
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 89.71329
-      value: 0.5227478
+      time: 89.5405
+      value: 0.8027771
       inSlope: 0
       outSlope: 0
       tangentMode: 136
@@ -877,6 +866,22 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &255891787693028713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9176791244789910489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cce156c73ee1fb4c9fadfa9bcbf5661, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plane: {fileID: 2631467612519350596}
+  accelerator: 0
+  brake: 0
+  turn: 0
 --- !u!1001 &1143124213437601172
 PrefabInstance:
   m_ObjectHideFlags: 0

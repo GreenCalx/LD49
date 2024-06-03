@@ -497,6 +497,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &71154943
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,6 +643,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1001 &72766699
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1212,6 +1214,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &166888665
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,6 +1360,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &203927369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2008,6 +2012,51 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
+--- !u!1 &224513533
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 224513535}
+  - component: {fileID: 224513534}
+  m_Layer: 0
+  m_Name: GameObject_0001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &224513534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224513533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfed400b6f4979a43bb78295e01d00e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &224513535
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 224513533}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -14.383614, y: -16.260313, z: -182.93301}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &244631318
 GameObject:
   m_ObjectHideFlags: 0
@@ -2053,17 +2102,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-    rid: 309432673576681474
+    rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 309432673576681474
-      type: {class: SchTestObject/SchTestSchObjectWithUnity, ns: , asm: WkzCore}
-      data:
-        position: {x: -63.680595, y: 7.9884644, z: -22.714909}
-        rotation: {x: 0.21918592, y: 0.3033718, z: -0.9010442, w: 0.21918584}
-        scale: {x: 10, y: 20, z: 30}
-        parent: {fileID: 957574095}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &256967455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3914737663032258046, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
@@ -2601,17 +2645,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-    rid: 309432673576681477
+    rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 309432673576681477
-      type: {class: SchTestObject/SchTestSchObjectWithUnity, ns: , asm: WkzCore}
-      data:
-        position: {x: 0, y: 0, z: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 1}
-        scale: {x: 1, y: 1, z: 1}
-        parent: {fileID: 377238332}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &377238334
 Transform:
   m_ObjectHideFlags: 0
@@ -3293,6 +3332,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &513793567
 GameObject:
   m_ObjectHideFlags: 0
@@ -4585,6 +4625,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &738161292
 GameObject:
   m_ObjectHideFlags: 0
@@ -4730,6 +4771,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &749471008
 GameObject:
   m_ObjectHideFlags: 0
@@ -4976,43 +5018,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  chassis: {fileID: 1486001343}
-  engine: {fileID: 803020921}
-  torqueDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  speedDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  steeringDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
-  brakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
-  handBrakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: 28aa2ec9baafed844ae63ba35e1fc2f3, type: 2}
-  forward: 1
-  jumpDef:
-    min: 0
-    stiffnessMul: 0
-  weightPitch:
-    _valueCount: 0
-    _value: 0
-  weightRoll:
-    _valueCount: 0
-    _value: 0
-  weightControlMaxX: 2
-  weightControlMaxZ: 2
-  wheelColliderPrefab: {fileID: 0}
-  constraintSolver: {fileID: 803020920}
-  tractionControl: 0
-  brakeControl: 0
-  centrifugalForceMul: 1
-  minCentrifugalVelocity: 3
-  useFrictionCircle: 1
 --- !u!114 &803020920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5037,27 +5042,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c21ee7e556e0e4f9a490c79c64212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueCurve:
+  normalizedTorqueCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -5070,24 +5057,7 @@ MonoBehaviour:
     value: 0
   maxRPM:
     value: 9000
-  gearRatios: []
-  gear: 0
-  shiftTime: 0.1
-  shiftTimeCurrent: 0
-  shiftLock: 0.5
-  shiftLockCurrent: 0
-  shiftGearUpRPMRatio: 0.8
-  shiftGearDownRPMRatio: 0.2
-  transmissionRatio: 1
-  throttle: 0
-  clutch: 0
   targetOmega:
-    value: 0
-  torque:
-    value: 0
-  rpm:
-    value: 0
-  omega:
     value: 0
 --- !u!114 &803020922
 MonoBehaviour:
@@ -5102,13 +5072,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 803020919}
-  speedEffect:
-    particles: {fileID: 0}
-    thresholdSpeedInKmH: 0
-    maxSpeedInKmH: 0
-  jumpElapsedTime: 0
-  jumpTime: 1
-  maxTorque: 200
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!1001 &804205225
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5928,7 +5897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: positionSpring.damp
-      value: 0.1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: rotationSpring.damp
@@ -5936,15 +5905,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: positionSpring.maxLength
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
-      propertyPath: positionSpring.minLength
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
+      propertyPath: positionSpring.minLength
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: positionSpring.stiffness
-      value: 0.5
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 8215968377043512466, guid: 991ef7a44ef90924e917ef033e53d8cd, type: 3}
       propertyPath: rotationSpring.maxLength
@@ -6101,6 +6070,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &930757182
 GameObject:
   m_ObjectHideFlags: 0
@@ -6245,17 +6215,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-    rid: 309432673576681476
+    rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 309432673576681476
-      type: {class: SchTestObject/SchTestSchObjectWithUnity, ns: , asm: WkzCore}
-      data:
-        position: {x: 41.537563, y: 18.664316, z: -52.500645}
-        rotation: {x: 0.40557978, y: 0.5792279, z: 0.06162837, w: 0.70441604}
-        scale: {x: 1, y: 1, z: 1}
-        parent: {fileID: 377238332}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &992706720
 GameObject:
   m_ObjectHideFlags: 0
@@ -6985,6 +6950,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &1036669644
 GameObject:
   m_ObjectHideFlags: 0
@@ -8885,6 +8851,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &1317095938
 GameObject:
   m_ObjectHideFlags: 0
@@ -8930,17 +8897,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-    rid: 309432673576681475
+    rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 309432673576681475
-      type: {class: SchTestObject/SchTestSchObjectWithUnity, ns: , asm: WkzCore}
-      data:
-        position: {x: 0, y: 0, z: 0}
-        rotation: {x: 0, y: 0, z: 0, w: 1}
-        scale: {x: 1, y: 1, z: 1}
-        parent: {fileID: 0}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1317443885
 GameObject:
   m_ObjectHideFlags: 0
@@ -10962,6 +10924,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &1786532002
 GameObject:
   m_ObjectHideFlags: 0
@@ -11203,6 +11166,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &1825669460
 GameObject:
   m_ObjectHideFlags: 0
@@ -11248,17 +11212,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   obj:
-    rid: 309432673576681473
+    rid: -2
   references:
     version: 2
     RefIds:
-    - rid: 309432673576681473
-      type: {class: SchTestObject/SchTestSchObjectWithUnity, ns: , asm: WkzCore}
-      data:
-        position: {x: -1.9385804, y: -6.7894745, z: 19.986692}
-        rotation: {x: 0.083595395, y: 0.33243713, z: 0.15430297, w: 0.9266541}
-        scale: {x: 1, y: 1, z: 1}
-        parent: {fileID: 0}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &1828915354
 GameObject:
   m_ObjectHideFlags: 0
@@ -11309,43 +11268,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  chassis: {fileID: 999195486}
-  engine: {fileID: 1828915358}
-  torqueDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  speedDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  steeringDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
-  brakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
-  handBrakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: 28aa2ec9baafed844ae63ba35e1fc2f3, type: 2}
-  forward: 1
-  jumpDef:
-    min: 0
-    stiffnessMul: 0
-  weightPitch:
-    _valueCount: 0
-    _value: 0
-  weightRoll:
-    _valueCount: 0
-    _value: 0
-  weightControlMaxX: 2
-  weightControlMaxZ: 2
-  wheelColliderPrefab: {fileID: 0}
-  constraintSolver: {fileID: 1828915357}
-  tractionControl: 0
-  brakeControl: 0
-  centrifugalForceMul: 1
-  minCentrifugalVelocity: 3
-  useFrictionCircle: 1
 --- !u!114 &1828915357
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11370,27 +11292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c21ee7e556e0e4f9a490c79c64212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueCurve:
+  normalizedTorqueCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -11403,24 +11307,7 @@ MonoBehaviour:
     value: 0
   maxRPM:
     value: 9000
-  gearRatios: []
-  gear: 0
-  shiftTime: 0.1
-  shiftTimeCurrent: 0
-  shiftLock: 0.5
-  shiftLockCurrent: 0
-  shiftGearUpRPMRatio: 0.8
-  shiftGearDownRPMRatio: 0.2
-  transmissionRatio: 1
-  throttle: 0
-  clutch: 0
   targetOmega:
-    value: 0
-  torque:
-    value: 0
-  rpm:
-    value: 0
-  omega:
     value: 0
 --- !u!114 &1828915359
 MonoBehaviour:
@@ -11435,13 +11322,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 1828915356}
-  speedEffect:
-    particles: {fileID: 0}
-    thresholdSpeedInKmH: 0
-    maxSpeedInKmH: 0
-  jumpElapsedTime: 0
-  jumpTime: 1
-  maxTorque: 200
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!1 &1842727571
 GameObject:
   m_ObjectHideFlags: 0
@@ -12165,27 +12051,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46c21ee7e556e0e4f9a490c79c64212b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueCurve:
+  normalizedTorqueCurve:
     serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 34
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+    m_Curve: []
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -12198,24 +12066,7 @@ MonoBehaviour:
     value: 0
   maxRPM:
     value: 9000
-  gearRatios: []
-  gear: 0
-  shiftTime: 0.1
-  shiftTimeCurrent: 0
-  shiftLock: 0.5
-  shiftLockCurrent: 0
-  shiftGearUpRPMRatio: 0.8
-  shiftGearDownRPMRatio: 0.2
-  transmissionRatio: 1
-  throttle: 0
-  clutch: 0
   targetOmega:
-    value: 0
-  torque:
-    value: 0
-  rpm:
-    value: 0
-  omega:
     value: 0
 --- !u!114 &1954619956
 MonoBehaviour:
@@ -12230,13 +12081,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 1954619957}
-  speedEffect:
-    particles: {fileID: 0}
-    thresholdSpeedInKmH: 0
-    maxSpeedInKmH: 0
-  jumpElapsedTime: 0
-  jumpTime: 1
-  maxTorque: 200
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!114 &1954619957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12249,43 +12099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  chassis: {fileID: 595115317}
-  engine: {fileID: 1954619955}
-  torqueDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  speedDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f012d27c28abbfa47b6bf5d26ba472e2, type: 2}
-  steeringDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: f374428e7805f1c48b498cba59218ab0, type: 2}
-  brakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: da5cf80e2dc06b3489eb0fa873642b9e, type: 2}
-  handBrakeDifferential:
-    currentValue: 0
-    def: {fileID: 11400000, guid: 28aa2ec9baafed844ae63ba35e1fc2f3, type: 2}
-  forward: 1
-  jumpDef:
-    min: 0
-    stiffnessMul: 0
-  weightPitch:
-    _valueCount: 0
-    _value: 0
-  weightRoll:
-    _valueCount: 0
-    _value: 0
-  weightControlMaxX: 2
-  weightControlMaxZ: 2
-  wheelColliderPrefab: {fileID: 0}
-  constraintSolver: {fileID: 1954619958}
-  tractionControl: 0
-  brakeControl: 0
-  centrifugalForceMul: 1
-  minCentrifugalVelocity: 3
-  useFrictionCircle: 1
 --- !u!114 &1954619958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13444,6 +13257,7 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  frictionSource: {fileID: 0}
 --- !u!1 &2099303133
 GameObject:
   m_ObjectHideFlags: 0
@@ -13492,7 +13306,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
+  m_Script: {fileID: 11500000, guid: edd152181535b074e96dac8ab33be36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2136045934
@@ -13783,50 +13597,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 464567701}
     m_Modifications:
-    - target: {fileID: 1203360625, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 436282708}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[0].time
-      value: -0.0011283326
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[1].time
-      value: 0.69854546
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[2].time
-      value: 1.0015259
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[0].value
-      value: 0.90231633
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[1].value
-      value: 0.98440564
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[2].value
-      value: 0.024723053
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[0].inSlope
-      value: 0.11732511
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[2].inSlope
-      value: -3.1674738
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[0].outSlope
-      value: 0.11732511
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614579108994908, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: torqueCurve.m_Curve.Array.data[2].outSlope
-      value: -3.1674738
-      objectReference: {fileID: 0}
     - target: {fileID: 3054614579108994910, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
       propertyPath: m_Name
       value: TestHybrid
@@ -13875,34 +13645,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3054614579651218094, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: frictionMultiplier
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614580072342167, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: frictionMultiplier
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614580294333465, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: frictionMultiplier
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614580673810318, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: frictionMultiplier
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3054614580798337333, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 13400000, guid: 36462af8088aa6d4d85249b7bd6359c1, type: 2}
-    - target: {fileID: 9049128462948842746, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9049128462948842747, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: f754c4be40584e64da60cf023848f179, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
 --- !u!1001 &3914737663247150817

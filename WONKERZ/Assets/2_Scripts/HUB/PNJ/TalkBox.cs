@@ -57,7 +57,7 @@ namespace Wonkerz {
 
         void OnTriggerEnter(Collider iCol)
         {
-            if (iCol.GetComponent<CarController>())
+            if (iCol.GetComponent<SchCarController>())
             {
                 is_talkable = true;
             }
@@ -65,7 +65,7 @@ namespace Wonkerz {
 
         void OnTriggerExit(Collider iCol)
         {
-            if (iCol.GetComponent<CarController>())
+            if (iCol.GetComponent<SchCarController>())
             {
                 end_dialog();
                 is_talkable = false;
