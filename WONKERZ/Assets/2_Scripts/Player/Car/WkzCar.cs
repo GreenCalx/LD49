@@ -45,6 +45,22 @@ namespace Wonkerz
         public float centrifugalForceMul = 1.0f;
         public float minCentrifugalVelocity = 3.0f;
 
+        public bool IsTouchingGround() {
+            foreach (var a in chassis.axles) {
+                if (a.right != null && a.right.grounded) return true;
+                if (a.left  != null && a.left.grounded ) return true;
+            }
+            return false;
+        }
+
+        public bool IsTouchingGroundAllWheels() {
+            foreach (var a in chassis.axles) {
+                if (a.right != null && !a.right.grounded) return false;
+                if (a.left  != null && !a.left.grounded ) return false;
+            }
+            return false;
+        }
+
         protected override void Update() {
             base.Update();
 

@@ -86,7 +86,7 @@ public class IntroTutorialTriggers : MonoBehaviour
         return;
         
         bool playerIsActive = PC.IsInMenu();
-        bool playerIsGrounded = PC.TouchGroundAll();
+        bool playerIsGrounded = PC.car.GetCar().IsTouchingGroundAllWheels();
 
         //bool playerHasLowSpeed = (PC.car_old ? PC.car_old.GetCurrentSpeed() : PC.car_new.GetCurrentSpeed()) < 5f;
         bool playerHasLowSpeed = true;

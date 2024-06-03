@@ -152,7 +152,7 @@ namespace Wonkerz
         public void HasJumpedCond()
         {
             PlayerController pc = Access.Player();
-            if ((jump_pressed_elapsed > 0.5f) && !pc.TouchGround())
+            if ((jump_pressed_elapsed > 0.5f) && !pc.car.GetCar().IsTouchingGround())
             {
                 HappyValidation();
             }

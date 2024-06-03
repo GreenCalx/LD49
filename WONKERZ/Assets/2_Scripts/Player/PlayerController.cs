@@ -115,9 +115,10 @@ namespace Wonkerz
             {
                 var player = (fsm as PlayerFSM).GetPlayer();
 
-                player.flags[PlayerController.FJump] = !player.TouchGround();
-                if (!player.TouchGround())
+                player.flags[PlayerController.FJump] = !player.car.GetCar().IsTouchingGround();
+                if (!player.car.GetCar().IsTouchingGround())
                 {
+                    UnityEngine.Debug.Log("jumping");
                     player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
                 }
                 else
@@ -621,20 +622,10 @@ namespace Wonkerz
         }
         #endif
 
-        public bool TouchGround()
-        {
-            return true;
-        }
-
         private bool isTouchingWater = false;
         public void SetTouchingWater(bool state)
         {
             isTouchingWater = state;
-        }
-
-        public bool TouchGroundAll()
-        {
-            return true;
         }
 
         public bool IsAlive()

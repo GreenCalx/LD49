@@ -208,7 +208,7 @@ namespace Wonkerz {
         {
             if (currPanels>0)
             {
-                if (!player.TouchGroundAll())
+                if (!player.car.GetCar().IsTouchingGroundAllWheels())
                 return;
 
                 currPanels -= 1;
