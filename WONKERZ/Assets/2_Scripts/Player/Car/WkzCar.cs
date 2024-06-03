@@ -28,7 +28,9 @@ namespace Wonkerz
             public float diMaxForce;
         };
 
-        public SchJumpDef jumpDef;
+        public SchJumpDef  jumpDef;
+        public WonkerDecal jumpDecal;
+
         float jumpElapsedTime = 0.0f;
         bool isJumping = false;
 
@@ -51,6 +53,8 @@ namespace Wonkerz
                 jumpElapsedTime += Time.deltaTime;
                 SetSuspensionTargetPosition();
             }
+
+            jumpDecal.SetAnimationTime(jumpElapsedTime / jumpDef.time);
         }
 
         protected override void FixedUpdate() {
@@ -132,6 +136,7 @@ namespace Wonkerz
         public void ResetWheels()
         {
             motor.Reset();
+            gearBox.Reset();
 
             foreach (var a in chassis.axles) {
                 if (a.right) a.right.Reset();
