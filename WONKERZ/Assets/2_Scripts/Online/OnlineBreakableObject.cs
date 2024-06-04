@@ -7,33 +7,22 @@ using Mirror;
 
 public class OnlineBreakableObject : NetworkBehaviour
 {
-    public enum BreakingMode
-    {
-        eDestroy,
-        eDeactivate,
-        eDisableRenderer
-    }
-    // NOTE initialObject should be the gameobject having the renderer.
-    public GameObject initialObject;
-    public BreakingMode initialObjectBreakingMode;
     public GameObject brokenObjectRef;
+    public GameObject collectiblePatchPrefab;
     public bool destroyParentGameObject = true;
     public float timeBeforeFragClean = 15f;
 
     public float breakSpeedThreshold = 30f;
     public float fragmentExplodeForce = 30f;
     public float upwardMultiplier = 1f;
-
-    private GameObject brokenVersionInst;
-    private float elapsedTimeSinceBreak;
-
-
     public bool swallowBreak;
     public UnityEvent OnBreakFunc;
 
     [Header("Internals")]
     [SyncVar]
     private bool isBroken = false;
+   
+    private GameObject brokenVersionInst;
 
     // use PlayOnAwake SFX instead on spawned object
     //public AudioSource breakSFX;
@@ -41,23 +30,13 @@ public class OnlineBreakableObject : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        elapsedTimeSinceBreak = 0f;
+    
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!!brokenVersionInst) elapsedTimeSinceBreak += Time.deltaTime;
-        if (elapsedTimeSinceBreak >= timeBeforeFragClean)
-        {
-            foreach(Transform child in brokenVersionInst.transform)
-            {
-                Destroy(child.gameObject);
-            }
-            Destroy(brokenVersionInst);
-            if (destroyParentGameObject)
-                Destroy(gameObject);
-        }
+
     }
 
     void OnCollisionEnter(Collision iCol)
@@ -83,6 +62,8 @@ public class OnlineBreakableObject : NetworkBehaviour
             OnlinePlayerController opc = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
             if (opc == null)
                 return;
+            if (!opc.isLocalPlayer)
+                return;
 
             CarController cc = opc.self_PlayerController.car;
             // break cond : player speed > threshold speed && dist < breakdist
@@ -99,7 +80,6 @@ public class OnlineBreakableObject : NetworkBehaviour
                         BreakObject(opc);
                     else
                         opc.CmdBreakObject(this);
-
                 }
                 OnBreakFunc.Invoke();
             }
@@ -122,53 +102,101 @@ public class OnlineBreakableObject : NetworkBehaviour
         OnBreak(iCol);
     }
 
+    public void disableSelfColliders()
+    {
+        BoxCollider bc = GetComponent<BoxCollider>();
+        if (!!bc) 
+            bc.enabled = false;
+        MeshCollider mc = GetComponent<MeshCollider>();
+        if (!!mc) 
+            mc.enabled = false;
+        MeshRenderer mr = GetComponent<MeshRenderer>();
+        if (!!mr) 
+            mr.enabled = false;
+
+        foreach(Transform child in transform)
+        {
+            bc = child.gameObject.GetComponent<BoxCollider>();
+            if (!!bc) 
+                bc.enabled = false;
+            
+            mc = child.gameObject.GetComponent<MeshCollider>();
+            if (!!mc) 
+                mc.enabled = false;
+            
+            mr = child.GetComponent<MeshRenderer>();
+            if (!!mr) 
+                mr.enabled = false;            
+        }
+    }
+
     [Server]
     public void BreakObject(OnlinePlayerController iOPC)
     {
+        if (isBroken)
+            return;
+        isBroken = true;
+
         // approximate contact point for explosion as collider position
         CarController cc = iOPC.self_PlayerController.car;
-        BreakModelSwap(iOPC.self_PlayerController.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
-        elapsedTimeSinceBreak = 0f;
-        isBroken = true;
+
+        if (isServerOnly)
+            disableSelfColliders();
+        RpcDisableSelfColliders();
+
+        if (isServerOnly)
+            BreakModelSwap(iOPC.self_PlayerController.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
+        RpcBreakModelSwap(iOPC.self_PlayerController.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
+
+        StartCoroutine(DeleteInitialCrateCo());
     }
 
-    //[ClientRpc]
+    [Server]
+    IEnumerator DeleteInitialCrateCo()
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+    }
+
+    [ClientRpc]
+    private void RpcDisableSelfColliders()
+    {
+        disableSelfColliders();
+    }
+
+    [ClientRpc]
+    private void RpcBreakModelSwap(Vector3 contactPoint, float forceMultiplier)
+    {
+        BreakModelSwap(contactPoint, forceMultiplier);
+    }
+
     private void BreakModelSwap(Vector3 contactPoint, float forceMultiplier)
     {
+        // As its called by server which handles destruction
+        // isBroken should be true
+        if (!isBroken)
+            return;
+
         // instanciate broken object
-        initialObject.transform.GetPositionAndRotation(out Vector3 localPosition, out Quaternion localRotation);
+        transform.GetPositionAndRotation(out Vector3 localPosition, out Quaternion localRotation);
         // set position, ect in instanciate, or else it will be wrong when applying forces.
 
-        brokenVersionInst = GameObject.Instantiate(brokenObjectRef, localPosition, localRotation, initialObject.transform.parent);
+        brokenVersionInst = Instantiate(brokenObjectRef, localPosition, localRotation);
+        brokenVersionInst.transform.parent = null;
+        brokenVersionInst.transform.localScale = transform.localScale;
+
         NetworkServer.Spawn(brokenVersionInst);
         
-        brokenVersionInst.transform.localScale = initialObject.transform.localScale;
-
-        // remove initial object
-        switch (initialObjectBreakingMode)
+        ExplodeChildBodies ECB = brokenVersionInst.GetComponent<ExplodeChildBodies>();
+        if (!!ECB)
         {
-            case BreakingMode.eDestroy: {
-                GameObject.Destroy(initialObject);
-            } break;
-            case BreakingMode.eDeactivate: {
-                initialObject.SetActive(false);
-            } break;
-            case BreakingMode.eDisableRenderer: {
-                MeshCollider mc = initialObject.GetComponentInChildren<MeshCollider>();
-                if (!!mc) mc.enabled = false;
-                BoxCollider bc = initialObject.GetComponentInChildren<BoxCollider>();
-                if (!!bc) bc.enabled = false;
-                MeshRenderer mr = initialObject.GetComponentInChildren<MeshRenderer>();
-                if (!!mr) mr.enabled = false;
-            } break;
+            Vector3 dir = (contactPoint - ((upwardMultiplier*forceMultiplier)*transform.up)).normalized;
+            ECB.setExplosionDir(dir, fragmentExplodeForce);
+            ECB.triggerExplosion();
         }
 
-        var rbs = brokenVersionInst.GetComponentsInChildren<Rigidbody>();
-        foreach (Rigidbody rb in rbs)
-        {
-            rb.AddForce(fragmentExplodeForce * forceMultiplier * (rb.worldCenterOfMass - (contactPoint - (upwardMultiplier*forceMultiplier)*transform.up)).normalized, ForceMode.VelocityChange);
-            rb.AddTorque(fragmentExplodeForce * forceMultiplier * (rb.worldCenterOfMass - (contactPoint - (upwardMultiplier*forceMultiplier)*transform.up)).normalized, ForceMode.Impulse);
-        }
+        GameObject collectPatch = Instantiate(collectiblePatchPrefab, localPosition, localRotation);
+        NetworkServer.Spawn(collectPatch);
     }
 
 }

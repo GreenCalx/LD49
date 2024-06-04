@@ -4,15 +4,42 @@ using UnityEngine;
 
 public class ExplodeChildBodies : MonoBehaviour
 {
+    public enum ExplosionMode { FROM_DIRECTION = 0, RADIAL = 1};
+
     public Rigidbody[] childBodies;
     private bool triggered = false;
+    public float forceMul = 1f;
     public float forceStr = 10f;
     public Vector3 directionSteer;
+    public bool AddForce = true;
+    public bool AddTorque = true;
 
+    public ForceMode FMToApplyOnForce = ForceMode.Impulse;
+    public ForceMode FMToApplyOnTorque = ForceMode.Impulse;
+    public ExplosionMode explosionMode = ExplosionMode.RADIAL;
+
+    public float TimeBeforeFragCleanUp = 2f;
+    private float elapsedTimeBeforeCleaning = 0f;
     // Start is called before the first frame update
     void Start()
     {
         childBodies = GetComponentsInChildren<Rigidbody>(true);
+    }
+
+    void Update()
+    {
+        if (triggered)
+        {
+            elapsedTimeBeforeCleaning += Time.deltaTime;
+            if (elapsedTimeBeforeCleaning>=TimeBeforeFragCleanUp)
+            {
+                foreach (Transform child in transform)
+                {
+                    Destroy(child.gameObject);
+                    Destroy(gameObject);
+                }
+            }
+        }
     }
 
     // Update is called once per frame
@@ -30,6 +57,12 @@ public class ExplodeChildBodies : MonoBehaviour
         forceStr = Access.Player().rb.velocity.magnitude;
     }
 
+    public void setExplosionDir(Vector3 iDirectionSteer, float iForceStr)
+    {
+        directionSteer  = iDirectionSteer;
+        forceStr        = iForceStr;
+    }
+
     void explodeChilds()
     {
         int n_bodies = childBodies.Length;
@@ -40,8 +73,27 @@ public class ExplodeChildBodies : MonoBehaviour
             //Vector3 dir = randDirection + directionSteer;
             rb.isKinematic = false;
 
-            rb.AddForce(directionSteer*forceStr, ForceMode.Impulse);
-            Debug.DrawRay(rb.gameObject.transform.position, directionSteer*forceStr,  Color.red);
+
+            Vector3 fDir = Vector3.zero;
+            switch (explosionMode)
+            {
+                case ExplosionMode.FROM_DIRECTION:
+                    fDir = rb.worldCenterOfMass - directionSteer;
+                    break;
+                case ExplosionMode.RADIAL:
+                    fDir = rb.transform.position - transform.position;
+                    break;
+                default:
+                    break;
+            }
+
+            if (AddForce)
+                rb.AddForce(fDir * forceStr * forceMul, FMToApplyOnForce);
+            else if (AddTorque)
+                rb.AddForce(fDir * forceStr * forceMul, FMToApplyOnTorque);
+
+            Debug.DrawRay(rb.gameObject.transform.position, fDir,  Color.red);
+            elapsedTimeBeforeCleaning = 0f;
         }
         //Destroy(gameObject);
     }
