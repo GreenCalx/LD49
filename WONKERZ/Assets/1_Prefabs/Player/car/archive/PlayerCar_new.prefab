@@ -5888,13 +5888,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 7253610521772028035}
-  speedEffect:
-    particles: {fileID: 454040417947575609}
-    threshold: 0.618
-  jumpElapsedTime: 0
-  jumpTime: 0.5
-  maxTorque: 200
+  car: {fileID: 0}
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!1 &5627759352029550166
 GameObject:
   m_ObjectHideFlags: 0
@@ -6073,7 +6073,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ab50cd38aa0b1e4b998e6bc0d3025c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 7253610521772028035}
+  car: {fileID: 0}
+  minPitch: 0.8
+  maxPitch: 2
+  ratioMul: 1
 --- !u!1 &5944601478715327172
 GameObject:
   m_ObjectHideFlags: 0
@@ -6774,6 +6777,14 @@ PrefabInstance:
       propertyPath: debug_renderer
       value: 
       objectReference: {fileID: 7253610522104495460}
+    - target: {fileID: 3914737661825366933, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: left
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737661825366933, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: right
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3914737662364433295, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
       propertyPath: m_ConnectedBody
       value: 
@@ -6830,6 +6841,14 @@ PrefabInstance:
       propertyPath: m_ConnectedBody
       value: 
       objectReference: {fileID: 3769561706912130163}
+    - target: {fileID: 3914737663395581225, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: left
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3914737663395581225, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+      propertyPath: right
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3914737663441903746, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
       propertyPath: rb.rb
       value: 
@@ -6850,7 +6869,14 @@ PrefabInstance:
       propertyPath: debug_renderer
       value: 
       objectReference: {fileID: 7253610522619176807}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3914737663032257984, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 1051692180605706766, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 2246289301583748332, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 302089472024310331, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 4380469097538079879, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 3867441968503172294, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
+    - {fileID: 5532393302065511215, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
 --- !u!1 &115127118205097268 stripped
 GameObject:
@@ -6862,17 +6888,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 716020768180737686, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
   m_PrefabInstance: {fileID: 5979075509292670275}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &7253610521772028035 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3914737663032257984, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}
-  m_PrefabInstance: {fileID: 5979075509292670275}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &7253610521772028093 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3914737663032258046, guid: 6a7bbce13d531074a9dbcfb72953b1b4, type: 3}

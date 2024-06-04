@@ -116,30 +116,6 @@ MonoBehaviour:
   self_PowerController: {fileID: 6712834579653182915}
   repulseForce: {x: 0, y: 0, z: 0}
   onDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
-  jump:
-    isStarting: 0
-    suspensionLock: 0
-    applyForceMultiplier: 0
-    value: 10
-    diPitch:
-      _valueCount: 0
-      _value: 0
-    diRoll:
-      _valueCount: 0
-      _value: 0
-    diPitchUnscaled:
-      _valueCount: 0
-      _value: 0
-    diRollUnscaled:
-      _valueCount: 0
-      _value: 0
-    diMaxForce: 6.66
-    sounds:
-    - {fileID: 8300000, guid: 1d15a2153cb7aee40839ca9edacfb461, type: 3}
-  weightControlMaxX: 1.64
-  weightControlMaxZ: 2.83
-  weightIndicator: {fileID: 6799768301161264400}
-  weightIndicatorHeight: 2
   turbo:
     infinite: 0
     strength: 5
@@ -151,12 +127,9 @@ MonoBehaviour:
   invulnerabilityTimeAfterDamage: 0.2
   IsHooked: 0
   grapin: {fileID: 0}
-  car: {fileID: 3891694663254613586}
+  car: {fileID: 0}
   boat: {fileID: 0}
   plane: {fileID: 0}
-  turn:
-    _valueCount: 0
-    _value: 0
   audioSource: {fileID: 6635145384143706130}
   damageSound: {fileID: 8300000, guid: e3e623ff0419b0f49bef6831b248113d, type: 3}
   inputMgr: {fileID: 0}
@@ -832,6 +805,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8298073304116635027}
     m_Modifications:
+    - target: {fileID: 714973839022841307, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: car
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1763001155253324189, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
       propertyPath: m_Name
       value: PlayerCar2
@@ -880,19 +857,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 6486285002600036652, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+      propertyPath: car
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 8189520037205332052, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+    - {fileID: 6486285002600036650, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+    - {fileID: 6486285002600036653, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
+    - {fileID: 1914865993, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
---- !u!114 &3891694663254613586 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6486285002600036652, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
-  m_PrefabInstance: {fileID: 7782777012740433790}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &5383428326292998026 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2788922234876485876, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
@@ -904,11 +878,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e6a0629541809949b1e5f774acc87da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &6799768301161264400 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3628875777632997998, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}
-  m_PrefabInstance: {fileID: 7782777012740433790}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8392046967278169824 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1763001155253324190, guid: ea57c30dbb6e8dc4ebb2f4f4c4fc5f3a, type: 3}

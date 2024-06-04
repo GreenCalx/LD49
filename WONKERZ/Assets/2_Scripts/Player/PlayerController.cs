@@ -40,25 +40,28 @@ namespace Wonkerz
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-            if (airplaneMode != null)
+            if (!player.IsInMenu())
             {
-                if (airplaneMode.GetState().down)
+                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
+                if (airplaneMode != null)
                 {
-                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+                    if (airplaneMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
+                    }
                 }
-            }
 
-            var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
-            if (boatMode != null)
-            {
-                if (boatMode.GetState().down)
+                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
+                if (boatMode != null)
                 {
-                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                    if (boatMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                    }
                 }
-            }
 
-            player.boat.ProcessInputs(currentMgr, Entry);
+                player.boat.ProcessInputs(currentMgr, Entry);
+            }
         }
     }
 
@@ -84,25 +87,28 @@ namespace Wonkerz
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-            if (airplaneMode != null)
+            if (!player.IsInMenu())
             {
-                if (airplaneMode.GetState().down)
+                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
+                if (airplaneMode != null)
                 {
-                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                    if (airplaneMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
+                    }
                 }
-            }
 
-            var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
-            if (boatMode != null)
-            {
-                if (boatMode.GetState().down)
+                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
+                if (boatMode != null)
                 {
-                    player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
+                    if (boatMode.GetState().down)
+                    {
+                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
+                    }
                 }
-            }
 
-            player.plane.ProcessInputs(currentMgr, Entry);
+                player.plane.ProcessInputs(currentMgr, Entry);
+            }
         }
     }
 
@@ -118,7 +124,6 @@ namespace Wonkerz
                 player.flags[PlayerController.FJump] = !player.car.GetCar().IsTouchingGround();
                 if (!player.car.GetCar().IsTouchingGround())
                 {
-                    UnityEngine.Debug.Log("jumping");
                     player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
                 }
                 else
@@ -151,8 +156,8 @@ namespace Wonkerz
                 var e = particles.emission;
                 e.enabled = effectRatio != 0.0f;
 
-                var relativeWindDir = playerCar.chassis.rb.GetLinearVelocity();
-                particles.transform.LookAt(playerCar.chassis.rb.GetPosition() + relativeWindDir);
+                var relativeWindDir = playerCar.GetChassis().GetBody().velocity;
+                particles.transform.LookAt(playerCar.GetChassis().GetBody().position + relativeWindDir);
 
                 var lifemin  = 0.2f;
                 var lifemax  = 0.6f;
@@ -171,7 +176,7 @@ namespace Wonkerz
         {
             base.OnEnter(fsm);
             var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateMode(player.car.gameObject, player.car.car.chassis.rb.GetPhysXBody());
+            player.ActivateMode(player.car.gameObject, player.car.car.GetChassis().GetBody());
             // car also need to reset wheels velocity.
             player.car.GetCar().ResetWheels();
         }
@@ -208,17 +213,13 @@ namespace Wonkerz
                 player.car.ProcessInputs(currentMgr, Entry);
 
                 // powers
-                // spin
-                if (!player.IsInMenu())
+                var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
+                if (spinAtk != null)
                 {
-                    var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
-                    if (spinAtk != null)
+                    if (spinAtk.GetState().down)
                     {
-                        if (spinAtk.GetState().down)
-                        {
-                            player.self_PowerController.setNextPower(1);
-                            player.self_PowerController.tryTriggerPower();
-                        }
+                        player.self_PowerController.setNextPower(1);
+                        player.self_PowerController.tryTriggerPower();
                     }
                 }
             }
@@ -540,7 +541,7 @@ namespace Wonkerz
         void OnAfterLoadScene()
         {
             Access.invalidate();
-            car.car.constraintSolver.solver.bodyInterface.Init();
+            //car.car.constraintSolver.solver.bodyInterface.Init();
         }
         //------ end scene listeners
 

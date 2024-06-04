@@ -24,27 +24,27 @@ using Radian = Schnibble.SIUnits.FloatWrapper;
 
 namespace Wonkerz
 {
-    public class WkzWheelCollider : SchWheelCollider_PhysX
+    public class WkzWheelCollider : SchWheelCollider
     {
         public override void FixedUpdate()
         {
             base.FixedUpdate();
 
-            var wkzCar = car as WkzCar;
+            var wkzCar = chassis.GetCar() as WkzCar;
             // centrifugal forces
-            AngularVelocity chassisAngVelY = (AngularVelocity)car.chassis.rb.GetAngularVelocity().y;
-            if (Mathf.Abs((float)chassisAngVelY) > wkzCar.minCentrifugalVelocity)
+            AngularVelocity chassisAngVelY = (AngularVelocity)chassis.GetBody().angularVelocity.y;
+            if (Mathf.Abs((float)chassisAngVelY) > wkzCar.wkzDef.minCentrifugalVelocity)
             {
                 Vector3 radius = suspension.GetAnchorA() - suspension.GetAnchorB();
                 Meter radiusLength = (Meter)radius.magnitude;
                 Vector3 radiusDir = radius / (float)radiusLength;
 
-                Force centrifugalForceZ = wkzCar.centrifugalForceMul * (chassisAngVelY * chassisAngVelY) * (tire.mass * radiusLength);
+                Force centrifugalForceZ = wkzCar.wkzDef.centrifugalForceMul * (chassisAngVelY * chassisAngVelY) * (tire.mass * radiusLength);
 
-                Vector3 up = Vector3.Cross(radiusDir, car.chassis.transform.right);
+                Vector3 up = Vector3.Cross(radiusDir, chassis.transform.right);
                 Vector3 tangent = Vector3.Cross(up, radiusDir);
                 UnityEngine.Debug.DrawLine(transform.position, transform.position + radiusDir * (float)centrifugalForceZ, Color.yellow);
-                car.chassis.rb.ApplyForce((float)centrifugalForceZ * radiusDir, transform.position);
+                chassis.GetBody().AddForceAtPosition((float)centrifugalForceZ * radiusDir, transform.position);
             }
         }
     }

@@ -1,8 +1,6 @@
-using UnityEngine;
-using System;
 using Schnibble;
 using Schnibble.Managers;
-using static Schnibble.Physics;
+using UnityEngine;
 
 namespace Wonkerz
 {
@@ -11,9 +9,9 @@ namespace Wonkerz
         WkzCar wkzCar;
 
         int gearUpDown = (int)PlayerInputs.InputCode.ForwardBackward;
-        int jump       = (int)PlayerInputs.InputCode.Jump;
-        int weightX    = (int)PlayerInputs.InputCode.WeightX;
-        int weightY    = (int)PlayerInputs.InputCode.WeightY;
+        int jump = (int)PlayerInputs.InputCode.Jump;
+        int weightX = (int)PlayerInputs.InputCode.WeightX;
+        int weightY = (int)PlayerInputs.InputCode.WeightY;
 
         void Awake()
         {
@@ -25,11 +23,15 @@ namespace Wonkerz
                 }
                 wkzCar = car as WkzCar;
             }
+            else
+            {
+                this.LogError("CarController does not have a Car objects attached.");
+            }
 
             accelerator = (int)PlayerInputs.InputCode.Accelerator;
-            brake       = (int)PlayerInputs.InputCode.Break;
-            handbrake   = (int)PlayerInputs.InputCode.Handbrake;
-            turn        = (int)PlayerInputs.InputCode.Turn;
+            brake = (int)PlayerInputs.InputCode.Break;
+            handbrake = (int)PlayerInputs.InputCode.Handbrake;
+            turn = (int)PlayerInputs.InputCode.Turn;
         }
 
         public void SetCar(SchCar car)
@@ -53,11 +55,13 @@ namespace Wonkerz
             }
         }
 
-        public WkzCar GetCar() {
+        public WkzCar GetCar()
+        {
             return wkzCar;
         }
 
-        void FixedUpdate() {
+        void FixedUpdate()
+        {
             firstProcessInputs = true;
         }
 
@@ -72,7 +76,8 @@ namespace Wonkerz
             // One of those point would be the InputManager Update.
             // Therefore we reset it the first time we process inputs.
             // In the future we need a way to do it more elegantly.
-            if (firstProcessInputs) {
+            if (firstProcessInputs)
+            {
                 wkzCar.weightRoll.Reset();
                 wkzCar.weightPitch.Reset();
                 firstProcessInputs = false;

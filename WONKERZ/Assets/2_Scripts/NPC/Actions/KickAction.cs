@@ -107,7 +107,7 @@ public class KickAction : MonoBehaviour
 
         if (cc != null)
         {
-            Rigidbody rb = cc.car.chassis.rb.GetPhysXBody();
+            Rigidbody rb = cc.car.GetChassis().GetBody();
             float kickForce = computeKickStrength(rb.mass);
             rb.AddForce(kickDirection * kickForce, forceMode);
         }

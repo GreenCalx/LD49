@@ -58,30 +58,6 @@ MonoBehaviour:
   self_PowerController: {fileID: 0}
   repulseForce: {x: 0, y: 0, z: 0}
   onDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
-  jump:
-    isStarting: 0
-    suspensionLock: 0
-    applyForceMultiplier: 0
-    value: 10
-    diPitch:
-      _valueCount: 0
-      _value: 0
-    diRoll:
-      _valueCount: 0
-      _value: 0
-    diPitchUnscaled:
-      _valueCount: 0
-      _value: 0
-    diRollUnscaled:
-      _valueCount: 0
-      _value: 0
-    diMaxForce: 6.66
-    sounds:
-    - {fileID: 8300000, guid: 1d15a2153cb7aee40839ca9edacfb461, type: 3}
-  weightControlMaxX: 1.64
-  weightControlMaxZ: 2.83
-  weightIndicator: {fileID: 314769177254299150}
-  weightIndicatorHeight: 2
   turbo:
     infinite: 0
     strength: 5
@@ -94,9 +70,8 @@ MonoBehaviour:
   IsHooked: 0
   grapin: {fileID: 0}
   car: {fileID: 0}
-  turn:
-    _valueCount: 0
-    _value: 0
+  boat: {fileID: 0}
+  plane: {fileID: 0}
   audioSource: {fileID: 438868188841962252}
   damageSound: {fileID: 8300000, guid: e3e623ff0419b0f49bef6831b248113d, type: 3}
   inputMgr: {fileID: 0}
@@ -949,7 +924,7 @@ PrefabInstance:
     - target: {fileID: 7980919339102707615, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: car
       value: 
-      objectReference: {fileID: 7932007666703568985}
+      objectReference: {fileID: 0}
     - target: {fileID: 8171205871345755711, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1004,11 +979,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
---- !u!1 &314769177254299150 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6156887409766289450, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1204200880688723092 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4727036670256620208, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1053,19 +1023,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 714c68f6f3de9f1428fca7ccd2743389, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb: {fileID: 4783224679038121377}
-  width:
-    value: 0
-  height:
-    value: 0
-  length:
-    value: 0
-  localCenterOfMass: {x: 0, y: 0, z: 0}
-  overrideMass: 0
-  mass:
-    value: 0
-  overrideInertia: 0
-  inertia: {x: 0, y: 0, z: 0}
+  def:
+    width:
+      value: 0
+    height:
+      value: 0
+    length:
+      value: 0
+    localCenterOfMass: {x: 0, y: 0, z: 0}
+    overrideMass: 0
+    mass:
+      value: 0
+    overrideInertia: 0
+    inertia: {x: 0, y: 0, z: 0}
   axles: []
 --- !u!114 &2857474670945902781
 MonoBehaviour:
@@ -1079,57 +1049,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf1b8e2c6cffb3648aa9313b31078eb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 7932007666703568985}
-  speedEffect:
-    particles: {fileID: 7502670305448313716}
-    threshold: 0
-  jumpElapsedTime: 0
-  jumpTime: 0.5
-  maxTorque: 200
---- !u!114 &7932007666703568985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3347691404969369085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 184b601bd0d88cb49a9fecb7ec611bae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  type: 1
-  chassis: {fileID: 0}
-  engine: {fileID: 0}
-  torqueDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  speedDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  steeringDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  brakeDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  handBrakeDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  forward: 1
-  physXEngine: {fileID: 0}
-  jumpDef:
-    min: 0
-    max: 0
-  weightPitch:
-    _valueCount: 0
-    _value: 0
-  weightRoll:
-    _valueCount: 0
-    _value: 0
-  weightControlMaxX: 0
-  weightControlMaxZ: 0
-  wheelColliderPrefab: {fileID: 0}
+  car: {fileID: 0}
+  accelerator: 0
+  brake: 0
+  handbrake: 0
+  turn: 0
+  shiftUp: 0
+  shiftDown: 0
 --- !u!114 &8701467582269954244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1142,23 +1068,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26b3ed7094635944898365021ee28fab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initFromChassis: 0
   right: {fileID: 0}
   left: {fileID: 0}
+  antirollBar:
+    stiffness:
+      value: 0
   torqueDifferential:
-    currentValue: 0
-    def: {fileID: 0}
-  speedDifferential:
-    currentValue: 0
-    def: {fileID: 0}
+    bias: 0.5
+    ratio: 1
   brakeDifferential:
-    currentValue: 0
-    def: {fileID: 0}
+    bias: 0.5
+    ratio: 1
   handBrakeDifferential:
-    currentValue: 0
-    def: {fileID: 0}
+    bias: 0.5
+    ratio: 1
   steeringDifferential:
-    currentValue: 0
-    def: {fileID: 0}
+    bias: 0.5
+    ratio: 1
 --- !u!4 &3347691404969369086 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9176791244789910490, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
@@ -1284,11 +1211,6 @@ MonoBehaviour:
   part: 0
   materialSkinID: 0
   partSkinID: 0
---- !u!1 &7502670305448313716 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4121135027177362768, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}
-  m_PrefabInstance: {fileID: 5850141404303316516}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8829695347395382027 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3145344049807236399, guid: 89af249fadf3cf24295a4d6cf1647ede, type: 3}

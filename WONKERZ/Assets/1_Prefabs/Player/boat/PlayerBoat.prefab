@@ -299,7 +299,6 @@ GameObject:
   - component: {fileID: 6800990292072467026}
   - component: {fileID: 6800990292072467031}
   - component: {fileID: 7622235054036043000}
-  - component: {fileID: 5387822148784330519}
   m_Layer: 3
   m_Name: PlayerBoat
   m_TagString: Untagged
@@ -383,54 +382,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6800990292072467025}
-  motor: {fileID: 5387822148784330519}
+  motor:
+    rid: 258629426438209536
   gearBox:
-    currentValue: 0
-    def: {fileID: 11400000, guid: b68d68644834d6744867b2cc5d5ee75e, type: 2}
-    gearRatios:
-    - 10
+    bias: 0.5
+    ratio: 1
+    def:
+      gearRatios: []
+      shiftLock: 0.5
+      shiftTime: 0.1
+      shiftGearUpRPMRatio: 0.8
+      shiftGearDownRPMRatio: 0.2
+      automatic: 1
+      canBeNeutral: 0
     gear: 0
-    shiftTime: 0.1
-    shiftTimeCurrent: 0
-    shiftLock: 0.5
-    shiftLockCurrent: 0
-    shiftGearUpRPMRatio: 0.8
-    shiftGearDownRPMRatio: 0.2
-    automatic: 1
-    canBeNeutral: 0
   steering: 0
   brake: 0
   motorTransform: {fileID: 6800990291451486005}
   maxSteeringAngle: 20
---- !u!114 &5387822148784330519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6800990292072467027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c21ee7e556e0e4f9a490c79c64212b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  normalizedTorqueCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  maxTorque:
-    value: 0
-  engineBrakeTorque:
-    value: 0
-  engineInertia: 0
-  idleRPM:
-    value: 0
-  maxRPM:
-    value: 0
-  targetOmega:
-    value: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 258629426438209536
+      type: {class: SchEngine, ns: Schnibble, asm: SchPhysics}
+      data:
+        def:
+          normalizedTorqueCurve:
+            serializedVersion: 2
+            m_Curve: []
+            m_PreInfinity: 2
+            m_PostInfinity: 2
+            m_RotationOrder: 4
+          maxTorque:
+            value: 0
+          engineBrakeTorque:
+            value: 0
+          engineInertia: 0
+          idleRPM:
+            value: 0
+          maxRPM:
+            value: 0
+        targetOmega:
+          value: 0
 --- !u!1 &6800990292099529375
 GameObject:
   m_ObjectHideFlags: 0

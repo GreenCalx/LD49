@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11dde29a7fb1b294da262cf5a9289033, type: 3}
+  m_Name: SchCarDef_Default
+  m_EditorClassIdentifier: 
+  chassis:
+    width:
+      value: 4
+    height:
+      value: 2
+    length:
+      value: 4
+    localCenterOfMass: {x: 0, y: -1, z: 0}
+    overrideMass: 0
+    mass:
+      value: 0
+    overrideInertia: 0
+    inertia: {x: 0, y: 0, z: 0}
+  gearBox:
+    gearRatios:
+    - 10
+    - 5
+    - 3
+    - 1
+    - 0.5
+    shiftLock: 0.5
+    shiftTime: 0.1
+    shiftGearUpRPMRatio: 0.8
+    shiftGearDownRPMRatio: 0.2
+    automatic: 1
+    canBeNeutral: 0
+  engine:
+    normalizedTorqueCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -0.015266418
+        value: 0.8390808
+        inSlope: 0.07862756
+        outSlope: 0.07862756
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.3975679
+      - serializedVersion: 3
+        time: 0.72161615
+        value: 0.941929
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1.0074911
+        value: 0.23109627
+        inSlope: -3.109385
+        outSlope: -3.109385
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.089072235
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    maxTorque:
+      value: 1000
+    engineBrakeTorque:
+      value: 0
+    engineInertia: 40
+    idleRPM:
+      value: 0
+    maxRPM:
+      value: 2000
+  axleDifferentialRatio: 4
+  axlesTorqueBias: 0.5
+  axlesBrakeBias: 0.5
+  axlesHandBrakeBias: 1
+  frontTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
+  frontSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  frontBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  frontFrictionMul: 1
+  rearTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
+  rearSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
+  rearBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
+  rearFrictionMul: 1
+  maxSpeedInKmH: 3.4028235e+38
+  useFrictionCircle: 1
+  axlesSteeringBias: 0.5
+  maxSteeringAngle: 20
+  jumpDef:
+    time: 1
+    min: 0
+    stiffnessMul: 50
+    diMaxForce: 100
+  weightControlMaxX: 3
+  weightControlMaxZ: 3
+  centrifugalForceMul: 2
+  minCentrifugalVelocity: 3

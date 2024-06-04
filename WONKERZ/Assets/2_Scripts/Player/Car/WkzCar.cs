@@ -8,6 +8,8 @@ namespace Wonkerz
 {
     public class WkzCar : SchCar 
     {
+        public WkzCarSO wkzDef;
+
         [System.Serializable]
         public struct SpeedTrailEffect
         {
@@ -18,7 +20,6 @@ namespace Wonkerz
         [Header("Effects")]
         public SpeedTrailEffect speedEffect;
 
-
         [System.Serializable]
         public struct SchJumpDef
         {
@@ -27,8 +28,6 @@ namespace Wonkerz
             public float stiffnessMul;
             public float diMaxForce;
         };
-
-        public SchJumpDef  jumpDef;
         public WonkerDecal jumpDecal;
 
         float jumpElapsedTime = 0.0f;
@@ -38,12 +37,6 @@ namespace Wonkerz
         public Schnibble.Math.Accumulator weightPitch;
         [HideInInspector]
         public Schnibble.Math.Accumulator weightRoll;
-
-        public float weightControlMaxX;
-        public float weightControlMaxZ;
-
-        public float centrifugalForceMul = 1.0f;
-        public float minCentrifugalVelocity = 3.0f;
 
         public bool IsTouchingGround() {
             foreach (var a in chassis.axles) {
@@ -61,6 +54,13 @@ namespace Wonkerz
             return false;
         }
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            wkzDef = def as WkzCarSO;
+        }
+
         protected override void Update() {
             base.Update();
 
@@ -70,7 +70,7 @@ namespace Wonkerz
                 SetSuspensionTargetPosition();
             }
 
-            jumpDecal.SetAnimationTime(jumpElapsedTime / jumpDef.time);
+            jumpDecal.SetAnimationTime(jumpElapsedTime / wkzDef.jumpDef.time);
         }
 
         protected override void FixedUpdate() {
@@ -94,7 +94,12 @@ namespace Wonkerz
 
         public void SetSuspensionTargetPosition()
         {
-            var jumpRatio = jumpElapsedTime / jumpDef.time;
+            var jumpRatio = jumpElapsedTime / wkzDef.jumpDef.time;
+            // TODO: do not use car def for suspension maxlength
+            var targetPosition = Mathf.Lerp(def.frontSuspension.maxLength, wkzDef.jumpDef.min, jumpRatio);
+            chassis.SetAxlesSuspensionTargetPosition(targetPosition);
+
+            #if false
             if (constraintSolver)
             {
                 foreach (var w in constraintSolver.solver.joints)
@@ -112,7 +117,7 @@ namespace Wonkerz
                             }
 
                             var targetPosition = cj.targetPosition;
-                            targetPosition.y = Mathf.Lerp(physXBody.GetMaxLength(), jumpDef.min, jumpRatio);
+                            targetPosition.y = Mathf.Lerp(physXBody.GetMaxLength(), wkzDef.jumpDef.min, jumpRatio);
                             cj.targetPosition = targetPosition;
 
                             var linearLimit = cj.linearLimit;
@@ -126,13 +131,22 @@ namespace Wonkerz
                 RegisterJump(dt);
                 #endif
             }
+            #endif
+
         }
 
         public void StartJump()
         {
             // set the new suspension stiffness.
             // it will be used until it cant push up anymore.
-            var jumpRatio = jumpElapsedTime / jumpDef.time;
+            var jumpRatio = jumpElapsedTime / wkzDef.jumpDef.time;
+            chassis.SetAxlesSuspensionMultipliers(wkzDef.jumpDef.stiffnessMul * jumpRatio, 0.0f);
+            // reset
+            jumpElapsedTime = 0.0f;
+            SetSuspensionTargetPosition();
+            isJumping = false;
+
+            #if false
             foreach (var w in constraintSolver.solver.joints)
             {
                 var sus = w as SchSuspension;
@@ -140,13 +154,14 @@ namespace Wonkerz
                 {
                     // explode suspension.
                     sus.dampingMul = 0.0f;
-                    sus.stiffnessMul = jumpDef.stiffnessMul * jumpRatio;
+                    sus.stiffnessMul = wkzDef.jumpDef.stiffnessMul * jumpRatio;
                 }
             }
             // reset
             jumpElapsedTime = 0.0f;
             SetSuspensionTargetPosition();
             isJumping = false;
+            #endif
         }
 
         public void ResetWheels()
@@ -162,18 +177,18 @@ namespace Wonkerz
 
         public void SetCarCenterOfMass()
         {
-            var offset = new Vector3(weightRoll.average * weightControlMaxX, 0f, weightPitch.average * weightControlMaxZ);
+            var offset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);
             chassis.OffsetCenterOfMass(offset);
         }
 
         public void SetCarAerialTorque(float dt)
         {
-            var torque = new Vector3(jumpDef.diMaxForce * weightPitch.average,
+            var torque = new Vector3(wkzDef.jumpDef.diMaxForce * weightPitch.average,
                 0,
-                -jumpDef.diMaxForce * weightRoll.average);
-            torque = chassis.rb.GetPhysXBody().transform.TransformDirection(torque);
+                -wkzDef.jumpDef.diMaxForce * weightRoll.average);
+            torque = chassis.GetBody().transform.TransformDirection(torque);
 
-            chassis.rb.GetPhysXBody().AddTorque(torque * dt, ForceMode.VelocityChange);
+            chassis.GetBody().AddTorque(torque * dt, ForceMode.VelocityChange);
         }
     }
 }
