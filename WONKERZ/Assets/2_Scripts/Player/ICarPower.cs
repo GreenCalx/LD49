@@ -110,7 +110,9 @@ namespace Wonkerz
         public void applyDirectEffect()
         {
             // SPAWN spin hurtbox mesh SpinPowerObject
-            SpinPowerObject_Inst = GameObject.Instantiate(SpinPowerObject_Ref, Access.Player().transform);
+            SpinPowerObject_Inst = GameObject.Instantiate(SpinPowerObject_Ref, Access.Player().GetTransform());
+            SpinPowerObject_Inst.SetActive(true);
+
             elapsed = 0f;
         }
         public void onRefresh()

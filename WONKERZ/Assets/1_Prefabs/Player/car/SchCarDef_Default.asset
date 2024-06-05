@@ -32,12 +32,14 @@ MonoBehaviour:
     - 3
     - 1
     - 0.5
-    shiftLock: 0.5
-    shiftTime: 0.1
+    shiftLatency: 0.1
+    shiftTime: 0.5
+    shiftClutchRelease: 0.1
     shiftGearUpRPMRatio: 0.8
     shiftGearDownRPMRatio: 0.2
     automatic: 1
     canBeNeutral: 0
+    canBeReversed: 1
   engine:
     normalizedTorqueCurve:
       serializedVersion: 2
@@ -73,15 +75,15 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     maxTorque:
-      value: 1500
-    angularDamping: 0.1
+      value: 10000
+    angularDamping: 0
     engineBrakeTorque:
       value: 0
     engineInertia: 0.5
     idleRPM:
       value: 0
     maxRPM:
-      value: 20000
+      value: 50000
   axleDifferentialRatio: 4
   axlesTorqueBias: 0.5
   axlesBrakeBias: 0.5
@@ -89,21 +91,21 @@ MonoBehaviour:
   frontTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   frontSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   frontBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  frontFrictionMul: 1
+  frontFrictionMul: 5
   rearTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   rearSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   rearBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  rearFrictionMul: 1
-  maxSpeedInKmH: 3.4028235e+38
+  rearFrictionMul: 5
+  maxSpeedInKmH: 400
   useFrictionCircle: 1
   brakeControl: 1
   tractionControl: 1
-  slipRatioControlThreshold: 0.5
+  slipRatioControlThreshold: 0.2
   controlMaxMultiplier: 0.5
   axlesSteeringBias: 0.5
   maxSteeringAngle: 15
   jumpDef:
-    time: 1
+    time: 0.5
     min: 0
     stiffnessMul: 50
     diMaxForce: 10
