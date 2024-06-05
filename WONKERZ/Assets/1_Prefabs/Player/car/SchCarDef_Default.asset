@@ -19,7 +19,7 @@ MonoBehaviour:
       value: 2
     length:
       value: 4
-    localCenterOfMass: {x: 0, y: -1, z: 0}
+    localCenterOfMass: {x: 0, y: -1.56, z: 0}
     overrideMass: 0
     mass:
       value: 0
@@ -52,39 +52,40 @@ MonoBehaviour:
         inWeight: 0
         outWeight: 0.3975679
       - serializedVersion: 3
-        time: 0.72161615
-        value: 0.941929
-        inSlope: 0
-        outSlope: 0
+        time: 0.5989569
+        value: 0.9912889
+        inSlope: -0.017366305
+        outSlope: -0.017366305
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
-        outWeight: 0
+        outWeight: 0.13656242
       - serializedVersion: 3
         time: 1.0074911
         value: 0.23109627
-        inSlope: -3.109385
-        outSlope: -3.109385
+        inSlope: -0.7853374
+        outSlope: -0.7853374
         tangentMode: 0
         weightedMode: 0
-        inWeight: 0.089072235
+        inWeight: 0.17830786
         outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     maxTorque:
-      value: 1000
+      value: 1500
+    angularDamping: 0.1
     engineBrakeTorque:
       value: 0
-    engineInertia: 40
+    engineInertia: 0.5
     idleRPM:
       value: 0
     maxRPM:
-      value: 2000
+      value: 20000
   axleDifferentialRatio: 4
   axlesTorqueBias: 0.5
   axlesBrakeBias: 0.5
-  axlesHandBrakeBias: 1
+  axlesHandBrakeBias: 0
   frontTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   frontSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   frontBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
@@ -95,13 +96,17 @@ MonoBehaviour:
   rearFrictionMul: 1
   maxSpeedInKmH: 3.4028235e+38
   useFrictionCircle: 1
+  brakeControl: 1
+  tractionControl: 1
+  slipRatioControlThreshold: 0.5
+  controlMaxMultiplier: 0.5
   axlesSteeringBias: 0.5
-  maxSteeringAngle: 20
+  maxSteeringAngle: 15
   jumpDef:
     time: 1
     min: 0
     stiffnessMul: 50
-    diMaxForce: 100
+    diMaxForce: 10
   weightControlMaxX: 3
   weightControlMaxZ: 3
   centrifugalForceMul: 2
