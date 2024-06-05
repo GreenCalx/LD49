@@ -862,8 +862,7 @@ MonoBehaviour:
   motor:
     rid: 258629425767645184
   gearBox:
-    bias: 0.5
-    ratio: 1
+    invertInput: 0
     def:
       gearRatios: []
       shiftLock: 0.5
@@ -879,15 +878,11 @@ MonoBehaviour:
   brakeControl: 0
   forward: 1
   useFrictionCircle: 1
+  wkzDef: {fileID: 0}
   speedEffect:
     particles: {fileID: 159696682681997720}
     thresholdSpeedInKmH: 20
     maxSpeedInKmH: 150
-  jumpDef:
-    time: 1
-    min: 1
-    stiffnessMul: 100
-    diMaxForce: 0
   jumpDecal: {fileID: 1203360624}
   weightPitch:
     _valueCount: 0
@@ -895,10 +890,6 @@ MonoBehaviour:
   weightRoll:
     _valueCount: 0
     _value: 0
-  weightControlMaxX: 2
-  weightControlMaxZ: 2
-  centrifugalForceMul: 1
-  minCentrifugalVelocity: 3
   references:
     version: 2
     RefIds:
@@ -914,6 +905,7 @@ MonoBehaviour:
             m_RotationOrder: 4
           maxTorque:
             value: 0
+          angularDamping: 0
           engineBrakeTorque:
             value: 0
           engineInertia: 0
@@ -921,8 +913,6 @@ MonoBehaviour:
             value: 0
           maxRPM:
             value: 0
-        targetOmega:
-          value: 0
 --- !u!1 &3054614579212441715
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,10 +1117,13 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
+  angularDamping: 0
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
+  slip: 0
+  estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
   grounded: 0
@@ -1165,7 +1158,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 150
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1384,10 +1377,13 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
+  angularDamping: 0
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
+  slip: 0
+  estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
   grounded: 0
@@ -1422,7 +1418,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 150
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1609,10 +1605,13 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
+  angularDamping: 0
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
+  slip: 0
+  estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
   grounded: 0
@@ -1647,7 +1646,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 150
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -1830,18 +1829,6 @@ MonoBehaviour:
   antirollBar:
     stiffness:
       value: 1000
-  torqueDifferential:
-    bias: 0.5
-    ratio: 1
-  brakeDifferential:
-    bias: 0.5
-    ratio: 1
-  handBrakeDifferential:
-    bias: 0.5
-    ratio: 1
-  steeringDifferential:
-    bias: 0.5
-    ratio: 1
 --- !u!1 &3054614580488655251
 GameObject:
   m_ObjectHideFlags: 0
@@ -1975,18 +1962,6 @@ MonoBehaviour:
   antirollBar:
     stiffness:
       value: 1000
-  torqueDifferential:
-    bias: 0.5
-    ratio: 1
-  brakeDifferential:
-    bias: 0.5
-    ratio: 1
-  handBrakeDifferential:
-    bias: 0.5
-    ratio: 1
-  steeringDifferential:
-    bias: 0.5
-    ratio: 1
 --- !u!1 &3054614580555712071
 GameObject:
   m_ObjectHideFlags: 0
@@ -2188,10 +2163,13 @@ MonoBehaviour:
   brake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
   tire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   susDef: {fileID: 11400000, guid: 058f292de357cc54b94c10140046da7f, type: 2}
+  angularDamping: 0
   minOmega: -3.4028235e+38
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
+  slip: 0
+  estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
   grounded: 0
@@ -2226,7 +2204,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 150
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
