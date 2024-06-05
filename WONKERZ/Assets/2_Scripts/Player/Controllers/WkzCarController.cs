@@ -86,9 +86,8 @@ namespace Wonkerz
             base.ProcessInputs(mgr, inputs);
 
             var gearValue = inputs.GetAxisState(gearUpDown).valueRaw;
-            wkzCar.forward = (gearValue > 0.9f ? true
-                : (gearValue < -0.9f) ? false
-                    : car.forward);
+            if      (gearValue > 0.9f ) car.gearBox.GoForward();
+            else if (gearValue < -0.9f) car.gearBox.GoBackward();
 
             var jumpValue = inputs.GetButtonState(jump);
             if (jumpValue.up)
