@@ -114,7 +114,8 @@ public class OnlineBreakableObject : NetworkBehaviour
         if (!!mr) 
             mr.enabled = false;
 
-        foreach(Transform child in transform)
+        Transform[] allChildren = GetComponentsInChildren<Transform>(true);
+        foreach (Transform child in allChildren)
         {
             bc = child.gameObject.GetComponent<BoxCollider>();
             if (!!bc) 

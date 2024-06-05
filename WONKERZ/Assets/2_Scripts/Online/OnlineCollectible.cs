@@ -1,12 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 using Mirror;
 
 public enum ONLINE_COLLECTIBLES {
     NONE=0,
-    NUTS=1
+    NUTS=1,
+    ACCEL=2,
+    MAX_SPEED=3,
+    SPRINGS=4,
+    TURN=5,
+    TORQUEFORCE=6,
+    WEIGHT=7
 }
 
 public class OnlineCollectible : NetworkBehaviour
@@ -15,6 +22,7 @@ public class OnlineCollectible : NetworkBehaviour
     public float timeBeforeBeingCollectible = 0.2f;
 
     public ONLINE_COLLECTIBLES collectibleType;
+    public Sprite negativeStatText;
     public int value = 1;
     [SyncVar]
     public bool collected = false;
@@ -37,6 +45,18 @@ public class OnlineCollectible : NetworkBehaviour
             elapsedTimeBeforeBeingCollectible += Time.deltaTime;
             IsCollectible = elapsedTimeBeforeBeingCollectible >= timeBeforeBeingCollectible;
         }
+    }
+
+    [Server]
+    public void SetAsNegative()
+    {
+        value = -1;
+        Image img = GetComponentInChildren<Image>();
+        if (!!img)
+        {
+            img.sprite = negativeStatText;
+        }
+            
     }
 
     [ServerCallback]
@@ -71,8 +91,6 @@ public class OnlineCollectible : NetworkBehaviour
         if (!!onCollectSound)
             Schnibble.Utils.SpawnAudioSource(onCollectSound, transform);
         
-
-
         collected = true;
     }
 
