@@ -610,6 +610,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalRenderer: {fileID: 1203360625}
+  jumpColor: {r: 0, g: 0, b: 0, a: 0}
+  latencyColor: {r: 0, g: 0, b: 0, a: 0}
+  maxColor: {r: 0, g: 0, b: 0, a: 0}
+  latencyBlinkTime: 0.1
 --- !u!1 &1531766912
 GameObject:
   m_ObjectHideFlags: 0
@@ -753,7 +757,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 159696682681997722}
   - {fileID: 8458688514289268236}
   m_Father: {fileID: 3054614579108994911}
   m_RootOrder: 3
@@ -865,19 +868,17 @@ MonoBehaviour:
     invertInput: 0
     def:
       gearRatios: []
-      shiftLock: 0.5
+      shiftLatency: 0.5
       shiftTime: 0.1
+      shiftClutchRelease: 0
       shiftGearUpRPMRatio: 0.8
       shiftGearDownRPMRatio: 0.2
       automatic: 1
       canBeNeutral: 0
+      canBeReversed: 1
     gear: 0
   def: {fileID: 11400000, guid: 4155b18772d4c9e44ada5c79e88aea1e, type: 2}
   chassis: {fileID: 3054614580798337335}
-  tractionControl: 0
-  brakeControl: 0
-  forward: 1
-  useFrictionCircle: 1
   wkzDef: {fileID: 0}
   speedEffect:
     particles: {fileID: 159696682681997720}
@@ -890,6 +891,7 @@ MonoBehaviour:
   weightRoll:
     _valueCount: 0
     _value: 0
+  jumpLock: 1
   references:
     version: 2
     RefIds:
@@ -1122,7 +1124,7 @@ MonoBehaviour:
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
-  slip: 0
+  longSlip: 0
   estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
@@ -1382,7 +1384,7 @@ MonoBehaviour:
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
-  slip: 0
+  longSlip: 0
   estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
@@ -1610,7 +1612,7 @@ MonoBehaviour:
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
-  slip: 0
+  longSlip: 0
   estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
@@ -2168,7 +2170,7 @@ MonoBehaviour:
   maxOmega: 3.4028235e+38
   frictionMultiplier: 10
   useFrictionCircle: 1
-  slip: 0
+  longSlip: 0
   estimatedAngularVelocity: 0
   wheel: {fileID: 0}
   suspensionJoint: {fileID: 0}
@@ -2373,6 +2375,7 @@ Transform:
   - {fileID: 1802458315}
   - {fileID: 2112558824}
   - {fileID: 1053608165}
+  - {fileID: 159696682681997722}
   m_Father: {fileID: 3054614579108994911}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2721,11 +2724,23 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 2042479163}
+    m_TransformParent: {fileID: 3054614580798337334}
     m_Modifications:
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2745,15 +2760,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3018,7 +3033,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalScale.x

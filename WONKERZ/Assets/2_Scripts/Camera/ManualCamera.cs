@@ -22,6 +22,7 @@ namespace Wonkerz
         public float resetSpeed          = 10.0f;
         public float orbitSpeedDegPerSec = 45.0f;
         public float distance            = 30.0f;
+        public float dollyZoomMul = 1.0f;
         public float height              = 10.0f;
         public float lookAheadMul        = 1.0f;
 
@@ -35,6 +36,14 @@ namespace Wonkerz
         Quaternion targetRotation;
         Vector3    focusPoint;
         Vector3    lastPosition;
+
+        float distanceInitial = 0.0f;
+
+        public override void applySpeedEffect(float iSpeedPerCent)
+        {
+            base.applySpeedEffect(iSpeedPerCent);
+            distance = distanceInitial - iSpeedPerCent * dollyZoomMul;
+        }
 
         public void forceAngles(bool iForce, Vector2 forceAngle)
         {
@@ -59,16 +68,11 @@ namespace Wonkerz
             }
         }
 
-        void Start() {
-            init();
-        }
-
-        void Awake() {
-        }
-
         public override void init()
         {
             base.init();
+
+            distanceInitial = distance;
 
             player = Access.Player();
             if (player) playerRef = player.GetTransform().gameObject;
