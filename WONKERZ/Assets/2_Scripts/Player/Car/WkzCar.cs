@@ -51,7 +51,7 @@ namespace Wonkerz
                 if (a.right != null && !a.right.grounded) return false;
                 if (a.left  != null && !a.left.grounded ) return false;
             }
-            return false;
+            return true;
         }
 
         protected override void Awake()
