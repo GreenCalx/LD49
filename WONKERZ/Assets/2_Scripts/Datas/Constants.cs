@@ -3,7 +3,7 @@ using System;
 public struct Constants
 {
     public const int MajorVersion = 0;
-    public const int MinorVersion = 1;
+    public const int MinorVersion = 2;
     // -- Tweaks --
     public const int EASY_N_PANELS      = Int32.MaxValue;
     public const int MEDIUM_N_PANELS    = 3;
