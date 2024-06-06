@@ -10,6 +10,8 @@ namespace Wonkerz {
         public GameObject WindCollider;
         public Animation FanAnimator;
 
+        public float distanceFalloff = 0.8f;
+
         public float force = 10f;
         ///
         private Rigidbody rbToMove;
@@ -19,12 +21,6 @@ namespace Wonkerz {
         {
             Trigger(true);
             FanAnimator.Play();
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
         }
 
         private void updateAnimSpeed(float iSpeed)
@@ -52,9 +48,13 @@ namespace Wonkerz {
 
         public void PushBackPlayer()
         {
-            PlayerDetector pd = WindCollider.GetComponent<PlayerDetector>();
-            Vector3 dir = transform.right;
-            Access.Get<PlayerController>().GetRigidbody().AddForce( dir * force * Time.deltaTime, ForceMode.VelocityChange );
+            // consider to be in physics update.
+            Vector3   dir      = transform.right;
+            Rigidbody player = Access.Get<PlayerController>().GetRigidbody();
+            float     distance = Mathf.Abs(Vector3.Dot(dir, player.position - transform.position));
+
+            float f = force * 1.0f / (distance * distance * distanceFalloff);
+            player.AddForce(dir * force, ForceMode.Acceleration);
         }
     }
 }

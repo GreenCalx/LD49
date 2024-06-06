@@ -27,15 +27,14 @@ namespace Wonkerz
 
         public bool autoAlign = true;
 
-        public SchSpring positionSpring;
-        public SchSpring rotationSpring;
+        public SchSpring positionDistanceSpring;
 
         bool locked = false;
 
-        Vector3 targetPosition;
+        Vector3    targetPosition;
         Quaternion targetRotation;
-        Vector3 focusPoint;
-        Vector3 lastPosition;
+        Vector3    focusPoint;
+        Vector3    lastPosition;
 
         public void forceAngles(bool iForce, Vector2 forceAngle)
         {
@@ -86,6 +85,7 @@ namespace Wonkerz
 
             focusPoint = playerRef.transform.position;
             targetPosition = focusPoint - distance * playerRef.transform.forward + height * Vector3.up;
+            positionDistanceSpring.Activate();
         }
 
         public bool AutomaticRotation(float dt)
@@ -120,7 +120,7 @@ namespace Wonkerz
 
                 Schnibble.Debug.DrawWireSphere(0.1f, focusPoint, 4, 4, Color.magenta);
 
-                positionSpring.Activate();
+                positionDistanceSpring.Activate();
 
                 return true;
             }
@@ -158,55 +158,37 @@ namespace Wonkerz
             targetRotation *= Quaternion.AngleAxis(inputScaled.x, Vector3.up) * Quaternion.AngleAxis(inputScaled.y, Vector3.right);
             targetPosition = focusPoint - targetRotation * Vector3.forward * diff;
 
-            positionSpring.Deactivate();
+            positionDistanceSpring.Deactivate();
 
             return true;
         }
 
         public void UpdateCameraPositionAndRotationFromTarget(Vector3 targetPosition, Quaternion targetRotation, float dt)
         {
-            Vector3 errorPosition = targetPosition - cam.transform.position;
-            positionSpring.currentLength = errorPosition.magnitude;
+            // Update distance first.
+            Vector3 errorPosition = cam.transform.position - targetPosition;
+            positionDistanceSpring.currentLength = errorPosition.magnitude;
             lastPosition = cam.transform.position;
-
-            if (positionSpring.IsActive())
-            {
-                // update position and rotation according to spring values.
-                var distance = errorPosition.magnitude;
-                if (distance > positionSpring.maxLength || distance < positionSpring.minLength)
-                {
-                    #if false
-                    positionSpring.Deactivate();
-
-                    float correction = 0.0f;
-                    if (distance > positionSpring.maxLength)
-                    {
-                        correction = distance - positionSpring.maxLength;
-                    }
-                    if (distance < positionSpring.minLength)
-                    {
-                        correction = distance - positionSpring.minLength;
-                    }
-
-                    cam.transform.position += correction * errorPosition.normalized;
-                    #endif
-                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
-                    cam.transform.position += (positionSpring.stiffness * errorPosition - positionSpring.damp * errorVelocity) * dt * resetSpeed;
+            if (positionDistanceSpring.IsActive()) {
+                var error      = errorPosition.magnitude;
+                // unlock when we are at needed position.
+                if (locked && error < 0.1f) {
+                    locked = false;
                 }
-                else
+
+                if (error != 0.0f)
                 {
-                    Vector3 errorVelocity = (lastPosition - cam.transform.position);
-                    cam.transform.position += (positionSpring.stiffness * errorPosition - positionSpring.damp * errorVelocity) * dt;
+
+                    var errorDir = errorPosition / error;
+                    var vel = Vector3.Dot(lastPosition - cam.transform.position, errorDir);
+                    var correction = -error * positionDistanceSpring.stiffness - vel * positionDistanceSpring.damp;
+
+                    vel += correction * dt;
+                    cam.transform.position += vel * errorDir;
                 }
-            }
-            else
-            {
+            } else {
                 cam.transform.position = targetPosition;
             }
-
-            // if error is small we unlock the camera.
-            errorPosition = targetPosition - cam.transform.position;
-            if (errorPosition.magnitude < 1f) locked = false;
 
             // transform is not what we assumed, recompute rotation.
             var forward = (focusPoint - cam.transform.position);
@@ -214,6 +196,7 @@ namespace Wonkerz
 
             targetRotation = Quaternion.LookRotation(forward, up);
             cam.transform.rotation = targetRotation;
+
         }
 
         public void LateUpdate()
@@ -227,8 +210,8 @@ namespace Wonkerz
                 var forward = (focusPoint - cam.transform.position);
                 var up = Vector3.up;
 
-
-                if (!locked && !ManualRotation(dt))
+                if (locked) resetView();
+                else if (!locked && !ManualRotation(dt))
                 {
                     AutomaticRotation(dt);
                 }

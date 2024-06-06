@@ -6,19 +6,56 @@ namespace Wonkerz {
 
     public class PushButton : MonoBehaviour
     {
+        public bool isPressed;
+
+        #if false
+        public float weightThresholdInKg = 10.00f;
+        public float currentWeightInKg   = 0.0f;
+        private bool prevPressedState;
+        private float upperLowerDiff;
+        public float threshold;
+        public float force = 10f;
         public Transform self_topBtnRef;
         public Transform self_topBtnLowLimit;
         public Transform self_topBtnUpLimit;
         public PlayerDetector triggerDetector;
         public Collider[] CollidersToIgnore;
-        public float threshold;
-        public float force = 10f;
-        private float upperLowerDiff;
-        public bool isPressed;
-        private bool prevPressedState;
+        #endif
 
         public List<UnityEvent> OnPressed;
         public List<UnityEvent> OnReleased;
+
+        ConfigurableJoint joint;
+        Rigidbody body;
+        void Awake() {
+            joint = GetComponent<ConfigurableJoint>();
+            body = GetComponent<Rigidbody>();
+        }
+
+        void FixedUpdate() {
+            var dist = Vector3.Dot(joint.connectedAnchor - body.position, joint.secondaryAxis);
+            if (Mathf.Abs(dist - joint.linearLimit.limit) < 0.1f) { 
+                if (!isPressed) Pressed();
+            } else {
+                if (isPressed) Released();
+            }
+        }
+
+        #if false
+        void OnCollisionStay(Collision c) {
+            currentWeightInKg += c.impulse.magnitude / (Time.fixedDeltaTime * Physics.gravity.magnitude);
+        }
+
+        void FixedUpdate() {
+            if (currentWeightInKg > weightThresholdInKg) {
+                if (!isPressed) Pressed();
+            } else {
+                if (isPressed) Released();
+            }
+
+            currentWeightInKg = 0.0f;
+        }
+
 
         // Start is called before the first frame update
         void Start()
@@ -72,13 +109,17 @@ namespace Wonkerz {
             if (!isPressed && prevPressedState != isPressed)
             { Released(); prevPressedState = isPressed; }
         }
+        #endif
 
         public void Pressed()
         {
+            #if false
             // if (isPressed)
             //     return;
 
             StartCoroutine(MoveTo(self_topBtnRef.transform, self_topBtnLowLimit.position));
+            #endif
+
             isPressed = true;
             foreach (UnityEvent ev in OnPressed)
             {
@@ -88,10 +129,12 @@ namespace Wonkerz {
 
         public void Released()
         {
+            #if false
             // if (!isPressed) 
             //     return;
 
             StartCoroutine(MoveTo(self_topBtnRef.transform, self_topBtnUpLimit.position));
+            #endif
             isPressed = false;
             foreach (UnityEvent ev in OnReleased)
             {
