@@ -53,12 +53,8 @@ namespace Wonkerz {
         public void PushBackPlayer()
         {
             PlayerDetector pd = WindCollider.GetComponent<PlayerDetector>();
-            //Rigidbody rb = Access.Player().car_old.rb;
-            Rigidbody rb = null;
-        
             Vector3 dir = transform.right;
-            rb.AddForce( dir * force * Time.deltaTime, ForceMode.VelocityChange );
-
+            Access.Get<PlayerController>().GetRigidbody().AddForce( dir * force * Time.deltaTime, ForceMode.VelocityChange );
         }
     }
 }
