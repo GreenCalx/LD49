@@ -100,14 +100,17 @@ namespace Wonkerz
 
         private void tryBreak(PlayerController iPC)
         {
-            #if false
-            //SchCarController cc = iPC.car_new;
+            SchCar car = iPC.car.car;
             // break cond : player speed > threshold speed && dist < breakdist
-            //if (cc.GetCurrentSpeed() < breakSpeedThreshold)
+            var carSpeed = car.GetCurrentSpeedInKmH();
+            if (carSpeed < breakSpeedThreshold)
             { return; }
 
             // approximate contact point for explosion as collider position
-            breakWall(iPC.GetRigidbody().worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
+            // TODO: Compute somewhat physically accurate collisions?
+            var forceMultiplier = Mathf.Clamp01((float)carSpeed / 300.00f);
+            breakWall(car.GetChassis().GetBody().worldCenterOfMass, forceMultiplier);
+
             elapsedTimeSinceBreak = 0f;
             Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
             isBroken = true;
@@ -123,7 +126,6 @@ namespace Wonkerz
             //Schnibble.Utils.SpawnAudioSource( breakSFX, transform);
             //isBroken = true;
             //}
-            #endif
         }
 
         private void playerCollisionProc(Collision iCol)
@@ -132,7 +134,7 @@ namespace Wonkerz
             CarController cc = iCol.collider.gameObject.GetComponent<CarController>();
             if (!!Utils.isPlayer(iCol.collider.gameObject))
             {
-                breakWall(iCol.GetContact(0).point, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque) );
+                breakWall(iCol.GetContact(0).point, Mathf.Lerp(0.0f, 1.0, ));
                 elapsedTimeSinceBreak = 0f;
             }
             #endif
