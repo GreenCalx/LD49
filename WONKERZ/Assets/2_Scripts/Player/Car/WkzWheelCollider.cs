@@ -30,6 +30,13 @@ namespace Wonkerz
         {
             base.FixedUpdate();
 
+            // reset from jump
+            if (suspension.GetLength() < suspension.lastLength || suspension.GetLength() >= suspension.GetMaxLength())
+            {
+                suspension.stiffnessMul = 1.0f;
+                suspension.dampingMul   = 1.0f;
+            }
+
             var wkzCar = chassis.GetCar() as WkzCar;
             // centrifugal forces
             AngularVelocity chassisAngVelY = (AngularVelocity)chassis.GetBody().angularVelocity.y;

@@ -128,7 +128,7 @@ namespace Wonkerz
                 }
                 else
                 {
-                    player.car.GetCar().SetCarCenterOfMass();
+                    player.car.GetCar().SetCarCenterOfMass(Time.fixedDeltaTime);
                 }
             }
         }

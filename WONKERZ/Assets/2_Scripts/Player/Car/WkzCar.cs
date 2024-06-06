@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Schnibble;
-using static Schnibble.Physics;
+using UnityEngine;
 
 namespace Wonkerz
 {
-    public class WkzCar : SchCar 
+    public class WkzCar : SchCar
     {
         public WkzCarSO wkzDef;
 
@@ -24,32 +21,37 @@ namespace Wonkerz
         public struct SchJumpDef
         {
             public float time;
-            public float min;
+            public float latency;
+            [Range(0.1f, 0.9f)]
+            public float minLengthPercent;//< in percent of maxLength;
             public float stiffnessMul;
-            public float diMaxForce;
         };
         public WonkerDecal jumpDecal;
 
-        float jumpElapsedTime = 0.0f;
-        bool isJumping = false;
+        float jumpTimeCurrent = 0.0f;
+        float jumpLatencyCurrent = 0.0f;
 
         [HideInInspector]
         public Schnibble.Math.Accumulator weightPitch;
         [HideInInspector]
         public Schnibble.Math.Accumulator weightRoll;
 
-        public bool IsTouchingGround() {
-            foreach (var a in chassis.axles) {
+        public bool IsTouchingGround()
+        {
+            foreach (var a in chassis.axles)
+            {
                 if (a.right != null && a.right.grounded) return true;
-                if (a.left  != null && a.left.grounded ) return true;
+                if (a.left != null && a.left.grounded) return true;
             }
             return false;
         }
 
-        public bool IsTouchingGroundAllWheels() {
-            foreach (var a in chassis.axles) {
+        public bool IsTouchingGroundAllWheels()
+        {
+            foreach (var a in chassis.axles)
+            {
                 if (a.right != null && !a.right.grounded) return false;
-                if (a.left  != null && !a.left.grounded ) return false;
+                if (a.left != null && !a.left.grounded) return false;
             }
             return true;
         }
@@ -59,109 +61,81 @@ namespace Wonkerz
             base.Awake();
 
             wkzDef = def as WkzCarSO;
+
         }
 
-        protected override void Update() {
+        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / wkzDef.jumpDef.time);
+
+        public bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
+
+        protected override void Update()
+        {
             base.Update();
 
-            if (isJumping)
+            if (jumpTimeCurrent > 0.0f)
             {
-                jumpElapsedTime += Time.deltaTime;
                 SetSuspensionTargetPosition();
+                jumpTimeCurrent -= Time.deltaTime;
+                jumpDecal.SetJumpTime(GetJumpCompressionRatio());
             }
-
-            jumpDecal.SetAnimationTime(jumpElapsedTime / wkzDef.jumpDef.time);
+            else if (jumpLatencyCurrent > 0.0f)
+            {
+                jumpLatencyCurrent -= Time.deltaTime;
+                jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / wkzDef.jumpDef.latency));
+            }
         }
 
-        protected override void FixedUpdate() {
+        protected override void FixedUpdate()
+        {
             base.FixedUpdate();
         }
 
-        public float GetSpeedEffectRatio() {
+        public float GetSpeedEffectRatio()
+        {
             return Mathf.Clamp(((float)GetCurrentSpeedInKmH() - speedEffect.thresholdSpeedInKmH) / speedEffect.maxSpeedInKmH, 0.0f, 1.0f);
         }
 
-        // Cleanup : remove temporary function
-        // cause : very bad design
-        public void StartSuspensionCompression() {
-            isJumping = true;
-            SetSuspensionTargetPosition();
+        public void StartSuspensionCompression()
+        {
+            if (IsInJumpLatency())
+            {
+                this.LogError("Should never happen.");
+            }
+
+            jumpTimeCurrent = wkzDef.jumpDef.time;
+            jumpLock = false;
         }
 
-        public void StopSuspensionCompression() {
+        public bool jumpLock = true;
+        public void StopSuspensionCompression()
+        {
+            if (jumpLock)
+            {
+                this.LogError("Should never happen.");
+            }
+
             StartJump();
         }
 
-        public void SetSuspensionTargetPosition()
+        void SetSuspensionTargetPosition()
         {
-            var jumpRatio = jumpElapsedTime / wkzDef.jumpDef.time;
-            // TODO: do not use car def for suspension maxlength
-            var targetPosition = Mathf.Lerp(def.frontSuspension.maxLength, wkzDef.jumpDef.min, jumpRatio);
-            chassis.SetAxlesSuspensionTargetPosition(targetPosition);
+            chassis.SetAxlesSuspensionTargetPosition(Mathf.Lerp(1.0f, wkzDef.jumpDef.minLengthPercent, GetJumpCompressionRatio()));
 
-            #if false
-            if (constraintSolver)
-            {
-                foreach (var w in constraintSolver.solver.joints)
-                {
-                    if (type == SchCar.Type.New)
-                    {
-                        var physXBody = w as SchSuspensionPhysX;
-                        if (physXBody != null)
-                        {
-                            ConfigurableJoint cj = physXBody.joint;
-                            if (cj == null)
-                            {
-                                this.LogError("Should not happen !");
-                                return;
-                            }
-
-                            var targetPosition = cj.targetPosition;
-                            targetPosition.y = Mathf.Lerp(physXBody.GetMaxLength(), wkzDef.jumpDef.min, jumpRatio);
-                            cj.targetPosition = targetPosition;
-
-                            var linearLimit = cj.linearLimit;
-                            linearLimit.limit = targetPosition.y;
-                            cj.linearLimit = linearLimit;
-                        }
-                    }
-                }
-
-                #if SCH_TELEMETRY
-                RegisterJump(dt);
-                #endif
-            }
-            #endif
-
+#if SCH_TELEMETRY
+        RegisterJump(dt);
+#endif
         }
 
         public void StartJump()
         {
+            jumpLock = true;
+            jumpTimeCurrent = 0.0f;
+            jumpLatencyCurrent = wkzDef.jumpDef.latency;
             // set the new suspension stiffness.
             // it will be used until it cant push up anymore.
-            var jumpRatio = jumpElapsedTime / wkzDef.jumpDef.time;
-            chassis.SetAxlesSuspensionMultipliers(wkzDef.jumpDef.stiffnessMul * jumpRatio, 0.0f);
-            // reset
-            jumpElapsedTime = 0.0f;
-            SetSuspensionTargetPosition();
-            isJumping = false;
-
-            #if false
-            foreach (var w in constraintSolver.solver.joints)
-            {
-                var sus = w as SchSuspension;
-                if (sus != null)
-                {
-                    // explode suspension.
-                    sus.dampingMul = 0.0f;
-                    sus.stiffnessMul = wkzDef.jumpDef.stiffnessMul * jumpRatio;
-                }
-            }
-            // reset
-            jumpElapsedTime = 0.0f;
-            SetSuspensionTargetPosition();
-            isJumping = false;
-            #endif
+            chassis.SetAxlesSuspensionMultipliers(wkzDef.jumpDef.stiffnessMul, 0.0f);
+            chassis.SetAxlesSuspensionTargetPosition(1.0f);
+            jumpDecal.SetAnimationTime(0.0f);
         }
 
         public void ResetWheels()
@@ -169,23 +143,33 @@ namespace Wonkerz
             motor.Reset();
             gearBox.Reset();
 
-            foreach (var a in chassis.axles) {
+            foreach (var a in chassis.axles)
+            {
                 if (a.right) a.right.Reset();
-                if (a.left ) a.left.Reset();
+                if (a.left) a.left.Reset();
             }
         }
 
-        public void SetCarCenterOfMass()
+        public void SetCarCenterOfMass(float dt)
         {
-            var offset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);
+            var targetOffset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);
+            var currentOffset = chassis.GetBody().centerOfMass - chassis.def.localCenterOfMass;
+
+            var diffOffset = targetOffset - currentOffset;
+            var offset = currentOffset + (diffOffset * Mathf.Clamp01(wkzDef.weightControlSpeed * dt));
             chassis.OffsetCenterOfMass(offset);
         }
 
         public void SetCarAerialTorque(float dt)
         {
-            var torque = new Vector3(wkzDef.jumpDef.diMaxForce * weightPitch.average,
+            // TODO:
+            // Should we use the current COM or the body position to set a
+            // Torque that is centered always?
+            // Should we have speed?
+            var torque = new Vector3(wkzDef.aerialMaxForce * weightPitch.average,
                 0,
-                -wkzDef.jumpDef.diMaxForce * weightRoll.average);
+                -wkzDef.aerialMaxForce * weightRoll.average);
+
             torque = chassis.GetBody().transform.TransformDirection(torque);
 
             chassis.GetBody().AddTorque(torque * dt, ForceMode.VelocityChange);

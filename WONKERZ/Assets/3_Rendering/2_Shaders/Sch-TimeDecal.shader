@@ -4,6 +4,7 @@ Shader "Custom/Sch-TimeDecal"
     {
        _Color("Color", Color) = (1,1,1,1)
        _ColorMaxTime("MaxTimeColor", Color) = (1,1,1,1)
+        _Cutoff("Cutoff", Range(0.0, 1.0)) = 0.0
         [NoScaleOffset] _MainTex("Albedo", 2D) = "white" {}
 
         [Gamma] _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
@@ -77,8 +78,12 @@ Shader "Custom/Sch-TimeDecal"
 
         void surf (VertexOutput o, inout SchnibbleGBuffer buffer)
         {
-            if (_AnimationTime > o.tex.y)
-                buffer.albedo = _Color * _ColorMaxTime * _AnimationTime;
+            half4 col = lerp(_Color, _ColorMaxTime, _AnimationTime);
+
+            clip(_Color.a - _Cutoff);
+
+            if (_AnimationTime >= o.tex.y)
+                buffer.albedo = col;
             else
                 buffer.albedo = tex2D(_CameraGBufferTexture0Copy, o.screenPos.xy/o.screenPos.w);//float4(0,0,0,1);
         }  

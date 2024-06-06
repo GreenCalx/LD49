@@ -19,7 +19,7 @@ MonoBehaviour:
       value: 2
     length:
       value: 4
-    localCenterOfMass: {x: 0, y: -1.56, z: 0}
+    localCenterOfMass: {x: 0, y: -1.5, z: 0}
     overrideMass: 0
     mass:
       value: 0
@@ -88,6 +88,8 @@ MonoBehaviour:
   axlesTorqueBias: 0.5
   axlesBrakeBias: 0.5
   axlesHandBrakeBias: 0
+  frontAxleAntirollbarStiffness: 0
+  rearAxleAntirollbarStiffness: 0
   frontTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   frontSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   frontBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
@@ -106,10 +108,12 @@ MonoBehaviour:
   maxSteeringAngle: 15
   jumpDef:
     time: 0.5
-    min: 0.5
-    stiffnessMul: 50
-    diMaxForce: 10
+    latency: 1
+    minLengthPercent: 0.226
+    stiffnessMul: 10
+  aerialMaxForce: 5
   weightControlMaxX: 3
   weightControlMaxZ: 3
+  weightControlSpeed: 5
   centrifugalForceMul: 2
   minCentrifugalVelocity: 3

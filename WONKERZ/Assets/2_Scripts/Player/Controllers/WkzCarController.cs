@@ -92,11 +92,11 @@ namespace Wonkerz
             var jumpValue = inputs.GetButtonState(jump);
             if (jumpValue.up)
             {
-                wkzCar.StopSuspensionCompression();
+                if (!wkzCar.jumpLock) wkzCar.StopSuspensionCompression();
             }
             else if (jumpValue.down)
             {
-                wkzCar.StartSuspensionCompression();
+                if (!wkzCar.IsInJumpLatency()) wkzCar.StartSuspensionCompression();
             }
 
             wkzCar.weightRoll.Add(inputs.GetAxisState(weightX).valueSmooth);
