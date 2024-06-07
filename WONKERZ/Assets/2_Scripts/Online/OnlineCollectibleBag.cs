@@ -21,6 +21,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
     [SyncVar]
     public float springInitValue;
     [SyncVar]
+    public float springInitStiffness;
+    [SyncVar]
     public float turnInitValue;
     [SyncVar]
     public float torqueForceInitValue_X;
@@ -89,7 +91,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
         CarController cc = owner.self_PlayerController.car;
 
         maxSpeedInitValue = cc.maxTorque;
-        springInitValue = cc.springStiffness;
+        springInitStiffness = cc.springStiffness;
+        springInitValue = owner.self_PlayerController.jump.value;
         turnInitValue = cc.maxSteeringAngle_deg;
         weightInitValue = cc.rb.mass;
         torqueForceInitValue_X = owner.self_PlayerController.weightControlMaxX;
@@ -151,7 +154,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
         updateAccel(cc);
         updateMaxSpeed(cc);
-        updateSprings(cc);
+        updateSprings(owner.self_PlayerController, cc);
         updateTurn(cc);
         updateTorqueForce(owner.self_PlayerController);
         updateWeight(cc);
@@ -177,12 +180,13 @@ public class OnlineCollectibleBag : NetworkBehaviour
         iCC.maxTorque = maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue;
     }
 
-    private void updateSprings(CarController iCC)
+    private void updateSprings(PlayerController iPC, CarController iCC)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(springs);
         //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
-        iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitValue;
+        iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
+        iPC.jump.value = springCurve.Evaluate(curve_x) * springInitValue;
     }
 
     private void updateTurn(CarController iCC)
