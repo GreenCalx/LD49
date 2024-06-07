@@ -156,7 +156,13 @@ namespace Wonkerz
 
         public void SetCarCenterOfMass(float dt)
         {
+            var maxVect = new Vector3(wkzDef.weightControlMaxX, .0f, wkzDef.weightControlMaxZ);
             var targetOffset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);
+            // try hemisphere instead of plan.
+            // COM will be lowered the farther out it is.
+            var Y = (targetOffset.magnitude / maxVect.magnitude) * wkzDef.weightControlMaxY;
+            targetOffset.y = Y;
+
             var currentOffset = chassis.GetBody().centerOfMass - chassis.def.localCenterOfMass;
 
             var diffOffset = targetOffset - currentOffset;

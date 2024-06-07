@@ -111,7 +111,8 @@ namespace Wonkerz
                 {
                     var diff = focusPoint - cam.transform.position;
                     var diffSize = diff.magnitude;
-                    diff /= diffSize;
+                    if (diffSize != 0.0f) diff /= diffSize;
+                    else diff = Vecto3.zero;
 
                     targetPosition = cam.transform.position + (diffSize - distance) * diff;
                 }
@@ -119,7 +120,8 @@ namespace Wonkerz
                 {
                     var diff = focusPoint - cam.transform.position;
                     var diffSize = diff.magnitude;
-                    diff /= diffSize;
+                    if (diffSize != 0.0f) diff /= diffSize;
+                    else diff = Vecto3.zero;
 
                     targetPosition = cam.transform.position + (diffSize - distance) * diff;
                 }
@@ -233,17 +235,12 @@ namespace Wonkerz
         public bool StartFocus()
         {
             if (!findFocus()) return false;
-
-            //distance += camDistIncrease;
-            //focusInputLock = true;
             return true;
         }
 
         public bool StopFocus()
         {
             resetFocus();
-            //distance -= camDistIncrease;
-            //focusInputLock = true;
             return true;
         }
 
