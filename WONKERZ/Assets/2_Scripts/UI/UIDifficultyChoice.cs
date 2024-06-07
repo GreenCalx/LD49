@@ -54,6 +54,8 @@ namespace Wonkerz {
                 Access.TrackManager().track_score.selected_diff = chosen_difficulty;
                 Access.SceneLoader().unlockScene();
                 onDeactivate.Invoke();
+
+                deactivate();
                 Destroy(gameObject);
             }
 

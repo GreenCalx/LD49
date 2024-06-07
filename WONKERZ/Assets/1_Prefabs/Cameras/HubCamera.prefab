@@ -96,9 +96,9 @@ MonoBehaviour:
   camType: 1
   cam: {fileID: 384985052665168108}
   fov:
-    thresholdPerCent: 0.24
-    speed: 1.35
-    max: 60
+    thresholdPerCent: 0.197
+    speed: 1.9
+    max: 100
   player: {fileID: 0}
   playerRef: {fileID: 0}
   breakFocusDistance: 100
@@ -108,23 +108,17 @@ MonoBehaviour:
   resetSpeed: 10
   orbitSpeedDegPerSec: 45
   distance: 20
+  dollyZoomMul: 10
   height: 10
   lookAheadMul: 0.2
   autoAlign: 1
-  positionSpring:
-    restLength: 0
-    maxLength: 5
-    minLength: 0
-    currentLength: 0
-    stiffness: 0.8
-    damp: 0.2
-  rotationSpring:
+  positionDistanceSpring:
     restLength: 0
     maxLength: 0
     minLength: 0
     currentLength: 0
-    stiffness: 0
-    damp: 0
+    stiffness: 4
+    damp: 0.8
 --- !u!114 &367400099
 MonoBehaviour:
   m_ObjectHideFlags: 0

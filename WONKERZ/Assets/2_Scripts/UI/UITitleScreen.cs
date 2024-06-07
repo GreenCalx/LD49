@@ -25,6 +25,7 @@ namespace Wonkerz {
         {
             deactivate();
         }
+
         protected override void ProcessInputs(InputManager currentMgr, GameController entry){
             base.ProcessInputs(currentMgr, entry);
 
@@ -37,6 +38,8 @@ namespace Wonkerz {
 
         public void launchNewGame()
         {
+            deactivate();
+
             nameEntryPanel.onActivate?.Invoke();
 
             profilePanel.mode = UIProfileCards.FD_MODE.WRITE;
@@ -47,12 +50,14 @@ namespace Wonkerz {
 
         public void launchLoadGame()
         {
+            deactivate();
             // Access.CollectiblesManager().loadJars();
             // Access.GameProgressSaveManager().Load();
 
             // Access.SceneLoader().loadScene(Constants.SN_HUB);
             profilePanel.mode = UIProfileCards.FD_MODE.READ;
             profilePanel.onActivate?.Invoke();
+
         }
 
         public void quitGame(){
@@ -61,6 +66,8 @@ namespace Wonkerz {
 
         public void launchDemo()
         {
+            deactivate();
+
             Access.SceneLoader().loadScene(Constants.SN_DESERT_TOWER);
         }
     }

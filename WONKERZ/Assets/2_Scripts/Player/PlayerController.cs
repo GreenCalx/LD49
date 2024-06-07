@@ -586,7 +586,6 @@ namespace Wonkerz
             var sceneLoader = Access.SceneLoader();
             if (sceneLoader)
             {
-
                 sceneLoader.beforeLoadScene.RemoveListener(OnBeforeLoadScene);
                 sceneLoader.afterLoadScene.RemoveListener(OnAfterLoadScene);
                 sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);

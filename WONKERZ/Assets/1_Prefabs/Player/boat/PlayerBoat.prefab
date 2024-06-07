@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   c: {fileID: 6800990291294762447}
   rb: {fileID: 6800990292072467025}
-  density: 1000
+  density: 30
 --- !u!1 &6800990291363921864
 GameObject:
   m_ObjectHideFlags: 0
@@ -78,7 +78,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990291363921871
 Transform:
   m_ObjectHideFlags: 0
@@ -116,12 +116,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990291363921864}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990291363921869}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990291444623000
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ Transform:
   m_GameObject: {fileID: 6800990291444623000}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 25555900788947982}
@@ -183,8 +183,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6800990291451486006}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.17, z: 1.645}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: -0.00000004371139}
+  m_LocalPosition: {x: -0, y: -1.46, z: -2.25}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -211,7 +211,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6800990291451486006}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7cd723c2e7aa5924482ba2d0c143c17a, type: 3}
   m_Name: 
@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   c: {fileID: 6800990291893924236}
   rb: {fileID: 6800990292072467025}
-  density: 1000
+  density: 30
 --- !u!1 &6800990292072467027
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,7 +305,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292072467024
 Transform:
   m_ObjectHideFlags: 0
@@ -314,7 +314,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6800990292072467027}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.72, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -350,8 +350,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.89, y: 1, z: 4}
-  m_Center: {x: 0, y: 0, z: -0.75}
+  m_Size: {x: 2, y: 1, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6800990292072467031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,23 +378,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292072467027}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26377b4b67b5fba4b86e1662782b72e2, type: 3}
+  m_Script: {fileID: 11500000, guid: 65b3638e376e9794c85d011fddff34c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6800990292072467025}
   motor:
     rid: 258629426438209536
   gearBox:
-    bias: 0.5
-    ratio: 1
+    invertInput: 0
     def:
-      gearRatios: []
-      shiftLock: 0.5
+      gearRatios:
+      - 10
+      shiftLatency: 0.5
       shiftTime: 0.1
+      shiftClutchRelease: 0
       shiftGearUpRPMRatio: 0.8
       shiftGearDownRPMRatio: 0.2
       automatic: 1
       canBeNeutral: 0
+      canBeReversed: 1
     gear: 0
   steering: 0
   brake: 0
@@ -409,21 +411,38 @@ MonoBehaviour:
         def:
           normalizedTorqueCurve:
             serializedVersion: 2
-            m_Curve: []
+            m_Curve:
+            - serializedVersion: 3
+              time: 0
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
+            - serializedVersion: 3
+              time: 1
+              value: 1
+              inSlope: 0
+              outSlope: 0
+              tangentMode: 34
+              weightedMode: 0
+              inWeight: 0
+              outWeight: 0
             m_PreInfinity: 2
             m_PostInfinity: 2
             m_RotationOrder: 4
           maxTorque:
-            value: 0
+            value: 1000
+          angularDamping: 0.2
           engineBrakeTorque:
             value: 0
-          engineInertia: 0
+          engineInertia: 0.1
           idleRPM:
             value: 0
           maxRPM:
-            value: 0
-        targetOmega:
-          value: 0
+            value: 2000
 --- !u!1 &6800990292099529375
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292099529374
 Transform:
   m_ObjectHideFlags: 0
@@ -479,12 +498,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292099529375}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292099529372}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292203735411
 GameObject:
   m_ObjectHideFlags: 0
@@ -502,7 +521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292203735410
 Transform:
   m_ObjectHideFlags: 0
@@ -540,12 +559,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292203735411}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292203735408}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292218756430
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,7 +590,7 @@ Transform:
   m_GameObject: {fileID: 6800990292218756430}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6800990292254535607}
@@ -606,7 +625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292236543059
 Transform:
   m_ObjectHideFlags: 0
@@ -644,12 +663,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292236543052}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292236543057}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292236719538
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,7 +729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292236719543}
   rb: {fileID: 6800990292072467025}
-  density: 1000
+  density: 30
 --- !u!1 &6800990292254535600
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,7 +747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292254535607
 Transform:
   m_ObjectHideFlags: 0
@@ -766,12 +785,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292254535600}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292254535604}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292508078821
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,7 +808,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292508078820
 Transform:
   m_ObjectHideFlags: 0
@@ -827,12 +846,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292508078821}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292508078826}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292520398828
 GameObject:
   m_ObjectHideFlags: 0
@@ -850,7 +869,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990292520398835
 Transform:
   m_ObjectHideFlags: 0
@@ -888,12 +907,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990292520398828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292520398833}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1 &6800990292792873401
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,7 +973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   c: {fileID: 6800990292792873406}
   rb: {fileID: 6800990292072467025}
-  density: 1000
+  density: 30
 --- !u!1 &6800990292830568842
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,7 +1024,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6800990293196791970
 Transform:
   m_ObjectHideFlags: 0
@@ -1043,12 +1062,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6800990293196791971}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00962dbd0506e914087bd234fa1448b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   c: {fileID: 6800990293196791968}
   rb: {fileID: 6800990292072467025}
-  density: 2000
+  density: 30
 --- !u!1001 &6800990291712312042
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -2958,7 +2958,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368280, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7487887720664368286, guid: d7b333dd434164f4faa7a8a7bc316613, type: 3}
       propertyPath: m_RootOrder
@@ -5888,6 +5888,10 @@ PrefabInstance:
     - target: {fileID: 8899078637655989377, guid: 1370e6cce19bbff44bc1ff3a272355bd, type: 3}
       propertyPath: m_Convex
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8899078637655989377, guid: 1370e6cce19bbff44bc1ff3a272355bd, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9198150395857096247, guid: 1370e6cce19bbff44bc1ff3a272355bd, type: 3}
       propertyPath: m_Name
@@ -32895,6 +32899,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalRenderer: {fileID: 1825754662}
+  jumpColor: {r: 0, g: 0, b: 0, a: 0}
+  latencyColor: {r: 0, g: 0, b: 0, a: 0}
+  maxColor: {r: 0, g: 0, b: 0, a: 0}
+  latencyBlinkTime: 0.1
 --- !u!114 &1825754662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37171,6 +37179,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d918d59f44f6c3b4e9b6890f5146c1ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2078968807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078968798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97fd9db69d3d32346bebfdb99ff66055, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2080319405 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4943960282383167100, guid: bce474c84b925fa488bf9baa055f8b62, type: 3}
@@ -38246,6 +38266,10 @@ PrefabInstance:
     - target: {fileID: 3687765044271480505, guid: 43992a559517c0b4bab106335eda66bd, type: 3}
       propertyPath: m_Name
       value: GaragerWaterWorld
+      objectReference: {fileID: 0}
+    - target: {fileID: 3687765044271480505, guid: 43992a559517c0b4bab106335eda66bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3687765044379755073, guid: 43992a559517c0b4bab106335eda66bd, type: 3}
       propertyPath: m_LocalPosition.x
