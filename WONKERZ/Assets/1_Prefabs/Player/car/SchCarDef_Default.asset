@@ -19,7 +19,7 @@ MonoBehaviour:
       value: 2
     length:
       value: 4.5
-    localCenterOfMass: {x: 0, y: -1.5, z: 0}
+    localCenterOfMass: {x: 0, y: -2, z: 0}
     overrideMass: 0
     mass:
       value: 0
@@ -32,11 +32,11 @@ MonoBehaviour:
     - 3
     - 1
     - 0.5
-    shiftLatency: 0.1
+    shiftLatency: 0.2
     shiftTime: 0.5
     shiftClutchRelease: 0.1
-    shiftGearUpRPMRatio: 0.8
-    shiftGearDownRPMRatio: 0.2
+    shiftGearUpRPMRatio: 1
+    shiftGearDownRPMRatio: 0.5
     automatic: 1
     canBeNeutral: 0
     canBeReversed: 1
@@ -93,27 +93,30 @@ MonoBehaviour:
   frontTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   frontSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   frontBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  frontFrictionMul: 100
+  frontFrictionMul: 50
   rearTire: {fileID: 11400000, guid: a04ef7586538f8d44bc719f8ad41d69c, type: 2}
   rearSuspension: {fileID: 11400000, guid: 508ea12c790473443aae0c07fdb737da, type: 2}
   rearBrake: {fileID: 11400000, guid: 905b4aa8ee75ca644a313bc17765036d, type: 2}
-  rearFrictionMul: 100
-  maxSpeedInKmH: 400
+  rearFrictionMul: 50
+  maxSpeedInKmH: 1000
   useFrictionCircle: 0
-  brakeControl: 1
-  tractionControl: 1
+  brakeControl: 0
+  tractionControl: 0
   slipRatioControlThreshold: 0.2
   controlMaxMultiplier: 0.1
-  axlesSteeringBias: 0.5
-  maxSteeringAngle: 15
+  groundAirDetectionLatency: 0.5
+  axlesSteeringBias: 1
+  maxSteeringAngle: 20
   jumpDef:
     time: 0.5
     latency: 1
     minLengthPercent: 0.206
     stiffnessMul: 20
   aerialMaxForce: 20
+  groundAerialSwitchLatency: 0
   weightControlMaxX: 3
   weightControlMaxZ: 3
-  weightControlSpeed: 5
+  weightControlMaxY: -2
+  weightControlSpeed: 1
   centrifugalForceMul: 2
   minCentrifugalVelocity: 3

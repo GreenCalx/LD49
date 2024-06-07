@@ -208,7 +208,6 @@ namespace Wonkerz
 
             targetRotation = Quaternion.LookRotation(forward, up);
             cam.transform.rotation = targetRotation;
-
         }
 
         public void LateUpdate()
@@ -227,6 +226,14 @@ namespace Wonkerz
                 {
                     AutomaticRotation(dt);
                 }
+            }
+            else
+            {
+                focusPoint = secondaryFocus.transform.position;
+
+                var focusDir = (secondaryFocus.transform.position - playerRef.transform.position).normalized;
+                targetPosition = playerRef.transform.position - focusDir * distance + height * Vector3.up;
+                positionDistanceSpring.Activate();
             }
 
             UpdateCameraPositionAndRotationFromTarget(targetPosition, targetRotation, dt);
