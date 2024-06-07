@@ -112,7 +112,7 @@ namespace Wonkerz
                     var diff = focusPoint - cam.transform.position;
                     var diffSize = diff.magnitude;
                     if (diffSize != 0.0f) diff /= diffSize;
-                    else diff = Vecto3.zero;
+                    else diff = Vector3.zero;
 
                     targetPosition = cam.transform.position + (diffSize - distance) * diff;
                 }
@@ -121,7 +121,7 @@ namespace Wonkerz
                     var diff = focusPoint - cam.transform.position;
                     var diffSize = diff.magnitude;
                     if (diffSize != 0.0f) diff /= diffSize;
-                    else diff = Vecto3.zero;
+                    else diff = Vector3.zero;
 
                     targetPosition = cam.transform.position + (diffSize - distance) * diff;
                 }
@@ -147,7 +147,9 @@ namespace Wonkerz
             var focusPoint = playerRef.transform.position;
             var forward = (focusPoint - cam.transform.position);
             var diff = forward.magnitude;
-            forward /= diff;
+            if (diff != 0.0f) forward /= diff;
+            else forward = Vector3.zero;
+
             var up = Vector3.up;
 
             targetRotation = Quaternion.LookRotation(forward, up);
