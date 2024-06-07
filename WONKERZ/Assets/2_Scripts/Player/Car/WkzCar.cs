@@ -150,6 +150,10 @@ namespace Wonkerz
             }
         }
 
+        public void ResetCarCenterOfMass() {
+            chassis.OffsetCenterOfMass(Vector3.zero);
+        }
+
         public void SetCarCenterOfMass(float dt)
         {
             var targetOffset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);

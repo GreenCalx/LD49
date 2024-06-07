@@ -9,6 +9,7 @@ namespace Wonkerz
         [Header("Gameplay")]
         public WkzCar.SchJumpDef jumpDef;
         public float aerialMaxForce = 5.0f;
+        public float groundAerialSwitchLatency = 0.1f;
         public float weightControlMaxX = 1.0f;
         public float weightControlMaxZ = 1.0f;
         public float weightControlSpeed = 1.0f;

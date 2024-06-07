@@ -10,7 +10,6 @@ using static UnityEngine.Debug;
 
 namespace Wonkerz
 {
-
     public class PlayerState : FSMState
     {
         protected PlayerController player;
@@ -117,18 +116,34 @@ namespace Wonkerz
     {
         public class GeneralGroundAction : FSMAction
         {
+            float groundAerialLatencyCurrent = 0.0f;
             public override void Execute(FSMBase fsm)
             {
                 var player = (fsm as PlayerFSM).GetPlayer();
+                var car = player.car.GetCar();
 
-                player.flags[PlayerController.FJump] = !player.car.GetCar().IsTouchingGround();
-                if (!player.car.GetCar().IsTouchingGround())
+                var isInAir = !car.IsTouchingGround();
+                if (player.flags[PlayerController.FJump] != isInAir)
                 {
-                    player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
+                    // start latency between air/ground.
+                    groundAerialLatencyCurrent = (car as WkzCar).wkzDef.groundAerialSwitchLatency;
+                }
+                player.flags[PlayerController.FJump] = isInAir;
+
+                if (groundAerialLatencyCurrent > 0.0f) {
+                    groundAerialLatencyCurrent -= Time.fixedDeltaTime;
                 }
                 else
                 {
-                    player.car.GetCar().SetCarCenterOfMass(Time.fixedDeltaTime);
+                    if (isInAir)
+                    {
+                        player.car.GetCar().ResetCarCenterOfMass();
+                        player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
+                    }
+                    else
+                    {
+                        player.car.GetCar().SetCarCenterOfMass(Time.fixedDeltaTime);
+                    }
                 }
             }
         }
