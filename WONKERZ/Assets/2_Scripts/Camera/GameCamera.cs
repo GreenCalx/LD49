@@ -44,10 +44,11 @@ public class GameCamera : MonoBehaviour
     protected float initial_FOV;
 
     public virtual void init() {
+    }
+
+    public virtual void Awake() {
         if (cam == null) cam = GetComponent<Camera>();
-        if (cam != null) {
-            initial_FOV = cam.fieldOfView;
-        }
+        if (cam != null) initial_FOV = cam.fieldOfView;
     }
 
     public virtual void resetView() {

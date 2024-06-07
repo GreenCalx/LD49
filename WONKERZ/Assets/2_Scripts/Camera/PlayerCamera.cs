@@ -54,10 +54,6 @@ namespace Wonkerz
             updateSecondaryFocus();
         }
 
-        public virtual void Awake() {
-            init();
-        }
-
         public virtual void applySpeedEffect(float iSpeedPerCent)
         {
             if (cam == null)

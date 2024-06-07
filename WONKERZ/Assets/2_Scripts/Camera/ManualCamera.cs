@@ -68,11 +68,15 @@ namespace Wonkerz
             }
         }
 
+        public override void Awake()
+        {
+            base.Awake();
+            distanceInitial = distance;
+        }
+
         public override void init()
         {
             base.init();
-
-            distanceInitial = distance;
 
             player = Access.Player();
             if (player) playerRef = player.GetTransform().gameObject;
