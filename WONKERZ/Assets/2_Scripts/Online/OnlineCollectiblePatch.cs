@@ -48,7 +48,7 @@ public class OnlineCollectiblePatch : NetworkBehaviour
         {
             // Random Range with int has an exclusive max value
             GameObject chosenCollectible = collectiblePrefabs[Random.Range(0,collectiblePrefabs.Count)].gameObject;
-            bool IsNegative = Random.Range(0.0f,1.0f) < chanceForStatToBePositive;
+            bool IsNegative = Random.Range(0.0f,1.0f) > chanceForStatToBePositive;
             
             GameObject spawnedCollect = Instantiate(chosenCollectible, transform.position, transform.rotation);
             spawnedCollect.transform.parent = null;

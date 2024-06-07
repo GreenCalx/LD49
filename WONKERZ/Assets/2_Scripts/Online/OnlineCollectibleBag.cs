@@ -106,27 +106,27 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 return;
             case ONLINE_COLLECTIBLES.ACCEL:
                 accels += iCollectible.value;
-                Mathf.Clamp(accels, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                accels = Mathf.Clamp(accels, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             case ONLINE_COLLECTIBLES.MAX_SPEED:
                 maxSpeeds += iCollectible.value;
-                Mathf.Clamp(maxSpeeds, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                maxSpeeds = Mathf.Clamp(maxSpeeds, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             case ONLINE_COLLECTIBLES.SPRINGS:
                 springs += iCollectible.value;
-                Mathf.Clamp(springs, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                springs = Mathf.Clamp(springs, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             case ONLINE_COLLECTIBLES.TURN:
                 turns += iCollectible.value;
-                Mathf.Clamp(turns, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                turns = Mathf.Clamp(turns, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             case ONLINE_COLLECTIBLES.TORQUEFORCE:
                 torqueForces += iCollectible.value;
-                Mathf.Clamp(torqueForces, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                torqueForces = Mathf.Clamp(torqueForces, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             case ONLINE_COLLECTIBLES.WEIGHT:
                 weights += iCollectible.value;
-                Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                weights = Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
             default:
                 break;
@@ -166,35 +166,35 @@ public class OnlineCollectibleBag : NetworkBehaviour
     private void updateAccel(CarController iCC)
     {
         // remap between 0 and 1 with pivot at 0.5
-        float curve_x = 0.5f + ((accels / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(accels);
         //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
     }
     
     private void updateMaxSpeed(CarController iCC)
     {
         // remap between 0 and 1
-        float curve_x = 0.5f + ((maxSpeeds / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(maxSpeeds);
         iCC.maxTorque = maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue;
     }
 
     private void updateSprings(CarController iCC)
     {
         // remap between 0 and 1
-        float curve_x = 0.5f + ((springs / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(springs);
         //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
         iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitValue;
     }
 
     private void updateTurn(CarController iCC)
     {
-        float curve_x = 0.5f + ((turns / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(turns);
         iCC.maxSteeringAngle_deg = turnCurve.Evaluate(curve_x) * turnInitValue;
     }
 
     private void updateTorqueForce(PlayerController iPC)
     {
         // remap between 0 and 1
-        float curve_x = 0.5f + ((torqueForces / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(torqueForces);
 
         iPC.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
         iPC.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
@@ -202,8 +202,14 @@ public class OnlineCollectibleBag : NetworkBehaviour
     private void updateWeight(CarController iCC)
     {
         // remap between 0 and 1
-        float curve_x = 0.5f + ((weights / STATS_MAX_RANGE)*0.5f);
+        float curve_x = RemapStatToCurve(weights);
         iCC.rb.mass = weightCurve.Evaluate(curve_x) * weightInitValue;
+    }
+
+    private float RemapStatToCurve(int iNumberOfStats)
+    {
+        float offset_from_pivot = (float)iNumberOfStats / (float)STATS_MAX_RANGE;
+        return 0.5f + (offset_from_pivot * 0.5f);
     }
 
 }

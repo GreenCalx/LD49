@@ -18,11 +18,13 @@ public enum ONLINE_COLLECTIBLES {
 
 public class OnlineCollectible : NetworkBehaviour
 {
+    [SyncVar]
     public bool IsCollectible = false;
     public float timeBeforeBeingCollectible = 0.2f;
 
     public ONLINE_COLLECTIBLES collectibleType;
     public Sprite negativeStatText;
+    [SyncVar]
     public int value = 1;
     [SyncVar]
     public bool collected = false;
@@ -34,12 +36,18 @@ public class OnlineCollectible : NetworkBehaviour
 
     void Start()
     {
+        if (isClientOnly)
+        { return; }
+
         elapsedTimeBeforeBeingCollectible =  0f;
         IsCollectible = false;
     }
 
     void Update()
     {
+        if (isClientOnly)
+        { return; }
+
         if (!IsCollectible)
         {
             elapsedTimeBeforeBeingCollectible += Time.deltaTime;
@@ -47,21 +55,46 @@ public class OnlineCollectible : NetworkBehaviour
         }
     }
 
+    
+
     [Server]
     public void SetAsNegative()
     {
+        StartCoroutine(SetNegativeCo());
+    }
+
+    IEnumerator SetNegativeCo()
+    {
+        while (!isServer) // not spawned yet on server
+        {
+            yield return null;
+        }
+
         value = -1;
+        RpcChangeImageToNegative();
+            
         Image img = GetComponentInChildren<Image>();
         if (!!img)
         {
             img.sprite = negativeStatText;
         }
-            
     }
 
-    [ServerCallback]
+    [ClientRpc]
+    public void RpcChangeImageToNegative()
+    {
+        Image img = GetComponentInChildren<Image>();
+        if (!!img)
+        {
+            img.sprite = negativeStatText;
+        }
+    }
+
     void OnTriggerStay(Collider iCollider)
     {
+        if (!isServer)
+            return;
+
         if (collected || !IsCollectible)
             return;
 
@@ -88,8 +121,7 @@ public class OnlineCollectible : NetworkBehaviour
             iPlayer.bag.AsServerCollect(this);
         }
 
-        if (!!onCollectSound)
-            Schnibble.Utils.SpawnAudioSource(onCollectSound, transform);
+
         
         collected = true;
     }
@@ -98,13 +130,17 @@ public class OnlineCollectible : NetworkBehaviour
         [Server]
         void DestroySelf()
         {
+            if (!isServerOnly)
+                CollectFX();
             RpcCollectFX();
             NetworkServer.Destroy(gameObject);
         }
 
-        [ClientRpc]
-        public void RpcCollectFX()
+        public void CollectFX()
         {
+            if (!!onCollectSound)
+                Schnibble.Utils.SpawnAudioSource(onCollectSound, transform);
+
             if (!!self_onCollectPS)
             {
                 self_onCollectPS.gameObject.SetActive(true);
@@ -113,5 +149,11 @@ public class OnlineCollectible : NetworkBehaviour
                 self_onCollectPS.Play();
                 Destroy(self_onCollectPS.gameObject, self_onCollectPS.main.duration);
             }
+        }
+
+        [ClientRpc]
+        public void RpcCollectFX()
+        {
+            CollectFX();
         }
 }
