@@ -3,42 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace Wonkerz {
-    public class GameProgressConditional : MonoBehaviour
+public class GameProgressConditional : MonoBehaviour
+{
+    public UniqueEvents.UEVENTS gameProgressEventID;
+
+    [Header("Behaviors on EventID")]
+    public bool destroyOnStart = true;
+    public bool activateOnStart = false;
+
+    public bool enabledIfOnline = false;
+
+
+    void Start()
     {
-        public UniqueEvents.UEVENTS gameProgressEventID;
-
-        [Header("Behaviors on EventID")]
-        public bool destroyOnStart = true;
-        public bool activateOnStart = false;
-
-
-        void Start()
+        if (Access.GameSettings().IsOnline)
         {
-            if (activateOnStart)
+            foreach(Transform t in transform)
             {
-                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
-                {
-                    foreach(Transform t in transform)
-                    {
-                        t.gameObject.SetActive(true);
-                    }
-                }            
+                t.gameObject.SetActive(enabledIfOnline);
             }
-
-            if (destroyOnStart)
-            {
-                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
-                {
-                    foreach(Transform t in transform)
-                    {
-                        Destroy(t.gameObject);
-                    }
-                    Destroy(gameObject);
-                }
-            }
+            return;
         }
 
+        if (activateOnStart)
+        {
+            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+            {
+                foreach(Transform t in transform)
+                {
+                    t.gameObject.SetActive(true);
+                }
+            }            
+        }
 
+        if (destroyOnStart)
+        {
+            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+            {
+                foreach(Transform t in transform)
+                {
+                    Destroy(t.gameObject);
+                }
+                Destroy(gameObject);
+            }
+        }
     }
+
+
 }
