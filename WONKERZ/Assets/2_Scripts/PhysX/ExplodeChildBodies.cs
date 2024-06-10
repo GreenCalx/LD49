@@ -65,6 +65,11 @@ public class ExplodeChildBodies : MonoBehaviour
 
     void explodeChilds()
     {
+        if ((childBodies==null)||(childBodies.Length==0))
+        {
+            childBodies = GetComponentsInChildren<Rigidbody>(true);
+        }
+
         int n_bodies = childBodies.Length;
         for ( int i=0; i < n_bodies ; i++)
         {
