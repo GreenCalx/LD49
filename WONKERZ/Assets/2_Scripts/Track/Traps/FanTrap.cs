@@ -50,7 +50,7 @@ namespace Wonkerz {
         {
             // consider to be in physics update.
             Vector3   dir      = transform.right;
-            Rigidbody player = Access.Get<PlayerController>().GetRigidbody();
+            Rigidbody player = Access.Player().GetRigidbody();
             float     distance = Mathf.Abs(Vector3.Dot(dir, player.position - transform.position));
 
             float f = force * 1.0f / (distance * distance * distanceFalloff);

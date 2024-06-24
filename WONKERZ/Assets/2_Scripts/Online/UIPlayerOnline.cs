@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Schnibble;
 using TMPro;
+using Wonkerz;
 
 public class UIPlayerOnline : MonoBehaviour
 {
@@ -110,20 +111,16 @@ public class UIPlayerOnline : MonoBehaviour
         {
             return;
         }
-        var PlayerVelocity = player.rb.velocity.magnitude;
-        CarController cc = player.car;
-        float max_speed = cc.maxTorque;
 
-        // Update Bar
-        float bar_percent = Mathf.Clamp(PlayerVelocity / max_speed, 0f, max_speed);
-        speedBar.fillAmount = bar_percent;
-
-        // Update Text
-        string lbl = ((int)PlayerVelocity).ToString();
-        speedText.SetText(lbl);
+        var speed = (float)player.car.car.GetCurrentSpeedInKmH_FromWheels();
+        // TODO: compute max theoretical speed from car specs.
+        var maxSpeed = 300.00f;
+        var ratio = Mathf.Clamp01(Mathf.Abs(speed) / maxSpeed);
+        speedBar.fillAmount = ratio;
+        speedText.SetText(((int)speed).ToString());
 
         //update overdrive
-        OverDriveUIHandle.gameObject.SetActive( (PlayerVelocity > max_speed) );
+        OverDriveUIHandle.gameObject.SetActive( (speed > maxSpeed) );
     }
 
     public void updateLifePool()

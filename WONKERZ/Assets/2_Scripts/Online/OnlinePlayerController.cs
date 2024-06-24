@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Wonkerz;
 using Mirror;
 
 public class OnlinePlayerController : NetworkBehaviour
@@ -98,8 +98,8 @@ public class OnlinePlayerController : NetworkBehaviour
             self_PlayerController.transform.LookAt(iFacingPoint);
         }
 
-        self_PlayerController.rb.velocity = Vector3.zero;
-        self_PlayerController.rb.angularVelocity = Vector3.zero;
+        self_PlayerController.GetRigidbody().velocity = Vector3.zero;
+        self_PlayerController.GetRigidbody().angularVelocity = Vector3.zero;
 
         //self_PlayerController.UnFreeze();
     }
@@ -173,6 +173,12 @@ public class OnlinePlayerController : NetworkBehaviour
         var states = self_PlayerController.vehicleStates;
         states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
 
-         CmdInformPlayerHasLoaded();
+        while (self_PlayerController.car.GetCar() == null)
+        { yield return null;}
+
+        while (self_PlayerController.GetRigidbody() == null)
+        { yield return null; }
+
+        CmdInformPlayerHasLoaded();
     }
 }

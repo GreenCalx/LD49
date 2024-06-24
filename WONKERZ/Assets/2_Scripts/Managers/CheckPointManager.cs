@@ -55,7 +55,7 @@ namespace Wonkerz {
 
         void Start()
         {
-            init();
+            //init();
         }
 
         public void init()

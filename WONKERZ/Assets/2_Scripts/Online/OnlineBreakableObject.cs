@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Schnibble;
+using Wonkerz;
 using Mirror;
 
 public class OnlineBreakableObject : NetworkBehaviour
@@ -57,7 +58,7 @@ public class OnlineBreakableObject : NetworkBehaviour
         if (isBroken)
             return;
 
-        if (!!Utils.colliderIsPlayer(iCol))
+        if (!!Wonkerz.Utils.colliderIsPlayer(iCol))
         {
             OnlinePlayerController opc = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
             if (opc == null)
@@ -65,9 +66,9 @@ public class OnlineBreakableObject : NetworkBehaviour
             if (!opc.isLocalPlayer)
                 return;
 
-            CarController cc = opc.self_PlayerController.car;
+            WkzCar cc = opc.self_PlayerController.car.GetCar();
             // break cond : player speed > threshold speed && dist < breakdist
-            if (cc.GetCurrentSpeed() < breakSpeedThreshold)
+            if (cc.GetCurrentSpeedInKmH() < breakSpeedThreshold)
             {
                 return;
             }
@@ -139,15 +140,15 @@ public class OnlineBreakableObject : NetworkBehaviour
         isBroken = true;
 
         // approximate contact point for explosion as collider position
-        CarController cc = iOPC.self_PlayerController.car;
+        WkzCar cc = iOPC.self_PlayerController.car.GetCar();
 
         if (isServerOnly)
             disableSelfColliders();
         RpcDisableSelfColliders();
 
         if (isServerOnly)
-            BreakModelSwap(iOPC.self_PlayerController.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
-        RpcBreakModelSwap(iOPC.self_PlayerController.rb.worldCenterOfMass, Mathf.Abs(cc.GetCurrentSpeed() / cc.maxTorque));
+            BreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.motor.def.maxTorque));
+        RpcBreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.motor.def.maxTorque));
 
         StartCoroutine(DeleteInitialCrateCo());
     }

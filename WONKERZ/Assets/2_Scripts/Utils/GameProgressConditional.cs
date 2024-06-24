@@ -3,51 +3,53 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class GameProgressConditional : MonoBehaviour
-{
-    public UniqueEvents.UEVENTS gameProgressEventID;
-
-    [Header("Behaviors on EventID")]
-    public bool destroyOnStart = true;
-    public bool activateOnStart = false;
-
-    public bool enabledIfOnline = false;
-
-
-    void Start()
+namespace Wonkerz {
+    public class GameProgressConditional : MonoBehaviour
     {
-        if (Access.GameSettings().IsOnline)
-        {
-            foreach(Transform t in transform)
-            {
-                t.gameObject.SetActive(enabledIfOnline);
-            }
-            return;
-        }
+        public UniqueEvents.UEVENTS gameProgressEventID;
 
-        if (activateOnStart)
-        {
-            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
-            {
-                foreach(Transform t in transform)
-                {
-                    t.gameObject.SetActive(true);
-                }
-            }            
-        }
+        [Header("Behaviors on EventID")]
+        public bool destroyOnStart = true;
+        public bool activateOnStart = false;
 
-        if (destroyOnStart)
+        public bool enabledIfOnline = false;
+
+
+        void Start()
         {
-            if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+            if (Access.GameSettings().IsOnline)
             {
                 foreach(Transform t in transform)
                 {
-                    Destroy(t.gameObject);
+                    t.gameObject.SetActive(enabledIfOnline);
                 }
-                Destroy(gameObject);
+                return;
+            }
+
+            if (activateOnStart)
+            {
+                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+                {
+                    foreach(Transform t in transform)
+                    {
+                        t.gameObject.SetActive(true);
+                    }
+                }            
+            }
+
+            if (destroyOnStart)
+            {
+                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+                {
+                    foreach(Transform t in transform)
+                    {
+                        Destroy(t.gameObject);
+                    }
+                    Destroy(gameObject);
+                }
             }
         }
-    }
 
 
+}
 }

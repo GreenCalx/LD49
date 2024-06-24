@@ -4,6 +4,7 @@ using UnityEngine;
 using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
+using Wonkerz; // TODO : include me in namespace
 
 public class UITitleScreen : UIPanelTabbed
 {
@@ -60,7 +61,9 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchDemo()
     {
-        Destroy(Access.Player().gameObject);
+        PlayerController pc = Access.Player();
+        if (!!pc)
+            Destroy(pc.gameObject);
         Access.SceneLoader().loadScene("OfflineRoom");
     }
 }

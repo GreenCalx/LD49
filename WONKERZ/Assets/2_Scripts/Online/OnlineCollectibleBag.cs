@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Schnibble;
+
+using Wonkerz; // Todo include me in namespace
 using Mirror;
 
 public class OnlineCollectibleBag : NetworkBehaviour
@@ -70,8 +72,26 @@ public class OnlineCollectibleBag : NetworkBehaviour
         torqueForces = 0;
         weights = 0;
 
+        StartCoroutine(WaitPlayerForInit());
+    }
+
+    IEnumerator WaitPlayerForInit()
+    {
+        while (owner==null)
+        {
+            owner = Access.OfflineGameManager().localPlayer;
+            yield return null;
+        }
+
         if (isServer)
+        {
+            while (!NetworkRoomManagerExt.singleton.onlineGameManager.HasPlayerLoaded(owner))
+            {
+                yield return null;
+            }
             RpcInitStatRefValues();
+        }
+            
     }
 
     // Update is called once per frame
@@ -88,15 +108,21 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
     public void InitStatRefValues()
     {
-        CarController cc = owner.self_PlayerController.car;
+        WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
-        maxSpeedInitValue = cc.maxTorque;
-        springInitStiffness = cc.springStiffness;
-        springInitValue = owner.self_PlayerController.jump.value;
-        turnInitValue = cc.maxSteeringAngle_deg;
-        weightInitValue = cc.rb.mass;
-        torqueForceInitValue_X = owner.self_PlayerController.weightControlMaxX;
-        torqueForceInitValue_Z = owner.self_PlayerController.weightControlMaxZ;
+        maxSpeedInitValue = (float)wCar.motor.def.maxTorque;
+
+        // Expecting always at least one axle and all suspensions with same stiffness
+        springInitStiffness = wCar.GetChassis().axles[0].right.GetSuspension().stiffness;
+        springInitValue = wCar.wkzDef.jumpDef.stiffnessMul;
+
+        turnInitValue = wCar.def.maxSteeringAngle;
+
+        //weightInitValue = owner.self_PlayerController.GetRigidbody().mass;
+        weightInitValue = 0f;
+
+        torqueForceInitValue_X = wCar.wkzDef.weightControlMaxX;
+        torqueForceInitValue_Z = wCar.wkzDef.weightControlMaxZ;
     }
 
     [Server]
@@ -150,14 +176,14 @@ public class OnlineCollectibleBag : NetworkBehaviour
     /// STATS
     public void UpdateCar()
     {
-        CarController cc = owner.self_PlayerController.car;
+        WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
-        updateAccel(cc);
-        updateMaxSpeed(cc);
-        updateSprings(owner.self_PlayerController, cc);
-        updateTurn(cc);
-        updateTorqueForce(owner.self_PlayerController);
-        updateWeight(cc);
+        updateAccel(wCar);
+        updateMaxSpeed(wCar);
+        updateSprings(owner.self_PlayerController, wCar);
+        updateTurn(wCar);
+        updateTorqueForce(wCar);
+        updateWeight();
     }
 
     [ClientRpc]
@@ -166,48 +192,66 @@ public class OnlineCollectibleBag : NetworkBehaviour
         UpdateCar();
     }
 
-    private void updateAccel(CarController iCC)
+
+    // TODO
+    //   Modifiying SO feels weird
+    // Ensure that its not saved, makes SetDirty() calls dangerous?
+    // Probably needs a new layer that sets up /update car accordingly in OnlinePLayeR?
+
+    private void updateAccel(WkzCar iCC)
     {
         // remap between 0 and 1 with pivot at 0.5
         float curve_x = RemapStatToCurve(accels);
         //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
     }
     
-    private void updateMaxSpeed(CarController iCC)
+    private void updateMaxSpeed(WkzCar iWCar)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(maxSpeeds);
-        iCC.maxTorque = maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue;
+        iWCar.motor.def.maxTorque = (Schnibble.SIUnits.KilogramMeter2PerSecond2)(maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
     }
 
-    private void updateSprings(PlayerController iPC, CarController iCC)
+    private void updateSprings(PlayerController iPC, WkzCar iWCar)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(springs);
-        //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
-        iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
-        iPC.jump.value = springCurve.Evaluate(curve_x) * springInitValue;
+    
+        // iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
+        
+
+        var new_stiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
+        foreach(SchAxle ax in iWCar.GetChassis().axles)
+        {
+            ax.right.GetSuspension().stiffness  = new_stiffness;
+            ax.left.GetSuspension().stiffness   = new_stiffness;
+        }
+        
+        iWCar.wkzDef.jumpDef.stiffnessMul = springCurve.Evaluate(curve_x) * springInitValue;
     }
 
-    private void updateTurn(CarController iCC)
+    private void updateTurn(WkzCar iWCar)
     {
         float curve_x = RemapStatToCurve(turns);
-        iCC.maxSteeringAngle_deg = turnCurve.Evaluate(curve_x) * turnInitValue;
+       // iCC.maxSteeringAngle_deg = turnCurve.Evaluate(curve_x) * turnInitValue;
+       iWCar.def.maxSteeringAngle = turnCurve.Evaluate(curve_x) * turnInitValue;
     }
 
-    private void updateTorqueForce(PlayerController iPC)
+    private void updateTorqueForce(WkzCar iWCar)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(torqueForces);
 
-        iPC.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
-        iPC.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
+        //iPC.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
+        iWCar.wkzDef.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
+        //iPC.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
+        iWCar.wkzDef.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
     }
-    private void updateWeight(CarController iCC)
+    private void updateWeight()
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(weights);
-        iCC.rb.mass = weightCurve.Evaluate(curve_x) * weightInitValue;
+        owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
     }
 
     private float RemapStatToCurve(int iNumberOfStats)

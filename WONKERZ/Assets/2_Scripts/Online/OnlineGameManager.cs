@@ -7,6 +7,8 @@ using UnityEngine.Events;
 
 using Mirror;
 
+using Wonkerz;
+
 public class OnlineGameManager : NetworkBehaviour
 {
     [SyncVar]
@@ -115,6 +117,9 @@ public class OnlineGameManager : NetworkBehaviour
     [ServerCallback]
     public bool AllPlayersLoaded()
     {
+        if (PlayersLoadedDict.Count == 0 )
+            return false;
+
         bool retval = true;
         foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys)
         {
@@ -147,6 +152,14 @@ public class OnlineGameManager : NetworkBehaviour
             AddPlayer(iOPC);
         }
         PlayersLoadedDict[iOPC] = iState;
+    }
+
+    [ServerCallback]
+    public bool HasPlayerLoaded(OnlinePlayerController iOPC)
+    {
+        if (PlayersLoadedDict.ContainsKey(iOPC))
+            return PlayersLoadedDict[iOPC];
+        return false;
     }
 
     [ClientRpc]
