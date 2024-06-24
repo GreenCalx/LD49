@@ -54,6 +54,12 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         if (isClient)
             Access.Player().inputMgr.Detach(this as IControllable);
     }
+
+    void Update()
+    {
+        if (OPC!=null)
+            transform.position = OPC.transform.position;
+    }
     
     IEnumerator InitCo()
     {

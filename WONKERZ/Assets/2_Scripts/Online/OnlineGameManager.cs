@@ -272,6 +272,7 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
         RpcDisplayPostGameUI(false);
+        RpcFreezePlayers(true);
 
         while (uniquePlayers.Count != expectedPlayersFromLobby)
         {

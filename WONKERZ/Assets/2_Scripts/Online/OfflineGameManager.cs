@@ -63,7 +63,7 @@ public class OfflineGameManager : MonoBehaviour
         //startLine.init(localPlayer.self_PlayerController);
         if (localPlayer.isServer)
         {
-            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(localPlayer, true);
+            //NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(localPlayer, true);
             allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
             while (!allPlayersHaveLoaded)
             {
@@ -73,7 +73,7 @@ public class OfflineGameManager : MonoBehaviour
         }
         else if (localPlayer.isClientOnly)
         {
-            localPlayer.CmdInformPlayerHasLoaded();
+            //localPlayer.CmdInformPlayerHasLoaded();
 
             while (!allPlayersHaveLoaded) // modified via callback from OnlineGameMgr
             {
