@@ -298,7 +298,7 @@ namespace Wonkerz
             if (CanFocus())
             {
                 if (focusInput.down && HasFocus()) StopFocus();
-                else StartFocus();
+                else if (focusInput.down) StartFocus();
 
                 if (CanSwitchFocus())
                 {

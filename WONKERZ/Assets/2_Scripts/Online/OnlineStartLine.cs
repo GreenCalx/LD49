@@ -58,7 +58,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     void Update()
     {
         if (OPC!=null)
-            transform.position = OPC.transform.position;
+            transform.position = OPC.self_PlayerController.GetTransform().position;
     }
     
     IEnumerator InitCo()

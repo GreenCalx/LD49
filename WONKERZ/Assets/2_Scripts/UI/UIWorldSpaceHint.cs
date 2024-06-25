@@ -26,10 +26,13 @@ namespace Wonkerz {
         private Vector3 initScale;
         private Vector3 initPosition;
 
+        private CameraManager CM;
+
         // Start is called before the first frame update
         void Start()
         {
-            playerTransform = Access.Player().transform;
+            playerTransform = Access.Player().GetTransform().transform;
+            CM = Access.CameraManager();
             initScale = transform.localScale;
             initPosition = transform.position;
         }
@@ -39,8 +42,15 @@ namespace Wonkerz {
         {
             if (facePlayer)
             transform.LookAt(playerTransform);
+
+
             if (faceCamera)
-            transform.LookAt(Access.CameraManager().active_camera.transform);
+            {
+                if (CM==null)
+                { CM = Access.CameraManager(); }
+                else
+                { transform.LookAt(CM.active_camera.transform); }
+            }
 
             // scale anim
             if (scaleAnim)

@@ -209,32 +209,28 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(maxSpeeds);
-        iWCar.motor.def.maxTorque = (Schnibble.SIUnits.KilogramMeter2PerSecond2)(maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
+        //iWCar.motor.def.maxTorque = (Schnibble.SIUnits.KilogramMeter2PerSecond2)(maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
     }
 
     private void updateSprings(PlayerController iPC, WkzCar iWCar)
     {
         // remap between 0 and 1
-        float curve_x = RemapStatToCurve(springs);
-    
-        // iCC.springStiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
-        
+        float curve_x = RemapStatToCurve(springs);        
 
-        var new_stiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
-        foreach(SchAxle ax in iWCar.GetChassis().axles)
-        {
-            ax.right.GetSuspension().stiffness  = new_stiffness;
-            ax.left.GetSuspension().stiffness   = new_stiffness;
-        }
+        // var new_stiffness = springCurve.Evaluate(curve_x) * springInitStiffness;
+        // foreach(SchAxle ax in iWCar.GetChassis().axles)
+        // {
+        //     ax.right.GetSuspension().stiffness  = new_stiffness;
+        //     ax.left.GetSuspension().stiffness   = new_stiffness;
+        // }
         
-        iWCar.wkzDef.jumpDef.stiffnessMul = springCurve.Evaluate(curve_x) * springInitValue;
+        // iWCar.wkzDef.jumpDef.stiffnessMul = springCurve.Evaluate(curve_x) * springInitValue;
     }
 
     private void updateTurn(WkzCar iWCar)
     {
         float curve_x = RemapStatToCurve(turns);
-       // iCC.maxSteeringAngle_deg = turnCurve.Evaluate(curve_x) * turnInitValue;
-       iWCar.def.maxSteeringAngle = turnCurve.Evaluate(curve_x) * turnInitValue;
+    //    iWCar.def.maxSteeringAngle = turnCurve.Evaluate(curve_x) * turnInitValue;
     }
 
     private void updateTorqueForce(WkzCar iWCar)
@@ -242,16 +238,14 @@ public class OnlineCollectibleBag : NetworkBehaviour
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(torqueForces);
 
-        //iPC.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
-        iWCar.wkzDef.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
-        //iPC.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
-        iWCar.wkzDef.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
+        // iWCar.wkzDef.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
+        // iWCar.wkzDef.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
     }
     private void updateWeight()
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(weights);
-        owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
+        // owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
     }
 
     private float RemapStatToCurve(int iNumberOfStats)

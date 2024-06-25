@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using Mirror;
+using Wonkerz;
 
 public class OnlineCollectiblePatch : NetworkBehaviour
 {
@@ -65,6 +66,12 @@ public class OnlineCollectiblePatch : NetworkBehaviour
             var rb = spawnedCollect.GetComponent<Rigidbody>();
             rb.isKinematic = false;
             rb.useGravity = true;
+
+            var billboard = spawnedCollect.GetComponentInChildren<UIWorldSpaceHint>();
+            if (!!billboard)
+            {
+                billboard.faceCamera = true;
+            }
 
             Vector3 randDirection = Random.insideUnitSphere;
             spawnedCollect.transform.position -= randDirection;
