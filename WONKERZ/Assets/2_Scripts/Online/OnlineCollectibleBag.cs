@@ -6,6 +6,8 @@ using Schnibble;
 using Wonkerz; // Todo include me in namespace
 using Mirror;
 
+using Torque = Schnibble.SIUnits.KilogramMeter2PerSecond2;
+
 public class OnlineCollectibleBag : NetworkBehaviour
 {
     public OnlinePlayerController owner;
@@ -110,7 +112,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
-        maxSpeedInitValue = (float)wCar.motor.def.maxTorque;
+        accelInitValue = (float)wCar.motor.def.maxTorque;
+
+        maxSpeedInitValue = (float)wCar.def.maxSpeedInKmH;
 
         // Expecting always at least one axle and all suspensions with same stiffness
         springInitStiffness = wCar.GetChassis().axles[0].right.GetSuspension().stiffness;
@@ -118,8 +122,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
         turnInitValue = wCar.def.maxSteeringAngle;
 
-        //weightInitValue = owner.self_PlayerController.GetRigidbody().mass;
-        weightInitValue = 0f;
+        weightInitValue = owner.self_PlayerController.GetRigidbody().mass;
+        //weightInitValue = 0f;
 
         torqueForceInitValue_X = wCar.wkzDef.weightControlMaxX;
         torqueForceInitValue_Z = wCar.wkzDef.weightControlMaxZ;
@@ -198,18 +202,18 @@ public class OnlineCollectibleBag : NetworkBehaviour
     // Ensure that its not saved, makes SetDirty() calls dangerous?
     // Probably needs a new layer that sets up /update car accordingly in OnlinePLayeR?
 
-    private void updateAccel(WkzCar iCC)
+    private void updateAccel(WkzCar iWCar)
     {
         // remap between 0 and 1 with pivot at 0.5
         float curve_x = RemapStatToCurve(accels);
-        //iCC.maxTorque = accelCurve.Evaluate(curve_x) * accelInitValue;
+        iWCar.motor.def.maxTorque = (Torque)(accelCurve.Evaluate(curve_x) * accelInitValue);
     }
     
     private void updateMaxSpeed(WkzCar iWCar)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(maxSpeeds);
-        //iWCar.motor.def.maxTorque = (Schnibble.SIUnits.KilogramMeter2PerSecond2)(maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
+        iWCar.def.maxSpeedInKmH = (maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
     }
 
     private void updateSprings(PlayerController iPC, WkzCar iWCar)
@@ -245,7 +249,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(weights);
-        // owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
+        owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
     }
 
     private float RemapStatToCurve(int iNumberOfStats)

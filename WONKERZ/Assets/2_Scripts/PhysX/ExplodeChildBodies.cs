@@ -6,7 +6,7 @@ namespace Wonkerz
 {
     public class ExplodeChildBodies : MonoBehaviour
     {
-        public enum ExplosionMode { FROM_DIRECTION = 0, RADIAL = 1};
+        public enum ExplosionMode { FROM_DIRECTION = 0, RADIAL = 1, STEERED_RADIAL=2};
 
         public Rigidbody[] childBodies;
         private bool triggered = false;
@@ -91,6 +91,10 @@ namespace Wonkerz
                         break;
                     case ExplosionMode.RADIAL:
                         fDir = rb.transform.position - transform.position;
+                        break;
+                    case ExplosionMode.STEERED_RADIAL:
+                        fDir = rb.transform.position - transform.position;
+                        fDir += directionSteer;
                         break;
                     default:
                         break;
