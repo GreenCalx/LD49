@@ -80,12 +80,26 @@ public class OnlineStartPortal : NetworkBehaviour
             yield return null;
         }
 
-         if (isClientOnly)
+        //  if (isClientOnly)
+        //  {
+        //     //attachedPlayer.RpcRelocate(transform.position, facingPoint);
+        //     attachedPlayer.Relocate(transform.position, facingPoint);
+        //  } else if (isClient && isServer) {
+        //     attachedPlayer.Relocate(transform.position, facingPoint);
+        //  }
+
+        //  yield return null;
+
+         while (Vector3.Distance(transform.position, attachedPlayer.transform.position) > 1f)
          {
-            //attachedPlayer.RpcRelocate(transform.position, facingPoint);
-            attachedPlayer.Relocate(transform.position, facingPoint);
-         } else if (isClient && isServer) {
-            attachedPlayer.Relocate(transform.position, facingPoint);
+            if (isClientOnly)
+            {
+                //attachedPlayer.RpcRelocate(transform.position, facingPoint);
+                attachedPlayer.Relocate(transform.position, facingPoint);
+            } else if (isClient && isServer) {
+                attachedPlayer.CmdRelocate(transform.position, facingPoint);
+            }
+            yield return null;
          }
 
     }

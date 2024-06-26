@@ -18,6 +18,8 @@ public class OnlinePlayerController : NetworkBehaviour
     public GameObject prefabCameraFocusable;
 
     [Header("Internals")]
+    [SyncVar]
+    public bool readyToPlay = false;
     public Transform cameraFocusable;
 
     public override void OnStartServer()
@@ -26,6 +28,10 @@ public class OnlinePlayerController : NetworkBehaviour
         if (isServer)
         {
             self_carMeshHandle.gameObject.SetActive(true);
+            if (isServerOnly)
+            {
+                Access.OfflineGameManager().isServerOnly = true;
+            }
         }
     }
 
@@ -49,7 +55,6 @@ public class OnlinePlayerController : NetworkBehaviour
 
             // add a camera focusable
             cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
-
         }
 
 
@@ -84,11 +89,16 @@ public class OnlinePlayerController : NetworkBehaviour
     {
         Relocate(iNewPos, iFacingPoint);
     }
+    [Command]
+    public void CmdRelocate(Vector3 iNewPos, Transform iFacingPoint)
+    {
+        Relocate(iNewPos, iFacingPoint);
+    }
 
     [Client]
     public void Relocate(Vector3 iNewPos, Transform iFacingPoint)
     {
-        //self_PlayerController.Freeze();
+        //self_PlayerController.UnFreeze();
 
         transform.position = iNewPos;
         transform.rotation = Quaternion.identity;
@@ -101,7 +111,7 @@ public class OnlinePlayerController : NetworkBehaviour
         self_PlayerController.GetRigidbody().velocity = Vector3.zero;
         self_PlayerController.GetRigidbody().angularVelocity = Vector3.zero;
 
-        //self_PlayerController.UnFreeze();
+        //self_PlayerController.Freeze();
     }
 
     public override void OnStartLocalPlayer()
@@ -122,6 +132,11 @@ public class OnlinePlayerController : NetworkBehaviour
     [Command]
     public void CmdInformPlayerHasLoaded()
     {
+        InformPlayerHasLoaded();
+    }
+
+    public void InformPlayerHasLoaded()
+    {
         NetworkRoomManagerExt.singleton.onlineGameManager.AddPlayer(this);
         NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(this, true);
     }
@@ -139,6 +154,7 @@ public class OnlinePlayerController : NetworkBehaviour
     IEnumerator initCo()
     {
         self_PlayerController.Freeze();
+        readyToPlay = false;
 
         // Wait additive scenes to be laoded
 
@@ -190,6 +206,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
         self_PlayerController.UnFreeze();
 
-        CmdInformPlayerHasLoaded();
+        //CmdInformPlayerHasLoaded();
+        readyToPlay = true;
     }
 }

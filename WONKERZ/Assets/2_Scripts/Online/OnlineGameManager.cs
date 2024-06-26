@@ -222,10 +222,14 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator TrialLoop()
     {
+        trialManager.trialLaunched = true;
+
         while(!trialManager.trialIsOver)
         {
             yield return null;
         }
+
+        trialManager.trialLaunched = false;
         // player ranks availables
 
     }
@@ -326,6 +330,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcDisplayPostGameUI(bool iState)
     {
         uiPostGame_sceneObject.gameObject.SetActive(iState);
+        uiPostGame_sceneObject.updatePlayerRankingsLbl(this);
     }
 
     [ClientRpc]

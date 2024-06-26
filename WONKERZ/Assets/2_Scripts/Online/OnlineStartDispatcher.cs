@@ -6,17 +6,18 @@ using Wonkerz;
 using Mirror;
 public class OnlineStartDispatcher : NetworkBehaviour
 {
+    public bool dispatchOnStart = true;
     public List<OnlineStartPortal> startPositions;
 
     // Start is called before the first frame update
     void Start()
     {
-        if (isServer)
+        if (isServer && dispatchOnStart)
             DispatchPlayersToPortals();
     }
 
     [Server]
-    protected void DispatchPlayersToPortals()
+    public void DispatchPlayersToPortals()
     {
         StartCoroutine(DispatchPlayersCo());
     }
@@ -32,16 +33,26 @@ public class OnlineStartDispatcher : NetworkBehaviour
             yield return null;
         }
 
-        foreach( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
+        List<OnlineStartPortal> unusedSPs = new List<OnlineStartPortal>();
+        startPositions.CopyTo(unusedSPs);
+
+        foreach ( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
         {
             foreach(OnlineStartPortal sp in startPositions)
             {
                 if (sp.attachedPlayer==null)
                 {
                     sp.attachedPlayer = opc;
+                    unusedSPs.Remove(sp);
                     break;
                 }
             }
         }
+        // clean unused starts
+        foreach(OnlineStartPortal sp in unusedSPs)
+        {
+            NetworkServer.Destroy(sp.gameObject);
+        }
+
     }
 }

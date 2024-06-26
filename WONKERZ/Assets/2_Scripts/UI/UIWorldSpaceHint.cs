@@ -48,7 +48,7 @@ namespace Wonkerz {
             {
                 if (CM==null)
                 { CM = Access.CameraManager(); }
-                else
+                else if (!!CM.active_camera)
                 { transform.LookAt(CM.active_camera.transform); }
             }
 

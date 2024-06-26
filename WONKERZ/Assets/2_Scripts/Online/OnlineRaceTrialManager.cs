@@ -6,8 +6,5 @@ using Mirror;
 
 public class OnlineRaceTrialManager : OnlineTrialManager
 {
-    [Header("OnlineRaceTrialManager")]
-    [SyncVar]
-    public float raceTime = 0f;
-    
+
 }

@@ -11,6 +11,7 @@ public class OfflineGameManager : MonoBehaviour
     public GameObject UIWaitForPlayers;
     public OnlineStartLine startLine;
     [Header("Internals")]
+    public bool isServerOnly = false;
     public bool sessionIsReadyToGo = false;
     public bool allPlayersHaveLoaded = false;
 
@@ -52,6 +53,21 @@ public class OfflineGameManager : MonoBehaviour
             yield return null;
         }
 
+        // No players => server only
+        if (isServerOnly)
+        {
+            allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
+            while (!allPlayersHaveLoaded)
+            {
+                // Information given by OnlineGameManager
+                yield return null;
+            }
+            UIWaitForPlayers.SetActive(false);
+            sessionIsReadyToGo = true;
+            yield break;
+        }
+
+        
         while(localPlayer==null)
         {
             yield return null;
@@ -60,33 +76,36 @@ public class OfflineGameManager : MonoBehaviour
         {
             yield return null;
         }
-        //startLine.init(localPlayer.self_PlayerController);
-        if (localPlayer.isServer)
+        
+        // if (localPlayer.isServer)
+        // {
+        //     //NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(localPlayer, true);
+        //     allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
+        //     while (!allPlayersHaveLoaded)
+        //     {
+        //         // Information given by OnlineGameManager
+        //         yield return null;
+        //     }
+        // }
+        if (localPlayer.isClient)
         {
-            //NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(localPlayer, true);
-            allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
-            while (!allPlayersHaveLoaded)
+            while(!localPlayer.readyToPlay)
             {
-                // Information given by OnlineGameManager
                 yield return null;
             }
-        }
-        else if (localPlayer.isClientOnly)
-        {
-            //localPlayer.CmdInformPlayerHasLoaded();
+
+            if (localPlayer.isClientOnly)
+                localPlayer.CmdInformPlayerHasLoaded();
+            else
+                localPlayer.InformPlayerHasLoaded();
 
             while (!allPlayersHaveLoaded) // modified via callback from OnlineGameMgr
-            {
-                // Information given by OnlineGameManager
-                yield return null;
-            }
+            { yield return null; }
         }
             
         sessionIsReadyToGo = true;
 
-        
         UIWaitForPlayers.SetActive(false);
-        //localPlayer.self_PlayerController.UnFreeze();
     }
 
     private void flush()

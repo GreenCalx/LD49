@@ -8,18 +8,26 @@ using Mirror;
 public class OnlineTrialManager : NetworkBehaviour
 {
     [Header("Mands")]
-    public List<OnlineStartPortal> startPositions;
+    //public List<OnlineStartPortal> startPositions;
     public OnlineStartLine onlineStartLine;
+    public OnlineStartDispatcher portals;
     [Header("Internals")]
     public SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
+
+    public SyncDictionary<OnlinePlayerController, float> dicPlayerTrialToRaceTimes = new SyncDictionary<OnlinePlayerController, float>();
     [SyncVar]
     public bool trialIsOver = false;
+    [SyncVar]
+    public float trialTime = 0f;
+    [SyncVar]
+    public bool trialLaunched = false;
 
     // Start is called before the first frame update
     void Start()
     {
         NetworkRoomManagerExt.singleton.onlineGameManager.trialManager = this;
-        
+        trialLaunched = false;
+
         if (isServer)
             DispatchPlayersToPortals();
     
@@ -28,23 +36,35 @@ public class OnlineTrialManager : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!trialIsOver && trialLaunched)
+        {
+            trialTime += Time.deltaTime;
+        }
     }
+
 
     [Server]
     protected void DispatchPlayersToPortals()
     {
-        foreach( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
-        {
-            foreach(OnlineStartPortal sp in startPositions)
-            {
-                if (sp.attachedPlayer==null)
-                {
-                    sp.attachedPlayer = opc;
-                    break;
-                }
-            }
-        }
+        // foreach( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
+        // {
+        //     foreach(OnlineStartPortal sp in startPositions)
+        //     {
+        //         if (sp.attachedPlayer==null)
+        //         {
+        //             sp.attachedPlayer = opc;
+        //             break;
+        //         }
+        //     }
+        // }
+        if (portals==null)
+        { portals = GetComponent<OnlineStartDispatcher>(); }
+
+        if (portals!=null)
+        { portals.DispatchPlayersToPortals(); }
+
+        else
+        { Debug.LogError("No Portal Dispatcher for OnlineTrialManager."); }
     }
 
     public void NotifyLocalPlayerFinished()
@@ -73,6 +93,7 @@ public class OnlineTrialManager : NetworkBehaviour
             return;
 
         dicPlayerTrialFinishPositions.Add(iOPC, dicPlayerTrialFinishPositions.Count+1);
+        dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
 
         trialIsOver = AllPlayersFinished();
     }

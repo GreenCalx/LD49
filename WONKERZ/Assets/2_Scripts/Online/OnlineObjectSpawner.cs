@@ -58,6 +58,12 @@ public class OnlineObjectSpawner : NetworkBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        if (isServer)
+            UnspawnAll();
+    }
+
     [Server]
     public void PollForSpawn()
     {
@@ -67,6 +73,15 @@ public class OnlineObjectSpawner : NetworkBehaviour
         {
             SpawnObject();
             elapsedTimeSinceLastSpawn = 0f;
+        }
+    }
+
+    [Server]
+    public void UnspawnAll()
+    {
+        foreach(GameObject go in spawnedObjects)
+        {
+            NetworkServer.Destroy(go);
         }
     }
 

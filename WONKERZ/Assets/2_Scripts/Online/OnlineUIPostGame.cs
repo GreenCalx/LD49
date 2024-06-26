@@ -13,13 +13,16 @@ using Mirror;
 
 public class OnlineUIPostGame : NetworkBehaviour, IControllable
 {
+    [Header("Prefabs Refs")]
+    public GameObject prefab_UIPostGameLine;
     [Header("Self Refs")]
     public TextMeshProUGUI timeLbl;
-    public TextMeshProUGUI winnerLbl;
+    public Transform postGameLines_Handle;
 
     [Header("Internal")]
     public bool playerReadyUp = false;
     public OnlinePlayerController OPC;
+    private List<UIOnlinePostGameLine> lines = new List<UIOnlinePostGameLine>();
 
     // Start is called before the first frame update
     void Start()
@@ -68,9 +71,20 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
         timeLbl.text = trackTime_str_min +":"+ trackTime_str_sec;
     }
 
-    private void updatePlayerRankingsLbl()
+    public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
     {
-        winnerLbl.text = NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.dicPlayerTrialFinishPositions.Where(e => e.Value == 1).GetEnumerator().Current.Key.onlinePlayerName;
+        foreach(OnlinePlayerController opc in iOGM.uniquePlayers)
+        {
+            GameObject newLine = Instantiate(prefab_UIPostGameLine, postGameLines_Handle);
+            UIOnlinePostGameLine newLine_asUI = newLine.GetComponent<UIOnlinePostGameLine>();
+            if (!!newLine_asUI)
+            {
+                newLine_asUI.Refresh(opc);
+            }
+        }
+
+
+        //winnerLbl.text = NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.dicPlayerTrialFinishPositions.Where(e => e.Value == 1).GetEnumerator().Current.Key.onlinePlayerName;
     }
 
     IEnumerator InitCo()
