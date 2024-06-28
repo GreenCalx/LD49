@@ -14,10 +14,18 @@ public class OnlineStartPortal : NetworkBehaviour
     [Header("Tweaks")]
     public GameCamera.CAM_TYPE camera_type;
     public bool deleteAfterSpawn;
-    public Transform facingPoint;
+    //public Transform facingPoint;
     private bool playerIsAttached = false;
     public int seed;
 
+
+    void OnDrawGizmosSelected()
+    {
+        // Draws a 5 unit long red line in front of the object
+        Gizmos.color = Color.blue;
+        Vector3 direction = transform.TransformDirection(Vector3.forward) * 5;
+        Gizmos.DrawRay(transform.position, direction);
+    }
 
     void Start()
     {
@@ -53,18 +61,12 @@ public class OnlineStartPortal : NetworkBehaviour
 
     void init()
     {
-        //attachedPlayer.self_PlayerController.Freeze();
         StartCoroutine(RelocatePlayer());
         
         // // Camera
         if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
              Access.CameraManager()?.changeCamera(camera_type, false);
-        
-        if (deleteAfterSpawn)
-        {
-            Destroy(gameObject);
-        }
-        //attachedPlayer.self_PlayerController.UnFreeze();
+
     }
 
     IEnumerator RelocatePlayer()
@@ -80,24 +82,13 @@ public class OnlineStartPortal : NetworkBehaviour
             yield return null;
         }
 
-        //  if (isClientOnly)
-        //  {
-        //     //attachedPlayer.RpcRelocate(transform.position, facingPoint);
-        //     attachedPlayer.Relocate(transform.position, facingPoint);
-        //  } else if (isClient && isServer) {
-        //     attachedPlayer.Relocate(transform.position, facingPoint);
-        //  }
-
-        //  yield return null;
-
          while (Vector3.Distance(transform.position, attachedPlayer.transform.position) > 1f)
          {
             if (isClientOnly)
             {
-                //attachedPlayer.RpcRelocate(transform.position, facingPoint);
-                attachedPlayer.Relocate(transform.position, facingPoint);
+                attachedPlayer.Relocate(transform.position, transform.rotation);
             } else if (isClient && isServer) {
-                attachedPlayer.CmdRelocate(transform.position, facingPoint);
+                attachedPlayer.CmdRelocate(transform.position, transform.rotation);
             }
             yield return null;
          }

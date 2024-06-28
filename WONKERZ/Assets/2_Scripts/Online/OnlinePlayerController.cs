@@ -85,33 +85,29 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcRelocate(Vector3 iNewPos, Transform iFacingPoint)
+    public void RpcRelocate(Vector3 iNewPos, Quaternion iNewRot)
     {
-        Relocate(iNewPos, iFacingPoint);
+        Relocate(iNewPos, iNewRot);
     }
     [Command]
-    public void CmdRelocate(Vector3 iNewPos, Transform iFacingPoint)
+    public void CmdRelocate(Vector3 iNewPos, Quaternion iNewRot)
     {
-        Relocate(iNewPos, iFacingPoint);
+        Relocate(iNewPos, iNewRot);
     }
 
     [Client]
-    public void Relocate(Vector3 iNewPos, Transform iFacingPoint)
+    public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
     {
-        //self_PlayerController.UnFreeze();
-
-        transform.position = iNewPos;
-        transform.rotation = Quaternion.identity;
-
-        if (iFacingPoint != null)
-        {
-            self_PlayerController.transform.LookAt(iFacingPoint);
-        }
+        //self_PlayerController.Freeze();
 
         self_PlayerController.GetRigidbody().velocity = Vector3.zero;
         self_PlayerController.GetRigidbody().angularVelocity = Vector3.zero;
 
-        //self_PlayerController.Freeze();
+        self_PlayerController.GetRigidbody().transform.localPosition = Vector3.zero;
+        self_PlayerController.GetRigidbody().transform.localRotation = Quaternion.identity;
+
+        transform.position = iNewPos;
+        transform.rotation = iNewRot;
     }
 
     public override void OnStartLocalPlayer()

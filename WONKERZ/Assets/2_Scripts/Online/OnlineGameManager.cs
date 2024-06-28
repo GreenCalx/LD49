@@ -31,8 +31,7 @@ public class OnlineGameManager : NetworkBehaviour
     public SyncDictionary<OnlinePlayerController, bool> PlayersReadyDict = new SyncDictionary<OnlinePlayerController, bool>();
     public SyncDictionary<OnlinePlayerController, bool> PlayersLoadedDict = new SyncDictionary<OnlinePlayerController, bool>();
     public int expectedPlayersFromLobby;
-    // [SyncVar]
-    // public bool allPlayersLoadedInLobby = false;
+
     [SyncVar]
     public float countdownElapsed = 0f;
     [SyncVar]
@@ -185,13 +184,8 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator WaitTrialSessions()
     {
-        //allPlayersLoadedInLobby = false;
-
-        // if (isServer)
-            AskPlayersToLoad();
-
-        // if (isServer)
-            RpcFreezePlayers(true);
+        AskPlayersToLoad();
+        RpcFreezePlayers(true);
 
         while (!openCourseUnLoaded)
         {
@@ -294,14 +288,14 @@ public class OnlineGameManager : NetworkBehaviour
         {
             yield return null;
         }
+
+        countdownElapsed = 0f;
     }
 
     IEnumerator Countdown()
     {
         countdownElapsed = 0f;
 
-        // while (Access.OfflineGameManager().startLine==null)
-        // { yield return null; }
         RpcLaunchOnlineStartLine();
         
         while (countdownElapsed < countdown)
