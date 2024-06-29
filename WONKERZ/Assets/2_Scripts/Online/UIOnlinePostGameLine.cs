@@ -5,7 +5,7 @@ using TMPro;
 
 public class UIOnlinePostGameLine : MonoBehaviour
 {
-
+    public int rank;
     public TextMeshProUGUI playerName;
     public TextMeshProUGUI playerRank;
     public TextMeshProUGUI playerRaceTime;
@@ -37,8 +37,18 @@ public class UIOnlinePostGameLine : MonoBehaviour
             return;
         }
 
+        // explicitly DNF
+        if (OTM.dicPlayerTrialFinishPositions[iPlayer] < 0)
+        {
+            playerRank.text = "DNF";
+            playerRaceTime.text = "--:--";
+            return;
+        }
+
         // Rank finishing players
+        rank = OTM.dicPlayerTrialFinishPositions[iPlayer];
         playerRank.text = OTM.dicPlayerTrialFinishPositions[iPlayer].ToString();
+        
 
         float trackTime = OTM.trialTime;
         int trackTime_val_min = (int)(trackTime / 60);

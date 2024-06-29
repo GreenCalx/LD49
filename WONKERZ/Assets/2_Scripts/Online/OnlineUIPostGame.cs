@@ -73,6 +73,7 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
 
     public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
     {
+        int lowest_rank = 1;
         foreach(OnlinePlayerController opc in iOGM.uniquePlayers)
         {
             GameObject newLine = Instantiate(prefab_UIPostGameLine, postGameLines_Handle);
@@ -80,9 +81,28 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
             if (!!newLine_asUI)
             {
                 newLine_asUI.Refresh(opc);
+                lines.Add(newLine_asUI);
+
+                if (newLine_asUI.rank > lowest_rank)
+                {
+                    lowest_rank = newLine_asUI.rank;
+                }
             }
         }
 
+        int n_DNF = 0;
+        foreach( UIOnlinePostGameLine line in lines)
+        {
+            if (line.rank > 1)
+            {
+                line.transform.SetSiblingIndex(line.rank - 1);
+            }
+            else { // DNF are last
+                n_DNF++;
+                line.transform.SetSiblingIndex(lowest_rank + n_DNF - 1);
+            }
+
+        }
 
         //winnerLbl.text = NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.dicPlayerTrialFinishPositions.Where(e => e.Value == 1).GetEnumerator().Current.Key.onlinePlayerName;
     }

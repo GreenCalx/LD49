@@ -11,6 +11,7 @@ public class OnlineTrialManager : NetworkBehaviour
     //public List<OnlineStartPortal> startPositions;
     public OnlineStartLine onlineStartLine;
     public OnlineStartDispatcher portals;
+
     [Header("Internals")]
     public SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
 
@@ -30,7 +31,6 @@ public class OnlineTrialManager : NetworkBehaviour
 
         if (isServer)
             DispatchPlayersToPortals();
-    
     }
 
     // Update is called once per frame
@@ -46,17 +46,6 @@ public class OnlineTrialManager : NetworkBehaviour
     [Server]
     protected void DispatchPlayersToPortals()
     {
-        // foreach( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
-        // {
-        //     foreach(OnlineStartPortal sp in startPositions)
-        //     {
-        //         if (sp.attachedPlayer==null)
-        //         {
-        //             sp.attachedPlayer = opc;
-        //             break;
-        //         }
-        //     }
-        // }
         if (portals==null)
         { portals = GetComponent<OnlineStartDispatcher>(); }
 
@@ -93,6 +82,18 @@ public class OnlineTrialManager : NetworkBehaviour
             return;
 
         dicPlayerTrialFinishPositions.Add(iOPC, dicPlayerTrialFinishPositions.Count+1);
+        dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
+
+        trialIsOver = AllPlayersFinished();
+    }
+
+    [ServerCallback]
+    public void NotifyPlayerIsDNF(OnlinePlayerController iOPC)
+    {
+        if (dicPlayerTrialFinishPositions.ContainsKey(iOPC))
+            return;
+
+        dicPlayerTrialFinishPositions.Add(iOPC, -1);
         dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
 
         trialIsOver = AllPlayersFinished();
