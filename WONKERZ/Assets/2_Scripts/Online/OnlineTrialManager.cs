@@ -11,6 +11,9 @@ public class OnlineTrialManager : NetworkBehaviour
     //public List<OnlineStartPortal> startPositions;
     public OnlineStartLine onlineStartLine;
     public OnlineStartDispatcher portals;
+    [Header("Graphx")]
+    public Material skybox;
+    public Light sun;
 
     [Header("Internals")]
     public SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
@@ -29,6 +32,8 @@ public class OnlineTrialManager : NetworkBehaviour
         NetworkRoomManagerExt.singleton.onlineGameManager.trialManager = this;
         trialLaunched = false;
 
+        UpdateRenderSettings();
+
         if (isServer)
             DispatchPlayersToPortals();
     }
@@ -40,6 +45,12 @@ public class OnlineTrialManager : NetworkBehaviour
         {
             trialTime += Time.deltaTime;
         }
+    }
+
+    void UpdateRenderSettings()
+    {
+        RenderSettings.skybox = skybox;
+        RenderSettings.sun = sun;
     }
 
 
