@@ -913,7 +913,8 @@ MonoBehaviour:
   mixer: {fileID: 0}
   group: {fileID: 0}
   gravityScale: 1
-  CoMLocalOffset: {x: 0, y: 1, z: 0}
+  localCOM: {x: 0, y: 2, z: 0}
+  isOffset: 1
 --- !u!1001 &1143124213437601172
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1016,6 +1017,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
   m_PrefabInstance: {fileID: 1143124213437601172}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6156887409766289450 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6533765457183851966, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
+  m_PrefabInstance: {fileID: 1143124213437601172}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7646014047976264986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6156887409766289450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f857a1292da13048b69ca820402ff06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 4607318395014603031}
+  indicator: {fileID: 6156887409766289450}
+  offsetLocal: {x: 0, y: 0, z: 0}
+  useRotation: 1
+  useFixedPosition: 0
 --- !u!1001 &1252641673280273029
 PrefabInstance:
   m_ObjectHideFlags: 0

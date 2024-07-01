@@ -172,7 +172,7 @@ public class OnlinePlayerController : NetworkBehaviour
         // Force Init Camera Init ?
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         
-        while(self_PlayerController.vehicleStates==null)
+        while(self_PlayerController.vehicleState == PlayerController.PlayerVehicleStates.None)
         {
             yield return null;
         }
@@ -182,8 +182,7 @@ public class OnlinePlayerController : NetworkBehaviour
             yield return null;
         }
 
-        var states = self_PlayerController.vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+        self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
         while (self_PlayerController.car.GetCar() == null)
         { yield return null;}
@@ -191,7 +190,7 @@ public class OnlinePlayerController : NetworkBehaviour
         while (self_PlayerController.GetRigidbody() == null)
         {
             // not ideal but RB can be null at first call thus we need to re-init?
-            states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+            self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
             yield return null; 
         }
 

@@ -33,6 +33,12 @@ namespace Wonkerz
             }
         }
 
+        public void SetFloatersSize(float mul) {
+            foreach (var f in floaters) {
+                f.c.radius = f.floaterSize * mul;
+            }
+        }
+
         public bool IsInAir() {
             // TODO: make this more robust,
             // for now just check if one wheel touch some water.

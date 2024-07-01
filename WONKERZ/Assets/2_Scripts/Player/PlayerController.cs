@@ -10,642 +10,246 @@ using static UnityEngine.Debug;
 
 namespace Wonkerz
 {
-    public class PressBoatButtonCondition : FSMCondition {
-        public override bool Check(FSMBase machine)
-        {
-            var player = (machine as PlayerFSM).GetPlayer();
-            return !player.IsInMenu() && (machine.GetState() as PlayerState).pressBoatButton;
-        }
-    }
-
-    public class PressAirplaneButtonCondition : FSMCondition {
-        public override bool Check(FSMBase machine)
-        {
-            var player = (machine as PlayerFSM).GetPlayer();
-            return !player.IsInMenu() && (machine.GetState() as PlayerState).pressAirplaneButton;
-        }
-    }
-
-    public class SpeedEffectAction : FSMAction
+    public class PlayerController : MonoBehaviour, IControllable
     {
-        public override void Execute(FSMBase fsm, float dt)
+        // Simple State Machine
+        public enum PlayerStates
         {
-            var player = (fsm as PlayerFSM).GetPlayer();
-
-            #if false
-            // Apply camera effect.
-            // Will change FoV, distance, etc.
-            CameraManager CamMgr = Access.CameraManager();
-            if (CamMgr?.active_camera is PlayerCamera)
-            {
-                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
-                pc.applySpeedEffect(effectRatio);
-            }
-            // Apply particles effect.
-            // Will display speed trails.
-            var particles = player.GetSpeedParticles();
-            if (particles) {
-                var e = particles.emission;
-                e.enabled = effectRatio != 0.0f;
-                var rb = player.GetRigidbody();
-                var relativeWindDir = rb.velocity;
-                particles.transform.LookAt(rb.position + relativeWindDir);
-
-                var lifemin  = 0.2f;
-                var lifemax  = 0.6f;
-                var partmain = particles.main;
-                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
-            }
-            #endif
-        }
-    }
-
-    public class JumpControlAction : FSMAction, IControllable
-    {
-        float jumpTimeCurrent    = 0.0f;
-        float jumpLatencyCurrent = 0.0f;
-        bool  jumpLock           = true;
-
-        bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
-
-        public override void FixedExecute(FSMBase machine, float dt) { }
-
-        public override void Execute(FSMBase machine, float dt)
-        {
-            base.Execute(machine, dt);
-
-            #if false
-            if (jumpTimeCurrent > 0.0f)
-            {
-                SetSuspensionTargetPosition();
-
-                jumpTimeCurrent -= dt;
-                jumpDecal.SetJumpTime(GetJumpCompressionRatio());
-            }
-            else if (jumpLatencyCurrent > 0.0f)
-            {
-                jumpLatencyCurrent -= Time.deltaTime;
-                jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / wkzDef.jumpDef.latency));
-            }
-            #endif
-        }
-
-        void IControllable.ProcessInputs(Schnibble.Managers.InputManager currentManager, Schnibble.Managers.GameController inputs)
-        {
-            #if false
-            int jump = (int)PlayerInputs.InputCode.Jump;
-            var jumpValue = inputs.GetButtonState(jump);
-            if (jumpValue.up)
-            {
-                if (!wkzCar.jumpLock) wkzCar.StopSuspensionCompression();
-            }
-            else if (jumpValue.down)
-            {
-                if (!IsInJumpLatency()) wkzCar.StartSuspensionCompression();
-            }
-            #endif
-        }
-    }
-
-    [System.Serializable]
-    public class WeightControlAction : FSMAction, IControllable
-    {
-        [SerializeField]
-        float groundAerialLatencyCurrent = 0.0f;
-        [SerializeField]
-        Math.Accumulator weightInputX = new Math.Accumulator();
-        [SerializeField]
-        Math.Accumulator weightInputY = new Math.Accumulator();
-
-        public override void FixedExecute(FSMBase fsm, float dt) {
-            var player = (fsm as PlayerFSM).GetPlayer();
-            var rb     = player.GetRigidbody();
-            if (rb)
-            {
-                var state = (fsm.GetState() as PlayerState);
-
-                var aerialMaxForce = state.GetAerialMaxForce();
-                var torque = new Vector3(aerialMaxForce * weightInputX.average,
-                    0,
-                    -aerialMaxForce * weightInputY.average);
-
-                torque = rb.transform.TransformDirection(torque);
-
-                rb.AddTorque(torque * dt, ForceMode.VelocityChange);
-            }
-        }
-
-        public override void Execute(FSMBase fsm, float dt) {
-            var player = (fsm as PlayerFSM).GetPlayer();
-            var rb     = player.GetRigidbody();
-            if (rb != null)
-            {
-                var rbBehaviour = rb.GetComponent<SchRigidbodyBehaviour>();
-
-                if (rbBehaviour)
-                {
-                    PlayerState state = (fsm.GetState() as PlayerState);
-                    bool isInAir = state.IsInAir();
-                    if (player.flags[PlayerController.FJump] != isInAir)
-                    {
-                        // start latency between air/ground.
-                        groundAerialLatencyCurrent = state.GetGroundAerialLatency();
-                    }
-                    player.flags[PlayerController.FJump] = isInAir;
-
-                    if (groundAerialLatencyCurrent > 0.0f) groundAerialLatencyCurrent -= dt;
-                    else
-                    {
-                        if (isInAir) rbBehaviour.CoMLocalOffset = Vector3.zero;
-                        else
-                        {
-                            var weightControlMaxs = state.GetWeightContralMaxValues();
-
-                            var maxVect = new Vector3(weightControlMaxs.x, .0f, weightControlMaxs.z);
-                            var targetOffset = new Vector3(weightInputX.average * weightControlMaxs.x, 0f, weightInputY.average * weightControlMaxs.z);
-                            // try hemisphere instead of plan.
-                            // COM will be lowered the farther out it is.
-                            var Y = (targetOffset.magnitude / maxVect.magnitude) * weightControlMaxs.y;
-                            targetOffset.y = Y;
-
-                            var currentOffset = player.GetRigidbody().centerOfMass - rbBehaviour.CoMLocalOffset;
-
-                            var diffOffset = targetOffset - currentOffset;
-                            var offset = currentOffset + (diffOffset * Mathf.Clamp01(state.GetWeightControlSpeed() * dt));
-
-                            rbBehaviour.CoMLocalOffset = offset;
-                        }
-                    }
-                }
-            }
-        }
-
-        void IControllable.ProcessInputs(Schnibble.Managers.InputManager currentManager, Schnibble.Managers.GameController inputs) {
-            int weightX = (int)PlayerInputs.InputCode.WeightX;
-            int weightY = (int)PlayerInputs.InputCode.WeightY;
-
-            weightInputX.Add(inputs.GetAxisState(weightX).valueSmooth);
-            weightInputY.Add(inputs.GetAxisState(weightY).valueSmooth);
-        }
-    }
-
-    public class PlayerState : FSMState, IControllable
-    {
-        // needed for transitions
-        public bool pressAirplaneButton = false;
-        public bool pressBoatButton     = false;
-
-        protected PlayerController player;
-        protected PlayerState(PlayerController player, string stateName) : base(stateName)
-        {
-            this.player = player;
-        }
-
-        public override void OnEnter(FSMBase machine)
-        {
-            base.OnEnter(machine);
-            pressAirplaneButton = false;
-            pressBoatButton     = false;
-        }
-
-        virtual public void ProcessInputs(InputManager currentMgr, GameController Entry) {
-            pressAirplaneButton = (Entry.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down);
-            pressBoatButton = (Entry.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down);
-
-            foreach (var a in actions) {
-                var c = actions as IControllable;
-                if (c != null) c.ProcessInputs(currentMgr, Entry);
-            }
-        }
-
-        virtual public bool IsInAir() { return false; }
-        virtual public float GetGroundAerialLatency() { return 0.0f; }
-        virtual public float GetAerialMaxForce() { return .0f; }
-        virtual public Vector3 GetWeightContralMaxValues() { return Vector3.zero; }
-        virtual public float GetWeightControlSpeed() { return 0.0f; }
-    }
-
-    public class BoatState : PlayerState 
-    {
-        public BoatState(PlayerController player) : base(player, "boat") {
-            actions.Add(new WeightControlAction());
-            actions.Add(new SpeedEffectAction());
-
-            fixedActions.Add(new WeightControlAction());
-            fixedActions.Add(new SpeedEffectAction());
-        }
-
-        public override void OnEnter(FSMBase fsm)
-        {
-            base.OnEnter(fsm);
-
-            var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateMode(player.boat.gameObject, player.boat.boat.rb);
-        }
-
-        public override void OnExit(FSMBase fsm)
-        {
-            var player = (fsm as PlayerFSM).GetPlayer();
-            player.DeactivateMode(player.boat.gameObject);
-        }
-
-        override public void ProcessInputs(InputManager currentMgr, GameController Entry)
-        {
-            base.ProcessInputs(currentMgr, Entry);
-
-            player.boat.ProcessInputs(currentMgr, Entry);
-        }
-
-        public override bool IsInAir()
-        {
-            return (player.boat.boat as WkzBoat).IsInAir();
-        }
-
-        public override float GetGroundAerialLatency()
-        {
-            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
-        }
-
-        override public float GetAerialMaxForce()
-        {
-            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
-        }
-
-        override public Vector3 GetWeightContralMaxValues()
-        {
-            var wkzCar = (player.car.car as WkzCar);
-            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
-        }
-
-        override public float GetWeightControlSpeed()
-        {
-            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
-        }
-    }
-
-    public class AirplaneState : PlayerState
-    {
-        public AirplaneState(PlayerController player) : base(player, "airplane") {
-            actions.Add(new WeightControlAction());
-            actions.Add(new SpeedEffectAction());
-
-            fixedActions.Add(new WeightControlAction());
-            fixedActions.Add(new SpeedEffectAction());
-        }
-
-        public override void OnEnter(FSMBase fsm)
-        {
-            base.OnEnter(fsm);
-
-            var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateMode(player.plane.gameObject, player.plane.plane.rb);
-        }
-        public override void OnExit(FSMBase fsm)
-        {
-            var player = (fsm as PlayerFSM).GetPlayer();
-            player.DeactivateMode(player.plane.gameObject);
-        }
-
-        virtual public void ProcessInputs(InputManager currentMgr, GameController Entry)
-        {
-            base.ProcessInputs(currentMgr, Entry);
-
-            player.plane.ProcessInputs(currentMgr, Entry);
-        }
-
-        public override bool IsInAir()
-        {
-            // as silly as it looks we dont want to control the torque directly in glider mode.
-            // so wo say that wo are never in the air.
-            // TODO: make this easier to understand.
-            return false;
-        }
-
-        public override float GetGroundAerialLatency()
-        {
-            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
-        }
-
-        override public float GetAerialMaxForce()
-        {
-            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
-        }
-
-        override public Vector3 GetWeightContralMaxValues()
-        {
-            var wkzCar = (player.car.car as WkzCar);
-            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
-        }
-
-        override public float GetWeightControlSpeed()
-        {
-            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
-        }
-    }
-
-    public class GroundState : PlayerState, IControllable
-    {
-        #if false
-        public class GeneralGroundAction : FSMAction
-        {
-            float groundAerialLatencyCurrent = 0.0f;
-            public override void Execute(FSMBase fsm)
-            {
-                var player = (fsm as PlayerFSM).GetPlayer();
-                var car = player.car.GetCar();
-
-                var isInAir = !car.IsTouchingGround();
-                if (player.flags[PlayerController.FJump] != isInAir)
-                {
-                    // start latency between air/ground.
-                    groundAerialLatencyCurrent = (car as WkzCar).wkzDef.groundAerialSwitchLatency;
-                }
-                player.flags[PlayerController.FJump] = isInAir;
-
-                if (groundAerialLatencyCurrent > 0.0f) {
-                    groundAerialLatencyCurrent -= Time.fixedDeltaTime;
-                }
-                else
-                {
-                    if (isInAir)
-                    {
-                        player.car.GetCar().ResetCarCenterOfMass();
-                        player.car.GetCar().SetCarAerialTorque(Time.fixedDeltaTime);
-                    }
-                    else
-                    {
-                        player.car.GetCar().SetCarCenterOfMass(Time.fixedDeltaTime);
-                    }
-                }
-            }
-        }
-
-        private class SpeedEffect : FSMAction
-        {
-            public override void Execute(FSMBase fsm)
-            {
-                var player = (fsm as PlayerFSM).GetPlayer();
-
-                var playerCarController = player.car;
-                var playerCar           = playerCarController.car;
-                var effectRatio = (playerCar as WkzCar).GetSpeedEffectRatio();
-                // Speed effect on camera
-                // update camera FOV/DIST if a PlayerCamer
-                CameraManager CamMgr = Access.CameraManager();
-                if (CamMgr?.active_camera is PlayerCamera)
-                {
-                    PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
-                    pc.applySpeedEffect(effectRatio);
-                }
-
-                var particles = (playerCar as WkzCar).speedEffect.particles;
-
-                var e = particles.emission;
-                e.enabled = effectRatio != 0.0f;
-
-                var relativeWindDir = playerCar.GetChassis().GetBody().velocity;
-                particles.transform.LookAt(playerCar.GetChassis().GetBody().position + relativeWindDir);
-
-                var lifemin  = 0.2f;
-                var lifemax  = 0.6f;
-                var partmain = particles.main;
-                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
-            }
-        }
-        #endif
-
-        public GroundState(PlayerController player) : base(player, "ground")
-        {
-            actions.Add(new WeightControlAction());
-            actions.Add(new SpeedEffectAction());
-
-            fixedActions.Add(new WeightControlAction());
-            fixedActions.Add(new SpeedEffectAction());
-        }
-
-        public override void OnEnter(FSMBase fsm)
-        {
-            base.OnEnter(fsm);
-
-            var player = (fsm as PlayerFSM).GetPlayer();
-            player.ActivateMode(player.car.gameObject, player.car.car.GetChassis().GetBody());
-            // car also need to reset wheels velocity.
-            player.car.GetCar().ResetWheels();
-        }
-
-        public override void OnExit(FSMBase fsm)
-        {
-            base.OnExit(fsm);
-            (fsm as PlayerFSM).GetPlayer().DeactivateMode(player.car.gameObject);
-        }
-
-        override public void ProcessInputs(InputManager currentMgr, GameController Entry)
-        {
-            base.ProcessInputs(currentMgr, Entry);
-
-            player.car.ProcessInputs(currentMgr, Entry);
-
-            // powers
-            var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
-            if (spinAtk != null)
-            {
-                if (spinAtk.GetState().down)
-                {
-                    player.self_PowerController.setNextPower(1);
-                    player.self_PowerController.tryTriggerPower();
-                }
-            }
-        }
-
-        public override bool IsInAir()
-        {
-            return !(player.car.car as WkzCar).IsTouchingGround();
-        }
-
-        public override float GetGroundAerialLatency()
-        {
-            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
-        }
-
-        override public float GetAerialMaxForce()
-        {
-            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
-        }
-
-        override public Vector3 GetWeightContralMaxValues()
-        {
-            var wkzCar = (player.car.car as WkzCar);
-            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
-        }
-
-        override public float GetWeightControlSpeed()
-        {
-            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
-        }
-    };
-
-    public class PlayerFSM : FSMBase
-    {
-        protected PlayerController player;
-
-        public PlayerFSM(PlayerController player, string baseName) : base(baseName)
-        {
-            this.player = player;
-        }
-
-        public PlayerController GetPlayer() { return player; }
-    }
-
-    [System.Serializable]
-    public class PlayerVehicleStates : PlayerFSM
-    {
-        public PlayerVehicleStates(PlayerController p) : base(p, "vehicle") { CreateFSM(); }
-
-        // this is used to commonly refers to some states
-        // for instance setting the "Frozen" state, might be the one from
-        // the current FSM, or maybe from the currentState FSM, etc
-        // As sometimes we need to force a certain state it is better to have a
-        // common enum too. We dont need to know what exact state object "Init" refers too.
-        public enum States
-        {
-            // common
+            None,
             Init,
+            InMenu,
+            Frozen,
+            Alive,
+            Dead,
+            Count,
+        };
+        public PlayerStates playerState {
+            get;
+            private set;
+        }
+
+        public enum PlayerVehicleStates
+        {
+            None,
             Car,
             Boat,
             Plane,
-            Spider,
             Count,
         };
-        public FSMState[] states = new FSMState[(int)States.Count];
-
-        public void CreateFSM()
-        {
-            states[(int)States.Init] = new FSMState("Init");
-            states[(int)States.Car] = new GroundState(player);
-            states[(int)States.Plane] = new AirplaneState(player);
-            states[(int)States.Boat] = new BoatState(player);
-
-            var initState = states[(int)States.Init];
-            var carState = states[(int)States.Car];
-            var airplaneState = states[(int)States.Plane];
-            var boatState = states[(int)States.Boat];
-
-            globalTransitions.Add(new FSMNullTransition(initState));
-
-            carState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), airplaneState, null));
-            carState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , boatState    , null));
-
-            boatState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), airplaneState, null));
-            boatState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , carState     , null));
-
-            airplaneState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), carState  , null));
-            airplaneState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , boatState , null));
-
-            ForceState(initState);
+        public PlayerVehicleStates vehicleState {
+            get;
+            private set;
         }
-
-    }
-
-    [System.Serializable]
-    public class PlayerGeneralStates : PlayerFSM
-    {
-        // this is used to commonly refers to some states
-        // for instance setting the "Frozen" state, might be the one from
-        // the current FSM, or maybe from the currentState FSM, etc
-        // As sometimes we need to force a certain state it is better to have a
-        // common enum too. We dont need to know what exact state object "Init" refers too.
-        public enum States
-        {
-            // common
-            Init,
-            Idle,
-            Alive,
-            Dead,
-            Frozen,
-            InMenu,
-            Count,
-        };
-        public FSMState[] states = new FSMState[(int)States.Count];
-
-        public PlayerGeneralStates(PlayerController player) : base(player, "general") { CreateFSM(); }
-
-        private class PlayerAliveCondition : FSMCondition
-        {
-            public override bool Check(FSMBase fsm)
-            {
-                return (fsm as PlayerFSM).GetPlayer().IsAlive();
-            }
-        }
-
-        private class PlayerInMenuCondition : FSMCondition
-        {
-            public override bool Check(FSMBase fsm)
-            {
-                return (fsm as PlayerFSM).GetPlayer().IsInMenu();
-            }
-        }
-
-        public class DieTransition : FSMTransition
-        {
-            public DieTransition(FSMCondition condition, FSMState tstate, FSMState fstate) : base(condition, tstate, fstate) { }
-
-            public override void OnTransition(FSMBase fsm, FSMState toState)
-            {
-                (fsm as PlayerFSM).GetPlayer().Kill();
-
-                Access.CheckPointManager().loadLastCP(true);
-
-                base.OnTransition(fsm, toState);
-            }
-        }
-
-        private void CreateFSM()
-        {
-            // init states
-            states[(int)States.Init] = new FSMState("Init");
-            states[(int)States.Alive] = new FSMState("Alive");
-            states[(int)States.Dead] = new FSMState("Dead");
-            states[(int)States.Frozen] = new FSMState("Frozen");
-            states[(int)States.InMenu] = new FSMState("InMenu");
-
-            var aliveState = states[(int)States.Alive];
-            var deadState = states[(int)States.Dead];
-            var inMenuState = states[(int)States.InMenu];
-            var initState = states[(int)States.Init];
-
-            // Transitions
-
-            // Global Transitions that every states can go to all the time
-            // -> dead
-            FSMCondition aliveCondition = new PlayerAliveCondition();
-            FSMTransition dieTransition = new DieTransition(aliveCondition, null, deadState);
-            FSMTransition aliveTransition = new FSMTransition(aliveCondition, aliveState, null);
-
-            // we can die from any state
-            this.globalTransitions.Add(dieTransition);
-            this.globalTransitions.Add(new FSMNullTransition(initState));
-            this.globalTransitions.Add(new FSMTransition(new PlayerInMenuCondition(), inMenuState, null));
-
-            deadState.transitions.Add(aliveTransition);
-            initState.transitions.Add(aliveTransition);
-
-            ForceState(states[(int)States.Init]);
-        }
-    }
-
-    public class PlayerController : MonoBehaviour, IControllable
-    {
-        [SerializeReference]
-        public PlayerGeneralStates generalStates;
-        [SerializeReference]
-        public PlayerVehicleStates vehicleStates;
-
-        public PowerController self_PowerController;
-        private bool isInMenu = false;
 
         // Flags
         public static readonly int FJump = 1;
         public BitVector32 flags = new BitVector32(0);
+
+        public void TransitionTo(PlayerVehicleStates to) {
+            TransitionFromTo(vehicleState, to);
+        }
+
+        private void TransitionFromTo(PlayerStates from, PlayerStates to) {
+            // TODO: fix me, only temporary
+            // should be done only if possible.
+            playerState = to;
+
+            // glabal states.
+            if (from == PlayerStates.Frozen) {
+                if (current.rb) current.rb.isKinematic = false;
+                UnMuteSound();
+                return;
+            }
+            if (to == PlayerStates.Frozen) {
+                if (current.rb) current.rb.isKinematic = true;
+                MuteSound();
+                return;
+            }
+
+            if (to == PlayerStates.Dead) {
+                Kill();
+                Access.CheckPointManager().loadLastCP(true);
+                return;
+            }
+
+            switch (from)
+            {
+                case PlayerStates.None:
+                    {
+                        switch (to)
+                        {
+                            case PlayerStates.None:
+                                case PlayerStates.Init:
+                                case PlayerStates.InMenu:
+                                case PlayerStates.Frozen:
+                                case PlayerStates.Alive:
+                                case PlayerStates.Dead:
+                                case PlayerStates.Count:
+                                {
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case PlayerStates.Init:
+                    {
+
+                        switch (to)
+                        {
+                            case PlayerStates.None:
+                                case PlayerStates.Init:
+                                case PlayerStates.InMenu:
+                                case PlayerStates.Frozen:
+                                case PlayerStates.Alive:
+                                case PlayerStates.Dead:
+                                case PlayerStates.Count:
+                                {
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+
+                case PlayerStates.InMenu: {
+                    switch (to)
+                    {
+                        case PlayerStates.None:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
+                            {
+                                break;
+                            }
+                    }
+                    break;
+                }
+                case PlayerStates.Frozen: {
+                    switch (to)
+                    {
+                        case PlayerStates.None:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
+                            {
+                                break;
+                            }
+                    }
+                    break;
+                }
+                case PlayerStates.Alive: {
+                    switch (to)
+                    {
+                        case PlayerStates.None:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
+                            {
+                                break;
+                            }
+                    }
+                    break;
+                }
+                case PlayerStates.Dead: {
+                    switch (to)
+                    {
+                        case PlayerStates.None:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
+                            {
+                                break;
+                            }
+                    }
+                    break;
+                }
+                case PlayerStates.Count: {
+                    break;
+                }
+            }
+        }
+
+        private void TransitionFromTo(PlayerVehicleStates from, PlayerVehicleStates to) {
+            // TODO: fix me, only temporary
+            // should be done only if possible.
+            vehicleState = to;
+
+            switch (from)
+            {
+                case PlayerVehicleStates.None:
+                    {
+                        switch (to)
+                        {
+                            case PlayerVehicleStates.None:
+                                case PlayerVehicleStates.Count:
+                                {
+                                    break;
+                                }
+
+                            case PlayerVehicleStates.Car:
+                                {
+                                    // if (!car.init) init();
+                                    ActivateMode(car.gameObject, car.car.chassis.GetBody());
+                                    break;
+                                }
+                            case PlayerVehicleStates.Plane:
+                                {
+                                    ActivateMode(plane.gameObject, plane.plane.rb);
+                                    break;
+                                }
+                            case PlayerVehicleStates.Boat:
+                                {
+                                    ActivateMode(boat.gameObject, boat.boat.rb);
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+
+                case PlayerVehicleStates.Car:
+                    case PlayerVehicleStates.Boat:
+                    case PlayerVehicleStates.Plane:
+                    {
+                        DeactivateMode(from);
+                        switch (to)
+                        {
+                            case PlayerVehicleStates.Car:
+                                {
+                                    ActivateMode(car.gameObject, car.car.chassis.GetBody());
+                                    break;
+                                }
+                            case PlayerVehicleStates.Plane:
+                                {
+                                    ActivateMode(plane.gameObject, plane.plane.rb);
+                                    break;
+                                }
+                            case PlayerVehicleStates.Boat:
+                                {
+                                    ActivateMode(boat.gameObject, boat.boat.rb);
+                                    break;
+                                }
+                            case PlayerVehicleStates.Count:
+                                {
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+            }
+        }
+
+        public PowerController self_PowerController;
 
         public Vector3 repulseForce;
         [Header("Prefab Refs(MAND)")]
@@ -713,6 +317,76 @@ namespace Wonkerz
         };
         public controlled current;
 
+        float jumpTimeCurrent    = 0.0f;
+        float jumpLatencyCurrent = 0.0f;
+        bool  jumpLock           = true;
+
+        bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
+
+        public bool IsInAir() {
+            switch (vehicleState) {
+                case PlayerVehicleStates.Car:
+                    return !(car.car as WkzCar).IsTouchingGround();
+                case PlayerVehicleStates.Boat:
+                    return (boat.boat as WkzBoat).IsInAir();
+            }
+            return false;
+        }
+
+        public float GetGroundAerialLatency()
+        {
+            return (car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
+        }
+
+        public float GetAerialMaxForce()
+        {
+            return (car.car as WkzCar).wkzDef.aerialMaxForce;
+        }
+
+        public Vector3 GetWeightContralMaxValues()
+        {
+            var wkzCar = (car.car as WkzCar);
+            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
+        }
+
+        public float GetWeightControlSpeed()
+        {
+            return (car.car as WkzCar).wkzDef.weightControlSpeed;
+        }
+
+        public ParticleSystem GetSpeedParticles() {
+            return (car.car as WkzCar).speedEffect.particles;
+        }
+
+        public void ApplySpeedEffect() {
+            // Apply camera effect.
+            // Will change FoV, distance, etc.
+
+            // TODO: makethis work 
+            var effectRatio = 0.0f;
+
+            CameraManager CamMgr = Access.CameraManager();
+            if (CamMgr?.active_camera is PlayerCamera)
+            {
+                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                pc.applySpeedEffect(effectRatio);
+            }
+            // Apply particles effect.
+            // Will display speed trails.
+            var particles = GetSpeedParticles();
+            if (particles) {
+                var e = particles.emission;
+                e.enabled = effectRatio != 0.0f;
+                var rb = GetRigidbody();
+                var relativeWindDir = rb.velocity;
+                particles.transform.LookAt(rb.position + relativeWindDir);
+
+                var lifemin  = 0.2f;
+                var lifemax  = 0.6f;
+                var partmain = particles.main;
+                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
+            }
+        }
 
         // do not use directly transform, rigidbody, etc...
         public Transform GetTransform()
@@ -736,11 +410,8 @@ namespace Wonkerz
                 this.LogError("car property cannot be null! Please assign an gameobject to car.");
             }
 
-            // create states if nuul
-            if (generalStates == null)
-            generalStates = new PlayerGeneralStates(this);
-            if (vehicleStates == null)
-            vehicleStates = new PlayerVehicleStates(this);
+            playerState  = PlayerStates.None;
+            vehicleState = PlayerVehicleStates.None;
 
             if (self_PowerController == null)
             self_PowerController = GetComponent<PowerController>();
@@ -750,8 +421,7 @@ namespace Wonkerz
                 this.LogError("No powercontroller, please assign one or add a PowerController script to this object.");
             }
 
-            // Always freeze when starting.
-            Freeze();
+            TransitionFromTo(playerState, PlayerStates.Frozen);
         }
 
         // ----- Scene listeners
@@ -770,13 +440,11 @@ namespace Wonkerz
 
         void OnBeforeLoadScene()
         {
-            vehicleStates.SetState(vehicleStates.states[(int)PlayerVehicleStates.States.Init]);
-            Freeze();
+            TransitionFromTo(playerState, PlayerStates.Frozen);
         }
 
         void OnBeforeEnableScene(Scene toBeEnabled)
         {
-
             //
             //private void RemovePreviousPlayerIfExists(Scene sceneToLoad)
             {
@@ -795,7 +463,6 @@ namespace Wonkerz
         void OnAfterLoadScene()
         {
             Access.invalidate();
-            //car.car.constraintSolver.solver.bodyInterface.Init();
         }
         //------ end scene listeners
 
@@ -831,19 +498,184 @@ namespace Wonkerz
             }
         }
 
+        // Jump logic
+        void OnJumpPressed() {
+            switch (vehicleState) {
+                case PlayerVehicleStates.Plane:
+                    case PlayerVehicleStates.Car: {
+                        (car.car as WkzCar).SetSuspensionTargetPosition();
+                        break;
+                    }
+
+                case PlayerVehicleStates.Boat: {
+                    (boat.boat as WkzBoat).SetFloatersSize(GetJumpCompressionRatio());
+                    break;
+                }
+            }
+
+            jumpDecal.SetJumpTime(GetJumpCompressionRatio());
+        }
+
+        void OnJumpReleased() {
+
+        }
+
+        void OnJumpLatency() {
+            jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / (car.car as WkzCar).wkzDef.jumpDef.latency));
+        }
+
+        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / (car.car as WkzCar).wkzDef.jumpDef.time);
+
+        void UpdateJump(float dt) {
+            if (jumpTimeCurrent > 0.0f)
+            {
+                jumpTimeCurrent -= dt;
+
+                OnJumpPressed();
+            }
+            else if (jumpLatencyCurrent > 0.0f)
+            {
+                jumpLatencyCurrent -= Time.deltaTime;
+
+                OnJumpLatency();
+            }
+        }
+        // end jump logic.
+
+
+        // weight logic
+        float groundAerialLatencyCurrent = 0.0f;
+        [SerializeField]
+        Math.AccumulatorV2 weightInput = new Math.AccumulatorV2();
+
+        void UpdateWeight(float dt)
+        {
+            var rb = GetRigidbody();
+            if (rb != null)
+            {
+                var rbBehaviour = rb.GetComponent<SchRigidbodyBehaviour>();
+
+                if (rbBehaviour)
+                {
+                    bool isInAir = IsInAir();
+                    if (flags[PlayerController.FJump] != isInAir)
+                    {
+                        // start latency between air/ground.
+                        groundAerialLatencyCurrent = GetGroundAerialLatency();
+                    }
+                    flags[PlayerController.FJump] = isInAir;
+
+                    if (groundAerialLatencyCurrent > 0.0f) groundAerialLatencyCurrent -= dt;
+                    else
+                    {
+                        if (isInAir) rbBehaviour.SetAddedLocalCOMOffset(Vector3.zero);
+                        else
+                        {
+                            var weightControlMax = GetWeightContralMaxValues();
+
+                            var maxVect = new Vector3(weightControlMax.x, .0f, weightControlMax.z);
+                            var weightInputValue = weightInput.average;
+                            var targetOffset = new Vector3(weightInputValue.x * weightControlMax.x, 0f, weightInputValue.y * weightControlMax.z);
+                            // try hemisphere instead of plan.
+                            // COM will be lowered the farther out it is.
+                            var Y = (targetOffset.magnitude / maxVect.magnitude) * weightControlMax.y;
+                            targetOffset.y = Y;
+
+                            var currentOffset = rbBehaviour.GetAddedLocalCOMOffest();
+                            var diffOffset = targetOffset - currentOffset;
+                            var offset     = currentOffset + (diffOffset * Mathf.Clamp01(GetWeightControlSpeed() * dt));
+                            rbBehaviour.SetAddedLocalCOMOffset(offset);
+                        }
+                    }
+                }
+            }
+        }
+        // end weight logic
 
         void Update()
         {
-            generalStates.Update();
-            vehicleStates.Update();
-
             elapsedTimeSinceLastDamage += Time.deltaTime;
+
+            // Simple State Machine
+            switch (playerState)
+            {
+                case PlayerStates.None:
+                    case PlayerStates.Dead:
+                    case PlayerStates.Count:
+                    case PlayerStates.Frozen:
+                    case PlayerStates.InMenu:
+                    {
+                        // do nothing;
+                        break;
+                    }
+                case PlayerStates.Init:
+                    {
+                        break;
+                    }
+
+                case PlayerStates.Alive:
+                    {
+                        switch (vehicleState)
+                        {
+                            case PlayerVehicleStates.Boat:
+                                case PlayerVehicleStates.Plane:
+                                case PlayerVehicleStates.Car:
+                                {
+                                    UpdateJump(Time.deltaTime);
+                                    UpdateWeight(Time.deltaTime);
+                                }
+                                break;
+                        }
+                        break;
+                    }
+            }
+
+            weightInput.Reset();
         }
 
         void FixedUpdate()
         {
-            generalStates.FixedUpdate();
-            vehicleStates.FixedUpdate();
+            // Simple State Machine
+            switch (playerState)
+            {
+                case PlayerStates.None:
+                    case PlayerStates.Dead:
+                    case PlayerStates.Count:
+                    case PlayerStates.Frozen:
+                    case PlayerStates.InMenu:
+                    {
+                        // do nothing;
+                        break;
+                    }
+                case PlayerStates.Init:
+                    {
+                        break;
+                    }
+
+                case PlayerStates.Alive:
+                    {
+
+                        switch (vehicleState) {
+                            case PlayerVehicleStates.Car :{
+                                var rb     = GetRigidbody();
+                                if (rb)
+                                {
+                                    var aerialMaxForce = GetAerialMaxForce();
+                                    var torque = new Vector3(aerialMaxForce * weightInput.average.x,
+                                        0,
+                                        -aerialMaxForce * weightInput.average.y);
+
+                                    torque = rb.transform.TransformDirection(torque);
+
+                                    rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                                }
+                                break;
+                            }
+                        }
+
+                        break;
+                    }
+            }
         }
 
         public WonkerDecal jumpDecal;
@@ -884,15 +716,15 @@ namespace Wonkerz
 
         // helper
         public bool IsBoat() {
-            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Boat];
+            return vehicleState == PlayerVehicleStates.Boat;
         }
 
         public bool IsCar() {
-            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car];
+            return vehicleState == PlayerVehicleStates.Car;
         }
 
         public bool IsPlane() {
-            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Plane];
+            return vehicleState == PlayerVehicleStates.Plane;
         }
         // end helpers
 
@@ -948,7 +780,19 @@ namespace Wonkerz
             Access.CameraManager().OnTargetChange(GetTransform());
         }
 
-        public void DeactivateMode(GameObject go) {
+        public void DeactivateMode(PlayerVehicleStates mode) {
+            GameObject go = null;
+            switch (mode) {
+                case PlayerVehicleStates.Boat:
+                    go = boat.gameObject;
+                    break;
+                case PlayerVehicleStates.Car:
+                    go = car.gameObject;
+                    break;
+                case PlayerVehicleStates.Plane:
+                    go = plane.gameObject;
+                    break;
+            }
             go.SetActive(false);
             // IMPORTANT: do not set to null as the position/rotation needs to be copied to
             // init the next rb.
@@ -963,7 +807,7 @@ namespace Wonkerz
                 t.position = position;
                 t.rotation = rotation;
 
-                if (vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car])
+                if (IsCar())
                 {
                     car.GetCar().ResetWheels();
                 }
@@ -977,16 +821,22 @@ namespace Wonkerz
                 r.velocity = linear;
                 r.angularVelocity = angular;
 
-                if (vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car])
+                if (IsCar())
                 {
                     car.GetCar().ResetWheels();
                 }
             }
         }
 
-        public bool IsInMenu() { return isInMenu; }
-        public void Freeze() { isInMenu = true; if (current.rb) current.rb.isKinematic = true; MuteSound(); }
-        public void UnFreeze() { isInMenu = false; if (current.rb) current.rb.isKinematic = false; UnMuteSound(); }
+        public bool IsInMenu() { return playerState == PlayerStates.InMenu; }
+        // TODO: fix me, this is completely wrong!
+        public void Freeze() { TransitionFromTo(playerState, PlayerStates.Frozen); }
+        public void UnFreeze() {
+            if (playerState != PlayerStates.Frozen) {
+                this.LogError("Weird : trying to unfreeze an object that is not currently frozen");
+            }
+            TransitionFromTo(playerState, PlayerStates.Alive);
+        }
         private void MuteSound()
         {
             foreach (var source in GetComponentsInChildren<AudioSource>())
@@ -1006,9 +856,6 @@ namespace Wonkerz
         /// =============== Game Logic ==================
         public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
         {
-            //
-            //if (stateMachine.currentState == invulState || stateMachine.currentState == deadState || stateMachine.currentState == frozenState)
-            //return;
             if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
             return;
 
@@ -1041,19 +888,84 @@ namespace Wonkerz
 
         bool modifierCalled = false;
 
-        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        void IControllable.ProcessInputs(InputManager currentMgr, GameController inputs)
         {
-            // Specific states control
-            var generalInputs = (generalStates.GetState() as IControllable);
-            if (generalInputs != null)
+            int weightX = (int)PlayerInputs.InputCode.WeightX;
+            int weightY = (int)PlayerInputs.InputCode.WeightY;
+            int jump    = (int)PlayerInputs.InputCode.Jump;
+            // Simple State Machine
+            switch (playerState)
             {
-                generalInputs.ProcessInputs(currentMgr, Entry);
-            }
+                case PlayerStates.None:
+                    case PlayerStates.Dead:
+                    case PlayerStates.Count:
+                    case PlayerStates.Frozen:
+                    case PlayerStates.InMenu:
+                    case PlayerStates.Init:
+                    {
+                        // do nothing;
+                        break;
+                    }
 
-            var vehicleInputs = (vehicleStates.GetState() as IControllable);
-            if (vehicleInputs != null)
-            {
-                vehicleInputs.ProcessInputs(currentMgr, Entry);
+                case PlayerStates.Alive:
+                    {
+                        switch (vehicleState) {
+                            case PlayerVehicleStates.None:
+                                case PlayerVehicleStates.Count:
+                                {
+                                    break;
+                                }
+                            case PlayerVehicleStates.Car:
+                                {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Plane);
+                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Boat);
+                                    } else {
+                                        weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
+
+                                        var jumpValue = inputs.GetButtonState(jump);
+                                        var wkzCar = car.car as WkzCar;
+                                        if (jumpValue.up)
+                                        {
+                                            if (!jumpLock) wkzCar.StopSuspensionCompression();
+                                        }
+                                        else if (jumpValue.down)
+                                        {
+                                            if (!IsInJumpLatency()) wkzCar.StartSuspensionCompression();
+                                        }
+
+                                        car.ProcessInputs(currentMgr, inputs);
+                                    }
+                                    break;
+                                }
+                            case PlayerVehicleStates.Boat:
+                                {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Plane);
+                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Car);
+                                    } else {
+                                        weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
+                                        boat.ProcessInputs(currentMgr, inputs);
+                                    }
+                                    break;
+                                }
+                            case PlayerVehicleStates.Plane:
+                                {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Car);
+                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                        TransitionFromTo(vehicleState, PlayerVehicleStates.Boat);
+                                    } else {
+                                        weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
+                                        plane.ProcessInputs(currentMgr, inputs);
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                    }
             }
         }
     }

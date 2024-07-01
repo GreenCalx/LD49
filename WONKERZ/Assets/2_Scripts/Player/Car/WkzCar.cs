@@ -117,7 +117,7 @@ namespace Wonkerz
             StartJump();
         }
 
-        void SetSuspensionTargetPosition()
+        public void SetSuspensionTargetPosition()
         {
             chassis.SetAxlesSuspensionTargetPosition(Mathf.Lerp(1.0f, wkzDef.jumpDef.minLengthPercent, GetJumpCompressionRatio()));
 

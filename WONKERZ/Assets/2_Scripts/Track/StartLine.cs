@@ -69,10 +69,9 @@ namespace Wonkerz
             // Reset track infinite collectibles
             Access.CollectiblesManager().resetInfCollectibles();
 
-        var states =Access.Player().vehicleStates;
-        states.SetState(states.states[(int)PlayerVehicleStates.States.Car]);
+            PC.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
-        if (enable_tricks)
+            if (enable_tricks)
             activateTricks();
 
             StartCoroutine(postCountdown());
