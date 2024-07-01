@@ -766,16 +766,15 @@ namespace Wonkerz
         public void ActivateMode(GameObject go, Rigidbody rb) {
             go.SetActive(true);
 
-            if (current.rb)
-            {
-                rb.transform.position = current.rb.transform.position;
-                rb.transform.rotation = current.rb.transform.rotation;
-                rb.velocity           = current.rb.velocity;
-                rb.angularVelocity    = current.rb.angularVelocity;
-                rb.isKinematic        = current.rb.isKinematic;
-            }
-
+            var lastrb = current.rb;
             current.rb = rb;
+
+            if (lastrb)
+            {
+                ForceTransform(lastrb.transform.position, lastrb.transform.rotation);
+                ForceVelocity(lastrb.velocity, lastrb.angularVelocity);
+                rb.isKinematic        = lastrb.isKinematic;
+            }
 
             Access.CameraManager().OnTargetChange(GetTransform());
         }
