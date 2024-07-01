@@ -127,6 +127,7 @@ namespace Wonkerz
             {
                 cam.playerRef = t.gameObject;
                 cam.init();
+                cam.resetFocus();
             }
         }
 

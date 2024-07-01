@@ -145,8 +145,7 @@ namespace Wonkerz
             }
 
             // Check if distance is met, disable otherwise
-            PlayerController p = Access.Player();
-            Vector3 p_pos = p.GetTransform().position;
+            Vector3 p_pos = player.GetTransform().position;
             if (Vector3.Distance(secondaryFocus.transform.position, p_pos) > breakFocusDistance)
             {
                 resetFocus();
@@ -160,8 +159,7 @@ namespace Wonkerz
 
             this.Log("Change focus");
 
-            PlayerController p = Access.Player();
-            Vector3 p_pos = p.GetTransform().position;
+            Vector3 p_pos = player.GetTransform().position;
 
             float minDist = float.MaxValue;
             CameraFocusable chosenOne = null;

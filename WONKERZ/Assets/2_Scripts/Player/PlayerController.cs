@@ -450,11 +450,11 @@ namespace Wonkerz
         // it might be different depending on states.
         // the playercontroller does not have relevant data when it comes
         // to rigidbody, transform, etc...
-        struct controlled
+        public struct controlled
         {
             public Rigidbody rb;
         };
-        controlled current;
+        public controlled current;
 
 
         // do not use directly transform, rigidbody, etc...
