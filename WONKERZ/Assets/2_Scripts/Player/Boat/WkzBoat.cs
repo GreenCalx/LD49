@@ -10,13 +10,36 @@ namespace Wonkerz
 {
     public class WkzBoat : SchBoat
     {
+        // TODO: create boat def
+        // for now duplicated from WkzCarSO.cs
+        [Header("Gameplay")]
+        public float aerialMaxForce = 5.0f;
+        public float groundAerialSwitchLatency = 0.1f;
+        public float weightControlMaxX = 1.0f;
+        public float weightControlMaxZ = 1.0f;
+        public float weightControlMaxY = 0.0f;
+        public float weightControlSpeed = 1.0f;
+        public float centrifugalForceMul = 1.0f;
+        public float minCentrifugalVelocity = 3.0f;
+
         public SchWaterColliderManager waterCollider;
+
+        public List<SchBuoyancy> floaters = new List<SchBuoyancy>();
         // Start is called before the first frame update
         void Start()
         {
             if (waterCollider == null) {
                 waterCollider = SchWaterColliderManager.inst;
             }
+        }
+
+        public bool IsInAir() {
+            // TODO: make this more robust,
+            // for now just check if one wheel touch some water.
+            foreach (var f in floaters) {
+                if (f.hasContacts) return true;
+            }
+            return false;
         }
 
         override protected void FixedUpdate()

@@ -2419,7 +2419,7 @@ Transform:
   m_GameObject: {fileID: 3054614580798337337}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 893155310}
@@ -2680,6 +2680,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8556918a973d1f64b94582c1a0c9cd01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attachedOnlinePlayer: {fileID: 0}
 --- !u!65 &2175702475772586117
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3316,10 +3317,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f857a1292da13048b69ca820402ff06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 3054614580798337332}
+  car: {fileID: 0}
   indicator: {fileID: 8126942160348799387}
   offsetLocal: {x: 0, y: 1, z: 0}
   useRotation: 0
+  useFixedPosition: 1
 --- !u!4 &8458688514289268236 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
@@ -3770,15 +3772,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6790076215394279714, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6790076215394279714, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6790076215394279714, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6790076215394279714, guid: 56ddcad94b33b3e40829836b98f197d1, type: 3}
       propertyPath: m_LocalPosition.x

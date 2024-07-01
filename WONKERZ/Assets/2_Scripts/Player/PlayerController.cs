@@ -10,23 +10,235 @@ using static UnityEngine.Debug;
 
 namespace Wonkerz
 {
-    public class PlayerState : FSMState
+    public class PressBoatButtonCondition : FSMCondition {
+        public override bool Check(FSMBase machine)
+        {
+            var player = (machine as PlayerFSM).GetPlayer();
+            return !player.IsInMenu() && (machine.GetState() as PlayerState).pressBoatButton;
+        }
+    }
+
+    public class PressAirplaneButtonCondition : FSMCondition {
+        public override bool Check(FSMBase machine)
+        {
+            var player = (machine as PlayerFSM).GetPlayer();
+            return !player.IsInMenu() && (machine.GetState() as PlayerState).pressAirplaneButton;
+        }
+    }
+
+    public class SpeedEffectAction : FSMAction
     {
+        public override void Execute(FSMBase fsm, float dt)
+        {
+            var player = (fsm as PlayerFSM).GetPlayer();
+
+            #if false
+            // Apply camera effect.
+            // Will change FoV, distance, etc.
+            CameraManager CamMgr = Access.CameraManager();
+            if (CamMgr?.active_camera is PlayerCamera)
+            {
+                PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
+                pc.applySpeedEffect(effectRatio);
+            }
+            // Apply particles effect.
+            // Will display speed trails.
+            var particles = player.GetSpeedParticles();
+            if (particles) {
+                var e = particles.emission;
+                e.enabled = effectRatio != 0.0f;
+                var rb = player.GetRigidbody();
+                var relativeWindDir = rb.velocity;
+                particles.transform.LookAt(rb.position + relativeWindDir);
+
+                var lifemin  = 0.2f;
+                var lifemax  = 0.6f;
+                var partmain = particles.main;
+                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
+            }
+            #endif
+        }
+    }
+
+    public class JumpControlAction : FSMAction, IControllable
+    {
+        float jumpTimeCurrent    = 0.0f;
+        float jumpLatencyCurrent = 0.0f;
+        bool  jumpLock           = true;
+
+        bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
+
+        public override void FixedExecute(FSMBase machine, float dt) { }
+
+        public override void Execute(FSMBase machine, float dt)
+        {
+            base.Execute(machine, dt);
+
+            #if false
+            if (jumpTimeCurrent > 0.0f)
+            {
+                SetSuspensionTargetPosition();
+
+                jumpTimeCurrent -= dt;
+                jumpDecal.SetJumpTime(GetJumpCompressionRatio());
+            }
+            else if (jumpLatencyCurrent > 0.0f)
+            {
+                jumpLatencyCurrent -= Time.deltaTime;
+                jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / wkzDef.jumpDef.latency));
+            }
+            #endif
+        }
+
+        void IControllable.ProcessInputs(Schnibble.Managers.InputManager currentManager, Schnibble.Managers.GameController inputs)
+        {
+            #if false
+            int jump = (int)PlayerInputs.InputCode.Jump;
+            var jumpValue = inputs.GetButtonState(jump);
+            if (jumpValue.up)
+            {
+                if (!wkzCar.jumpLock) wkzCar.StopSuspensionCompression();
+            }
+            else if (jumpValue.down)
+            {
+                if (!IsInJumpLatency()) wkzCar.StartSuspensionCompression();
+            }
+            #endif
+        }
+    }
+
+    [System.Serializable]
+    public class WeightControlAction : FSMAction, IControllable
+    {
+        [SerializeField]
+        float groundAerialLatencyCurrent = 0.0f;
+        [SerializeField]
+        Math.Accumulator weightInputX = new Math.Accumulator();
+        [SerializeField]
+        Math.Accumulator weightInputY = new Math.Accumulator();
+
+        public override void FixedExecute(FSMBase fsm, float dt) {
+            var player = (fsm as PlayerFSM).GetPlayer();
+            var rb     = player.GetRigidbody();
+            if (rb)
+            {
+                var state = (fsm.GetState() as PlayerState);
+
+                var aerialMaxForce = state.GetAerialMaxForce();
+                var torque = new Vector3(aerialMaxForce * weightInputX.average,
+                    0,
+                    -aerialMaxForce * weightInputY.average);
+
+                torque = rb.transform.TransformDirection(torque);
+
+                rb.AddTorque(torque * dt, ForceMode.VelocityChange);
+            }
+        }
+
+        public override void Execute(FSMBase fsm, float dt) {
+            var player = (fsm as PlayerFSM).GetPlayer();
+            var rb     = player.GetRigidbody();
+            if (rb != null)
+            {
+                var rbBehaviour = rb.GetComponent<SchRigidbodyBehaviour>();
+
+                if (rbBehaviour)
+                {
+                    PlayerState state = (fsm.GetState() as PlayerState);
+                    bool isInAir = state.IsInAir();
+                    if (player.flags[PlayerController.FJump] != isInAir)
+                    {
+                        // start latency between air/ground.
+                        groundAerialLatencyCurrent = state.GetGroundAerialLatency();
+                    }
+                    player.flags[PlayerController.FJump] = isInAir;
+
+                    if (groundAerialLatencyCurrent > 0.0f) groundAerialLatencyCurrent -= dt;
+                    else
+                    {
+                        if (isInAir) rbBehaviour.CoMLocalOffset = Vector3.zero;
+                        else
+                        {
+                            var weightControlMaxs = state.GetWeightContralMaxValues();
+
+                            var maxVect = new Vector3(weightControlMaxs.x, .0f, weightControlMaxs.z);
+                            var targetOffset = new Vector3(weightInputX.average * weightControlMaxs.x, 0f, weightInputY.average * weightControlMaxs.z);
+                            // try hemisphere instead of plan.
+                            // COM will be lowered the farther out it is.
+                            var Y = (targetOffset.magnitude / maxVect.magnitude) * weightControlMaxs.y;
+                            targetOffset.y = Y;
+
+                            var currentOffset = player.GetRigidbody().centerOfMass - rbBehaviour.CoMLocalOffset;
+
+                            var diffOffset = targetOffset - currentOffset;
+                            var offset = currentOffset + (diffOffset * Mathf.Clamp01(state.GetWeightControlSpeed() * dt));
+
+                            rbBehaviour.CoMLocalOffset = offset;
+                        }
+                    }
+                }
+            }
+        }
+
+        void IControllable.ProcessInputs(Schnibble.Managers.InputManager currentManager, Schnibble.Managers.GameController inputs) {
+            int weightX = (int)PlayerInputs.InputCode.WeightX;
+            int weightY = (int)PlayerInputs.InputCode.WeightY;
+
+            weightInputX.Add(inputs.GetAxisState(weightX).valueSmooth);
+            weightInputY.Add(inputs.GetAxisState(weightY).valueSmooth);
+        }
+    }
+
+    public class PlayerState : FSMState, IControllable
+    {
+        // needed for transitions
+        public bool pressAirplaneButton = false;
+        public bool pressBoatButton     = false;
+
         protected PlayerController player;
         protected PlayerState(PlayerController player, string stateName) : base(stateName)
         {
             this.player = player;
         }
+
+        public override void OnEnter(FSMBase machine)
+        {
+            base.OnEnter(machine);
+            pressAirplaneButton = false;
+            pressBoatButton     = false;
+        }
+
+        virtual public void ProcessInputs(InputManager currentMgr, GameController Entry) {
+            pressAirplaneButton = (Entry.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down);
+            pressBoatButton = (Entry.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down);
+
+            foreach (var a in actions) {
+                var c = actions as IControllable;
+                if (c != null) c.ProcessInputs(currentMgr, Entry);
+            }
+        }
+
+        virtual public bool IsInAir() { return false; }
+        virtual public float GetGroundAerialLatency() { return 0.0f; }
+        virtual public float GetAerialMaxForce() { return .0f; }
+        virtual public Vector3 GetWeightContralMaxValues() { return Vector3.zero; }
+        virtual public float GetWeightControlSpeed() { return 0.0f; }
     }
 
-    public class BoatState : PlayerState, IControllable
+    public class BoatState : PlayerState 
     {
-        public BoatState(PlayerController player) : base(player, "boat")
-        {
+        public BoatState(PlayerController player) : base(player, "boat") {
+            actions.Add(new WeightControlAction());
+            actions.Add(new SpeedEffectAction());
+
+            fixedActions.Add(new WeightControlAction());
+            fixedActions.Add(new SpeedEffectAction());
         }
 
         public override void OnEnter(FSMBase fsm)
         {
+            base.OnEnter(fsm);
+
             var player = (fsm as PlayerFSM).GetPlayer();
             player.ActivateMode(player.boat.gameObject, player.boat.boat.rb);
         }
@@ -37,44 +249,54 @@ namespace Wonkerz
             player.DeactivateMode(player.boat.gameObject);
         }
 
-        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        override public void ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            if (!player.IsInMenu())
-            {
-                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-                if (airplaneMode != null)
-                {
-                    if (airplaneMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
-                    }
-                }
+            base.ProcessInputs(currentMgr, Entry);
 
-                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
-                if (boatMode != null)
-                {
-                    if (boatMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
-                    }
-                }
+            player.boat.ProcessInputs(currentMgr, Entry);
+        }
 
-                player.boat.ProcessInputs(currentMgr, Entry);
-            }
+        public override bool IsInAir()
+        {
+            return (player.boat.boat as WkzBoat).IsInAir();
+        }
+
+        public override float GetGroundAerialLatency()
+        {
+            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
+        }
+
+        override public float GetAerialMaxForce()
+        {
+            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
+        }
+
+        override public Vector3 GetWeightContralMaxValues()
+        {
+            var wkzCar = (player.car.car as WkzCar);
+            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
+        }
+
+        override public float GetWeightControlSpeed()
+        {
+            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
         }
     }
 
-    public class AirplaneState : PlayerState, IControllable
+    public class AirplaneState : PlayerState
     {
-        private class GeneralAirAction : GroundState.GeneralGroundAction { }
+        public AirplaneState(PlayerController player) : base(player, "airplane") {
+            actions.Add(new WeightControlAction());
+            actions.Add(new SpeedEffectAction());
 
-        public AirplaneState(PlayerController player) : base(player, "airplane")
-        {
-            this.fixedActions.Add(new GeneralAirAction());
+            fixedActions.Add(new WeightControlAction());
+            fixedActions.Add(new SpeedEffectAction());
         }
 
         public override void OnEnter(FSMBase fsm)
         {
+            base.OnEnter(fsm);
+
             var player = (fsm as PlayerFSM).GetPlayer();
             player.ActivateMode(player.plane.gameObject, player.plane.plane.rb);
         }
@@ -84,36 +306,46 @@ namespace Wonkerz
             player.DeactivateMode(player.plane.gameObject);
         }
 
-        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        virtual public void ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            if (!player.IsInMenu())
-            {
-                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-                if (airplaneMode != null)
-                {
-                    if (airplaneMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Car]);
-                    }
-                }
+            base.ProcessInputs(currentMgr, Entry);
 
-                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
-                if (boatMode != null)
-                {
-                    if (boatMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
-                    }
-                }
+            player.plane.ProcessInputs(currentMgr, Entry);
+        }
 
-                player.plane.ProcessInputs(currentMgr, Entry);
-            }
+        public override bool IsInAir()
+        {
+            // as silly as it looks we dont want to control the torque directly in glider mode.
+            // so wo say that wo are never in the air.
+            // TODO: make this easier to understand.
+            return false;
+        }
+
+        public override float GetGroundAerialLatency()
+        {
+            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
+        }
+
+        override public float GetAerialMaxForce()
+        {
+            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
+        }
+
+        override public Vector3 GetWeightContralMaxValues()
+        {
+            var wkzCar = (player.car.car as WkzCar);
+            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
+        }
+
+        override public float GetWeightControlSpeed()
+        {
+            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
         }
     }
 
-    // FSM when in ground mode
     public class GroundState : PlayerState, IControllable
     {
+        #if false
         public class GeneralGroundAction : FSMAction
         {
             float groundAerialLatencyCurrent = 0.0f;
@@ -180,16 +412,21 @@ namespace Wonkerz
                 partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
             }
         }
+        #endif
 
         public GroundState(PlayerController player) : base(player, "ground")
         {
-            this.actions.Add(new SpeedEffect());
-            this.fixedActions.Add(new GeneralGroundAction());
+            actions.Add(new WeightControlAction());
+            actions.Add(new SpeedEffectAction());
+
+            fixedActions.Add(new WeightControlAction());
+            fixedActions.Add(new SpeedEffectAction());
         }
 
         public override void OnEnter(FSMBase fsm)
         {
             base.OnEnter(fsm);
+
             var player = (fsm as PlayerFSM).GetPlayer();
             player.ActivateMode(player.car.gameObject, player.car.car.GetChassis().GetBody());
             // car also need to reset wheels velocity.
@@ -202,42 +439,48 @@ namespace Wonkerz
             (fsm as PlayerFSM).GetPlayer().DeactivateMode(player.car.gameObject);
         }
 
-        void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+        override public void ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            // paraglider
-            if (!player.IsInMenu())
+            base.ProcessInputs(currentMgr, Entry);
+
+            player.car.ProcessInputs(currentMgr, Entry);
+
+            // powers
+            var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
+            if (spinAtk != null)
             {
-                var airplaneMode = Entry.Get((int)PlayerInputs.InputCode.AirplaneMode) as GameInputButton;
-                if (airplaneMode != null)
+                if (spinAtk.GetState().down)
                 {
-                    if (airplaneMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Plane]);
-                    }
-                }
-
-                var boatMode = Entry.Get((int)PlayerInputs.InputCode.BoatMode) as GameInputButton;
-                if (boatMode != null)
-                {
-                    if (boatMode.GetState().down)
-                    {
-                        player.vehicleStates.SetState(player.vehicleStates.states[(int)PlayerVehicleStates.States.Boat]);
-                    }
-                }
-
-                player.car.ProcessInputs(currentMgr, Entry);
-
-                // powers
-                var spinAtk = Entry.Get((int)PlayerInputs.InputCode.SpinAttack) as GameInputButton;
-                if (spinAtk != null)
-                {
-                    if (spinAtk.GetState().down)
-                    {
-                        player.self_PowerController.setNextPower(1);
-                        player.self_PowerController.tryTriggerPower();
-                    }
+                    player.self_PowerController.setNextPower(1);
+                    player.self_PowerController.tryTriggerPower();
                 }
             }
+        }
+
+        public override bool IsInAir()
+        {
+            return !(player.car.car as WkzCar).IsTouchingGround();
+        }
+
+        public override float GetGroundAerialLatency()
+        {
+            return (player.car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
+        }
+
+        override public float GetAerialMaxForce()
+        {
+            return (player.car.car as WkzCar).wkzDef.aerialMaxForce;
+        }
+
+        override public Vector3 GetWeightContralMaxValues()
+        {
+            var wkzCar = (player.car.car as WkzCar);
+            return new Vector3(wkzCar.wkzDef.weightControlMaxX, wkzCar.wkzDef.weightControlMaxY, wkzCar.wkzDef.weightControlMaxZ);
+        }
+
+        override public float GetWeightControlSpeed()
+        {
+            return (player.car.car as WkzCar).wkzDef.weightControlSpeed;
         }
     };
 
@@ -253,6 +496,7 @@ namespace Wonkerz
         public PlayerController GetPlayer() { return player; }
     }
 
+    [System.Serializable]
     public class PlayerVehicleStates : PlayerFSM
     {
         public PlayerVehicleStates(PlayerController p) : base(p, "vehicle") { CreateFSM(); }
@@ -284,15 +528,25 @@ namespace Wonkerz
             var initState = states[(int)States.Init];
             var carState = states[(int)States.Car];
             var airplaneState = states[(int)States.Plane];
-            var boatState = states[(int)States.Plane];
+            var boatState = states[(int)States.Boat];
 
             globalTransitions.Add(new FSMNullTransition(initState));
+
+            carState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), airplaneState, null));
+            carState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , boatState    , null));
+
+            boatState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), airplaneState, null));
+            boatState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , carState     , null));
+
+            airplaneState.transitions.Add(new FSMTransition(new PressAirplaneButtonCondition(), carState  , null));
+            airplaneState.transitions.Add(new FSMTransition(new PressBoatButtonCondition()    , boatState , null));
 
             ForceState(initState);
         }
 
     }
 
+    [System.Serializable]
     public class PlayerGeneralStates : PlayerFSM
     {
         // this is used to commonly refers to some states
@@ -381,8 +635,11 @@ namespace Wonkerz
 
     public class PlayerController : MonoBehaviour, IControllable
     {
+        [SerializeReference]
         public PlayerGeneralStates generalStates;
+        [SerializeReference]
         public PlayerVehicleStates vehicleStates;
+
         public PowerController self_PowerController;
         private bool isInMenu = false;
 
@@ -478,24 +735,6 @@ namespace Wonkerz
             {
                 this.LogError("car property cannot be null! Please assign an gameobject to car.");
             }
-
-            // nocheckin
-            //if (car_old == null && car_new == null)
-            //{
-            //    if (carInstance == null)
-            //    {
-            //        carInstance = Instantiate(carPrefab);
-            //        carInstance.transform.parent = gameObject.transform;
-            //    }
-            //    car_new = carInstance.GetComponent<SchCarController>();
-            //    car_old = carInstance.GetComponent<CarController>();
-            //}
-            //carInstance.SetActive(false);
-
-            //if (planeInstance == null) {
-            //    planeInstance = Instantiate(planePrefab);
-            //    planeInstance.transform.parent = gameObject.transform;
-            //}
 
             // create states if nuul
             if (generalStates == null)
@@ -643,9 +882,23 @@ namespace Wonkerz
             isTouchingWater = state;
         }
 
+        // helper
+        public bool IsBoat() {
+            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Boat];
+        }
+
+        public bool IsCar() {
+            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Car];
+        }
+
+        public bool IsPlane() {
+            return vehicleStates.GetState() == vehicleStates.states[(int)PlayerVehicleStates.States.Plane];
+        }
+        // end helpers
+
         public bool IsAlive()
         {
-            if (isTouchingWater && vehicleStates.GetState() != vehicleStates.states[(int)PlayerVehicleStates.States.Boat])
+            if (isTouchingWater && !IsBoat())
             {
                 return false;
             }

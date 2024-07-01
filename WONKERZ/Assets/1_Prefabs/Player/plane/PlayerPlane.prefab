@@ -655,6 +655,7 @@ GameObject:
   - component: {fileID: 1053224296}
   - component: {fileID: 2631467612519350596}
   - component: {fileID: 255891787693028713}
+  - component: {fileID: 4607318395014603031}
   m_Layer: 8
   m_Name: PlayerPlane
   m_TagString: Untagged
@@ -772,11 +773,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aea9d036aac8cf47bf7c799c11228be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brake: 0
   brakeLeft: 0
   brakeRight: 0
   accelerator: 0
-  brake: 0
-  steering: 0
   rb: {fileID: 1053224296}
   maxAccelAngle: 5
   maxBrakeAngle: 20
@@ -882,6 +882,38 @@ MonoBehaviour:
   accelerator: 0
   brake: 0
   turn: 0
+--- !u!114 &4607318395014603031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9176791244789910489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aea330b19b1c8143996e8874f5ac994, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lowHit: {fileID: 0}
+  highHit: {fileID: 0}
+  impactSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  frictionLow: {fileID: 0}
+  frictionHigh: {fileID: 0}
+  frictionSettings:
+    thresholdMin: 0
+    thresholdHigh: 0
+    thresholdMax: 0
+    minVolume: 0
+    maxVolume: 0
+  mixer: {fileID: 0}
+  group: {fileID: 0}
+  gravityScale: 1
+  CoMLocalOffset: {x: 0, y: 1, z: 0}
 --- !u!1001 &1143124213437601172
 PrefabInstance:
   m_ObjectHideFlags: 0
