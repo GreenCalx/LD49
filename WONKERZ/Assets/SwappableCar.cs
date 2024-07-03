@@ -51,7 +51,12 @@ public class SwappableCar : NetworkBehaviour
         cameraFocusable.transform.parent = old_wCar.rb.transform;
         cameraFocusable.transform.localPosition = Vector3.zero;
 
+        // Transfer AbstractCollector
+        AbstractCollector AC = GetComponentInChildren<AbstractCollector>();
+        AC.transform.parent = locPC.current.rb.transform;
+
         // TODO update from Bag
+
 
     }
 
