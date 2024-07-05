@@ -172,10 +172,10 @@ public class OnlinePlayerController : NetworkBehaviour
         // Force Init Camera Init ?
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         
-        while(self_PlayerController.vehicleState == PlayerController.PlayerVehicleStates.None)
-        {
-            yield return null;
-        }
+        // while(self_PlayerController.vehicleState == PlayerController.PlayerVehicleStates.None)
+        // {
+        //     yield return null;
+        // }
 
         while(self_PlayerController.inputMgr==null)
         {
