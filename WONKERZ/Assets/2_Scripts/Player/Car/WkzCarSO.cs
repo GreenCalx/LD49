@@ -16,5 +16,20 @@ namespace Wonkerz
         public float weightControlSpeed = 1.0f;
         public float centrifugalForceMul = 1.0f;
         public float minCentrifugalVelocity = 3.0f;
+
+        public void CopyTo(ref WkzCarSO iCopyTarget)
+        {
+            iCopyTarget = new WkzCarSO();
+
+            iCopyTarget.jumpDef = this.jumpDef;
+            iCopyTarget.aerialMaxForce = this.aerialMaxForce;
+            iCopyTarget.groundAerialSwitchLatency = this.groundAerialSwitchLatency;
+            iCopyTarget.weightControlMaxX = this.weightControlMaxX;
+            iCopyTarget.weightControlMaxZ = this.weightControlMaxZ;
+            iCopyTarget.weightControlMaxY = this.weightControlMaxY;
+            iCopyTarget.weightControlSpeed = this.weightControlSpeed;
+            iCopyTarget.centrifugalForceMul = this.centrifugalForceMul;
+            iCopyTarget.minCentrifugalVelocity = this.minCentrifugalVelocity;
+        }
     }
 }

@@ -112,21 +112,20 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
-        accelInitValue = (float)wCar.motor.def.maxTorque;
+        accelInitValue = (float)wCar.motor.mutDef.maxTorque;
 
-        maxSpeedInitValue = (float)wCar.def.maxSpeedInKmH;
+        maxSpeedInitValue = (float)wCar.mutDef.maxSpeedInKmH;
 
         // Expecting always at least one axle and all suspensions with same stiffness
-        springInitStiffness = wCar.GetChassis().axles[0].right.GetSuspension().stiffness;
-        springInitValue = wCar.wkzDef.jumpDef.stiffnessMul;
+        //springInitStiffness = wCar.GetChassis().axles[0].right.GetSuspension().stiffness;
+        springInitValue = wCar.wkzMutDef.jumpDef.stiffnessMul;
 
-        turnInitValue = wCar.def.maxSteeringAngle;
+        turnInitValue = wCar.mutDef.maxSteeringAngle;
 
         weightInitValue = owner.self_PlayerController.GetRigidbody().mass;
-        //weightInitValue = 0f;
 
-        torqueForceInitValue_X = wCar.wkzDef.weightControlMaxX;
-        torqueForceInitValue_Z = wCar.wkzDef.weightControlMaxZ;
+        torqueForceInitValue_X = wCar.wkzMutDef.weightControlMaxX;
+        torqueForceInitValue_Z = wCar.wkzMutDef.weightControlMaxZ;
     }
 
     [Server]
@@ -206,14 +205,14 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         // remap between 0 and 1 with pivot at 0.5
         float curve_x = RemapStatToCurve(accels);
-        iWCar.motor.def.maxTorque = (Torque)(accelCurve.Evaluate(curve_x) * accelInitValue);
+        iWCar.motor.mutDef.maxTorque = (Torque)(accelCurve.Evaluate(curve_x) * accelInitValue);
     }
     
     private void updateMaxSpeed(WkzCar iWCar)
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(maxSpeeds);
-        iWCar.def.maxSpeedInKmH = (maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
+        iWCar.mutDef.maxSpeedInKmH = (maxSpeedCurve.Evaluate(curve_x) * maxSpeedInitValue);
     }
 
     private void updateSprings(PlayerController iPC, WkzCar iWCar)
@@ -228,13 +227,13 @@ public class OnlineCollectibleBag : NetworkBehaviour
         //     ax.left.GetSuspension().stiffness   = new_stiffness;
         // }
         
-        // iWCar.wkzDef.jumpDef.stiffnessMul = springCurve.Evaluate(curve_x) * springInitValue;
+         iWCar.wkzMutDef.jumpDef.stiffnessMul = springCurve.Evaluate(curve_x) * springInitValue;
     }
 
     private void updateTurn(WkzCar iWCar)
     {
         float curve_x = RemapStatToCurve(turns);
-    //    iWCar.def.maxSteeringAngle = turnCurve.Evaluate(curve_x) * turnInitValue;
+        iWCar.mutDef.maxSteeringAngle = turnCurve.Evaluate(curve_x) * turnInitValue;
     }
 
     private void updateTorqueForce(WkzCar iWCar)
@@ -242,8 +241,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(torqueForces);
 
-        // iWCar.wkzDef.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
-        // iWCar.wkzDef.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
+        iWCar.wkzMutDef.weightControlMaxX = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_X;
+        iWCar.wkzMutDef.weightControlMaxZ = torqueForceCurve.Evaluate(curve_x) * torqueForceInitValue_Z;
     }
     private void updateWeight()
     {

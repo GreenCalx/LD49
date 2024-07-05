@@ -6,6 +6,7 @@ namespace Wonkerz
     public class WkzCar : SchCar
     {
         public WkzCarSO wkzDef;
+        public WkzCarSO wkzMutDef;
 
         [System.Serializable]
         public struct SpeedTrailEffect
@@ -61,10 +62,10 @@ namespace Wonkerz
             base.Awake();
 
             wkzDef = def as WkzCarSO;
-
+            wkzDef.CopyTo(ref wkzMutDef);
         }
 
-        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / wkzDef.jumpDef.time);
+        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / wkzMutDef.jumpDef.time);
 
         public bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
 
@@ -81,7 +82,7 @@ namespace Wonkerz
             else if (jumpLatencyCurrent > 0.0f)
             {
                 jumpLatencyCurrent -= Time.deltaTime;
-                jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / wkzDef.jumpDef.latency));
+                jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / wkzMutDef.jumpDef.latency));
             }
         }
 
@@ -102,7 +103,7 @@ namespace Wonkerz
                 this.LogError("Should never happen.");
             }
 
-            jumpTimeCurrent = wkzDef.jumpDef.time;
+            jumpTimeCurrent = wkzMutDef.jumpDef.time;
             jumpLock = false;
         }
 
@@ -119,7 +120,7 @@ namespace Wonkerz
 
         public void SetSuspensionTargetPosition()
         {
-            chassis.SetAxlesSuspensionTargetPosition(Mathf.Lerp(1.0f, wkzDef.jumpDef.minLengthPercent, GetJumpCompressionRatio()));
+            chassis.SetAxlesSuspensionTargetPosition(Mathf.Lerp(1.0f, wkzMutDef.jumpDef.minLengthPercent, GetJumpCompressionRatio()));
 
 #if SCH_TELEMETRY
         RegisterJump(dt);
@@ -130,10 +131,10 @@ namespace Wonkerz
         {
             jumpLock = true;
             jumpTimeCurrent = 0.0f;
-            jumpLatencyCurrent = wkzDef.jumpDef.latency;
+            jumpLatencyCurrent = wkzMutDef.jumpDef.latency;
             // set the new suspension stiffness.
             // it will be used until it cant push up anymore.
-            chassis.SetAxlesSuspensionMultipliers(wkzDef.jumpDef.stiffnessMul, 0.0f);
+            chassis.SetAxlesSuspensionMultipliers(wkzMutDef.jumpDef.stiffnessMul, 0.0f);
             chassis.SetAxlesSuspensionTargetPosition(1.0f);
             jumpDecal.SetAnimationTime(0.0f);
         }
@@ -156,17 +157,17 @@ namespace Wonkerz
 
         public void SetCarCenterOfMass(float dt)
         {
-            var maxVect = new Vector3(wkzDef.weightControlMaxX, .0f, wkzDef.weightControlMaxZ);
-            var targetOffset = new Vector3(weightRoll.average * wkzDef.weightControlMaxX, 0f, weightPitch.average * wkzDef.weightControlMaxZ);
+            var maxVect = new Vector3(wkzMutDef.weightControlMaxX, .0f, wkzMutDef.weightControlMaxZ);
+            var targetOffset = new Vector3(weightRoll.average * wkzMutDef.weightControlMaxX, 0f, weightPitch.average * wkzMutDef.weightControlMaxZ);
             // try hemisphere instead of plan.
             // COM will be lowered the farther out it is.
-            var Y = (targetOffset.magnitude / maxVect.magnitude) * wkzDef.weightControlMaxY;
+            var Y = (targetOffset.magnitude / maxVect.magnitude) * wkzMutDef.weightControlMaxY;
             targetOffset.y = Y;
 
             var currentOffset = chassis.GetBody().centerOfMass - chassis.def.localCenterOfMass;
 
             var diffOffset = targetOffset - currentOffset;
-            var offset = currentOffset + (diffOffset * Mathf.Clamp01(wkzDef.weightControlSpeed * dt));
+            var offset = currentOffset + (diffOffset * Mathf.Clamp01(wkzMutDef.weightControlSpeed * dt));
             chassis.OffsetCenterOfMass(offset);
         }
 
@@ -176,9 +177,9 @@ namespace Wonkerz
             // Should we use the current COM or the body position to set a
             // Torque that is centered always?
             // Should we have speed?
-            var torque = new Vector3(wkzDef.aerialMaxForce * weightPitch.average,
+            var torque = new Vector3(wkzMutDef.aerialMaxForce * weightPitch.average,
                 0,
-                -wkzDef.aerialMaxForce * weightRoll.average);
+                -wkzMutDef.aerialMaxForce * weightRoll.average);
 
             torque = chassis.GetBody().transform.TransformDirection(torque);
 
