@@ -54,9 +54,14 @@ public class SwappableCar : NetworkBehaviour
         // Transfer AbstractCollector
         AbstractCollector AC = GetComponentInChildren<AbstractCollector>();
         AC.transform.parent = locPC.current.rb.transform;
+        AC.transform.localPosition = Vector3.zero;
+        AC.transform.rotation = Quaternion.identity;
 
         // TODO update from Bag
-
+        OnlinePlayerController opc = locPC.GetComponent<OnlinePlayerController>();
+        OnlineCollectibleBag bag = opc.bag;
+        bag.InitStatRefValues();
+        bag.UpdateCar();
 
     }
 
