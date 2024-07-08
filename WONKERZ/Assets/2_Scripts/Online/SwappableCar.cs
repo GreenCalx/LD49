@@ -23,6 +23,9 @@ public class SwappableCar : NetworkBehaviour
         plane.transform.parent  = locPC.transform;
 
         locPC.car.transform.parent = transform;
+        locPC.car.transform.localPosition = Vector3.zero;
+        locPC.car.transform.rotation = Quaternion.identity;
+
         locPC.boat.transform.parent = transform;
         locPC.plane.transform.parent = transform;
 

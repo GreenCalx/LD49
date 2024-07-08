@@ -98,16 +98,8 @@ public class OnlinePlayerController : NetworkBehaviour
     [Client]
     public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
     {
-        //self_PlayerController.Freeze();
-
-        self_PlayerController.GetRigidbody().velocity = Vector3.zero;
-        self_PlayerController.GetRigidbody().angularVelocity = Vector3.zero;
-
-        self_PlayerController.GetRigidbody().transform.localPosition = Vector3.zero;
-        self_PlayerController.GetRigidbody().transform.localRotation = Quaternion.identity;
-
-        transform.position = iNewPos;
-        transform.rotation = iNewRot;
+        self_PlayerController.ForceTransform(iNewPos, iNewRot);
+        self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
     }
 
     public override void OnStartLocalPlayer()

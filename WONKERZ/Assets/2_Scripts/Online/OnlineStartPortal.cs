@@ -82,7 +82,11 @@ public class OnlineStartPortal : NetworkBehaviour
             yield return null;
         }
 
-         while (Vector3.Distance(transform.position, attachedPlayer.transform.position) > 1f)
+         while 
+        (
+            (Vector3.Distance(transform.position, attachedPlayer.transform.position) > 1f) &&
+            !NetworkRoomManagerExt.singleton.onlineGameManager.PlayersReadyDict[attachedPlayer]
+        )
          {
             if (isClientOnly)
             {
