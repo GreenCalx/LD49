@@ -89,6 +89,8 @@ public class OnlineCollectible : NetworkBehaviour
         {
             img.sprite = negativeStatText;
         }
+
+        self_onCollectPS.textureSheetAnimation.SetSprite(0, negativeStatText);
     }
 
     void OnTriggerStay(Collider iCollider)
