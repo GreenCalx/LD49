@@ -962,10 +962,18 @@ namespace Wonkerz
                                     }
                                     break;
                                 }
+                        } //! switch carMode
+
+                        if (inputs.GetButtonState((int)PlayerInputs.InputCode.UnequipPower).down)
+                        {
+                            self_PowerController.UnequipPower();
                         }
+
                         break;
-                    }
-            }
+                    } 
+            }//! switch playerState
+
+
         }
     }
 }

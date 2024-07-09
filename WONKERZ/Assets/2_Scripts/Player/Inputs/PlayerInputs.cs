@@ -51,7 +51,8 @@ public class PlayerInputs
         ForwardBackward,
         // player : misc
         AirplaneMode,
-        SpinAttack,
+        TriggerPower,
+        UnequipPower,
         BoatMode,
         // axis
         CameraChange,
@@ -95,7 +96,8 @@ public class PlayerInputs
         // powers
         controller.AddInput((int)InputCode.BoatMode, new GameInputButton("Boat transform", "Transform into a boat", new Controller.InputCode(Controller.JoystickButtonsCode.LS), new Controller.InputCode(KeyCode.F)));
         controller.AddInput((int)InputCode.AirplaneMode, new GameInputButton("Airplane transform", "Transform into an airplane", new Controller.InputCode(Controller.JoystickButtonsCode.B), new Controller.InputCode(KeyCode.F)));
-        controller.AddInput((int)InputCode.SpinAttack, new GameInputButton("Spin attack", "Launches a spin attack used to damage nearby enemies and deflect projectiles.", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.E)));
+        controller.AddInput((int)InputCode.TriggerPower, new GameInputButton("Spin attack", "Launches a spin attack used to damage nearby enemies and deflect projectiles.", new Controller.InputCode(Controller.JoystickButtonsCode.A), new Controller.InputCode(KeyCode.E)));
+        controller.AddInput((int)InputCode.UnequipPower, new GameInputButton("Unequip Power", "Ditch current Power", new Controller.InputCode(Controller.JoystickButtonsCode.Select), new Controller.InputCode(KeyCode.F)));
 
         // misc camera
         controller.AddInput((int)InputCode.CameraX,

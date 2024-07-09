@@ -140,91 +140,44 @@ namespace Wonkerz
         }
     }
 
-    public class WaterCarPower : ICarPower
+    public class KnightLanceCarPower : ICarPower
     {
+        public GameObject KnightLanceObject_Ref;
+        private GameObject KnightLanceObject_Inst;
+        private Transform attachPoint;
+
         public string name { get; set; }
-        public WaterCarPower()
+
+        public KnightLanceCarPower(GameObject iKLance_Ref)
         {
-            name = "WaterPower";
+            name = "Knight Lance";
+            KnightLanceObject_Ref = iKLance_Ref;
         }
+
         public void applyDirectEffect()
         {
-            //Access.Player().SetMode(CarController.CarMode.WATER);
+            PlayerController PC = Access.Player();
+            WeightIndicator WI = PC.GetComponentInChildren<WeightIndicator>();
+            attachPoint = WI.transform;
+
+            if (!!WI)
+            {
+                KnightLanceObject_Inst = GameObject.Instantiate(KnightLanceObject_Ref, attachPoint);
+                KnightLanceObject_Inst.SetActive(true);
+            }
         }
         public void onRefresh()
         {
-
+            KnightLanceObject_Inst.transform.localPosition = Vector3.zero;
         }
         public void onDisableEffect()
         {
-
+            // DESPAWN spin hurtbox mesh SpinPowerObject
+            GameObject.Destroy(KnightLanceObject_Inst);
         }
         public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
         {
-            this.Log("Water Input effects");
-        }
-        public bool turnOffTriggers()
-        {
-            //if (Access.Player().currentSpeed < 1f)
-            //    return true;
-            return false;
-        }
-    }
-
-    public class PlaneCarPower : ICarPower
-    {
-        public string name { get; set; }
-        public PlaneCarPower()
-        {
-            name = "PlanePower";
-        }
-        public void applyDirectEffect()
-        {
-            //        Access.Player().SetMode(CarController.CarMode.DELTA);
-            //Access.Player().IsAircraft = true;
-        }
-        public void onRefresh()
-        {
-
-        }
-        public void onDisableEffect()
-        {
-            //Access.Player().IsAircraft = false;
-        }
-        public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
-        {
-            this.Log("Plane Input effects");
-        }
-        public bool turnOffTriggers()
-        {
-            //if (Access.Player().currentSpeed < 1f)
-            //    return true;
-            return false;
-        }
-    }
-
-    public class SpiderCarPower : ICarPower
-    {
-        public string name { get; set; }
-        public SpiderCarPower()
-        {
-            name = "SpiderPower";
-        }
-        public void applyDirectEffect()
-        {
-            //Access.Player().SetMode(CarController.CarMode.SPIDER);
-        }
-        public void onRefresh()
-        {
-
-        }
-        public void onDisableEffect()
-        {
-
-        }
-        public void applyEffectInInputs(GameInput[] iEntry, PlayerController iCC)
-        {
-            this.Log("Spider Input effects");
+            this.Log(name + " Input effects");
         }
         public bool turnOffTriggers()
         {

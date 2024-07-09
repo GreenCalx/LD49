@@ -18,6 +18,13 @@ public class SwappableCar : NetworkBehaviour
     {
         PlayerController locPC = Access.Player();
 
+        // Unequip Power
+        if (locPC.self_PowerController)
+        {
+            locPC.self_PowerController.UnequipPower();
+        }
+
+        // Swap car
         car.transform.parent    = locPC.transform;
         boat.transform.parent   = locPC.transform;
         plane.transform.parent  = locPC.transform;

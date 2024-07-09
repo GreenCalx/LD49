@@ -35,6 +35,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     [SyncVar]
     public float weightInitValue;
 
+
     [Header("Stats definition curves\n    {X=0} is MIN stat range \n    {X=0.5, Y=1} is Initial Value for 0 Stats \n    {X=1} is MAX stat range")]
     //[ToolTip("X : From Stats Min Range [X=0] to Stats Max Range [X=1] \n Y : From 0 [Y=0] to 2x Base value [Y=1]")]
     
@@ -60,7 +61,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public int torqueForces;
     [SyncVar]
     public int weights;
-
+    [SyncVar]
+    public bool HasAPowerEquipped; 
 
     // Start is called before the first frame update
     void Start()
@@ -73,6 +75,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         turns = 0;
         torqueForces = 0;
         weights = 0;
+        HasAPowerEquipped = false;
 
         StartCoroutine(WaitPlayerForInit());
     }
@@ -160,6 +163,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 weights += iCollectible.value;
                 weights = Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 break;
+            case ONLINE_COLLECTIBLES.KLANCE_POWER:
+                CollectPower(iCollectible);
+                break;
             default:
                 break;
         }
@@ -173,6 +179,17 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public void CmdCollect(OnlineCollectible iCollectible)
     {
         AsServerCollect(iCollectible);
+    }
+
+    /// POWERS
+    public void CollectPower(OnlineCollectible iCollectiblePower)
+    {
+        PowerController powerC = owner.GetComponent<PowerController>();
+
+        powerC.EquipCollectiblePower(iCollectiblePower);
+
+        // TODO : Replace power management ?
+        HasAPowerEquipped = true;
     }
 
 

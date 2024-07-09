@@ -13,7 +13,8 @@ public enum ONLINE_COLLECTIBLES {
     SPRINGS=4,
     TURN=5,
     TORQUEFORCE=6,
-    WEIGHT=7
+    WEIGHT=7,
+    KLANCE_POWER = 8
 }
 
 public class OnlineCollectible : NetworkBehaviour
@@ -121,8 +122,6 @@ public class OnlineCollectible : NetworkBehaviour
             iPlayer.bag.AsServerCollect(this);
         }
 
-
-        
         collected = true;
     }
 

@@ -13,9 +13,10 @@ namespace Wonkerz
         [Header("References for powers")]
         public GameObject turboParticles;
         public GameObject SpinPowerObject_Ref;
+        public GameObject KnightLanceObject_Ref;
         [Header("Powers")]
         public List<ICarPower> powers;
-        public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
+        //public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
         public ICarPower currentPower;
         public ICarPower nextPower;
 
@@ -28,36 +29,35 @@ namespace Wonkerz
             {
                 new NeutralCarPower(),
                 new SpinCarPower(SpinPowerObject_Ref),
-                new WaterCarPower(),
-                new PlaneCarPower(),
-                new SpiderCarPower()
+                new KnightLanceCarPower(KnightLanceObject_Ref)
             };
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            showUI(false);
 
             // Load Unlocked powers
             // unlock everything in the meantime
-            CollectiblesManager CM = Access.CollectiblesManager();
-            foreach (ICarPower cp in powers)
-            {
-                unlockedPowers.Add(cp, true);
-            }
+            // CollectiblesManager CM = Access.CollectiblesManager();
+            // foreach (ICarPower cp in powers)
+            // {
+            //     unlockedPowers.Add(cp, true);
+            // }
             currentPower = powers[0];
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (currentPower==null)
+                return;
+
             if (currentPower.turnOffTriggers())
             {
                 nextPower = powers[0];
                 tryTriggerPower();
             }
-            if (currentPower != null)
             refreshPower();
         }
 
@@ -79,7 +79,8 @@ namespace Wonkerz
                 //activate
                 this.Log("Next power :" + nextPower.name);
                 if (currentPower != null)
-                currentPower.onDisableEffect();
+                    currentPower.onDisableEffect();
+
                 currentPower = nextPower;
                 currentPower.applyDirectEffect();
             }
@@ -95,13 +96,41 @@ namespace Wonkerz
             if (carpower == null)
             { nextPower = null; return; }
 
-            if (!!unlockedPowers[carpower])
-            {
+            // if (!!unlockedPowers[carpower])
+            // {
                 nextPower = carpower;
-            }
-            else
+            // }
+            // else
+            // {
+            //     this.Log("Power is locked : " + carpower.name);
+            // }
+        }
+
+        public void EquipCollectiblePower(OnlineCollectible iCollectiblePower)
+        {
+            switch (iCollectiblePower.collectibleType)
             {
-                this.Log("Power is locked : " + carpower.name);
+                case ONLINE_COLLECTIBLES.KLANCE_POWER:
+                    setNextPower(2);
+                    break;
+                default:
+                    break;
+            }
+            tryTriggerPower();
+
+            refreshUI();
+            //currentPower = iPowerToEquip;
+            //setNextPower(iPowerIDToEquip);
+        }
+
+        public void UnequipPower()
+        {
+            if (currentPower!=null)
+            {
+                currentPower.onDisableEffect();
+                currentPower = null;
+
+                refreshUI();
             }
         }
 
@@ -113,51 +142,13 @@ namespace Wonkerz
             }
         }
 
-        public void showUI(bool iToggle)
+        public void refreshUI()
         {
-            // if (uiPowerWheel == null)
-            // {
-            //     uiPowerWheel = Access.UIPowerWheel();
-            // }
-            // if (!!uiPowerWheel)
-            // {
-            //     uiPowerWheel.showWheel(iToggle);
-            // }
-            // else
-            // {
-            //     this.LogWarn("Unable to find UIPowerWheel.");
-            // }
-        }
-
-        public void showIndicator(PowerWheelPlacement iPlacement)
-        {
-            if (uiPowerWheel == null)
-            {
-                uiPowerWheel = Access.UIPowerWheel();
-            }
-            if (!!uiPowerWheel)
-            {
-                uiPowerWheel.showSelector(iPlacement);
-            }
+            if (currentPower == null)
+                Access.UIPlayerOnline().equippedPower.text = "--";
             else
-            {
-                this.LogWarn("Unable to find UIPowerWheel.");
-            }
+                Access.UIPlayerOnline().equippedPower.text = currentPower.name;
         }
 
-        public void hideIndicators()
-        {
-            if (uiPowerWheel == null)
-            { uiPowerWheel = Access.UIPowerWheel(); }
-
-            if (!!uiPowerWheel)
-            {
-                uiPowerWheel.hideAll();
-            }
-            else
-            {
-                this.LogWarn("Unable to find UIPowerWheel.");
-            }
-        }
     }
 }

@@ -15,6 +15,7 @@ public class UIPlayerOnline : MonoBehaviour
     public TMPro.TextMeshProUGUI    speedText;
     public Image                    speedBar;
     public TextMeshProUGUI          lifePool;
+    public TextMeshProUGUI          equippedPower;
 
     public Image            cpImageFilled;
     public TextMeshProUGUI  nAvailablePanels;
