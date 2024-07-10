@@ -1566,7 +1566,7 @@ public class SchServerLobby : MonoBehaviour
 {
 
     public NetworkRoomManager roomManager;
-    public bool isLocal = false;
+    bool isLocal = false;
     SchLobbyServer localServer;
     // just for editor introspection
     public string serverIP;
