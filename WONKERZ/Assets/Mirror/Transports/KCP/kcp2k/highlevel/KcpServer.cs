@@ -27,7 +27,7 @@ namespace kcp2k
         protected readonly KcpConfig config;
 
         // state
-        protected Socket socket;
+        public Socket socket;
         EndPoint newClientEP;
 
         // expose local endpoint for users / relays / nat traversal etc.

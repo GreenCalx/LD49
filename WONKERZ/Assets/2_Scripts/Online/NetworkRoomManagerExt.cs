@@ -24,15 +24,11 @@ using Wonkerz;
         
         public ONLINE_GAME_STATE gameState = ONLINE_GAME_STATE.NONE;
 
-
         // Must be inited to true for correct AnySceneOperationOngoing()
         public bool subsceneLoaded = true;
         public bool subsceneUnloaded = true;
 
         public string selectedTrial = "";
-        
-        
-
 
         IEnumerator SeekOnlineGameManager()
         {

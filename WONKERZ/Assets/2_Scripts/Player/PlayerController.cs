@@ -23,7 +23,8 @@ namespace Wonkerz
             Dead,
             Count,
         };
-        public PlayerStates playerState {
+        public PlayerStates playerState
+        {
             get;
             private set;
         }
@@ -36,7 +37,8 @@ namespace Wonkerz
             Plane,
             Count,
         };
-        public PlayerVehicleStates vehicleState {
+        public PlayerVehicleStates vehicleState
+        {
             get;
             private set;
         }
@@ -45,28 +47,33 @@ namespace Wonkerz
         public static readonly int FJump = 1;
         public BitVector32 flags = new BitVector32(0);
 
-        public void TransitionTo(PlayerVehicleStates to) {
+        public void TransitionTo(PlayerVehicleStates to)
+        {
             TransitionFromTo(vehicleState, to);
         }
 
-        private void TransitionFromTo(PlayerStates from, PlayerStates to) {
+        private void TransitionFromTo(PlayerStates from, PlayerStates to)
+        {
             // TODO: fix me, only temporary
             // should be done only if possible.
             playerState = to;
 
             // glabal states.
-            if (from == PlayerStates.Frozen) {
+            if (from == PlayerStates.Frozen)
+            {
                 if (current.rb) current.rb.isKinematic = false;
                 UnMuteSound();
                 return;
             }
-            if (to == PlayerStates.Frozen) {
+            if (to == PlayerStates.Frozen)
+            {
                 if (current.rb) current.rb.isKinematic = true;
                 MuteSound();
                 return;
             }
 
-            if (to == PlayerStates.Dead) {
+            if (to == PlayerStates.Dead)
+            {
                 Kill();
                 Access.CheckPointManager().loadLastCP(true);
                 return;
@@ -79,12 +86,12 @@ namespace Wonkerz
                         switch (to)
                         {
                             case PlayerStates.None:
-                                case PlayerStates.Init:
-                                case PlayerStates.InMenu:
-                                case PlayerStates.Frozen:
-                                case PlayerStates.Alive:
-                                case PlayerStates.Dead:
-                                case PlayerStates.Count:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
                                 {
                                     break;
                                 }
@@ -97,12 +104,12 @@ namespace Wonkerz
                         switch (to)
                         {
                             case PlayerStates.None:
-                                case PlayerStates.Init:
-                                case PlayerStates.InMenu:
-                                case PlayerStates.Frozen:
-                                case PlayerStates.Alive:
-                                case PlayerStates.Dead:
-                                case PlayerStates.Count:
+                            case PlayerStates.Init:
+                            case PlayerStates.InMenu:
+                            case PlayerStates.Frozen:
+                            case PlayerStates.Alive:
+                            case PlayerStates.Dead:
+                            case PlayerStates.Count:
                                 {
                                     break;
                                 }
@@ -110,77 +117,83 @@ namespace Wonkerz
                         break;
                     }
 
-                case PlayerStates.InMenu: {
-                    switch (to)
+                case PlayerStates.InMenu:
                     {
-                        case PlayerStates.None:
+                        switch (to)
+                        {
+                            case PlayerStates.None:
                             case PlayerStates.Init:
                             case PlayerStates.InMenu:
                             case PlayerStates.Frozen:
                             case PlayerStates.Alive:
                             case PlayerStates.Dead:
                             case PlayerStates.Count:
-                            {
-                                break;
-                            }
+                                {
+                                    break;
+                                }
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PlayerStates.Frozen: {
-                    switch (to)
+                case PlayerStates.Frozen:
                     {
-                        case PlayerStates.None:
+                        switch (to)
+                        {
+                            case PlayerStates.None:
                             case PlayerStates.Init:
                             case PlayerStates.InMenu:
                             case PlayerStates.Frozen:
                             case PlayerStates.Alive:
                             case PlayerStates.Dead:
                             case PlayerStates.Count:
-                            {
-                                break;
-                            }
+                                {
+                                    break;
+                                }
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PlayerStates.Alive: {
-                    switch (to)
+                case PlayerStates.Alive:
                     {
-                        case PlayerStates.None:
+                        switch (to)
+                        {
+                            case PlayerStates.None:
                             case PlayerStates.Init:
                             case PlayerStates.InMenu:
                             case PlayerStates.Frozen:
                             case PlayerStates.Alive:
                             case PlayerStates.Dead:
                             case PlayerStates.Count:
-                            {
-                                break;
-                            }
+                                {
+                                    break;
+                                }
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PlayerStates.Dead: {
-                    switch (to)
+                case PlayerStates.Dead:
                     {
-                        case PlayerStates.None:
+                        switch (to)
+                        {
+                            case PlayerStates.None:
                             case PlayerStates.Init:
                             case PlayerStates.InMenu:
                             case PlayerStates.Frozen:
                             case PlayerStates.Alive:
                             case PlayerStates.Dead:
                             case PlayerStates.Count:
-                            {
-                                break;
-                            }
+                                {
+                                    break;
+                                }
+                        }
+                        break;
                     }
-                    break;
-                }
-                case PlayerStates.Count: {
-                    break;
-                }
+                case PlayerStates.Count:
+                    {
+                        break;
+                    }
             }
         }
 
-        private void TransitionFromTo(PlayerVehicleStates from, PlayerVehicleStates to) {
+        private void TransitionFromTo(PlayerVehicleStates from, PlayerVehicleStates to)
+        {
             // TODO: fix me, only temporary
             // should be done only if possible.
             vehicleState = to;
@@ -192,7 +205,7 @@ namespace Wonkerz
                         switch (to)
                         {
                             case PlayerVehicleStates.None:
-                                case PlayerVehicleStates.Count:
+                            case PlayerVehicleStates.Count:
                                 {
                                     break;
                                 }
@@ -218,8 +231,8 @@ namespace Wonkerz
                     }
 
                 case PlayerVehicleStates.Car:
-                    case PlayerVehicleStates.Boat:
-                    case PlayerVehicleStates.Plane:
+                case PlayerVehicleStates.Boat:
+                case PlayerVehicleStates.Plane:
                     {
                         DeactivateMode(from);
                         switch (to)
@@ -317,14 +330,16 @@ namespace Wonkerz
         };
         public controlled current;
 
-        float jumpTimeCurrent    = 0.0f;
+        float jumpTimeCurrent = 0.0f;
         float jumpLatencyCurrent = 0.0f;
-        bool  jumpLock           = true;
+        bool jumpLock = true;
 
         bool IsInJumpLatency() => jumpLatencyCurrent > 0.0f;
 
-        public bool IsInAir() {
-            switch (vehicleState) {
+        public bool IsInAir()
+        {
+            switch (vehicleState)
+            {
                 case PlayerVehicleStates.Car:
                     return !(car.car as WkzCar).IsTouchingGround();
                 case PlayerVehicleStates.Boat:
@@ -354,11 +369,26 @@ namespace Wonkerz
             return (car.car as WkzCar).wkzDef.weightControlSpeed;
         }
 
-        public ParticleSystem GetSpeedParticles() {
+        public ParticleSystem GetSpeedParticles()
+        {
             return (car.car as WkzCar).speedEffect.particles;
         }
 
-        public void ApplySpeedEffect() {
+        public float GetJumpLatency() {
+            return (car.car as WkzCar).wkzDef.jumpDef.latency;
+        }
+
+        public float GetJumpTime() {
+            return (car.car as WkzCar).wkzDef.jumpDef.time;
+        }
+
+        public float GetJumpStiffnessMul() {
+            return (car.car as WkzCar).wkzDef.jumpDef.stiffnessMul;
+        }
+
+
+        public void ApplySpeedEffect()
+        {
             // Apply camera effect.
             // Will change FoV, distance, etc.
 
@@ -374,15 +404,16 @@ namespace Wonkerz
             // Apply particles effect.
             // Will display speed trails.
             var particles = GetSpeedParticles();
-            if (particles) {
+            if (particles)
+            {
                 var e = particles.emission;
                 e.enabled = effectRatio != 0.0f;
                 var rb = GetRigidbody();
                 var relativeWindDir = rb.velocity;
                 particles.transform.LookAt(rb.position + relativeWindDir);
 
-                var lifemin  = 0.2f;
-                var lifemax  = 0.6f;
+                var lifemin = 0.2f;
+                var lifemax = 0.6f;
                 var partmain = particles.main;
                 partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
             }
@@ -410,11 +441,11 @@ namespace Wonkerz
                 this.LogError("car property cannot be null! Please assign an gameobject to car.");
             }
 
-            playerState  = PlayerStates.None;
+            playerState = PlayerStates.None;
             vehicleState = PlayerVehicleStates.None;
 
             if (self_PowerController == null)
-            self_PowerController = GetComponent<PowerController>();
+                self_PowerController = GetComponent<PowerController>();
 
             if (self_PowerController == null)
             {
@@ -499,34 +530,41 @@ namespace Wonkerz
         }
 
         // Jump logic
-        void OnJumpPressed() {
-            switch (vehicleState) {
+        void OnJumpPressed()
+        {
+            switch (vehicleState)
+            {
                 case PlayerVehicleStates.Plane:
-                    case PlayerVehicleStates.Car: {
+                case PlayerVehicleStates.Car:
+                    {
                         (car.car as WkzCar).SetSuspensionTargetPosition();
                         break;
                     }
 
-                case PlayerVehicleStates.Boat: {
-                    (boat.boat as WkzBoat).SetFloatersSize(GetJumpCompressionRatio());
-                    break;
-                }
+                case PlayerVehicleStates.Boat:
+                    {
+                        (boat.boat as WkzBoat).SetFloatersSize(GetJumpCompressionRatio());
+                        break;
+                    }
             }
 
             jumpDecal.SetJumpTime(GetJumpCompressionRatio());
         }
 
-        void OnJumpReleased() {
+        void OnJumpReleased()
+        {
 
         }
 
-        void OnJumpLatency() {
-            jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / (car.car as WkzCar).wkzDef.jumpDef.latency));
+        void OnJumpLatency()
+        {
+            jumpDecal.SetLatencyTime(Mathf.Clamp01(jumpLatencyCurrent / GetJumpLatency()));
         }
 
-        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / (car.car as WkzCar).wkzDef.jumpDef.time);
+        float GetJumpCompressionRatio() => 1.0f - Mathf.Clamp01(jumpTimeCurrent / GetJumpTime());
 
-        void UpdateJump(float dt) {
+        void UpdateJump(float dt)
+        {
             if (jumpTimeCurrent > 0.0f)
             {
                 jumpTimeCurrent -= dt;
@@ -583,7 +621,7 @@ namespace Wonkerz
 
                             var currentOffset = rbBehaviour.GetAddedLocalCOMOffest();
                             var diffOffset = targetOffset - currentOffset;
-                            var offset     = currentOffset + (diffOffset * Mathf.Clamp01(GetWeightControlSpeed() * dt));
+                            var offset = currentOffset + (diffOffset * Mathf.Clamp01(GetWeightControlSpeed() * dt));
                             rbBehaviour.SetAddedLocalCOMOffset(offset);
                         }
                     }
@@ -600,10 +638,10 @@ namespace Wonkerz
             switch (playerState)
             {
                 case PlayerStates.None:
-                    case PlayerStates.Dead:
-                    case PlayerStates.Count:
-                    case PlayerStates.Frozen:
-                    case PlayerStates.InMenu:
+                case PlayerStates.Dead:
+                case PlayerStates.Count:
+                case PlayerStates.Frozen:
+                case PlayerStates.InMenu:
                     {
                         // do nothing;
                         break;
@@ -618,8 +656,8 @@ namespace Wonkerz
                         switch (vehicleState)
                         {
                             case PlayerVehicleStates.Boat:
-                                case PlayerVehicleStates.Plane:
-                                case PlayerVehicleStates.Car:
+                            case PlayerVehicleStates.Plane:
+                            case PlayerVehicleStates.Car:
                                 {
                                     UpdateJump(Time.deltaTime);
                                     UpdateWeight(Time.deltaTime);
@@ -639,10 +677,10 @@ namespace Wonkerz
             switch (playerState)
             {
                 case PlayerStates.None:
-                    case PlayerStates.Dead:
-                    case PlayerStates.Count:
-                    case PlayerStates.Frozen:
-                    case PlayerStates.InMenu:
+                case PlayerStates.Dead:
+                case PlayerStates.Count:
+                case PlayerStates.Frozen:
+                case PlayerStates.InMenu:
                     {
                         // do nothing;
                         break;
@@ -655,22 +693,24 @@ namespace Wonkerz
                 case PlayerStates.Alive:
                     {
 
-                        switch (vehicleState) {
-                            case PlayerVehicleStates.Car :{
-                                var rb     = GetRigidbody();
-                                if (rb)
+                        switch (vehicleState)
+                        {
+                            case PlayerVehicleStates.Car:
                                 {
-                                    var aerialMaxForce = GetAerialMaxForce();
-                                    var torque = new Vector3(aerialMaxForce * weightInput.average.x,
-                                        0,
-                                        -aerialMaxForce * weightInput.average.y);
+                                    var rb = GetRigidbody();
+                                    if (rb)
+                                    {
+                                        var aerialMaxForce = GetAerialMaxForce();
+                                        var torque = new Vector3(aerialMaxForce * weightInput.average.x,
+                                            0,
+                                            -aerialMaxForce * weightInput.average.y);
 
-                                    torque = rb.transform.TransformDirection(torque);
+                                        torque = rb.transform.TransformDirection(torque);
 
-                                    rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                                        rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                                    }
+                                    break;
                                 }
-                                break;
-                            }
                         }
 
                         break;
@@ -680,7 +720,7 @@ namespace Wonkerz
 
         public WonkerDecal jumpDecal;
 
-        #if false
+#if false
         public void useTurbo()
         {
             // no turbo atm
@@ -706,7 +746,7 @@ namespace Wonkerz
 
             turbo.intervalElapsedTime = 0f;
         }
-        #endif
+#endif
 
         private bool isTouchingWater = false;
         public void SetTouchingWater(bool state)
@@ -715,15 +755,18 @@ namespace Wonkerz
         }
 
         // helper
-        public bool IsBoat() {
+        public bool IsBoat()
+        {
             return vehicleState == PlayerVehicleStates.Boat;
         }
 
-        public bool IsCar() {
+        public bool IsCar()
+        {
             return vehicleState == PlayerVehicleStates.Car;
         }
 
-        public bool IsPlane() {
+        public bool IsPlane()
+        {
             return vehicleState == PlayerVehicleStates.Plane;
         }
         // end helpers
@@ -763,7 +806,8 @@ namespace Wonkerz
             Access.CameraManager().launchDeathCam();
         }
 
-        public void ActivateMode(GameObject go, Rigidbody rb) {
+        public void ActivateMode(GameObject go, Rigidbody rb)
+        {
             go.SetActive(true);
 
             var lastrb = current.rb;
@@ -773,15 +817,17 @@ namespace Wonkerz
             {
                 ForceTransform(lastrb.transform.position, lastrb.transform.rotation);
                 ForceVelocity(lastrb.velocity, lastrb.angularVelocity);
-                rb.isKinematic        = lastrb.isKinematic;
+                rb.isKinematic = lastrb.isKinematic;
             }
 
             Access.CameraManager().OnTargetChange(GetTransform());
         }
 
-        public void DeactivateMode(PlayerVehicleStates mode) {
+        public void DeactivateMode(PlayerVehicleStates mode)
+        {
             GameObject go = null;
-            switch (mode) {
+            switch (mode)
+            {
                 case PlayerVehicleStates.Boat:
                     go = boat.gameObject;
                     break;
@@ -799,7 +845,8 @@ namespace Wonkerz
             Access.CameraManager().OnTargetChange(GetTransform());
         }
 
-        public void ForceTransform(Vector3 position, Quaternion rotation) {
+        public void ForceTransform(Vector3 position, Quaternion rotation)
+        {
             var t = GetTransform();
             if (t != null)
             {
@@ -813,7 +860,8 @@ namespace Wonkerz
             }
         }
 
-        public void ForceVelocity(Vector3 linear, Vector3 angular) {
+        public void ForceVelocity(Vector3 linear, Vector3 angular)
+        {
             var r = GetRigidbody();
             if (r != null)
             {
@@ -830,8 +878,10 @@ namespace Wonkerz
         public bool IsInMenu() { return playerState == PlayerStates.InMenu; }
         // TODO: fix me, this is completely wrong!
         public void Freeze() { TransitionFromTo(playerState, PlayerStates.Frozen); }
-        public void UnFreeze() {
-            if (playerState != PlayerStates.Frozen) {
+        public void UnFreeze()
+        {
+            if (playerState != PlayerStates.Frozen)
+            {
                 this.LogError("Weird : trying to unfreeze an object that is not currently frozen");
             }
             TransitionFromTo(playerState, PlayerStates.Alive);
@@ -856,7 +906,7 @@ namespace Wonkerz
         public void takeDamage(int iDamage, Vector3 iDamageSourcePoint, Vector3 iDamageSourceNormal, float iRepulsionForce = 5f)
         {
             if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
-            return;
+                return;
 
             audioSource.clip = damageSound;
             audioSource.Play();
@@ -891,16 +941,16 @@ namespace Wonkerz
         {
             int weightX = (int)PlayerInputs.InputCode.WeightX;
             int weightY = (int)PlayerInputs.InputCode.WeightY;
-            int jump    = (int)PlayerInputs.InputCode.Jump;
+            int jump = (int)PlayerInputs.InputCode.Jump;
             // Simple State Machine
             switch (playerState)
             {
                 case PlayerStates.None:
-                    case PlayerStates.Dead:
-                    case PlayerStates.Count:
-                    case PlayerStates.Frozen:
-                    case PlayerStates.InMenu:
-                    case PlayerStates.Init:
+                case PlayerStates.Dead:
+                case PlayerStates.Count:
+                case PlayerStates.Frozen:
+                case PlayerStates.InMenu:
+                case PlayerStates.Init:
                     {
                         // do nothing;
                         break;
@@ -908,30 +958,48 @@ namespace Wonkerz
 
                 case PlayerStates.Alive:
                     {
-                        switch (vehicleState) {
+                        switch (vehicleState)
+                        {
                             case PlayerVehicleStates.None:
-                                case PlayerVehicleStates.Count:
+                            case PlayerVehicleStates.Count:
                                 {
                                     break;
                                 }
                             case PlayerVehicleStates.Car:
                                 {
-                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Plane);
-                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                    }
+                                    else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Boat);
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
 
                                         var jumpValue = inputs.GetButtonState(jump);
-                                        var wkzCar = car.car as WkzCar;
                                         if (jumpValue.up)
                                         {
-                                            if (!jumpLock) wkzCar.StopSuspensionCompression();
+                                            if (!jumpLock) {
+                                                jumpLock = true;
+                                                jumpTimeCurrent = 0.0f;
+                                                jumpLatencyCurrent = GetJumpLatency();
+                                                jumpDecal.SetAnimationTime(0.0f);
+                                                // set the new suspension stiffness.
+                                                // it will be used until it cant push up anymore.
+                                                car.car.chassis.SetAxlesSuspensionMultipliers(GetJumpStiffnessMul(), 0.0f);
+                                                car.car.chassis.SetAxlesSuspensionTargetPosition(1.0f);
+                                            }
                                         }
                                         else if (jumpValue.down)
                                         {
-                                            if (!IsInJumpLatency()) wkzCar.StartSuspensionCompression();
+                                            if (!IsInJumpLatency()) {
+
+                                                jumpTimeCurrent = GetJumpTime();
+                                                jumpLock = false;
+                                            }
                                         }
 
                                         car.ProcessInputs(currentMgr, inputs);

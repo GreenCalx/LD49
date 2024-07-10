@@ -17,6 +17,7 @@ namespace Wonkerz
     {
         public TstHubHook hook;
 
+        #if UNITY_EDITOR
         void Start()
         {
             SendCallbacks();
@@ -51,5 +52,6 @@ namespace Wonkerz
 
             }
         }
+        #endif
     }
 }
