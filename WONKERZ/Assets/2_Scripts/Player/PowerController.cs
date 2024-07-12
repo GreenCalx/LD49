@@ -8,20 +8,21 @@ namespace Wonkerz
 
     public class PowerController : MonoBehaviour
     {
-        public enum PowerWheelPlacement { NEUTRAL, UP, DOWN, LEFT, RIGHT }
-
-        [Header("References for powers")]
+        [Header("References for powers \n Legacy")]
         public GameObject turboParticles;
         public GameObject SpinPowerObject_Ref;
+        [Header("KnightLance Launcher")]
         public GameObject KnightLanceObject_Ref;
+        [Header("Pallet Launcher")]
+        public GameObject PalletLauncherObject_Ref;
+        public GameObject PalletRef;
+
         [Header("Powers")]
         public List<ICarPower> powers;
-        //public Dictionary<ICarPower, bool> unlockedPowers = new Dictionary<ICarPower, bool>();
         public ICarPower currentPower;
         public ICarPower nextPower;
 
         // Private cache
-        private UIPowerWheel uiPowerWheel;
 
         void Awake()
         {
@@ -29,21 +30,14 @@ namespace Wonkerz
             {
                 new NeutralCarPower(),
                 new SpinCarPower(SpinPowerObject_Ref),
-                new KnightLanceCarPower(KnightLanceObject_Ref)
+                new KnightLanceCarPower(KnightLanceObject_Ref),
+                new PalletLauncherCarPower(PalletLauncherObject_Ref, PalletRef)
             };
         }
 
         // Start is called before the first frame update
         void Start()
         {
-
-            // Load Unlocked powers
-            // unlock everything in the meantime
-            // CollectiblesManager CM = Access.CollectiblesManager();
-            // foreach (ICarPower cp in powers)
-            // {
-            //     unlockedPowers.Add(cp, true);
-            // }
             currentPower = powers[0];
         }
 
@@ -58,18 +52,12 @@ namespace Wonkerz
                 nextPower = powers[0];
                 tryTriggerPower();
             }
-            refreshPower();
+            currentPower.onRefresh();
         }
 
         public bool isInNeutralPowerMode()
         {
             return (currentPower != powers[0]); // neutral power
-        }
-
-        public void refreshPower()
-        {
-            if (currentPower != null)
-            currentPower.onRefresh();
         }
 
         public void tryTriggerPower()
@@ -82,7 +70,7 @@ namespace Wonkerz
                     currentPower.onDisableEffect();
 
                 currentPower = nextPower;
-                currentPower.applyDirectEffect();
+                currentPower.onEnableEffect();
             }
             nextPower = null; // reset next power
         }
@@ -96,14 +84,7 @@ namespace Wonkerz
             if (carpower == null)
             { nextPower = null; return; }
 
-            // if (!!unlockedPowers[carpower])
-            // {
-                nextPower = carpower;
-            // }
-            // else
-            // {
-            //     this.Log("Power is locked : " + carpower.name);
-            // }
+            nextPower = carpower;
         }
 
         public void EquipCollectiblePower(OnlineCollectible iCollectiblePower)
@@ -113,14 +94,15 @@ namespace Wonkerz
                 case ONLINE_COLLECTIBLES.KLANCE_POWER:
                     setNextPower(2);
                     break;
+                case ONLINE_COLLECTIBLES.PLAUNCHER:
+                    setNextPower(3);
+                    break;
                 default:
                     break;
             }
             tryTriggerPower();
 
             refreshUI();
-            //currentPower = iPowerToEquip;
-            //setNextPower(iPowerIDToEquip);
         }
 
         public void UnequipPower()
@@ -134,7 +116,7 @@ namespace Wonkerz
             }
         }
 
-        public void applyPowerEffectInInputs(GameInput[] iEntry, PlayerController iCC)
+        public void applyPowerEffectInInputs(GameController iEntry, PlayerController iCC)
         {
             if (currentPower != null)
             {

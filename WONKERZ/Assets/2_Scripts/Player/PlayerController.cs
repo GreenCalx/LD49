@@ -1032,10 +1032,12 @@ namespace Wonkerz
                                 }
                         } //! switch carMode
 
+                        // Car Power
                         if (inputs.GetButtonState((int)PlayerInputs.InputCode.UnequipPower).down)
                         {
                             self_PowerController.UnequipPower();
                         }
+                        self_PowerController.applyPowerEffectInInputs(inputs, this);
 
                         break;
                     } 

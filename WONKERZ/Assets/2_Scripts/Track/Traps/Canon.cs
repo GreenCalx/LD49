@@ -4,8 +4,12 @@ using UnityEngine;
 
 public class Canon : MonoBehaviour
 {
+    [Header("Optional")]
+    public Transform loadingPoint;
+    [Header("Mandatory")]
     public Transform spawnPoint;
     public Transform aimPoint;
+    
     public float throwForce = 10f;
     public GameObject projectile_Ref;
     public float projectileDuration = 3f;
@@ -13,6 +17,7 @@ public class Canon : MonoBehaviour
 
     public GameObject Fire()
     {
+
         GameObject projectile_Inst = Instantiate(projectile_Ref);
         projectile_Inst.transform.position = spawnPoint.position;
         projectile_Inst.transform.parent = null;

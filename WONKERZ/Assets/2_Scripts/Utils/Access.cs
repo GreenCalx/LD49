@@ -227,10 +227,6 @@ namespace Wonkerz {
         {
             return cache.getObject<LevelEntryUI>(Constants.GO_PLAYERUI, true);
         }
-        public static UIPowerWheel UIPowerWheel()
-        {
-            return cache.getObject<UIPowerWheel>(Constants.GO_PLAYERUI, true);
-        }
         public static UIWonkerzBar UIWonkerzBar()
         {
             return cache.getObject<UIWonkerzBar>(Constants.GO_PLAYERUI, true);
