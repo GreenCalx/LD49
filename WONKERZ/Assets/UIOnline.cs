@@ -4,6 +4,7 @@ using UnityEngine;
 using Mirror;
 using Schnibble.UI;
 using Schnibble;
+using Schnibble.Online;
 using System.Net.Sockets;
 using System.Net;
 using System;
@@ -41,7 +42,7 @@ public class UIOnline : UIPanelTabbed
         override public void Do()
         {
             // start room as a server and client locally
-            cmdObj.roomServer.networkAddress = Utils.GetLocalIPAddress().ToString();
+            cmdObj.roomServer.networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
 
             var port = (ushort)UnityEngine.Random.RandomRange(10000, 65000);
             (cmdObj.roomServer.transport as PortTransport).Port = port;

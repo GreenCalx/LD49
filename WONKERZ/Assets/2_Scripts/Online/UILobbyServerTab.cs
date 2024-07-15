@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Schnibble.UI;
 using Schnibble;
+using Schnibble.Online;
 using Mirror;
 using System.Net;
 using System.Net.Sockets;

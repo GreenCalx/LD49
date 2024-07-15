@@ -1,12 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq; 
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.Events;
-
 using Mirror;
-
+using System.Collections;
+using System.Linq;
+using UnityEngine;
 using Wonkerz;
 
 public class OnlineGameManager : NetworkBehaviour
@@ -27,7 +22,7 @@ public class OnlineGameManager : NetworkBehaviour
     public uint postGameDuration = 30;
     public string selectedTrial = "RaceTrial01";
     [Header("INTERNALS")]
-    public SyncList<OnlinePlayerController> uniquePlayers  = new SyncList<OnlinePlayerController>();
+    public SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
     public SyncDictionary<OnlinePlayerController, bool> PlayersReadyDict = new SyncDictionary<OnlinePlayerController, bool>();
     public SyncDictionary<OnlinePlayerController, bool> PlayersLoadedDict = new SyncDictionary<OnlinePlayerController, bool>();
     public int expectedPlayersFromLobby;
@@ -51,16 +46,16 @@ public class OnlineGameManager : NetworkBehaviour
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
         if (isServer)
         {
-            
+
             StartCoroutine(StartOnlineGame());
         }
-            
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
@@ -84,7 +79,7 @@ public class OnlineGameManager : NetworkBehaviour
     [ServerCallback]
     public void AskPlayersToReadyUp()
     {
-        foreach ( OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
+        foreach (OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
         {
             PlayersReadyDict[opc] = false;
         }
@@ -104,7 +99,7 @@ public class OnlineGameManager : NetworkBehaviour
     public bool ArePlayersReady()
     {
         bool retval = true;
-        foreach ( OnlinePlayerController opc in PlayersReadyDict.Keys)
+        foreach (OnlinePlayerController opc in PlayersReadyDict.Keys)
         {
             retval &= PlayersReadyDict[opc];
             if (!retval)
@@ -116,8 +111,13 @@ public class OnlineGameManager : NetworkBehaviour
     [ServerCallback]
     public bool AllPlayersLoaded()
     {
-        if (PlayersLoadedDict.Count == 0 )
+        if (PlayersLoadedDict.Count == 0)
             return false;
+
+        if (PlayersLoadedDict.Count != expectedPlayersFromLobby)
+        {
+            return false;
+        }
 
         bool retval = true;
         foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys)
@@ -198,10 +198,10 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-            while (!AllPlayersLoaded())
-            {
-                yield return null;
-            }
+        while (!AllPlayersLoaded())
+        {
+            yield return null;
+        }
 
         RpcNotifyOfflineMgrAllPlayersLoaded();
 
@@ -218,7 +218,7 @@ public class OnlineGameManager : NetworkBehaviour
     {
         trialManager.trialLaunched = true;
 
-        while(!trialManager.trialIsOver)
+        while (!trialManager.trialIsOver)
         {
             yield return null;
         }
@@ -238,12 +238,12 @@ public class OnlineGameManager : NetworkBehaviour
         while (!ArePlayersReady())
         {
             postGameTime -= Time.deltaTime;
-            if (postGameTime <= 0f )
+            if (postGameTime <= 0f)
             {
                 break;
             }
 
-            foreach(OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
+            foreach (OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
             {
                 if (PlayersReadyDict[opc])
                 {
@@ -263,10 +263,10 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator WaitSessions()
     {
-        while(!openCourseLoaded)
+        while (!openCourseLoaded)
         {
             openCourseLoaded = NetworkRoomManagerExt.singleton.subsceneLoaded;
-            
+
             yield return null;
         }
         RpcDisplayPostGameUI(false);
@@ -278,7 +278,7 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
 
-        while(!AllPlayersLoaded())
+        while (!AllPlayersLoaded())
         {
             yield return null;
         }
@@ -297,7 +297,7 @@ public class OnlineGameManager : NetworkBehaviour
         countdownElapsed = 0f;
 
         RpcLaunchOnlineStartLine();
-        
+
         while (countdownElapsed < countdown)
         {
             countdownElapsed += Time.deltaTime;
@@ -373,13 +373,13 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     IEnumerator LoadTrialScene()
-    {   
+    {
 
         // Unload open course on server and load trial
         NetworkRoomManagerExt.singleton.unloadOpenCourse();
 
         NetworkRoomManagerExt.singleton.selectedTrial = selectedTrial;
-        NetworkRoomManagerExt.singleton.loadSelectedTrial();    
+        NetworkRoomManagerExt.singleton.loadSelectedTrial();
         // launch transition to trial on clients from server
         NetworkRoomManagerExt.singleton.clientLoadSelectedTrial();
 

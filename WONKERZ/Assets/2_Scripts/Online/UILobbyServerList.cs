@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Schnibble;
 using Schnibble.UI;
+using Schnibble.Online;
 using System.Net;
 using System.Net.Sockets;
 

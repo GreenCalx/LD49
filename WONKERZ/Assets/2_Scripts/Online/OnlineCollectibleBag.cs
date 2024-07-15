@@ -90,7 +90,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
         if (isServer)
         {
-            while (!NetworkRoomManagerExt.singleton.onlineGameManager.HasPlayerLoaded(owner))
+            //while (!NetworkRoomManagerExt.singleton.onlineGameManager.HasPlayerLoaded(owner))
+            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded())
             {
                 yield return null;
             }

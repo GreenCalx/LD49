@@ -6,7 +6,48 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System;
 using UnityEngine;
+using Schnibble.Online;
 
+public class SchCustomRelayKcpTransport : KcpTransport
+{
+    Dictionary<int, int> connectionIDToRelayID = new Dictionary<int, int>();
+    List<IPEndPoint> relayClients = new List<IPEndPoint>();
+
+    public IEnumerator TrySendNATPunch(IPEndPoint ep) {
+        UnityEngine.Debug.LogError("TrySendNATPunch to client " + ep.ToString());
+        for (int i = 0; i < 10; ++i) {
+            SendNATPunchToClient(ep);
+            yield return new WaitForSeconds(0.25f);
+        }
+    }
+
+    void SendNATPunchToClient(IPEndPoint ep) {
+        NetworkWriter writer = NetworkWriterPool.Get();
+        writer.WriteByte((byte)SchLobbyClient.OpCode.NATPunch);
+        var arr = writer.ToArraySegment();
+
+        if (server.socket.AddressFamily == AddressFamily.InterNetworkV6) {
+            if (ep.AddressFamily == AddressFamily.InterNetwork) {
+                ep.Address = ep.Address.MapToIPv6();
+            }
+        }
+        server.socket.SendToNonBlocking(arr, ep);
+    }
+
+    public IPEndPoint GetClientLocalEndPoint() {
+        if (client != null && client.LocalEndPoint != null) return client.LocalEndPoint as IPEndPoint;
+        return new IPEndPoint(IPAddress.None, 0);
+    }
+
+    public IPEndPoint GetServerLocalEndPoint() {
+        if (server != null && server.LocalEndPoint != null) return server.LocalEndPoint as IPEndPoint;
+        return new IPEndPoint(IPAddress.None, 0);
+    }
+};
+
+
+// start archive for later, this has been changed to directly connect to the room server.
+#if false
 // Custom class to have NATPunch and relays.
 // For now uses KCP but could use any port based transport in the future.
 //
@@ -157,3 +198,4 @@ public class SchCustomRelayKcpTransport : KcpTransport
         OnServerDataSent += OnSendHook;
     }
 };
+#endif
