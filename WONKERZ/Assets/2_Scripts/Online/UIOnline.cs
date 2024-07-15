@@ -48,9 +48,12 @@ public class UIOnline : UIPanelTabbed
             (cmdObj.roomServer.transport as PortTransport).Port = port;
 
             cmdObj.roomServer.StartHost();
+
             cmdObj.lobbyServer.client.OnStartNATPunch += cmdObj.OnNATPunch;
 
             OnCmdSuccess?.Invoke();
+
+            cmdObj.deactivate();
         }
     };
 
@@ -144,6 +147,18 @@ public class UIOnline : UIPanelTabbed
 
     public void OnDestroy() {
         deactivate();
+    }
+
+    public override void activate()
+    {
+        base.activate();
+        onActivate?.Invoke();
+    }
+
+    public override void deactivate()
+    {
+        base.deactivate();
+        onDeactivate?.Invoke();
     }
 
     // Following finctions are called by UX, so on the main thread and are safe.

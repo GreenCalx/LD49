@@ -51,10 +51,10 @@ public class UILobbyServerTab : UITextTab
             }
         }
     }
+
     // avaid init before having parent set.
-    protected override void Awake()
-    {
-    }
+    // TODO: this is ugly... fix the problem not the cause!
+    protected override void Awake() {}
 
     override public void init() {
         base.init();
@@ -65,11 +65,6 @@ public class UILobbyServerTab : UITextTab
         }
 
         text.text = lobby.name;
-    }
-
-    public void OnRoomJoined(SchLobbyClient.RoomJoinedData data) {
-        UnityEngine.Debug.Log("Room wit id " + data.roomID + " joined.");
-        serverList.online.roomServer.StartClient();
     }
 
     public IEnumerator TryConnectToServer() {
@@ -83,23 +78,23 @@ public class UILobbyServerTab : UITextTab
     }
 
     public void OnActivated() {
-        #if false
-        if (lobby.hostID != serverList.online.lobbyServer.clientID)
-        {
-            (serverList.online.roomServer.transport as PortTransport).Port = (ushort)Random.RandomRange(10000, 65000);
-        }
-        // try to joint lobby.
-        serverList.online.lobbyServer.client.OnStartNATPunch += OnNATPunch;
-        // Update RoomServer as client to use a new port.
-        serverList.online.lobbyServer.client.JoinLobby(lobby.roomID);
-        #endif
+        NetworkManager.singleton.transport.OnClientConnected += OnClientConnected;
 
         serverList.online.lobbyServer.client.OnStartNATPunch += OnNATPunch;
         serverList.online.lobbyServer.client.JoinLobby(lobby.roomID);
     }
 
+    public void OnClientConnected() {
+        serverList.online.deactivate();
+    }
+
+    public void OnClientError(TransportError error, string reason) {
+        UnityEngine.Debug.Log("OnClientError.");
+        serverList.online.activate();
+    }
+
     // Nedd to be on main thread (cf UIOnline)
-    
+
     public void OnNATPunch(IPEndPoint toNATPunch) {
         serverList.online.pendingCommands.Enqueue(new NATPunchClientCmd(this, toNATPunch));
         //SchLobbyClient NATPunchClient = new SchLobbyClient(port);
