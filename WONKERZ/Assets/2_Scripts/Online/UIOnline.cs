@@ -149,13 +149,13 @@ public class UIOnline : UIPanelTabbed
     // Following finctions are called by UX, so on the main thread and are safe.
 
     public void StartLocalServer() {
+        UnityEngine.Debug.Log("Start local server.");
         lobbyServer.StartLocalServer();
-        lobbyServer.client.OnRoomCreated += OnRoomCreated;
     }
 
     public void JoinLocalServer() {
+        UnityEngine.Debug.Log("Join local server.");
         lobbyServer.JoinLocalServer();
-        lobbyServer.client.OnRoomCreated += OnRoomCreated;
     }
 
     public void CreateRoom() {
