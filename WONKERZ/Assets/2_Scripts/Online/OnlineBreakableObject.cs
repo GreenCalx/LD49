@@ -14,6 +14,8 @@ public class OnlineBreakableObject : NetworkBehaviour
     public float timeBeforeFragClean = 15f;
 
     public float breakSpeedThreshold = 30f;
+    [SyncVar]
+    public int HP = 300;
     public float fragmentExplodeForce = 30f;
     public float upwardMultiplier = 1f;
     public bool swallowBreak;
@@ -58,6 +60,7 @@ public class OnlineBreakableObject : NetworkBehaviour
         if (isBroken)
             return;
 
+        // Collider is player
         if (!!Wonkerz.Utils.colliderIsPlayer(iCol))
         {
             OnlinePlayerController opc = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
@@ -90,6 +93,12 @@ public class OnlineBreakableObject : NetworkBehaviour
                 else
                     opc.CmdBreakObject(this);
             }
+        }
+        // Or Player Damager (player powers, enemies...)
+        else if (!!iCol.gameObject.GetComponent<PlayerDamager>())
+        {
+            PlayerDamager pd = iCol.gameObject.GetComponent<PlayerDamager>();
+
         }
     }
 
