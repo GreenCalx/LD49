@@ -23,8 +23,11 @@ public class OnlineStartPortal : NetworkBehaviour
     {
         // Draws a 5 unit long red line in front of the object
         Gizmos.color = Color.blue;
-        Vector3 direction = transform.TransformDirection(Vector3.forward) * 5;
+        Vector3 direction = transform.TransformDirection(Vector3.forward) * 10;
         Gizmos.DrawRay(transform.position, direction);
+
+        Gizmos.DrawCube(transform.position, new Vector3(4,6,5));
+
     }
 
     void Start()
