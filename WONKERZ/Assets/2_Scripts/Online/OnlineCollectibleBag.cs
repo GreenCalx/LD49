@@ -167,6 +167,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
             case ONLINE_COLLECTIBLES.KLANCE_POWER:
                 CollectPower(iCollectible);
                 break;
+            case ONLINE_COLLECTIBLES.PLAUNCHER:
+                CollectPower(iCollectible);
+                break;
             default:
                 break;
         }

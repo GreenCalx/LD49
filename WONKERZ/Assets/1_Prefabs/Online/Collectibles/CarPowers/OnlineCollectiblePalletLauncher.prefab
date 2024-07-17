@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   facePlayer: 0
-  faceCamera: 0
+  faceCamera: 1
   yMotionAnim: 0
   scaleAnim: 0
   animYMotionRange: 0
@@ -445,7 +445,7 @@ LODGroup:
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!114 &8183599192060142759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,10 +565,10 @@ Rigidbody:
   m_Mass: 50
   m_Drag: 0.2
   m_AngularDrag: 0.02
-  m_UseGravity: 0
-  m_IsKinematic: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!1001 &1835026736156297481
 PrefabInstance:
@@ -579,12 +579,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1582591884087371674, guid: d1cb320bc9aeb734e9e1c24eedf00899, type: 3}
       propertyPath: m_Name
-      value: PS_LanceCollect
+      value: PS_PLauncherCollect
       objectReference: {fileID: 0}
     - target: {fileID: 1669049142963699157, guid: d1cb320bc9aeb734e9e1c24eedf00899, type: 3}
       propertyPath: UVModule.sprites.Array.data[0].sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 4fe2b04a677dab248ac48bdb116ee486, type: 3}
+      objectReference: {fileID: 21300000, guid: dd124379ce51c5248bc1d9437969bb4d, type: 3}
     - target: {fileID: 2801997437794888202, guid: d1cb320bc9aeb734e9e1c24eedf00899, type: 3}
       propertyPath: m_RootOrder
       value: 3
