@@ -8,24 +8,36 @@ using Mirror;
 
 public class OnlineBreakableObject : NetworkBehaviour
 {
+    [Header("Prefab Mands")]
     public GameObject brokenObjectRef;
     public GameObject collectiblePatchPrefab;
+    [Header("Self Refs")]
+    public OnlineDamageable self_DamageableRef;
+    
     public bool destroyParentGameObject = true;
     public float timeBeforeFragClean = 15f;
 
     public float breakSpeedThreshold = 30f;
     [SyncVar]
-    public int HP = 300;
+    public int maxHP = 300;
     public float fragmentExplodeForce = 30f;
     public float upwardMultiplier = 1f;
     public bool swallowBreak;
-    public UnityEvent OnBreakFunc;
-
+    public UnityEvent OnPreBreakFunc;
+    public UnityEvent OnPostBreakFunc;
+    
     [Header("Internals")]
+    [SyncVar]
+    public int currHP;
     [SyncVar]
     private bool isBroken = false;
    
     private GameObject brokenVersionInst;
+    // private const float damageCooldown = 0.2f;
+    // private float localElapsedTime;
+    private int damageIndex = 0;
+    private Material selfMat;
+
 
     // use PlayOnAwake SFX instead on spawned object
     //public AudioSource breakSFX;
@@ -33,84 +45,124 @@ public class OnlineBreakableObject : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-    
+        currHP = maxHP;
+        // localElapsedTime = damageCooldown + 1f;
+
+        damageIndex = 0;
+        MeshRenderer mr = GetComponentInChildren<MeshRenderer>();
+        selfMat = mr.material;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        // if (localElapsedTime < damageCooldown)
+        // {
+        //     localElapsedTime += Time.deltaTime;
+        // }
     }
 
     void OnCollisionEnter(Collision iCol)
     {
-        // if (!swallowBreak)
-        // {
-        //     playerCollisionProc(iCol);
-        // }
-        // else if (OnBreakFunc!=null)
-        // {
-        //     OnBreakFunc.Invoke();
-        // }
+        //OnBreak(iCol.collider);
     }
 
 
-    private void OnBreak(Collider iCol)
-    {
-        if (isBroken)
-            return;
+    // private void OnBreak(Collider iCol)
+    // {
+    //     if (isBroken)
+    //         return;
 
-        // Collider is player
-        if (!!Wonkerz.Utils.colliderIsPlayer(iCol))
-        {
-            OnlinePlayerController opc = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
-            if (opc == null)
-                return;
-            if (!opc.isLocalPlayer)
-                return;
+    //     // Collider is player
+    //     if (!!Wonkerz.Utils.colliderIsPlayer(iCol))
+    //     {
+    //         OnlinePlayerController opc = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
+    //         if (opc == null)
+    //             return;
+    //         if (!opc.isLocalPlayer)
+    //             return;
 
-            WkzCar cc = opc.self_PlayerController.car.GetCar();
-            // break cond : player speed > threshold speed && dist < breakdist
-            if (cc.GetCurrentSpeedInKmH() < breakSpeedThreshold)
-            {
-                return;
-            }
+    //         WkzCar cc = opc.self_PlayerController.car.GetCar();
+    //         // break cond : player speed > threshold speed && dist < breakdist
+    //         if (cc.GetCurrentSpeedInKmH() < breakSpeedThreshold)
+    //         {
+    //             return;
+    //         }
 
-            if (OnBreakFunc!=null)
-            {
-                if (!swallowBreak)
-                { 
-                    if (isServer)
-                        BreakObject(opc);
-                    else
-                        opc.CmdBreakObject(this);
-                }
-                OnBreakFunc.Invoke();
-            }
-            else { 
-                if (isServer)
-                    BreakObject(opc); 
-                else
-                    opc.CmdBreakObject(this);
-            }
-        }
-        // Or Player Damager (player powers, enemies...)
-        else if (!!iCol.gameObject.GetComponent<PlayerDamager>())
-        {
-            PlayerDamager pd = iCol.gameObject.GetComponent<PlayerDamager>();
+    //         // break cond 2 : object hp must bo <=0
+    //         if (currHP > 0)
+    //         {
+    //             int damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
+    //             if (isServer)
+    //                 TryDoDamage(damage);
+    //             else
+    //                 CmdTryDoDamage(damage);
 
-        }
-    }
+    //             if (currHP > 0)
+    //                 return; // HPs still above 0 after damage, we exit
+    //         }
 
-    void OnTriggerEnter(Collider iCol)
-    {
-        OnBreak(iCol);
-    }
+    //         if (OnBreakFunc!=null)
+    //         {
+    //             if (!swallowBreak)
+    //             { 
+    //                 if (isServer)
+    //                     BreakObject(opc);
+    //                 else
+    //                     opc.CmdBreakObject(this);
+    //             }
+    //             OnBreakFunc.Invoke();
+    //         }
+    //         else { 
+    //             if (isServer)
+    //                 BreakObject(opc); 
+    //             else
+    //                 opc.CmdBreakObject(this);
+    //         }
+    //     }
+    //     // Or Player Damager (player powers, enemies...)
+    //     else if (!!iCol.gameObject.GetComponent<OnlineDamager>())
+    //     {
+    //         OnlineDamager od = iCol.gameObject.GetComponent<OnlineDamager>();
+    //         if (currHP > 0)
+    //         {
+    //             if (isServer)
+    //                 TryDoDamage(od.damage);
+    //             else
+    //                 CmdTryDoDamage(od.damage);
 
-    void OnTriggerStay(Collider iCol)
-    {
-        OnBreak(iCol);
-    }
+    //             if (currHP > 0)
+    //                 return; // HPs still above 0 after damage, we exit
+    //         }
+    //         if (OnBreakFunc!=null)
+    //         {
+    //             if (!swallowBreak)
+    //             { 
+    //                 if (isServer)
+    //                     BreakObjectFromDamager(od);
+    //                 else
+    //                     od.CmdBreakObject(this);
+    //             }
+    //             OnBreakFunc.Invoke();
+    //         }
+    //         else { 
+    //             if (isServer)
+    //                 BreakObjectFromDamager(od); 
+    //             else
+    //                 od.CmdBreakObject(this);
+    //         }
+    //     }
+    // }
+
+    // void OnTriggerEnter(Collider iCol)
+    // {
+    //     OnBreak(iCol);
+    // }
+
+    // void OnTriggerStay(Collider iCol)
+    // {
+    //     OnBreak(iCol);
+    // }
 
     public void disableSelfColliders()
     {
@@ -141,25 +193,61 @@ public class OnlineBreakableObject : NetworkBehaviour
         }
     }
 
+    // [Server]
+    // public void BreakObject(OnlinePlayerController iOPC)
+    // {
+    //     if (isBroken)
+    //         return;
+    //     isBroken = true;
+
+    //     // approximate contact point for explosion as collider position
+    //     WkzCar cc = iOPC.self_PlayerController.car.GetCar();
+
+    //     if (isServerOnly)
+    //         disableSelfColliders();
+    //     RpcDisableSelfColliders();
+
+    //     if (isServerOnly)
+    //         BreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.mutDef.maxSpeedInKmH));
+    //     RpcBreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.mutDef.maxSpeedInKmH));
+
+    //     StartCoroutine(DeleteInitialCrateCo());
+    // }
+
     [Server]
-    public void BreakObject(OnlinePlayerController iOPC)
+    public void BreakObject(OnlineDamageSnapshot iDamageSnap)
     {
         if (isBroken)
             return;
+
+        if (OnPreBreakFunc!=null)
+            OnPreBreakFunc.Invoke();
+
         isBroken = true;
+        if (swallowBreak)
+        {
+            if (OnPostBreakFunc!=null)
+                OnPostBreakFunc.Invoke();
+            return;
+        }
+
+        float forceMul = Mathf.Clamp( iDamageSnap.ownerVelocity.magnitude, 1f, 100f);
+        Vector3 damagerPos  = iDamageSnap.worldOrigin;
+        Vector3 damagerDir  = iDamageSnap.ownerVelocity.normalized;    
 
         // approximate contact point for explosion as collider position
-        WkzCar cc = iOPC.self_PlayerController.car.GetCar();
-
         if (isServerOnly)
             disableSelfColliders();
         RpcDisableSelfColliders();
 
         if (isServerOnly)
-            BreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.motor.def.maxTorque));
-        RpcBreakModelSwap(iOPC.self_PlayerController.GetRigidbody().worldCenterOfMass, Mathf.Abs((float)cc.GetCurrentSpeedInKmH() / (float)cc.motor.def.maxTorque));
+            BreakModelSwap(damagerPos, forceMul);
+        RpcBreakModelSwap(damagerPos, forceMul);
 
         StartCoroutine(DeleteInitialCrateCo());
+
+        if (OnPostBreakFunc!=null)
+            OnPostBreakFunc.Invoke();
     }
 
     [Server]
@@ -208,6 +296,54 @@ public class OnlineBreakableObject : NetworkBehaviour
 
         GameObject collectPatch = Instantiate(collectiblePatchPrefab, localPosition, localRotation);
         NetworkServer.Spawn(collectPatch);
+    }
+
+    [ClientRpc]
+    private void RpcUpdateImpactGFX()
+    {
+        UpdateImpactGFX();
+    }
+    
+    private void UpdateImpactGFX()
+    {
+        MeshRenderer mr = GetComponentInChildren<MeshRenderer>();
+        int hp_chunk = maxHP / 3; // size of impact damage atlas
+
+        if (currHP == maxHP) { damageIndex = 0;}
+        else if (currHP > (maxHP - hp_chunk)) { damageIndex = 1;}
+        else if (currHP > (maxHP - hp_chunk*2)) { damageIndex = 2;}
+        else damageIndex = 3;
+
+        selfMat.SetInteger("_DamageTexID", damageIndex);
+        
+    }
+
+    [Command]
+    private void CmdTryTakeDamage(OnlineDamageSnapshot iDamageSnap)
+    {
+        TakeDamage(iDamageSnap);
+    }
+
+    [Server]
+    public void TakeDamage(OnlineDamageSnapshot iDamageSnap)
+    {
+        // if (localElapsedTime < damageCooldown) // invulnerability CD
+        // { return; }
+        // localElapsedTime = 0f; // do damage, reset local cd
+
+        // damage
+        //this.Log("Damage to crate : " + iIncomingDamage);
+        if (currHP > 0)
+        {
+            currHP -= iDamageSnap.damage;
+            currHP = Mathf.Clamp(currHP, 0, maxHP);
+        }
+        RpcUpdateImpactGFX();
+        if (currHP > 0)
+            return;
+
+        // HP at 0, break object !
+        BreakObject(iDamageSnap);
     }
 
 }

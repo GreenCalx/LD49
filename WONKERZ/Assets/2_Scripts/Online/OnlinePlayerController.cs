@@ -16,11 +16,20 @@ public class OnlinePlayerController : NetworkBehaviour
     public Transform self_carMeshHandle;
     public Transform self_weightMeshHandle;
     public GameObject prefabCameraFocusable;
-
+    public OnlineDamager self_oDamager;
+    public OnlineDamageable self_oDamageable;
+    [Header("Online Tweaks")]
+    public float minSpeedToDoDamage = 30f;
     [Header("Internals")]
     [SyncVar]
     public bool readyToPlay = false;
     public Transform cameraFocusable;
+
+    void FixedUpdate()
+    {
+        if (!!self_oDamager)
+            self_oDamager.UpdateDamageAmountFromPlayer(this);
+    }
 
     public override void OnStartServer()
     {
@@ -56,8 +65,6 @@ public class OnlinePlayerController : NetworkBehaviour
             // add a camera focusable
             cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
         }
-
-
     }
 
     [Command]
@@ -78,11 +85,11 @@ public class OnlinePlayerController : NetworkBehaviour
         NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(this, true);
     }
 
-    [Command]
-    public void CmdBreakObject(OnlineBreakableObject iOBO)
-    {
-        iOBO.BreakObject(this);
-    }
+    // [Command]
+    // public void CmdBreakObject(OnlineBreakableObject iOBO)
+    // {
+    //     iOBO.BreakObject(this);
+    // }
 
     [ClientRpc]
     public void RpcRelocate(Vector3 iNewPos, Quaternion iNewRot)

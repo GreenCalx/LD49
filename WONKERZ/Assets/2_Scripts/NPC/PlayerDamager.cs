@@ -30,7 +30,6 @@ namespace Wonkerz {
 
         void OnCollisionEnter(Collision iCol)
         {
-        
             if (Utils.collisionIsPlayer(iCol))
             {
                 ContactPoint cp = iCol.contacts[0];
@@ -56,7 +55,6 @@ namespace Wonkerz {
 
         void OnCollisionStay(Collision iCol)
         {
-        
             if (Utils.collisionIsPlayer(iCol))
             {
                 ContactPoint cp = iCol.contacts[0];

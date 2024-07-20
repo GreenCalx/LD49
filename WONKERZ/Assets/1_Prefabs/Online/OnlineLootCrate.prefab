@@ -129,12 +129,25 @@ MonoBehaviour:
   destroyParentGameObject: 1
   timeBeforeFragClean: 10
   breakSpeedThreshold: 20
+  maxHP: 300
   fragmentExplodeForce: 1000
   upwardMultiplier: 1.5
   swallowBreak: 0
   OnBreakFunc:
     m_PersistentCalls:
       m_Calls: []
+  self_GFXDecals_Handle: {fileID: 0}
+  impactDecalSprite_lowDamaged: {fileID: 2100000, guid: 025a3e2dc1b27c048b1e4f9e64ebc044, type: 2}
+  impactDecalSprite_midDamaged: {fileID: 2100000, guid: 5e1f9c22b0e10cb42a6d2e5b624337bd, type: 2}
+  impactDecalSprite_highlyDamaged: {fileID: 2100000, guid: cb015289710848e40ad0a8d02cd8504e, type: 2}
+  self_damageDecalRefs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  currHP: 0
 --- !u!114 &6357910770447284655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,7 +253,7 @@ PrefabInstance:
     - target: {fileID: -5720281507733479663, guid: 0b2dab4263b4d9d419270147bcf1c364, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 219a47f70f263cd4f87d7e13adfed921, type: 2}
+      objectReference: {fileID: 2100000, guid: 08ccfd92141f36f4ea7ff08925549063, type: 2}
     - target: {fileID: -5720281507733479663, guid: 0b2dab4263b4d9d419270147bcf1c364, type: 3}
       propertyPath: m_Materials.Array.data[1]
       value: 
