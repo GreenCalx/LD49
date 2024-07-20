@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1720849189829995216}
   - component: {fileID: 5043469971030295077}
   - component: {fileID: 4633698037325195872}
-  - component: {fileID: 4633698037325195875}
   - component: {fileID: 567031525261901751}
   - component: {fileID: 6357910770447284655}
   - component: {fileID: -3471823601759089384}
+  - component: {fileID: 7038369109695099922}
   m_Layer: 0
   m_Name: OnlineLootCrate
   m_TagString: Untagged
@@ -96,19 +96,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &4633698037325195875
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762567683194164982}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3.5, y: 3.5, z: 3.5}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &567031525261901751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +113,7 @@ MonoBehaviour:
   syncInterval: 0
   brokenObjectRef: {fileID: 3380132998329444505, guid: 54b3f9aed67ceb845a06817e6c16f5aa, type: 3}
   collectiblePatchPrefab: {fileID: 3179834303080262715, guid: 38dbfb245fb1ae64d95be48280026e3c, type: 3}
+  self_DamageableRef: {fileID: 7038369109695099922}
   destroyParentGameObject: 1
   timeBeforeFragClean: 10
   breakSpeedThreshold: 20
@@ -133,20 +121,12 @@ MonoBehaviour:
   fragmentExplodeForce: 1000
   upwardMultiplier: 1.5
   swallowBreak: 0
-  OnBreakFunc:
+  OnPreBreakFunc:
     m_PersistentCalls:
       m_Calls: []
-  self_GFXDecals_Handle: {fileID: 0}
-  impactDecalSprite_lowDamaged: {fileID: 2100000, guid: 025a3e2dc1b27c048b1e4f9e64ebc044, type: 2}
-  impactDecalSprite_midDamaged: {fileID: 2100000, guid: 5e1f9c22b0e10cb42a6d2e5b624337bd, type: 2}
-  impactDecalSprite_highlyDamaged: {fileID: 2100000, guid: cb015289710848e40ad0a8d02cd8504e, type: 2}
-  self_damageDecalRefs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  OnPostBreakFunc:
+    m_PersistentCalls:
+      m_Calls: []
   currHP: 0
 --- !u!114 &6357910770447284655
 MonoBehaviour:
@@ -199,6 +179,37 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &7038369109695099922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762567683194164982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f9f476f2b56a44bbd81604bd51821a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 1762567683194164982}
+  OnTakeDamageCallbacks:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 567031525261901751}
+        m_TargetAssemblyTypeName: OnlineBreakableObject, WkzCore
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &8820621242824411954
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -258,6 +269,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[1]
       value: 
       objectReference: {fileID: 2100000, guid: 5fedded7b3e99fd4285ac0669f946075, type: 2}
+    - target: {fileID: -4670541442740194400, guid: 0b2dab4263b4d9d419270147bcf1c364, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 0b2dab4263b4d9d419270147bcf1c364, type: 3}
       propertyPath: m_Name
       value: woodcrate

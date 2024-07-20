@@ -10,13 +10,16 @@ public class OnlineDamageSnapshot
 {
     public GameObject owner; // netid for online ? make offlinedamagesnapshot ?
     public int damage;
+    public int repulsionForce;
     public Vector3 worldOrigin;
     public Vector3 ownerVelocity;
+    
 
     public OnlineDamageSnapshot()
     {
         owner = null;
         damage = 0;
+        repulsionForce = 1;
         worldOrigin = Vector3.zero;
         ownerVelocity = Vector3.zero;
     }
@@ -25,6 +28,8 @@ public class OnlineDamageSnapshot
     {
         owner       = iDamager.gameObject;
         damage      = iDamager.damage;
+        repulsionForce = iDamager.optional_repulsion_force;
+
         worldOrigin = iDamager.transform.position;
         
         Rigidbody rb = iDamager.GetComponent<Rigidbody>();
@@ -42,8 +47,8 @@ public class OnlineDamager : NetworkBehaviour
 
     [Header("Damage Detection triggers")]
     public bool FromCollision = true;
-    public bool FromTriggers = true;
-    public bool FromParticles = true;
+    public bool FromTriggers = false;
+    public bool FromParticles = false;
     public bool FirstContactOnly = true;
 
     [Header("Tweaks")]
@@ -113,7 +118,11 @@ public class OnlineDamager : NetworkBehaviour
 
         OnlineDamageable oDamageable = iDamageTarget.GetComponent<OnlineDamageable>();
         if (oDamageable==null)
-        { return false; }
+        {
+            oDamageable = iDamageTarget.GetComponentInParent<OnlineDamageable>();
+            if (oDamageable==null)
+                return false; 
+        }
 
 
         if (DoDamageToPlayers)
@@ -144,19 +153,6 @@ public class OnlineDamager : NetworkBehaviour
 
         elapsedTimeSinceLastDamage = 0f;
         return true;
-    }
-
-    public void UpdateDamageAmountFromPlayer(OnlinePlayerController iOPC)
-    {
-        WkzCar cc = iOPC.self_PlayerController.car.GetCar();
-        if (cc.GetCurrentSpeedInKmH() < iOPC.minSpeedToDoDamage)
-        { 
-            damage = 0;
-            return;
-        }
-
-        damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
-        damage +=(int) Mathf.Floor((iOPC.self_PlayerController.GetRigidbody().mass * 0.1f));
     }
 
     public OnlineDamageSnapshot MakeSnapshot()

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 6555113948818971708}
   - component: {fileID: 3300570136745486218}
   - component: {fileID: 4774969938403476499}
+  - component: {fileID: 6004255364953603152}
   m_Layer: 8
   m_Name: OnlinePlayer
   m_TagString: Untagged
@@ -93,8 +94,6 @@ MonoBehaviour:
   KnightLanceObject_Ref: {fileID: 5546326682357359979, guid: 27e87f84d04a05e499caee8071601801, type: 3}
   PalletLauncherObject_Ref: {fileID: 1684424969696777168, guid: e9e040415a4ac4946925bacd587aa96b, type: 3}
   PalletRef: {fileID: 8433822028710607147, guid: d896cd86e9a47c949b9f6d2461df4409, type: 3}
-  PalletLauncherLoadingPoint_Ref: {fileID: 0}
-  PalletLauncherLaunchingPoint_Ref: {fileID: 0}
 --- !u!114 &7197042104380501840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,8 +206,47 @@ MonoBehaviour:
   self_carMeshHandle: {fileID: 6246529855504869792}
   self_weightMeshHandle: {fileID: 700105692822417050}
   prefabCameraFocusable: {fileID: 9052099496259701962, guid: 6e2fc5e3f63f76045b1e7b8d23f75d75, type: 3}
+  self_oDamagers:
+  - {fileID: 3771784147892093703}
+  - {fileID: 1125657085932996780}
+  - {fileID: 5606362359687124282}
+  - {fileID: 3833988724234504972}
+  - {fileID: 5751450110316966370}
+  self_oDamageable: {fileID: 6004255364953603152}
+  minSpeedToDoDamage: 30
   readyToPlay: 0
   cameraFocusable: {fileID: 0}
+--- !u!114 &6004255364953603152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2705171154291085488}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f9f476f2b56a44bbd81604bd51821a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  OnTakeDamageCallbacks:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4774969938403476499}
+        m_TargetAssemblyTypeName: OnlinePlayerController, WkzCore
+        m_MethodName: TakeDamage
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8226408133654480239
 GameObject:
   m_ObjectHideFlags: 0
@@ -919,6 +957,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8458688514289268236, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
   m_PrefabInstance: {fileID: 8994825385947158678}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6246529854424797766 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3054614579651218128, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
+  m_PrefabInstance: {fileID: 8994825385947158678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1125657085932996780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6246529854424797766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 0
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []
 --- !u!4 &6246529854956537801 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3054614579108994911, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
@@ -946,8 +1015,132 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd152181535b074e96dac8ab33be36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6246529855110862631 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3054614580673810353, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
+  m_PrefabInstance: {fileID: 8994825385947158678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5751450110316966370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6246529855110862631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 0
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []
 --- !u!4 &6246529855504869792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3054614580798337334, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
   m_PrefabInstance: {fileID: 8994825385947158678}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6246529855504869807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3054614580798337337, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
+  m_PrefabInstance: {fileID: 8994825385947158678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3771784147892093703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6246529855504869807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 0
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []
+--- !u!1 &6246529855584418316 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3054614580072342170, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
+  m_PrefabInstance: {fileID: 8994825385947158678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5606362359687124282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6246529855584418316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 0
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []
+--- !u!1 &6246529855872560270 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3054614580294333464, guid: f26bc94c983bab441836a75b83ec0dcf, type: 3}
+  m_PrefabInstance: {fileID: 8994825385947158678}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3833988724234504972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6246529855872560270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 2705171154291085488}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 0
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []

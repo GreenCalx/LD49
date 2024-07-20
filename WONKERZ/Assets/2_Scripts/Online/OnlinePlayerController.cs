@@ -16,7 +16,7 @@ public class OnlinePlayerController : NetworkBehaviour
     public Transform self_carMeshHandle;
     public Transform self_weightMeshHandle;
     public GameObject prefabCameraFocusable;
-    public OnlineDamager self_oDamager;
+    public List<OnlineDamager> self_oDamagers;
     public OnlineDamageable self_oDamageable;
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
@@ -27,8 +27,24 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (!!self_oDamager)
-            self_oDamager.UpdateDamageAmountFromPlayer(this);
+        if (self_oDamagers!=null)
+            UpdatePlayerDamagers();
+    }
+
+    private void UpdatePlayerDamagers()
+    {
+        int damage = 0;
+        WkzCar cc = self_PlayerController.car.GetCar();
+        if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
+        { 
+            damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
+            damage +=(int) Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
+        }
+
+        foreach( OnlineDamager d in self_oDamagers )
+        {
+            d.damage = damage;
+        }
     }
 
     public override void OnStartServer()
@@ -202,5 +218,15 @@ public class OnlinePlayerController : NetworkBehaviour
 
         //CmdInformPlayerHasLoaded();
         readyToPlay = true;
+    }
+
+    public void TakeDamage(OnlineDamageSnapshot iDamageSnap)
+    {
+        self_PlayerController.takeDamage( 
+            iDamageSnap.damage,
+            iDamageSnap.worldOrigin,
+            iDamageSnap.ownerVelocity,
+            iDamageSnap.repulsionForce
+        );
     }
 }
