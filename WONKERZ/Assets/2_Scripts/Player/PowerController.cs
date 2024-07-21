@@ -126,10 +126,18 @@ namespace Wonkerz
 
         public void refreshUI()
         {
+            UIPlayerOnline ui = Access.UIPlayerOnline();
             if (currentPower == null)
-                Access.UIPlayerOnline().equippedPower.text = "--";
-            else
-                Access.UIPlayerOnline().equippedPower.text = currentPower.name;
+            {
+                ui.equippedPower.text = "--";
+                ui.DitchPowerHintHandle.gameObject.SetActive(false);
+            }
+                
+            else {
+                ui.equippedPower.text = currentPower.name;
+                ui.DitchPowerHintHandle.gameObject.SetActive(true);
+            }
+                
         }
 
     }

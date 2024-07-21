@@ -16,7 +16,7 @@ public class UIPlayerOnline : MonoBehaviour
     public Image                    speedBar;
     public TextMeshProUGUI          lifePool;
     public TextMeshProUGUI          equippedPower;
-
+    public Transform        DitchPowerHintHandle;
     public Image            cpImageFilled;
     public TextMeshProUGUI  nAvailablePanels;
     public TextMeshProUGUI idOfLastCPTriggered;
