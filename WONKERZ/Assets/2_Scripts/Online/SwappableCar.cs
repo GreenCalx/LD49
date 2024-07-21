@@ -61,18 +61,28 @@ public class SwappableCar : NetworkBehaviour
         cameraFocusable.transform.parent = old_wCar.rb.transform;
         cameraFocusable.transform.localPosition = Vector3.zero;
 
-        // Transfer AbstractCollector
-        AbstractCollector AC = GetComponentInChildren<AbstractCollector>();
-        AC.transform.parent = locPC.current.rb.transform;
-        AC.transform.localPosition = Vector3.zero;
-        AC.transform.rotation = Quaternion.identity;
-
-        // TODO update from Bag
+        /// Update online player refs
         OnlinePlayerController opc = locPC.GetComponent<OnlinePlayerController>();
+
+        // transfer bag to new car & apply
         OnlineCollectibleBag bag = opc.bag;
         bag.InitStatRefValues();
         bag.UpdateCar();
 
+        // Transfer AbstractCollector
+        // AbstractCollector AC = GetComponentInChildren<AbstractCollector>();
+        // AC.transform.parent = locPC.current.rb.transform;
+        // AC.transform.localPosition = Vector3.zero;
+        // AC.transform.rotation = Quaternion.identity;
+        AbstractCollector AC = locPC.gameObject.GetComponentInChildren<AbstractCollector>();
+        AC.attachedOnlinePlayer = opc;
+
+        // set damagers/damageable on new car and refresh refs
+        opc.InitPlayerDamagers();
+        opc.InitPlayerDamageable();
+
+        // Instantiate a 
+        
     }
 
 }

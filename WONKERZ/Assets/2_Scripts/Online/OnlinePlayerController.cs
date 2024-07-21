@@ -47,6 +47,44 @@ public class OnlinePlayerController : NetworkBehaviour
         }
     }
 
+    public void InitPlayerDamagers()
+    {
+        self_oDamagers = new List<OnlineDamager>(5);
+
+        WkzCar cc = self_PlayerController.car.GetCar();
+
+        // body damager
+        GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
+        OnlineDamager body_dmgr = bodyRef.GetComponent<OnlineDamager>();
+        if (body_dmgr==null)
+            body_dmgr = bodyRef.AddComponent<OnlineDamager>();
+        body_dmgr.owner = gameObject;
+        self_oDamagers.Add(body_dmgr);
+
+        // wheel damagers
+        List<WkzWheelCollider> wheels = new List<WkzWheelCollider>(self_PlayerController.gameObject.GetComponentsInChildren<WkzWheelCollider>());
+        foreach( WkzWheelCollider w in wheels)
+        {
+            OnlineDamager wheel_dmgr = w.gameObject.GetComponent<OnlineDamager>();
+            if (wheel_dmgr==null)
+                wheel_dmgr = w.gameObject.AddComponent<OnlineDamager>();
+            wheel_dmgr.owner = gameObject;
+            self_oDamagers.Add(wheel_dmgr);
+        }
+    }
+
+    public void InitPlayerDamageable()
+    {
+        self_oDamageable = null;
+
+        GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
+        OnlineDamageable body_dmgbl = bodyRef.GetComponent<OnlineDamageable>();
+        if (body_dmgbl==null)
+            body_dmgbl = bodyRef.AddComponent<OnlineDamageable>();
+        self_oDamageable = body_dmgbl;
+        self_oDamageable.owner = gameObject;
+    }
+
     public override void OnStartServer()
     {
         // disable client stuff
