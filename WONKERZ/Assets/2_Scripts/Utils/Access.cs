@@ -247,10 +247,10 @@ namespace Wonkerz {
         }
 
         // ONLINE MODE
-        public static OfflineGameManager OfflineGameManager()
-        {
-            return cache.getObject<OfflineGameManager>(Constants.GO_OFFGAMEMGR, false);
-        }
+        // public static OfflineGameManager OfflineGameManager()
+        // {
+        //     return cache.getObject<OfflineGameManager>(Constants.GO_OFFGAMEMGR, false);
+        // }
 
         public static UIPlayerOnline UIPlayerOnline()
         {

@@ -85,6 +85,8 @@ public class UILobbyServerTab : UITextTab
     }
 
     public void OnClientConnected() {
+        deactivate();
+        serverList.deactivate();
         serverList.online.deactivate();
     }
 

@@ -1,14 +1,18 @@
+using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Wonkerz;
-using Mirror;
+
+// Network object specs
+//
+// Client side:
+//
+// Server side:
 
 public class OnlinePlayerController : NetworkBehaviour
 {
     [Header("OnlinePlayerController")]
     public string onlinePlayerName;
-    public NetworkConnectionToClient connectionToClient;
     public OnlineCollectibleBag bag;
 
     [Header("Mand Refs")]
@@ -21,9 +25,23 @@ public class OnlinePlayerController : NetworkBehaviour
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
     [Header("Internals")]
+    // Client has authority on this,
+    // It will not modify it directly but send a cmd to send it.
+    // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
-    public bool readyToPlay = false;
+    bool isReady = false;
+    [SyncVar]
+    bool isLoaded = false;
+    [SyncVar]
+    bool isSpawned = false;
+
     public Transform cameraFocusable;
+
+    public bool IsSpawned() => isSpawned;
+    public bool IsReady()   => isReady;
+    public bool IsLoaded()  => isLoaded;
+    public bool IsLockAndLoaded() => IsReady() && IsLoaded();
+
 
     void FixedUpdate()
     {
@@ -85,40 +103,105 @@ public class OnlinePlayerController : NetworkBehaviour
         self_oDamageable.owner = gameObject;
     }
 
+    /* ----------------------------------
+    Server
+    ------------------------------------ */
+
     public override void OnStartServer()
     {
-        // disable client stuff
-        if (isServer)
+        // Server only or host but not the localplayer
+        //means we need on online stub with a few extras: no rendering, etc...I
+        if (!isClient || (isClient && !isLocalPlayer))
         {
-            self_carMeshHandle.gameObject.SetActive(true);
-            if (isServerOnly)
-            {
-                Access.OfflineGameManager().isServerOnly = true;
-            }
+            UnityEngine.Debug.LogError("OnlinePlayerInit : server.");
+            // server : no need to wait for dependencies => they should be local and loaded asap locally.
+            if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
+            self_PlayerController.InitOnServer();
+            // set name to whatever, cannot be "Player" => this is the name of the local player.
+            onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
+            gameObject.name = onlinePlayerName;
+            // NOTE: do we want to do this?
+            // for now we dont, but 
+            // AudioListener AL = GetComponentInChildren<AudioListener>();
+            // if (!!AL) { Destroy(AL); }
+            OnStartServerInit();
         }
     }
 
-    public override void OnStartClient()
+    void OnStartServerInit()
     {
-        // register client events, enable effects
-        onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
-        gameObject.name = onlinePlayerName;
-        if (!isLocalPlayer)
+        // TODO: remove anything linked to input poll, rendering, etc...
+        self_PlayerController.OnStateChange        += OnStateChange;
+        self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
+    }
+
+    // Update clients about their states.
+    void OnVehicleStateChange(PlayerController.PlayerVehicleStates state) {
+        RpcSetCameraFocus(self_PlayerController.GetTransform());
+        RpcSetVehicleState(state);
+    }
+
+    void OnStateChange(PlayerController.PlayerStates state)
+    {
+        RpcSetState(state);
+    }
+
+
+    [Command]
+    public void CmdModifyReadyState(bool state) {
+        isReady = state;
+    }
+
+    [Command]
+    public void CmdModifyLoadedState(bool state) {
+        isLoaded = state;
+    }
+
+    [Command]
+    public void CmdModifySpawnedState(bool state) {
+        if (state)
         {
-            Destroy(GetComponent<PlayerController>());
-            Access.OfflineGameManager().AddToRemotePlayers(this);
+            Debug.LogError("Server received client spawned.");
 
-            AudioListener AL = GetComponentInChildren<AudioListener>();
-            if (!!AL)
-            { Destroy(AL); }
+            OnlineGameManager.Get().AddPlayer(this);
 
-            // make car visible
-            self_carMeshHandle.gameObject.SetActive(true);
-            self_weightMeshHandle.gameObject.SetActive(true);
+            self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
-            // add a camera focusable
-            cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
+            isSpawned = state;
+
+            // Ask this client to load.
+            RpcLoad();
         }
+        else
+        {
+            isSpawned = state;
+        }
+
+    }
+
+    [Server]
+    public void FreezePlayer(bool state) {
+        if (self_PlayerController)
+        {
+            if (state) self_PlayerController.Freeze();
+            else       self_PlayerController.UnFreeze();
+        }
+    }
+
+    [Command]
+    public void CmdFreezePlayer(bool state)
+    {
+        FreezePlayer(state);
+    }
+
+    [Command]
+    public void CmdSendPlayerInputs(byte[] playerInputs)
+    {
+        // Deserialize inputs.
+        Schnibble.Managers.GameController gc = Schnibble.Managers.GameController.Deserialize((int)PlayerInputs.InputCode.Count, playerInputs);
+        // Execute inputs.
+        (self_PlayerController as Schnibble.Managers.IControllable).ProcessInputs(null, gc);
+        // Normally any results should be broadcasted back to clients.
     }
 
     [Command]
@@ -130,13 +213,7 @@ public class OnlinePlayerController : NetworkBehaviour
             return;
         }
         NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
-        
-    }
 
-    [Command]
-    public void CmdNotifyOGMPlayerReady()
-    {
-        NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(this, true);
     }
 
     // [Command]
@@ -145,117 +222,136 @@ public class OnlinePlayerController : NetworkBehaviour
     //     iOBO.BreakObject(this);
     // }
 
-    [ClientRpc]
-    public void RpcRelocate(Vector3 iNewPos, Quaternion iNewRot)
-    {
-        Relocate(iNewPos, iNewRot);
-    }
-    [Command]
-    public void CmdRelocate(Vector3 iNewPos, Quaternion iNewRot)
-    {
-        Relocate(iNewPos, iNewRot);
-    }
-
-    [Client]
+    [Server]
     public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
     {
         self_PlayerController.ForceTransform(iNewPos, iNewRot);
         self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
     }
 
+    /* ----------------------------------
+    Client 
+    ------------------------------------ */
+
+    IEnumerator WaitForDependencies()
+    {
+        Debug.LogError("Start OnlinePlayerController wait for dependencies.");
+
+        // Wait for OnlineGameManager to setup.
+        while (NetworkRoomManagerExt.singleton == null) { yield return null; }
+        while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
+
+        // Wait for any scene to load.
+        while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
+
+        // Wait for objcet that we need to access at init time.
+        while (Access.UIPlayerOnline() == null) { yield return null; }
+        while (Access.CameraManager() == null) { yield return null; }
+
+        Debug.LogError("End OnlinePlayerController wait for dependencies.");
+    }
+
+
+    public override void OnStartClient()
+    {
+        // OnStartuserver will setup the OnlineStub if need be, so we init here
+        // only if we are client only, and not the local player.
+        if (!isServer && !isLocalPlayer)
+        {
+            // add a camera focusable
+            // NOTE:
+            // For now it is local only, but in the future we might want to have it spawned on the server
+            // And sync the focus state, for things like fog of war (server only knows what can be focus by the player or not)
+            cameraFocusable = Instantiate(prefabCameraFocusable, transform).transform;
+            // We do not set isSpawnde because we are not the local player that will receive the commands from the server.
+            // We were asked to spawn BY the server.
+        }
+    }
+
     public override void OnStartLocalPlayer()
     {
-        if (isLocalPlayer)
-        {
-            gameObject.name = Constants.GO_PLAYER;
-            Access.OfflineGameManager().localPlayer = this;
-            Access.GameSettings().IsOnline = true;
-
-            if (self_PlayerController==null)
-                self_PlayerController = GetComponent<PlayerController>();
-
-            StartCoroutine(initCo());
-        } 
-    }
-
-    [Command]
-    public void CmdInformPlayerHasLoaded()
-    {
-        InformPlayerHasLoaded();
-    }
-
-    public void InformPlayerHasLoaded()
-    {
-        NetworkRoomManagerExt.singleton.onlineGameManager.AddPlayer(this);
-        NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerHasLoaded(this, true);
+        StartCoroutine(InitLocalPlayer());
     }
 
     public override void OnStopLocalPlayer()
     {
+        OnlineGameManager.Get().localPlayer = null;
+
         Destroy(gameObject);
-        if (isLocalPlayer)
-        {
-            Access.OfflineGameManager().localPlayer = null;
-        }
-        
     }
 
-    IEnumerator initCo()
+    IEnumerator InitLocalPlayer()
     {
-        self_PlayerController.Freeze();
-        readyToPlay = false;
+        UnityEngine.Debug.LogError("OnlinePlayerInit : client local player.");
+        // client but local: need to wait dependencies as some things might not be loaded.
+        // It is probably a wrong statement: every dependencies should be loaded when this object is calling Start() ?
+        yield return StartCoroutine(WaitForDependencies());
 
-        // Wait additive scenes to be laoded
+        if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
+        self_PlayerController.Init();
+        // Set underlying player controller to not apply any inputs.
+        // Instead send inputs to the server and wait for server answer that will
+        // update states.
+        self_PlayerController.inputMode = PlayerController.InputMode.Online;
 
-        while(!NetworkRoomManagerExt.singleton.subsceneLoaded)
+        OnlineGameManager.Get().localPlayer = this;
+        gameObject.name = Constants.GO_PLAYER;
+        // What is the purpose of this boolean?
+        Access.GameSettings().IsOnline = true;
+        // We tell the server that we spawned, we are ready to communicate and init.
+        CmdModifySpawnedState(true);
+    }
+
+    [TargetRpc]
+    void RpcSetCameraFocus(Transform t)
+    {
+        if (t != null)
         {
-            yield return null;
+            // Update camera focus.
+            Debug.LogError("RpcSetCameraFocus." + t.gameObject.name);
+            Access.CameraManager()?.OnTargetChange(t);
         }
+    }
 
-        while(Access.UIPlayerOnline()==null)
-        {
-            yield return null;
-        }
+    [ClientRpc]
+    void RpcSetState(PlayerController.PlayerStates state) {
+        UnityEngine.Debug.LogError("RpcSetState : " + state.ToString());
+        if(!isServer) self_PlayerController.TransitionFromTo(self_PlayerController.playerState, state);
+    }
+
+    [ClientRpc]
+    void RpcSetVehicleState(PlayerController.PlayerVehicleStates state) {
+        UnityEngine.Debug.LogError("RpcSetVehicleState : " + state.ToString());
+        if(!isServer) self_PlayerController.TransitionTo(state);
+    }
+
+    [TargetRpc]
+    void RpcLoad()
+    {
+        Load();
+    }
+
+    [Client]
+    void Load()
+    {
+        CmdFreezePlayer(true);
+
         Access.UIPlayerOnline().LinkToPlayer(this);
-
-        while(Access.CameraManager()==null)
-        {
-            yield return null;
-        }
-        // Force Init Camera Init ?
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-        
-        // while(self_PlayerController.vehicleState == PlayerController.PlayerVehicleStates.None)
-        // {
-        //     yield return null;
-        // }
 
-        while(self_PlayerController.inputMgr==null)
+        CmdModifyLoadedState(true);
+    }
+
+    void Update()
+    {
+        if (NetworkClient.ready && isLocalPlayer && isLoaded)
         {
-            yield return null;
+            if (self_PlayerController.lastInputs != null)
+            {
+                // Send inputs to server.
+                CmdSendPlayerInputs(self_PlayerController.lastInputs);
+            }
         }
-
-        self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
-
-        while (self_PlayerController.car.GetCar() == null)
-        { yield return null;}
-
-        while (self_PlayerController.GetRigidbody() == null)
-        {
-            // not ideal but RB can be null at first call thus we need to re-init?
-            self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
-            yield return null; 
-        }
-
-        while (self_PlayerController.car.car.GetChassis().GetBody() == null)
-        {
-            yield return null;
-        }
-
-        self_PlayerController.UnFreeze();
-
-        //CmdInformPlayerHasLoaded();
-        readyToPlay = true;
     }
 
     public void TakeDamage(OnlineDamageSnapshot iDamageSnap)

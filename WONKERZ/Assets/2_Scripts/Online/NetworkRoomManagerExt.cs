@@ -183,7 +183,6 @@ using Wonkerz;
         public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
         {
             OnlinePlayerController OPC = gamePlayer.GetComponent<OnlinePlayerController>();
-            OPC.connectionToClient = conn;
             NetworkRoomPlayerExt nrp = roomPlayer.GetComponent<NetworkRoomPlayerExt>();
             roomplayersToGameplayersDict.Add(nrp, OPC);
 

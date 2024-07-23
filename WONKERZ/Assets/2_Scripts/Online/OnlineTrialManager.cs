@@ -16,9 +16,9 @@ public class OnlineTrialManager : NetworkBehaviour
     public Light sun;
 
     [Header("Internals")]
-    public SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
+    public readonly SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
 
-    public SyncDictionary<OnlinePlayerController, float> dicPlayerTrialToRaceTimes = new SyncDictionary<OnlinePlayerController, float>();
+    public readonly SyncDictionary<OnlinePlayerController, float> dicPlayerTrialToRaceTimes = new SyncDictionary<OnlinePlayerController, float>();
     [SyncVar]
     public bool trialIsOver = false;
     [SyncVar]
@@ -69,7 +69,8 @@ public class OnlineTrialManager : NetworkBehaviour
 
     public void NotifyLocalPlayerFinished()
     {
-        OnlinePlayerController localPC = Access.OfflineGameManager().localPlayer;
+        var localPC = OnlineGameManager.Get().localPlayer;
+        //OnlinePlayerController localPC = Access.OfflineGameManager().localPlayer;
         if (localPC.isClientOnly)
         {
             localPC.CmdNotifyPlayerFinishedTrial();

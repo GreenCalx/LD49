@@ -5,6 +5,7 @@ using UnityEngine.Events;
 
 using Mirror;
 
+#if false
 public class OfflineGameManager : MonoBehaviour
 {
     [Header("Mand Refs")]
@@ -19,30 +20,20 @@ public class OfflineGameManager : MonoBehaviour
 
     public List<OnlinePlayerController> remotePlayers;
 
-
-    // Start is called before the first frame update
     void Start()
     {
         refreshSession();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void refreshSession()
     {
         sessionIsReadyToGo = false;
         allPlayersHaveLoaded = false;
+
         StartCoroutine(WaitForOtherPlayers());
     }
 
-    IEnumerator WaitForOtherPlayers()
-    {
-        UIWaitForPlayers.SetActive(true);
-
+    IEnumerator WaitForDependencies() {
         while (NetworkRoomManagerExt.singleton.onlineGameManager==null)
         {
             yield return null;
@@ -52,11 +43,15 @@ public class OfflineGameManager : MonoBehaviour
         {
             yield return null;
         }
+    }
 
+    IEnumerator WaitForOtherPlayers()
+    {
+        UIWaitForPlayers.SetActive(true);
         // No players => server only
         if (isServerOnly)
         {
-            allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded();
+            allPlayersHaveLoaded = NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersLoaded();
             while (!allPlayersHaveLoaded)
             {
                 // Information given by OnlineGameManager
@@ -89,7 +84,7 @@ public class OfflineGameManager : MonoBehaviour
         // }
         if (localPlayer.isClient)
         {
-            while(!localPlayer.readyToPlay)
+            while(!localPlayer.IsLockAndLoaded())
             {
                 yield return null;
             }
@@ -121,3 +116,4 @@ public class OfflineGameManager : MonoBehaviour
     }
 
 }
+#endif

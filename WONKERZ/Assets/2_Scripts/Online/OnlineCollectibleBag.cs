@@ -67,7 +67,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        owner = Access.OfflineGameManager().localPlayer;
+        //owner = Access.OfflineGameManager().localPlayer;
+        //owner = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
+
         nuts = 0;
         accels = 0;
         maxSpeeds = 0;
@@ -77,33 +79,27 @@ public class OnlineCollectibleBag : NetworkBehaviour
         weights = 0;
         HasAPowerEquipped = false;
 
-        StartCoroutine(WaitPlayerForInit());
+        StartCoroutine(Init());
     }
 
-    IEnumerator WaitPlayerForInit()
-    {
-        while (owner==null)
-        {
-            owner = Access.OfflineGameManager().localPlayer;
-            yield return null;
-        }
+    IEnumerator WaitForDependencies() {
+        while (OnlineGameManager.Get() == null) yield return null;
+    }
+
+    IEnumerator Init() {
+        yield return StartCoroutine(WaitForDependencies());
+
+        owner = OnlineGameManager.Get().localPlayer;
 
         if (isServer)
         {
             //while (!NetworkRoomManagerExt.singleton.onlineGameManager.HasPlayerLoaded(owner))
-            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AllPlayersLoaded())
+            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersReady())
             {
                 yield return null;
             }
-            RpcInitStatRefValues();
+            //RpcInitStatRefValues();
         }
-            
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     [ClientRpc]

@@ -20,22 +20,21 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
     public Transform postGameLines_Handle;
 
     [Header("Internal")]
-    public bool playerReadyUp = false;
     public OnlinePlayerController OPC;
     private List<UIOnlinePostGameLine> lines = new List<UIOnlinePostGameLine>();
 
-    // Start is called before the first frame update
-    void Start()
+    public override void OnStartClient()
     {
-        playerReadyUp = false;
-        if (isClient)
-            StartCoroutine(InitCo());
+        base.OnStartClient();
+
+        StartCoroutine(InitCo());
     }
 
-    void OnDestroy()
+    public override void OnStopClient()
     {
-        if (isClient)
-            Access.Player().inputMgr.Detach(this as IControllable);
+        base.OnStopClient();
+
+        Access.Player().inputMgr.Detach(this as IControllable);
     }
 
     void Update()
@@ -45,6 +44,10 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
 
     private void updatePostGameTimeLbl()
     {
+        // We might not have fully loaded but it is fine.
+        if (NetworkRoomManagerExt.singleton                   == null) return;
+        if (NetworkRoomManagerExt.singleton.onlineGameManager == null) return;
+
         float trackTime = NetworkRoomManagerExt.singleton.onlineGameManager.postGameTime;
         int trackTime_val_min = (int)(trackTime / 60);
         if (trackTime_val_min<0)
@@ -73,6 +76,7 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
 
     public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
     {
+        #if false
         int lowest_rank = 1;
         foreach(OnlinePlayerController opc in iOGM.uniquePlayers)
         {
@@ -103,41 +107,32 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
             }
 
         }
-
-        //winnerLbl.text = NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.dicPlayerTrialFinishPositions.Where(e => e.Value == 1).GetEnumerator().Current.Key.onlinePlayerName;
+        #endif
     }
 
-    IEnumerator InitCo()
-    {
+    IEnumerator WaitForDependencies() {
         while(OPC==null)    
         {
             OPC = Access.Player()?.GetComponent<OnlinePlayerController>();
             yield return null;
         }
-        OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
+    }
 
-        while(!playerReadyUp)
-        {
-            yield return null;
-        }
-        
-        if (isServer)
-            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerIsReady(OPC, true);
-        if (isClientOnly)
-            OPC.CmdNotifyOGMPlayerReady();
+    IEnumerator InitCo()
+    {
+        yield return StartCoroutine(WaitForDependencies());
+
+        OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        if (playerReadyUp)
-            return;
-
         var start = Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton;
         if (start != null)
         {
             if (start.GetState().down)
             {
-                playerReadyUp = true;
+                OPC.CmdModifyReadyState(true);
             }
         }
     }

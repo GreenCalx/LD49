@@ -77,11 +77,12 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
 
     public void pauseGame(bool isPaused)
     {
-        //Time.timeScale = (isPaused ? 0 : 1);
+        #if false
         if (isPaused)
-            attachedPlayer.Freeze();
+        attachedPlayer.Freeze();
         else
-            attachedPlayer.UnFreeze();
+        attachedPlayer.UnFreeze();
+        #endif
     }
 
     public void OnExitButton()

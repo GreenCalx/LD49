@@ -1,17 +1,21 @@
+using Schnibble;
+using Schnibble.Managers;
+using System;
 using System.Collections.Specialized;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Schnibble;
-using Schnibble.Managers;
-using static Schnibble.Math;
-using static Schnibble.Physics;
-using static Schnibble.Utils;
 using static UnityEngine.Debug;
 
 namespace Wonkerz
 {
     public class PlayerController : MonoBehaviour, IControllable
     {
+        public enum InputMode
+        {
+            Local,
+            Online,
+        };
+        public InputMode inputMode = InputMode.Local;
         // Simple State Machine
         public enum PlayerStates
         {
@@ -23,6 +27,7 @@ namespace Wonkerz
             Dead,
             Count,
         };
+
         public PlayerStates playerState
         {
             get;
@@ -37,6 +42,7 @@ namespace Wonkerz
             Plane,
             Count,
         };
+
         public PlayerVehicleStates vehicleState
         {
             get;
@@ -47,12 +53,20 @@ namespace Wonkerz
         public static readonly int FJump = 1;
         public BitVector32 flags = new BitVector32(0);
 
+
+        // For online we need to know when the state changes.
+        // This is a bad design, this should be synced directly
+        // from the server, but we need to have the possibility to stay 100% local.
+        public Action<PlayerStates>        OnStateChange;
+        public Action<PlayerVehicleStates> OnVehicleStateChange;
+
         public void TransitionTo(PlayerVehicleStates to)
         {
             TransitionFromTo(vehicleState, to);
+            OnVehicleStateChange?.Invoke(vehicleState);
         }
 
-        private void TransitionFromTo(PlayerStates from, PlayerStates to)
+        public void TransitionFromTo(PlayerStates from, PlayerStates to)
         {
             // TODO: fix me, only temporary
             // should be done only if possible.
@@ -63,12 +77,16 @@ namespace Wonkerz
             {
                 if (current.rb) current.rb.isKinematic = false;
                 UnMuteSound();
+
+                OnStateChange?.Invoke(to);
                 return;
             }
             if (to == PlayerStates.Frozen)
             {
                 if (current.rb) current.rb.isKinematic = true;
                 MuteSound();
+
+                OnStateChange?.Invoke(to);
                 return;
             }
 
@@ -76,6 +94,8 @@ namespace Wonkerz
             {
                 Kill();
                 Access.CheckPointManager().loadLastCP(true);
+
+                OnStateChange?.Invoke(to);
                 return;
             }
 
@@ -190,6 +210,8 @@ namespace Wonkerz
                         break;
                     }
             }
+
+            OnStateChange?.Invoke(to);
         }
 
         private void TransitionFromTo(PlayerVehicleStates from, PlayerVehicleStates to)
@@ -197,6 +219,8 @@ namespace Wonkerz
             // TODO: fix me, only temporary
             // should be done only if possible.
             vehicleState = to;
+
+            if (from == to) return;
 
             switch (from)
             {
@@ -212,7 +236,6 @@ namespace Wonkerz
 
                             case PlayerVehicleStates.Car:
                                 {
-                                    // if (!car.init) init();
                                     ActivateMode(car.gameObject, car.car.chassis.GetBody());
                                     break;
                                 }
@@ -444,9 +467,7 @@ namespace Wonkerz
             playerState = PlayerStates.None;
             vehicleState = PlayerVehicleStates.None;
 
-            if (self_PowerController == null)
-                self_PowerController = GetComponent<PowerController>();
-
+            if (self_PowerController == null) self_PowerController = GetComponent<PowerController>();
             if (self_PowerController == null)
             {
                 this.LogError("No powercontroller, please assign one or add a PowerController script to this object.");
@@ -497,7 +518,33 @@ namespace Wonkerz
         }
         //------ end scene listeners
 
-        void Start()
+        public void InitAsOnlineStub()
+        {
+            // make sure we are not using any inputs from the local manager.
+            if (inputMgr != null) inputMgr.Detach(this);
+            inputMgr = null;
+
+            // force init of every vehicle then make them sleep.
+            car.gameObject.SetActive(true);
+            plane.gameObject.SetActive(true);
+            boat.gameObject.SetActive(true);
+
+            car.gameObject.SetActive(false);
+            plane.gameObject.SetActive(false);
+            boat.gameObject.SetActive(false);
+
+            // No need to listen for scene changes on the stub,
+            // The server should tell us what to do when changing scene.
+        }
+
+        public void InitOnServer()
+        {
+            // like a stub, but still listens to the scene events.
+            InitAsOnlineStub();
+            InitSceneListeners();
+        }
+
+        public void Init()
         {
             if (inputMgr == null)
             {
@@ -513,12 +560,42 @@ namespace Wonkerz
 
             inputMgr.Attach(this);
 
+            // force init of every vehicle then make them sleep.
+            car.gameObject.SetActive(true);
+            plane.gameObject.SetActive(true);
+            boat.gameObject.SetActive(true);
+
+            car.gameObject.SetActive(false);
+            plane.gameObject.SetActive(false);
+            boat.gameObject.SetActive(false);
+
             InitSceneListeners();
+        }
+
+        void Start()
+        {
+            UnityEngine.Debug.LogError("player controller : awake.");
+            UnityEngine.Debug.LogError("player controller : awake => Remember that now we are not automatic and might have broken the local plays.");
+
+            // We dont do anything automatically now,
+            // Because we might be an online stub on the client!
+            // If something wants to update us, so be it...
+            return;
+        }
+
+        void OnEnable()
+        {
+            UnityEngine.Debug.LogError("player controller : onenable.");
+        }
+
+        void OnDisable()
+        {
+            UnityEngine.Debug.LogError("player controller : ondisable.");
         }
 
         void OnDestroy()
         {
-            inputMgr.Detach(this);
+            if (inputMgr != null) inputMgr.Detach(this);
 
             var sceneLoader = Access.SceneLoader();
             if (sceneLoader)
@@ -584,7 +661,7 @@ namespace Wonkerz
         // weight logic
         float groundAerialLatencyCurrent = 0.0f;
         [SerializeField]
-        Math.AccumulatorV2 weightInput = new Math.AccumulatorV2();
+        Schnibble.Math.AccumulatorV2 weightInput = new Schnibble.Math.AccumulatorV2();
 
         void UpdateWeight(float dt)
         {
@@ -820,7 +897,9 @@ namespace Wonkerz
                 rb.isKinematic = lastrb.isKinematic;
             }
 
-            Access.CameraManager().OnTargetChange(GetTransform());
+            Access.CameraManager()?.OnTargetChange(GetTransform());
+
+            UnityEngine.Debug.LogError("ActivateMode" + GetTransform().name);
         }
 
         public void DeactivateMode(PlayerVehicleStates mode)
@@ -842,7 +921,7 @@ namespace Wonkerz
             // IMPORTANT: do not set to null as the position/rotation needs to be copied to
             // init the next rb.
             //current.rb = null;
-            Access.CameraManager().OnTargetChange(GetTransform());
+            Access.CameraManager()?.OnTargetChange(GetTransform());
         }
 
         public void ForceTransform(Vector3 position, Quaternion rotation)
@@ -937,8 +1016,38 @@ namespace Wonkerz
 
         bool modifierCalled = false;
 
+        public byte[] lastInputs = null;
         void IControllable.ProcessInputs(InputManager currentMgr, GameController inputs)
         {
+            if (inputs == null)
+            {
+                UnityEngine.Debug.LogWarning("ProcessInputs inputs is null.");
+                return;
+            }
+            // Online mode register inputs and send them to the server.
+            // TODO: player should register commands and not inputs,
+            //      like instead of sending InputForward, send Move(x,y)
+            if (inputMode == InputMode.Online && currentMgr != null)
+            {
+
+                // nocheckin
+                if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
+                {
+                    UnityEngine.Debug.LogError("Pressed B: client");
+                    int breakHere = 0;
+                }
+
+                lastInputs = inputs.Serialize();
+                return;
+            }
+
+            // nocheckin
+            if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
+            {
+                UnityEngine.Debug.LogError("Pressed B:server or not online");
+                int breakHere = 0;
+            }
+
             int weightX = (int)PlayerInputs.InputCode.WeightX;
             int weightY = (int)PlayerInputs.InputCode.WeightY;
             int jump = (int)PlayerInputs.InputCode.Jump;
@@ -982,7 +1091,8 @@ namespace Wonkerz
                                         var jumpValue = inputs.GetButtonState(jump);
                                         if (jumpValue.up)
                                         {
-                                            if (!jumpLock) {
+                                            if (!jumpLock)
+                                            {
                                                 jumpLock = true;
                                                 jumpTimeCurrent = 0.0f;
                                                 jumpLatencyCurrent = GetJumpLatency();
@@ -995,7 +1105,8 @@ namespace Wonkerz
                                         }
                                         else if (jumpValue.down)
                                         {
-                                            if (!IsInJumpLatency()) {
+                                            if (!IsInJumpLatency())
+                                            {
 
                                                 jumpTimeCurrent = GetJumpTime();
                                                 jumpLock = false;
@@ -1008,11 +1119,16 @@ namespace Wonkerz
                                 }
                             case PlayerVehicleStates.Boat:
                                 {
-                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Plane);
-                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                    }
+                                    else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Car);
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
                                         boat.ProcessInputs(currentMgr, inputs);
                                     }
@@ -1020,11 +1136,16 @@ namespace Wonkerz
                                 }
                             case PlayerVehicleStates.Plane:
                                 {
-                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down) {
+                                    if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Car);
-                                    } else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down) {
+                                    }
+                                    else if (inputs.GetButtonState((int)PlayerInputs.InputCode.BoatMode).down)
+                                    {
                                         TransitionFromTo(vehicleState, PlayerVehicleStates.Boat);
-                                    } else {
+                                    }
+                                    else
+                                    {
                                         weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
                                         plane.ProcessInputs(currentMgr, inputs);
                                     }
@@ -1040,10 +1161,8 @@ namespace Wonkerz
                         self_PowerController.applyPowerEffectInInputs(inputs, this);
 
                         break;
-                    } 
+                    }
             }//! switch playerState
-
-
         }
     }
 }

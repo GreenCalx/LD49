@@ -1,11 +1,33 @@
 using Mirror;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 using Wonkerz;
 
+// Network object specs
+//
+// description : This is the main manager. It is effectively a singleton that will manage
+//               the syncronisation of every game state, like who is connected, loaded, countdown, track start, track change, etc.
+//
+// authority : server
+//
+// Client side:
+//    - Manage UX related states: when all player are loaded, ready, etc...
+//
+//
+// Server side:
+//    - keep track of connected player with a SyncList<OnlinePlayerController> uniquePlayers
+//    - Start the ServerRoutine which will wait for players state and act accordingly => start game, start trial, etc. 
+//
+
 public class OnlineGameManager : NetworkBehaviour
 {
+    // TODO:
+    // Remove this and create a real singleton as we shauld have only one OnlineGameManager.
+    public static OnlineGameManager Get() {
+        if (NetworkRoomManagerExt.singleton == null) return null;
+        return NetworkRoomManagerExt.singleton.onlineGameManager;
+    }
+
     [SyncVar]
     public bool openCourseLoaded = false;
     [SyncVar]
@@ -22,9 +44,8 @@ public class OnlineGameManager : NetworkBehaviour
     public uint postGameDuration = 30;
     public string selectedTrial = "RaceTrial01";
     [Header("INTERNALS")]
-    public SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
-    public SyncDictionary<OnlinePlayerController, bool> PlayersReadyDict = new SyncDictionary<OnlinePlayerController, bool>();
-    public SyncDictionary<OnlinePlayerController, bool> PlayersLoadedDict = new SyncDictionary<OnlinePlayerController, bool>();
+    public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
+    public OnlinePlayerController localPlayer;
     public int expectedPlayersFromLobby;
 
     [SyncVar]
@@ -36,156 +57,102 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public bool gameLaunched;
 
+    [SerializeField]
+    GameObject      UIWaitForPlayers;
+    public OnlineStartLine startLine;
+
     public OnlineTrialManager trialManager;
 
-    // Start is called before the first frame update
-    void Start()
-    {
+    /* ----------------------------------
+    Server
+    ------------------------------------ */
 
-        NetworkRoomManagerExt.singleton.onlineGameManager = this;
+    public override void OnStartServer()
+    {
+        Debug.LogError("Start onlineGameManager : server.");
+        // TODO: remove this as we are already kinda a singleton ourselves.
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
-        if (isServer)
-        {
+        NetworkRoomManagerExt.singleton.onlineGameManager = this;
 
-            StartCoroutine(StartOnlineGame());
-        }
-
+        StartCoroutine(ServerRoutine());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
+    [Server]
+    IEnumerator ServerRoutine() {
+        yield return StartCoroutine(WaitForAllClientToSpawn());
+        yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
+        
+        RpcAllPlayersLoaded();
+        FreezeAllPlayers(true);
 
-    }
+        yield return StartCoroutine(WaitForAllPlayersToBeReady());
 
+        RpcAllPlayersLockAndLoaded();
 
-
-    public void AddPlayer(OnlinePlayerController iOPC)
-    {
-        if (!uniquePlayers.Contains(iOPC))
-        {
-            uniquePlayers.Add(iOPC);
-        }
-        if (!PlayersReadyDict.ContainsKey(iOPC))
-        {
-            PlayersReadyDict.Add(iOPC, false);
-        }
-        if (!PlayersLoadedDict.ContainsKey(iOPC))
-        {
-            PlayersLoadedDict.Add(iOPC, false);
-        }
-    }
-
-    [ServerCallback]
-    public void AskPlayersToReadyUp()
-    {
-        foreach (OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
-        {
-            PlayersReadyDict[opc] = false;
-        }
-        //PlayersReadyDict.Keys.ForEach(e => PlayersReadyDict[e] = false);
-    }
-
-    [ServerCallback]
-    public void AskPlayersToLoad()
-    {
-        foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys.ToList())
-        {
-            PlayersLoadedDict[opc] = false;
-        }
-    }
-
-    [ServerCallback]
-    public bool ArePlayersReady()
-    {
-        bool retval = true;
-        foreach (OnlinePlayerController opc in PlayersReadyDict.Keys)
-        {
-            retval &= PlayersReadyDict[opc];
-            if (!retval)
-                return retval;
-        }
-        return retval;
-    }
-
-    [ServerCallback]
-    public bool AllPlayersLoaded()
-    {
-        if (PlayersLoadedDict.Count == 0)
-            return false;
-
-        if (PlayersLoadedDict.Count != expectedPlayersFromLobby)
-        {
-            return false;
-        }
-
-        bool retval = true;
-        foreach (OnlinePlayerController opc in PlayersLoadedDict.Keys)
-        {
-            retval &= PlayersLoadedDict[opc];
-            if (!retval)
-                return retval;
-        }
-        return retval;
-    }
-
-    [ServerCallback]
-    public void NotifyPlayerIsReady(OnlinePlayerController iOPC, bool iState)
-    {
-        if (!PlayersReadyDict.ContainsKey(iOPC))
-        {
-            Debug.Log("OnlineGameManager::CmdNotifyPlayerIsReady() | Player is not registered");
-            AddPlayer(iOPC);
-            //return;
-        }
-        PlayersReadyDict[iOPC] = iState;
-    }
-
-    [ServerCallback]
-    public void NotifyPlayerHasLoaded(OnlinePlayerController iOPC, bool iState)
-    {
-        if (!PlayersLoadedDict.ContainsKey(iOPC))
-        {
-            Debug.Log("OnlineGameManager::NotifyPlayerHasLoaded | Player is not registered");
-            //return;
-            AddPlayer(iOPC);
-        }
-        PlayersLoadedDict[iOPC] = iState;
-    }
-
-    [ServerCallback]
-    public bool HasPlayerLoaded(OnlinePlayerController iOPC)
-    {
-        if (PlayersLoadedDict.ContainsKey(iOPC))
-            return PlayersLoadedDict[iOPC];
-        return false;
-    }
-
-    [ClientRpc]
-    public void RpcFreezePlayers(bool iState)
-    {
-        if (iState)
-            Access.Player().Freeze();
-        else
-            Access.Player().UnFreeze();
-    }
-
-    IEnumerator StartOnlineGame()
-    {
-        yield return StartCoroutine(WaitSessions());
-        yield return StartCoroutine(Countdown());
+        yield return StartCoroutine(StartGame());
         yield return StartCoroutine(GameLoop());
         yield return StartCoroutine(WaitTrialSessions());
         yield return StartCoroutine(Countdown());
         yield return StartCoroutine(TrialLoop());
         yield return StartCoroutine(PostGame());
-
     }
 
+    [Server]
+    IEnumerator WaitForAllClientToSpawn()
+    {
+        // When a client spawns, it will add itself to the uniquePlayers with AddPlayer.
+        // Therefor if we dont have the same number of players in the room/lobby and spawned players there is a problem.
+        // TODO:
+        // Add a timeout if we cannot have all players spawed for 10s or something.
+        Debug.LogError("Waiting for client to spawn.");
+        while (uniquePlayers.Count != expectedPlayersFromLobby)
+        {
+            Debug.LogError("Number of client spawned: " + uniquePlayers.Count);
+            yield return null;
+        }
+        Debug.LogError("AllClientSpawned." + uniquePlayers.Count);
+    }
+
+    [Server]
+    IEnumerator WaitForAllPlayersToBeReady()
+    {
+        // When a client press start to ready up it will set its isReady flag on its OnlinePlayerController
+        Debug.LogError("Waiting for clients to be ready.");
+        while (!AreAllPlayersReady()) {yield return null;}
+        Debug.LogError("AllClientReady.");
+    }
+
+    [Server]
+    IEnumerator WaitForAllPlayersToBeLoaded()
+    {
+        // TODO:
+        // We probably dant need this state anymore.
+        // After a client has spawned we wait for it to be "loaded" meaning every dependencies are resolved client-side.
+        // This is to avoid having Rpc sent when the client is not fully loaded.
+        // This should not happen, but for now it happens sometimes because Mirror does not spown the localPlayer as if it was a real NetworkServer.Spawn I guess.
+        Debug.LogError("Waiting for clients to be loaded.");
+        while (!AreAllPlayersLoaded()) {yield return null;}
+        Debug.LogError("AllClientLoaded.");
+    }
+
+    [Server]
+    IEnumerator StartGame() {
+        countdownElapsed = 0f;
+        yield return StartCoroutine(Countdown());
+    }
+
+    [Server]
+    void FreezeAllPlayers(bool state) {
+        Debug.LogError("server: FreezeAllPlayers " + state.ToString());
+        foreach(var opc in uniquePlayers) opc.FreezePlayer(state);
+    }
+
+    [Server]
     IEnumerator WaitTrialSessions()
     {
         AskPlayersToLoad();
-        RpcFreezePlayers(true);
+
+        FreezeAllPlayers(true);
 
         while (!openCourseUnLoaded)
         {
@@ -198,15 +165,15 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        while (!AllPlayersLoaded())
+        while (!AreAllPlayersLoaded())
         {
             yield return null;
         }
 
-        RpcNotifyOfflineMgrAllPlayersLoaded();
+        //RpcNotifyOfflineMgrAllPlayersLoaded();
 
         AskPlayersToReadyUp();
-        while (!ArePlayersReady())
+        while (!AreAllPlayersReady())
         {
             yield return null;
         }
@@ -231,11 +198,12 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator PostGame()
     {
         gameLaunched = false;
-        RpcDisplayPostGameUI(true);
+
+        RpcPostGame();
 
         AskPlayersToReadyUp();
         postGameTime = postGameDuration;
-        while (!ArePlayersReady())
+        while (!AreAllPlayersReady())
         {
             postGameTime -= Time.deltaTime;
             if (postGameTime <= 0f)
@@ -243,13 +211,8 @@ public class OnlineGameManager : NetworkBehaviour
                 break;
             }
 
-            foreach (OnlinePlayerController opc in PlayersReadyDict.Keys.ToList())
-            {
-                if (PlayersReadyDict[opc])
-                {
-                    opc.connectionToClient.Disconnect();
-                }
-            }
+            foreach (var opc in uniquePlayers)
+            if (opc != null && opc.connectionToClient != null) opc.connectionToClient.Disconnect();
             yield return null;
         }
 
@@ -261,16 +224,19 @@ public class OnlineGameManager : NetworkBehaviour
         NetworkServer.Shutdown();
     }
 
+
+    [Server]
     IEnumerator WaitSessions()
     {
+        // Wait to load all scene.
         while (!openCourseLoaded)
         {
             openCourseLoaded = NetworkRoomManagerExt.singleton.subsceneLoaded;
 
             yield return null;
         }
-        RpcDisplayPostGameUI(false);
-        RpcFreezePlayers(true);
+
+        FreezeAllPlayers(true);
 
         while (uniquePlayers.Count != expectedPlayersFromLobby)
         {
@@ -278,13 +244,14 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
 
-        while (!AllPlayersLoaded())
+        while (!AreAllPlayersLoaded())
         {
             yield return null;
         }
-        RpcNotifyOfflineMgrAllPlayersLoaded();
 
-        while (!ArePlayersReady())
+        //RpcNotifyOfflineMgrAllPlayersLoaded();
+
+        while (!AreAllPlayersReady())
         {
             yield return null;
         }
@@ -292,9 +259,11 @@ public class OnlineGameManager : NetworkBehaviour
         countdownElapsed = 0f;
     }
 
+    [Server]
     IEnumerator Countdown()
     {
         countdownElapsed = 0f;
+        //FreezeAllPlayers(true);
 
         RpcLaunchOnlineStartLine();
 
@@ -304,57 +273,13 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        // track is on !
-        if (isServer)
-            RpcFreezePlayers(false);
+        FreezeAllPlayers(false);
+
         gameTime = gameDuration;
         gameLaunched = true;
-
-
     }
 
-    [ClientRpc]
-    public void RpcDisconnectPlayers()
-    {
-        NetworkClient.Disconnect();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE);
-    }
-
-    [ClientRpc]
-    public void RpcDisplayPostGameUI(bool iState)
-    {
-        uiPostGame_sceneObject.gameObject.SetActive(iState);
-        uiPostGame_sceneObject.updatePlayerRankingsLbl(this);
-    }
-
-    [ClientRpc]
-    public void RpcNotifyOfflineMgrAllPlayersLoaded()
-    {
-        OfflineGameManager offgm = Access.OfflineGameManager();
-        offgm.allPlayersHaveLoaded = true;
-    }
-
-    [ClientRpc]
-    public void RpcRefreshOfflineGameMgr()
-    {
-        OfflineGameManager offgm = Access.OfflineGameManager();
-        offgm.refreshSession();
-    }
-
-    [ClientRpc]
-    public void RpcLaunchOnlineStartLine()
-    {
-        OfflineGameManager offgm = Access.OfflineGameManager();
-
-        offgm.startLine.launchCountdown();
-    }
-
-    [ClientRpc]
-    public void RpcShowUITrackTime(bool iState)
-    {
-        Access.UIPlayerOnline().showTrackTime = iState;
-    }
-
+    [Server]
     IEnumerator GameLoop()
     {
         RpcShowUITrackTime(true);
@@ -372,6 +297,7 @@ public class OnlineGameManager : NetworkBehaviour
 
     }
 
+    [Server]
     IEnumerator LoadTrialScene()
     {
 
@@ -383,9 +309,96 @@ public class OnlineGameManager : NetworkBehaviour
         // launch transition to trial on clients from server
         NetworkRoomManagerExt.singleton.clientLoadSelectedTrial();
 
-        if (isServer)
-            RpcRefreshOfflineGameMgr();
+        //if (isServer)
+        //RpcRefreshOfflineGameMgr();
 
         yield break;
+    }
+
+    [Server]
+    public void AddPlayer(OnlinePlayerController iOPC)
+    {
+        // When a localPlayer is Spawned an the client at will call this function.
+        if (!uniquePlayers.Contains(iOPC)) {uniquePlayers.Add(iOPC);}
+    }
+
+    [Server]
+    public void AskPlayersToReadyUp()
+    {
+        foreach (var opc in uniquePlayers) opc.CmdModifyReadyState(false);
+    }
+
+    [Server]
+    public void AskPlayersToLoad()
+    {
+        foreach (var opc in uniquePlayers) opc.CmdModifyLoadedState(false);
+    }
+
+    [Server]
+    public bool AreAllPlayersReady()
+    {
+        foreach (var opc in uniquePlayers) if (!opc.IsReady()) return false;
+        return true;
+    }
+
+    [Server]
+    public bool AreAllPlayersLoaded()
+    {
+        foreach (var opc in uniquePlayers) if (!opc.IsLoaded()) return false;
+        return true;
+    }
+
+
+    /* ----------------------------------
+    Client
+    ------------------------------------ */
+
+    override public void OnStartClient() {
+        NetworkRoomManagerExt.singleton.onlineGameManager = this;
+    }
+
+    [ClientRpc]
+    void RpcAllPlayersLoaded() {
+        uiPostGame_sceneObject.gameObject.SetActive(false);
+        uiPostGame_sceneObject.updatePlayerRankingsLbl(this);
+    }
+
+    [ClientRpc]
+    void RpcAllPlayersLockAndLoaded() {
+        UIWaitForPlayers.SetActive(false);
+    }
+
+    [ClientRpc]
+    void RpcPostGame() { 
+        uiPostGame_sceneObject.gameObject.SetActive(true);
+        UIWaitForPlayers.SetActive(false);
+    }
+
+    [ClientRpc]
+    void WaitForOtherPlayersToBeReady() {
+        UIWaitForPlayers.SetActive(true);
+    }
+
+    [ClientRpc]
+    public void RpcDisconnectPlayers()
+    {
+        NetworkClient.Disconnect();
+        Access.SceneLoader().loadScene(Constants.SN_TITLE);
+    }
+
+    [ClientRpc]
+    public void RpcLaunchOnlineStartLine()
+    {
+        if (startLine == null) {
+            UnityEngine.Debug.LogError("Starting OnlineStartLine but object is null.");
+            return;
+        }
+        startLine.LaunchCountdown();
+    }
+
+    [ClientRpc]
+    public void RpcShowUITrackTime(bool iState)
+    {
+        Access.UIPlayerOnline().showTrackTime = iState;
     }
 }
