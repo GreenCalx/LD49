@@ -22,6 +22,10 @@ public class MotorSoundRenderer : MonoBehaviour
 
         //new way
         var ratio = car.motor.GetRPMRatio();
-        source.pitch = Mathf.Clamp(minPitch + ratioMul * (1 - (1 - ratio)*(1-ratio)), minPitch, maxPitch);
+        var desiredPitch = Mathf.Clamp(minPitch + ratioMul * (1 - (1 - ratio)*(1-ratio)), minPitch, maxPitch);
+        // silence this warning please!
+        if (float.IsInfinity(desiredPitch) || float.IsNaN(desiredPitch) || desiredPitch < 0.0f || desiredPitch > 10.0f ) return;
+
+        source.pitch = desiredPitch;
     }
 }

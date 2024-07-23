@@ -19,7 +19,11 @@ namespace Wonkerz
 
         public void CopyTo(ref WkzCarSO iCopyTarget)
         {
-            iCopyTarget = new WkzCarSO();
+            // NOTE:
+            // Maybe it already copy the fields because it serialize/deserialize for instancing?
+            // Regardless we explicitly copy for now.
+            iCopyTarget = ScriptableObject.Instantiate(this);
+            //iCopyTarget = new WkzCarSO();
 
             iCopyTarget.jumpDef = this.jumpDef;
             iCopyTarget.aerialMaxForce = this.aerialMaxForce;

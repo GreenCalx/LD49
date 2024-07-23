@@ -30,12 +30,12 @@ namespace Wonkerz
         void Start()
         {
             playerInCheckList = false;
-            Access.Player().inputMgr.Attach(this as IControllable);
+            Access.Player()?.inputMgr?.Attach(this as IControllable);
         }
 
         void OnDestroy()
         {
-            Access.Player()?.inputMgr.Detach(this as IControllable);
+            Access.Player()?.inputMgr?.Detach(this as IControllable);
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)

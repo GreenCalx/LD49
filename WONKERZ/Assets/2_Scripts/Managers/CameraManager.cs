@@ -123,7 +123,7 @@ namespace Wonkerz
 
         public void OnTargetChange(Transform t)
         {
-            if (active_camera.TryGetComponent<PlayerCamera>(out PlayerCamera cam))
+            if (active_camera != null && active_camera.TryGetComponent<PlayerCamera>(out PlayerCamera cam))
             {
                 cam.playerRef = t.gameObject;
                 cam.init();
@@ -307,6 +307,11 @@ namespace Wonkerz
         {
             if (inTransition)
             return;
+
+            if (iNewCam == null) {
+                this.LogWarn("Trying to operate camera switch to null camera.");
+                return;
+            }
 
             if (active_camera != null)
             {

@@ -90,6 +90,8 @@ namespace Wonkerz
 
         public override void resetView()
         {
+            if (playerRef == null) return;
+            if (positionDistanceSpring == null) return;
             // reset view behing player.
             locked = true;
 
@@ -183,10 +185,12 @@ namespace Wonkerz
             Vector3 errorPosition = cam.transform.position - targetPosition;
             positionDistanceSpring.currentLength = errorPosition.magnitude;
             lastPosition = cam.transform.position;
-            if (positionDistanceSpring.IsActive()) {
-                var error      = errorPosition.magnitude;
+            if (positionDistanceSpring.IsActive())
+            {
+                var error = errorPosition.magnitude;
                 // unlock when we are at needed position.
-                if (locked && error < 0.1f) {
+                if (locked && error < 0.1f)
+                {
                     locked = false;
                 }
 
@@ -200,7 +204,9 @@ namespace Wonkerz
                     vel += correction * dt;
                     cam.transform.position += vel * errorDir;
                 }
-            } else {
+            }
+            else
+            {
                 cam.transform.position = targetPosition;
             }
 
@@ -215,11 +221,14 @@ namespace Wonkerz
         public void LateUpdate()
         {
             var dt = Time.deltaTime;
+            // might not have fully loaded.
+            if (playerRef == null) return;
             // Update directions.
             if (!HasFocus())
             {
                 // Manual > automatic.
                 focusPoint = playerRef.transform.position;
+
                 var forward = (focusPoint - cam.transform.position);
                 var up = Vector3.up;
 
