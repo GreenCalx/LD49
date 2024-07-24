@@ -60,8 +60,8 @@ public class OnlineGameManager : NetworkBehaviour
     [SerializeField]
     GameObject      UIWaitForPlayers;
     public OnlineStartLine startLine;
-
     public OnlineTrialManager trialManager;
+    
 
     /* ----------------------------------
     Server
@@ -337,6 +337,9 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     public bool AreAllPlayersReady()
     {
+        if (uniquePlayers.Count < expectedPlayersFromLobby)
+            return false;
+
         foreach (var opc in uniquePlayers) if (!opc.IsReady()) return false;
         return true;
     }
@@ -344,6 +347,9 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     public bool AreAllPlayersLoaded()
     {
+        if (uniquePlayers.Count < expectedPlayersFromLobby)
+            return false;
+
         foreach (var opc in uniquePlayers) if (!opc.IsLoaded()) return false;
         return true;
     }

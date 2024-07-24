@@ -290,6 +290,9 @@ public class OnlinePlayerController : NetworkBehaviour
 
         if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
         self_PlayerController.Init();
+
+
+
         // Set underlying player controller to not apply any inputs.
         // Instead send inputs to the server and wait for server answer that will
         // update states.
@@ -299,8 +302,24 @@ public class OnlinePlayerController : NetworkBehaviour
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
         Access.GameSettings().IsOnline = true;
+
+
+
         // We tell the server that we spawned, we are ready to communicate and init.
         CmdModifySpawnedState(true);
+
+        // init damagers/damageables
+        while(self_PlayerController.GetRigidbody() == null)
+        {
+            yield return null;
+        }
+        while (self_PlayerController.car.GetCar() ==null)
+        {
+            yield return null;
+        }
+
+
+        
     }
 
     [TargetRpc]
@@ -339,6 +358,9 @@ public class OnlinePlayerController : NetworkBehaviour
 
         Access.UIPlayerOnline().LinkToPlayer(this);
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        
+        InitPlayerDamageable();
+        InitPlayerDamagers();
 
         CmdModifyLoadedState(true);
     }

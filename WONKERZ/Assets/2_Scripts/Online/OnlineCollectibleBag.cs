@@ -84,6 +84,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
     IEnumerator WaitForDependencies() {
         while (OnlineGameManager.Get() == null) yield return null;
+        while (OnlineGameManager.Get().localPlayer == null) yield return null;
     }
 
     IEnumerator Init() {
@@ -98,7 +99,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
             {
                 yield return null;
             }
-            //RpcInitStatRefValues();
+            RpcInitStatRefValues();
         }
     }
 
