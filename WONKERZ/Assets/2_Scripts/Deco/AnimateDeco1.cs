@@ -18,7 +18,7 @@ public class AnimateDeco1 : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        curr_y_angle = 0f;
+        curr_y_angle = transform.rotation.y;
 
         base_y = transform.position.y;
         y_direction = 1;

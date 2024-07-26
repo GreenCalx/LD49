@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6234082327601329765}
   - component: {fileID: 4061365810883703747}
+  - component: {fileID: 4254911692471783482}
   m_Layer: 0
   m_Name: Damager
   m_TagString: Untagged
@@ -43,8 +44,34 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4254911692471783482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932781935497070507}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 0}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  damage: 120
+  optional_repulsion_force: 2
+  OnDoDamageCallbacks: []
 --- !u!1 &5546326682357359979
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,7 +83,6 @@ GameObject:
   - component: {fileID: 4418246492459769546}
   - component: {fileID: 2399217995028332657}
   - component: {fileID: 2664711144099527803}
-  - component: {fileID: 3282788747149366230}
   - component: {fileID: 7867688133116996909}
   - component: {fileID: 785636021209265154}
   m_Layer: 17
@@ -74,7 +100,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5546326682357359979}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -138,34 +164,8 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 48
   m_CollisionDetection: 0
---- !u!114 &3282788747149366230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5546326682357359979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  owner: {fileID: 0}
-  DoDamageToPlayers: 1
-  DoDamageToObjects: 1
-  DoDamageToEnemies: 1
-  FromCollision: 1
-  FromTriggers: 0
-  FromParticles: 0
-  FirstContactOnly: 1
-  damage: 200
-  optional_repulsion_force: 5
-  OnDoDamageCallbacks: []
 --- !u!114 &7867688133116996909
 MonoBehaviour:
   m_ObjectHideFlags: 0

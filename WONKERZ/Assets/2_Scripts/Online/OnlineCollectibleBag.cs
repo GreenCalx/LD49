@@ -266,7 +266,13 @@ public class OnlineCollectibleBag : NetworkBehaviour
     {
         // remap between 0 and 1
         float curve_x = RemapStatToCurve(weights);
-        owner.self_PlayerController.GetRigidbody().mass = weightCurve.Evaluate(curve_x) * weightInitValue;
+        float gain = weightCurve.Evaluate(curve_x);
+        owner.self_PlayerController.GetRigidbody().mass = gain * weightInitValue;
+
+        // parent is world
+        owner.transform.localScale = Vector3.one + new Vector3((float)(weights/STATS_MAX_RANGE), 
+                                                                (float)(weights/STATS_MAX_RANGE), 
+                                                                (float)(weights/STATS_MAX_RANGE));
     }
 
     private float RemapStatToCurve(int iNumberOfStats)
