@@ -19,10 +19,10 @@ namespace Wonkerz {
 
         private string loc_actionName = "";
         public string actionName
-    {
-        get { return loc_actionName; }
-        set { loc_actionName = value; refreshLabel(); }
-    }
+        {
+            get { return loc_actionName; }
+            set { loc_actionName = value; refreshLabel(); }
+        }
 
         // Start is called before the first frame update
         void Start()

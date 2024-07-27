@@ -25,9 +25,12 @@ public class OnlineCollectible : NetworkBehaviour
     public float timeBeforeBeingCollectible = 0.2f;
 
     public ONLINE_COLLECTIBLES collectibleType;
-    public Sprite negativeStatText;
+    public Sprite positiveStatTex; // used by onlineshopitem
+    public Sprite negativeStatTex;
     [SyncVar]
     public int value = 1;
+    [SyncVar]
+    public int shopCost = 3;
     [SyncVar]
     public bool collected = false;
     [Header("Effects")]
@@ -78,7 +81,7 @@ public class OnlineCollectible : NetworkBehaviour
         Image img = GetComponentInChildren<Image>();
         if (!!img)
         {
-            img.sprite = negativeStatText;
+            img.sprite = negativeStatTex;
         }
     }
 
@@ -88,10 +91,10 @@ public class OnlineCollectible : NetworkBehaviour
         Image img = GetComponentInChildren<Image>();
         if (!!img)
         {
-            img.sprite = negativeStatText;
+            img.sprite = negativeStatTex;
         }
 
-        self_onCollectPS.textureSheetAnimation.SetSprite(0, negativeStatText);
+        self_onCollectPS.textureSheetAnimation.SetSprite(0, negativeStatTex);
     }
 
     void OnTriggerStay(Collider iCollider)
@@ -114,7 +117,7 @@ public class OnlineCollectible : NetworkBehaviour
         }
     }
 
-    protected void OnCollect(OnlinePlayerController iPlayer)
+    public void OnCollect(OnlinePlayerController iPlayer)
     {
         if (!iPlayer.isServer)
         {

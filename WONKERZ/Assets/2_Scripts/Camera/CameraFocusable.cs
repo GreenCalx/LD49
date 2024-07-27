@@ -11,8 +11,21 @@ namespace Wonkerz
         public bool enableFocusActions = true;
         public Color focusColor;
         public float focusFindRange = 50f;
+        public bool forceFocus = false;
+
         [Header("Optional - Action On Focus")]
-        public string actionName = "";
+        
+        private string loc_actionName = "";
+        public string actionName
+        {
+            get { return loc_actionName; }
+            set { 
+                loc_actionName = value; 
+                if (UIFocusAction_Inst!=null)
+                UIFocusAction_Inst.actionName = value;
+                }
+        }
+
         public UIFocusAction UIFocusAction_Ref;
         public Vector3 screenSpaceUIOffset;
         public UnityEvent callbackOnFocus;
@@ -45,6 +58,12 @@ namespace Wonkerz
         {
             // if (!susbscribedToCamMgr)
             //     subToManager();
+            if (forceFocus && !isFocus)
+            {
+                OnPlayerFocus();
+                PlayerCamera pCam = Access.CameraManager().active_camera.GetComponent<PlayerCamera>();
+                pCam?.SetSecondaryFocus(this, true);
+            }
         }
 
         void OnDestroy()
