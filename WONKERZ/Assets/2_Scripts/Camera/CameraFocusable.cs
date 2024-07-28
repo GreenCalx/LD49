@@ -14,7 +14,7 @@ namespace Wonkerz
         public bool forceFocus = false;
 
         [Header("Optional - Action On Focus")]
-        
+        public string initActionName = "action";
         private string loc_actionName = "";
         public string actionName
         {
@@ -41,6 +41,7 @@ namespace Wonkerz
 
         void Start()
         {
+            actionName = initActionName;
             subToManager();
         }
 

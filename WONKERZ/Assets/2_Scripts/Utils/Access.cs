@@ -257,5 +257,10 @@ namespace Wonkerz {
             return cache.getObject<UIPlayerOnline>(Constants.GO_UIONPLAYER, false);
         }
 
+        public static OnlinePlayerController LocalPlayer()
+        {
+            return Access.Player()?.GetComponent<OnlinePlayerController>();
+        }
+
 }
 }
