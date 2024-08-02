@@ -17,7 +17,11 @@ public class OnlineBreakableObject : NetworkBehaviour
     public bool destroyParentGameObject = true;
     public float timeBeforeFragClean = 15f;
 
-    public float breakSpeedThreshold = 30f;
+    // Note : It is not armor
+    // this threshold won't reduce incoming damage
+    // Damages either pass or no pass
+    // So when the player is strong he crushes
+    public float damageThreshold = 30f;
     [SyncVar]
     public int maxHP = 300;
     public float fragmentExplodeForce = 30f;
@@ -333,6 +337,8 @@ public class OnlineBreakableObject : NetworkBehaviour
 
         // damage
         //this.Log("Damage to crate : " + iIncomingDamage);
+
+        
         if (currHP > 0)
         {
             currHP -= iDamageSnap.damage;

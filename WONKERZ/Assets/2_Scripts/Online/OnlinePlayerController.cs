@@ -18,7 +18,6 @@ public class OnlinePlayerController : NetworkBehaviour
 
     [Header("Mand Refs")]
     public PlayerController self_PlayerController;
-    public Transform self_carMeshHandle;
     public Transform self_weightMeshHandle;
     public GameObject prefabCameraFocusable;
     public List<OnlineDamager> self_oDamagers;
