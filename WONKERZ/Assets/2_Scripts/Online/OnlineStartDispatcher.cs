@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,6 +31,7 @@ public class OnlineStartDispatcher : NetworkBehaviour
         while (NetworkRoomManagerExt.singleton                                         == null)  {yield return null;}
         while (NetworkRoomManagerExt.singleton.onlineGameManager                       == null)  {yield return null;}
         while (NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersLoaded() == false) {yield return null;}
+        //while( startPositions.Where(e => (e==null)).ToList().Count > 0) {yield return null;}
     }
 
     IEnumerator DispatchPlayersCo()

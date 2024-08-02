@@ -34,8 +34,8 @@ public class OnlineTrialManager : NetworkBehaviour
 
         UpdateRenderSettings();
 
-        if (isServer)
-            DispatchPlayersToPortals();
+        // if (isServer)
+        //     DispatchPlayersToPortals();
     }
 
     // Update is called once per frame
