@@ -225,8 +225,17 @@ public class OnlinePlayerController : NetworkBehaviour
     [Server]
     public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
     {
+        //// player not actually relocated with the following lines
         self_PlayerController.ForceTransform(iNewPos, iNewRot);
         self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+
+
+        // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
+        // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+
+        // //// relocates player root and seems to work
+        // transform.position = iNewPos;
+        // transform.rotation = iNewRot;
     }
 
     /* ----------------------------------
@@ -305,7 +314,8 @@ public class OnlinePlayerController : NetworkBehaviour
 
 
         // We tell the server that we spawned, we are ready to communicate and init.
-        CmdModifySpawnedState(true);
+        if (!isSpawned)
+            CmdModifySpawnedState(true);
 
         // init damagers/damageables
         while(self_PlayerController.GetRigidbody() == null)
@@ -317,9 +327,25 @@ public class OnlinePlayerController : NetworkBehaviour
             yield return null;
         }
 
-
+    
         
     }
+
+    [TargetRpc]
+    public void RpcLoadSubScene()
+    {
+        StartCoroutine(WaitSubSceneToLoad());
+    }
+    IEnumerator WaitSubSceneToLoad()
+    {
+        while(!NetworkRoomManagerExt.singleton.subsceneLoaded)
+        {
+            yield return null;
+        }
+        Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        CmdModifyLoadedState(true);
+    }
+
 
     [TargetRpc]
     void RpcSetCameraFocus(Transform t)

@@ -151,6 +151,7 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator WaitTrialSessions()
     {
         AskPlayersToLoad();
+        foreach(OnlinePlayerController opc in uniquePlayers) { opc.RpcLoadSubScene(); }
 
         FreezeAllPlayers(true);
 
