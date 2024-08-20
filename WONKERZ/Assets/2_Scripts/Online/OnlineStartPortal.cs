@@ -13,7 +13,7 @@ public class OnlineStartPortal : NetworkBehaviour
     public OnlinePlayerController attachedPlayer;
     [Header("Tweaks")]
     public  GameCamera.CAM_TYPE camera_type;
-    public  bool                deleteAfterSpawn;
+    public  bool                keepPlayerOnLocationUntilGameStart;
 
     public  int                 seed;
 
@@ -35,5 +35,23 @@ public class OnlineStartPortal : NetworkBehaviour
         if (attachedPlayer != null) {
             attachedPlayer.Relocate(transform.position, transform.rotation);
         }
+        if (keepPlayerOnLocationUntilGameStart)
+            StartCoroutine(KeepPlayerOnLocation());
+    }
+
+    IEnumerator KeepPlayerOnLocation()
+    {
+        while(NetworkRoomManagerExt.singleton.onlineGameManager==null)
+        { 
+            yield return null;
+        }
+
+        while(!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
+        { 
+            attachedPlayer.Relocate(transform.position, transform.rotation);
+            yield return null; 
+        }
+
+        Destroy(gameObject);
     }
 }
