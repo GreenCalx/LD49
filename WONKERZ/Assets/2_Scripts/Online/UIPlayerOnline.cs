@@ -17,6 +17,9 @@ public class UIPlayerOnline : MonoBehaviour
     public TextMeshProUGUI          lifePool;
     public TextMeshProUGUI          equippedPower;
     public Transform        DitchPowerHintHandle;
+    public Transform        TrackEventHandle;
+    public TextMeshProUGUI  TrackEventNameTxt;
+    [Header("oldies")]
     public Image            cpImageFilled;
     public TextMeshProUGUI  nAvailablePanels;
     public TextMeshProUGUI idOfLastCPTriggered;

@@ -42,6 +42,7 @@ public class OnlineGameManager : NetworkBehaviour
     public uint countdown; // in seconds
     public uint gameDuration = 180; // in Seconds
     public uint postGameDuration = 30;
+    public uint trackEventTimeStep = 60;
     public string selectedTrial = "RaceTrial01";
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
@@ -56,9 +57,11 @@ public class OnlineGameManager : NetworkBehaviour
     public float postGameTime = 0f;
     [SyncVar]
     public bool gameLaunched;
-
+    [Header("Manual mand refs")]
     [SerializeField]
     GameObject      UIWaitForPlayers;
+    public OnlineTrackEventManager trackEventManager;
+    [Header("Auto Refs")]
     public OnlineStartLine startLine;
     public OnlineTrialManager trialManager;
     
@@ -284,9 +287,19 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator GameLoop()
     {
         RpcShowUITrackTime(true);
+        
+        trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
+
         while (gameTime > 0)
         {
             gameTime -= Time.deltaTime;
+
+            if (gameTime < trackEventManager.nextEventTime)
+            {
+                trackEventManager.SpawnEvent();
+                trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
+            }
+            
             yield return null;
         }
 
