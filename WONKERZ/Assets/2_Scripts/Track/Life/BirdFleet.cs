@@ -34,14 +34,14 @@ public class BirdFleet : MonoBehaviour
         elapsedTimeSinceLastSpawn = 0f;
         birds = new List<GameObject>(0);
 
-        xmin = boundaries.bounds.min.x * transform.lossyScale.x;
-        xmax = boundaries.bounds.max.x * transform.lossyScale.x;
+        xmin = transform.position.x + boundaries.bounds.min.x * transform.lossyScale.x;
+        xmax = transform.position.x + boundaries.bounds.max.x * transform.lossyScale.x;
 
-        ymin = boundaries.bounds.min.y * transform.lossyScale.y;
-        ymax = boundaries.bounds.max.y * transform.lossyScale.y;
+        ymin = transform.position.y + boundaries.bounds.min.y * transform.lossyScale.y;
+        ymax = transform.position.y + boundaries.bounds.max.y * transform.lossyScale.y;
 
-        zmin = boundaries.bounds.min.z * transform.lossyScale.z;
-        zmax = boundaries.bounds.max.z * transform.lossyScale.z;
+        zmin = transform.position.z + boundaries.bounds.min.z * transform.lossyScale.z;
+        zmax = transform.position.z + boundaries.bounds.max.z * transform.lossyScale.z;
     }
 
     // Update is called once per frame

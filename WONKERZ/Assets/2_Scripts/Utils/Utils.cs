@@ -54,5 +54,10 @@ namespace Wonkerz {
         {
             return !!colliderIsPlayer(iCollision.collider);
         }
+
+        public static float lerp(float a, float b, float f)
+        {
+            return a * (1f - f) + (b * f);
+        }
     }
 }

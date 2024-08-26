@@ -12,11 +12,6 @@ public class OnlineTrackEventManager : NetworkBehaviour
    public OnlineTrackEvent activeEvent;
    private Coroutine trackEventCo;
     public float nextEventTime = 0f;
-   
-   void Start()
-   {
-        RefreshUI();
-   }
 
     public void SpawnEvent()
     {
@@ -27,7 +22,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         }
 
         int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length;
-        int selected = UnityEngine.Random.Range(0,n_eventTypes-1);
+        int selected = UnityEngine.Random.Range(0,n_eventTypes);
 
         activeEvent = GetEvent(selected);
         RefreshUI();
@@ -78,13 +73,30 @@ public class OnlineTrackEventManager : NetworkBehaviour
         if (activeEvent!=null)
         {
             // show
-            pui.TrackEventHandle.gameObject.SetActive(true);
+            StartCoroutine(DelayedUIShow(pui, true));
+            pui.TrackEventOnFXHandle.gameObject.SetActive(true);
+            pui.TrackEventOffFXHandle.gameObject.SetActive(false);
             pui.TrackEventNameTxt.text = activeEvent.name;
         }
         else {
+
             // hide
+            pui.TrackEventOffFXHandle.gameObject.SetActive(true);
             pui.TrackEventNameTxt.text = "";
-            pui.TrackEventHandle.gameObject.SetActive(false);
+        
+            pui.TrackEventOnFXHandle.gameObject.SetActive(false);
+            StartCoroutine(DelayedUIShow(pui, false));
+            
         }
+    }
+
+    IEnumerator DelayedUIShow(UIPlayerOnline pui, bool iState)
+    {
+        float delay = 0.5f;
+        float elapsed = 0f;
+        while (elapsed < delay) 
+        { elapsed+=Time.deltaTime; yield return null; }
+
+        pui.TrackEventHandle.gameObject.SetActive(iState);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-
+using Wonkerz;
 /*
     Animation is in 2 phases :
         1. Expand from charspace = -fontsize (stacked in middle) to fontsize
@@ -16,8 +16,8 @@ public class TMP_CharSpaceAnim : MonoBehaviour
 
     public TMPro.TextMeshProUGUI target;
     [Header("Autos")]
-    public float fontSizeInit = 10;
-    public float charSpaceInit = 0;
+    public float fontSizeInit = 10f;
+    public float charSpaceInit = 0f;
     [Header("Tweaks")]
     public float animDuration_Expand = 1f;
     public float animDuration_Compress = 1f;
@@ -45,23 +45,23 @@ public class TMP_CharSpaceAnim : MonoBehaviour
     void Update()
     {
         elapsedAnimTime += Time.deltaTime;
-        if (elapsedAnimTime < animDuration_Expand)
+        if (elapsedAnimTime <= animDuration_Expand)
         {
-            target.characterSpacing = lerp(fontSizeInit * -1, fontSizeInit, elapsedAnimTime/animDuration_Expand);
+            target.characterSpacing = Utils.lerp(fontSizeInit * -1, fontSizeInit, elapsedAnimTime/animDuration_Expand);
         }
-        else if (elapsedAnimTime < (animDuration_Compress + animDuration_Expand))
+        else if (elapsedAnimTime <= (animDuration_Compress + animDuration_Expand))
         {
-            target.characterSpacing = lerp(fontSizeInit, 0f, (animDuration_Expand-elapsedAnimTime)/animDuration_Compress);
+            target.characterSpacing = Utils.lerp(fontSizeInit, charSpaceInit, (elapsedAnimTime - animDuration_Expand)/animDuration_Compress);
         }
         else
         {
-            target.characterSpacing = 0f;
-            // anim over
+            target.characterSpacing = charSpaceInit;
         }
     }
 
-    float lerp(float a, float b, float f)
+    void OnEnable()
     {
-        return a * (1f - f) + (b * f);
+        elapsedAnimTime = 0f;
     }
+
 }

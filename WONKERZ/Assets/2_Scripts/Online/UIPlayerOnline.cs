@@ -18,6 +18,8 @@ public class UIPlayerOnline : MonoBehaviour
     public TextMeshProUGUI          equippedPower;
     public Transform        DitchPowerHintHandle;
     public Transform        TrackEventHandle;
+    public Transform        TrackEventOnFXHandle;
+    public Transform        TrackEventOffFXHandle;
     public TextMeshProUGUI  TrackEventNameTxt;
     [Header("oldies")]
     public Image            cpImageFilled;

@@ -29,7 +29,7 @@ public class SchnibbleFBXImporter : AssetPostprocessor
         importer.useFileUnits = false;
         importer.bakeAxisConversion = true;
         // what to import
-        importer.importBlendShapes = false;
+        importer.importBlendShapes = true;
         importer.importVisibility = false;
         importer.importCameras = false;
         importer.importLights = false;
