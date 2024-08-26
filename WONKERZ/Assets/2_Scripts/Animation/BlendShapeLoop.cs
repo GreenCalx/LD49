@@ -59,7 +59,6 @@ public class BlendShapeLoop : MonoBehaviour
         {
             float lerp_value = elapsedAnimTime/lerp_step;
             lerp_value = Mathf.Clamp(lerp_value, 0f, 1f);
-            Debug.Log("bsl : LERP : " + lerp_value);
             // lerp out of previous
             float prev_skey = Utils.lerp(100f,0f,lerp_value);
             float curr_skey = Utils.lerp(0,100f,lerp_value);
