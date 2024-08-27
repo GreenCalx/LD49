@@ -45,7 +45,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (self_oDamagers!=null)
+        if ((self_oDamagers!=null)&&(self_oDamagers.Count > 0))
             UpdatePlayerDamagers();
     }
 
@@ -225,10 +225,8 @@ public class OnlinePlayerController : NetworkBehaviour
     [Server]
     public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
     {
-        //// player not actually relocated with the following lines
         self_PlayerController.ForceTransform(iNewPos, iNewRot);
         self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
-
 
         // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
         // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
