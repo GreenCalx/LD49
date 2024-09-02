@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4057780066181654894}
   - component: {fileID: 1766096672092755891}
-  m_Layer: 0
+  - component: {fileID: 2288523726250405346}
+  m_Layer: 24
   m_Name: CameraFocusable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +48,8 @@ MonoBehaviour:
   enableFocusActions: 1
   focusColor: {r: 0.3066038, g: 1, b: 0.59300447, a: 1}
   focusFindRange: 80
-  actionName: 
+  forceFocus: 0
+  initActionName: action
   UIFocusAction_Ref: {fileID: 0}
   screenSpaceUIOffset: {x: 0, y: 0, z: 0}
   callbackOnFocus:
@@ -60,3 +62,16 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isFocus: 0
+--- !u!65 &2288523726250405346
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9052099496259701962}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}

@@ -40,7 +40,6 @@ namespace Wonkerz
         private GameObject transitionCameraInst;
         private GameObject deathCamInst;
         private float elapsedTimeToResetCamView = 0f;
-        public List<CameraFocusable> focusables;
 
         ///
         private static CameraManager inst;
@@ -58,7 +57,6 @@ namespace Wonkerz
             inTransition = false;
             SceneManager.sceneLoaded += OnSceneLoaded;
             Access.PlayerInputsManager().player1.Attach(this as IControllable);
-            focusables = new List<CameraFocusable>();
 
         }
 
@@ -456,31 +454,6 @@ namespace Wonkerz
                 return true;
             }
             return false;
-        }
-
-
-        public void addFocusable(CameraFocusable iFocusable)
-        {
-            if (!focusables.Contains(iFocusable))
-            focusables.Add(iFocusable);
-        }
-
-        public void removeFocusable(CameraFocusable iFocusable)
-        {
-            focusables.Remove(iFocusable);
-            try
-            {
-                PlayerCamera as_playercam = (PlayerCamera)active_camera;
-                if (!!as_playercam)
-                {
-                    as_playercam.OnFocusRemove(iFocusable);
-                }
-            }
-            catch (InvalidCastException e)
-            {
-                this.Log("removeFocusable called when active_camera is not a PlayerCamera.");
-            }
-
         }
 
         public void changeMainLight(Light iLight)

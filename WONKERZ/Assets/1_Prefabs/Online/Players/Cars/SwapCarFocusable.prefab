@@ -10,7 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6523265465799442225}
   - component: {fileID: 8814957933074956780}
-  m_Layer: 0
+  - component: {fileID: 7069523490126185206}
+  m_Layer: 24
   m_Name: SwapCarFocusable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,7 +48,8 @@ MonoBehaviour:
   enableFocusActions: 1
   focusColor: {r: 0.3066038, g: 1, b: 0.59300447, a: 1}
   focusFindRange: 80
-  actionName: Swap car
+  forceFocus: 0
+  initActionName: action
   UIFocusAction_Ref: {fileID: 886595045987546991, guid: a9bf41427b188964fa866aedde094d21, type: 3}
   screenSpaceUIOffset: {x: 0, y: 0, z: 0}
   callbackOnFocus:
@@ -60,3 +62,16 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isFocus: 0
+--- !u!65 &7069523490126185206
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2254313922719521429}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Center: {x: 0, y: 0, z: 0}

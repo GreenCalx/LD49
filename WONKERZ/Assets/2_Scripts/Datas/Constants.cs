@@ -74,5 +74,6 @@ public struct Constants
     // -- Layers --
     public const string LYR_UIMESH = "UIMesh";
     public const string LYR_NOPLAYERCOL = "No Player Collision";
+    public const string LYR_CAMFOCUSABLE = "CameraFocusables";
 
 }

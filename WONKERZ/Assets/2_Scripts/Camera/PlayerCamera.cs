@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using Schnibble;
 namespace Wonkerz
@@ -83,21 +84,37 @@ namespace Wonkerz
             if (p != null) p_pos = p.GetTransform().position;
 
             float minDist = float.MaxValue;
-            CameraFocusable chosenOne = null;
-            List<CameraFocusable> focusables = Access.CameraManager().focusables;
-            foreach (CameraFocusable f in focusables)
+
+            List<CameraFocusable> focusables = new List<CameraFocusable>();
+
+            int layerMask = (1 << LayerMask.NameToLayer(Constants.LYR_CAMFOCUSABLE));
+            Collider[] sphereCastCols = UnityEngine.Physics.OverlapSphere( transform.position, breakFocusDistance, layerMask, QueryTriggerInteraction.Collide);
+            for (int i=0;i<sphereCastCols.Length;i++)
             {
-                if (!f.gameObject.activeSelf)
-                continue;
+                CameraFocusable focusable = sphereCastCols[i].gameObject.GetComponent<CameraFocusable>();
+                if (focusable!=null)
+                    focusables.Add(focusable);
+            }
+            if (focusables.Count==0)
+            {
+                this.Log("No available camera focusables in range.");
+                return false;
+            }
 
-                float dist = Vector3.Distance(f.transform.position, p_pos);
-                if (dist > f.focusFindRange)
-                continue;
+            CameraFocusable chosenOne = null;
 
-                if (dist < minDist)
+            focusables.Sort(CompareCamFocusByScore);
+
+            // fdebug
+            foreach(CameraFocusable f in focusables)
+            { this.Log("CameraFocus " + f.transform.parent.name + " score " + GetCamFocusScore(f)); }
+
+            foreach(CameraFocusable f in focusables)
+            {
+                if (CamFocusIsVisibleOnScreen(f))
                 {
                     chosenOne = f;
-                    minDist = dist;
+                    break;
                 }
             }
             secondaryFocus = chosenOne;
@@ -154,57 +171,113 @@ namespace Wonkerz
 
         protected void changeFocus()
         {
-            if (null == secondaryFocus)
-            { findFocus(); return; }
+            findFocus();
+            return;
+            
+            // if (null == secondaryFocus)
+            // { findFocus(); return; }
 
-            this.Log("Change focus");
+            // this.Log("Change focus");
 
-            Vector3 p_pos = player.GetTransform().position;
+            // Vector3 p_pos = player.GetTransform().position;
 
-            float minDist = float.MaxValue;
-            CameraFocusable chosenOne = null;
-            List<CameraFocusable> focusables = Access.CameraManager().focusables;
+            // float minDist = float.MaxValue;
+            // CameraFocusable chosenOne = null;
+            // List<CameraFocusable> focusables = Access.CameraManager().focusables;
 
-            foreach (CameraFocusable f in focusables)
+            // foreach (CameraFocusable f in focusables)
+            // {
+            //     if (alreadyFocusedQ.Contains(f))
+            //     continue;
+
+            //     float dist = Vector3.Distance(f.transform.position, p_pos);
+            //     if (dist > f.focusFindRange)
+            //     continue;
+
+            //     if (dist < minDist)
+            //     {
+            //         chosenOne = f;
+            //         minDist = dist;
+            //     }
+            // }
+
+            // // if every targetable in range were cycle thru
+            // // then cycle with the queue as long as there is
+            // // no new ppl in range
+            // if (chosenOne == null && (alreadyFocusedQ.Count == 0))
+            // resetFocus();
+            // else if (chosenOne == null)
+            // secondaryFocus = alreadyFocusedQ.Dequeue();
+            // else
+            // secondaryFocus = chosenOne;
+
+            // alreadyFocusedQ.Enqueue(secondaryFocus);
+            // showFocus(true);
+
+            // elapsedTimeFocusChange = 0.0f;
+        }
+
+        // public void OnFocusRemove(CameraFocusable iFocusable)
+        // {
+        //     if (secondaryFocus == iFocusable)
+        //     {
+        //         secondaryFocus = null;
+        //         changeFocus();
+        //     }
+        // }
+
+        // ordered from highest to lowest score
+        private int CompareCamFocusByScore(CameraFocusable x, CameraFocusable y)
+        {
+            if (x==null)
             {
-                if (alreadyFocusedQ.Contains(f))
-                continue;
-
-                float dist = Vector3.Distance(f.transform.position, p_pos);
-                if (dist > f.focusFindRange)
-                continue;
-
-                if (dist < minDist)
+                if (y==null)
+                    return 0; // eq
+                else
+                    return 1;
+            }
+            else
+            {
+                if (y==null)
                 {
-                    chosenOne = f;
-                    minDist = dist;
+                    return -1;
+                }
+                else
+                { // both defined
+                    float x_score = GetCamFocusScore(x);
+                    float y_score = GetCamFocusScore(y);
+
+                    // return x_score.CompareTo(y_score);
+                    if (x_score > y_score)
+                        return -1;
+                    else if (x_score < y_score)
+                        return 1;
+                    else 
+                        return 0;
                 }
             }
-
-            // if every targetable in range were cycle thru
-            // then cycle with the queue as long as there is
-            // no new ppl in range
-            if (chosenOne == null && (alreadyFocusedQ.Count == 0))
-            resetFocus();
-            else if (chosenOne == null)
-            secondaryFocus = alreadyFocusedQ.Dequeue();
-            else
-            secondaryFocus = chosenOne;
-
-            alreadyFocusedQ.Enqueue(secondaryFocus);
-            showFocus(true);
-
-            elapsedTimeFocusChange = 0.0f;
         }
 
-        public void OnFocusRemove(CameraFocusable iFocusable)
+        private bool CamFocusIsVisibleOnScreen(CameraFocusable iCF)
         {
-            if (secondaryFocus == iFocusable)
-            {
-                secondaryFocus = null;
-                changeFocus();
-            }
+            Vector3 vpPos = cam.WorldToViewportPoint(iCF.transform.position);
+            return (vpPos.x >= 0f && vpPos.x <= 1f && vpPos.y >= 0f && vpPos.y <= 1f && vpPos.z > 0f);
         }
 
+
+        // score = DotProd + 1/CamDistance
+        // MainFactor : The closest DotProduct to 1 the better (aligned with cam fwd thus camfocus aimed by player)
+        // Secondary : The smallest dist to the player the better [0f,1f] 
+        //
+        // TODO :   1/ Custom order priority to add to the score : other player > swappable car > crate = jar 
+        //          2/ We might want to have less Y coordinate impact upon alignement detection with dotprod
+        private float GetCamFocusScore(CameraFocusable iCF)
+        {
+            float dist =  Vector3.Distance(iCF.transform.position ,player.GetTransform().position);
+            Vector3 camFwd = player.GetTransform().forward;
+            Vector3 relativeFocusPos = iCF.transform.position - player.GetTransform().position;
+            float dp = Vector3.Dot(camFwd.normalized, relativeFocusPos.normalized);
+            return dp + 1f/dist;
+        }
     }
 }
