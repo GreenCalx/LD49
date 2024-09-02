@@ -579,7 +579,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 3, y: 2, z: 5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5660231253880132677
 MonoBehaviour:
@@ -1829,13 +1829,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5660231255550409260}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a23e0337b63235a44b8437e9232d64fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   parts:
-  - animatee: {fileID: 0}
+  - animatee: {fileID: 218099673665134025}
     spring:
       restLength: 0
       maxLength: 0
@@ -1847,7 +1847,7 @@ MonoBehaviour:
     axisOfAnimation: 1
     maxAngle: 80
     initialRotation: {x: 0, y: 0, z: 0}
-  - animatee: {fileID: 0}
+  - animatee: {fileID: 7945635218308035236}
     spring:
       restLength: 0
       maxLength: 0
@@ -1858,18 +1858,6 @@ MonoBehaviour:
     animationMultiplier: 1
     axisOfAnimation: 1
     maxAngle: -80
-    initialRotation: {x: 0, y: 0, z: 0}
-  - animatee: {fileID: 0}
-    spring:
-      restLength: 0
-      maxLength: 0
-      minLength: 0
-      currentLength: 0
-      stiffness: 5
-      damp: 0.5
-    animationMultiplier: 100
-    axisOfAnimation: 0
-    maxAngle: 60
     initialRotation: {x: 0, y: 0, z: 0}
   car: {fileID: 5660231253880132678}
 --- !u!1 &6688333751795505569
@@ -1929,7 +1917,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 6, y: 5, z: 9}
+  m_Size: {x: 6, y: 5, z: 11}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7271349191804137912
 GameObject:
@@ -3271,15 +3259,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.81
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.81
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.81
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3287,11 +3275,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 6847555721093337641, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3351,7 +3339,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1388775176859241265}
   indicator: {fileID: 1450642069580940521}
-  offsetLocal: {x: 0, y: 0.8, z: 0}
+  offsetLocal: {x: 0, y: 0.8, z: -0.5}
   useRotation: 1
   useFixedPosition: 1
 --- !u!1001 &5660231254698715707
@@ -3868,9 +3856,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3070f58eea28bca468f169fbc88be074, type: 3}
+--- !u!1 &218099673665134025 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6418389913707084137, guid: 3070f58eea28bca468f169fbc88be074, type: 3}
+  m_PrefabInstance: {fileID: 6490931580046255264}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &378218933716328843 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6857821132997297451, guid: 3070f58eea28bca468f169fbc88be074, type: 3}
+  m_PrefabInstance: {fileID: 6490931580046255264}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7945635218308035236 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3769788606421456388, guid: 3070f58eea28bca468f169fbc88be074, type: 3}
   m_PrefabInstance: {fileID: 6490931580046255264}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6808544430899485909
