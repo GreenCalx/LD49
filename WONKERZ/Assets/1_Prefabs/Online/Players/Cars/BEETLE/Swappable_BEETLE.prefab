@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2705171154291085491}
   - component: {fileID: 6555113948818971708}
-  - component: {fileID: 3300570136745486218}
   - component: {fileID: 3168364425208279596}
   m_Layer: 8
   m_Name: Swappable_BEETLE
@@ -55,40 +54,6 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
---- !u!114 &3300570136745486218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2705171154291085488}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 1
-  syncMode: 0
-  syncInterval: 0
-  target: {fileID: 2705171154291085491}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
 --- !u!114 &3168364425208279596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,6 +324,50 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+--- !u!4 &786791303197492396 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660231255018925987, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &786791303197492397 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660231255018925986, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2277777515067535286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786791303197492397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 786791303197492396}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!4 &786791303729271074 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5660231255550409261, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
@@ -375,11 +384,182 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edd152181535b074e96dac8ab33be36f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &786791304290221892 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660231253880132683, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1842277030238909515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786791304290221892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 786791304290221899}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!4 &786791304290221899 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5660231253880132676, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
   m_PrefabInstance: {fileID: 4928645344360885007}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &786791304421540300 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660231253759814339, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8828629861923191994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786791304421540300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 786791304421540343}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!4 &786791304421540343 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660231253759814392, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &786791304658893413 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660231254584086890, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5257516326760128713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786791304658893413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 786791304658893416}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
+--- !u!4 &786791304658893416 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660231254584086887, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &786791304889887974 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5660231254362064873, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &786791304889887975 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5660231254362064872, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+  m_PrefabInstance: {fileID: 4928645344360885007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4432887866523342824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 786791304889887975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 786791304889887974}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1001 &5691271016247423959
 PrefabInstance:
   m_ObjectHideFlags: 0
