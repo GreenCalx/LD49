@@ -79,6 +79,20 @@ public class UIBindings : UIPanelTabbedScrollable
         this.tabs.Add(tab);
     }
 
+    public override void activate()
+    {
+        base.activate();
+
+        Create();
+    }
+
+    public override void deactivate()
+    {
+        base.deactivate();
+
+        CleanUp();
+    }
+
     public void Create() {
 
         // fuck trying to "dynamically" create the ux

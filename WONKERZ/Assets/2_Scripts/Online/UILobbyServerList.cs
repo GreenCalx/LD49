@@ -33,11 +33,16 @@ public class UILobbyServerList : UIPanelTabbedScrollable
                 ui.CreateLobbyTab(lobby);
             }
 
+            ui.SelectTab(0);
+
             OnCmdSuccess?.Invoke();
         }
     };
 
-    void OnEnable() {
+    public override void activate()
+    {
+        base.activate();
+
         if (Parent == null) {
             UnityEngine.Debug.LogError("Please connect a parent to the UILobbyServerList.");
             return;
@@ -48,15 +53,25 @@ public class UILobbyServerList : UIPanelTabbedScrollable
             return;
         }
 
-        online.lobbyServer.client.OnLobbyListRefreshed += OnLobbyListReady;
+        online.client.OnLobbyListRefreshed += OnLobbyListReady;
 
         UpdateList();
     }
 
-    void OnDestroy() {
-        if (online.lobbyServer.client != null) {
-            online.lobbyServer.client.OnLobbyListRefreshed -= OnLobbyListReady;
+    public override void deactivate()
+    {
+        base.deactivate();
+
+        if (online.client != null) {
+            online.client.OnLobbyListRefreshed -= OnLobbyListReady;
         }
+
+        if (activator) {
+            activator.gameObject.SetActive(true);
+        }
+
+        // Carefull: SetActive will call OnDisable whict will call deactivate, cousing StackOverflowError.
+        this.gameObject.SetActive(false);
     }
 
     // Called from UX: this is thread safe.
@@ -74,11 +89,11 @@ public class UILobbyServerList : UIPanelTabbedScrollable
     {
         // remove each tabs.
         foreach (var t in tabs) {
-            GameObject.Destroy(t);
+            GameObject.Destroy(t.gameObject);
         }
         tabs.Clear();
         // ask server for lobby list.
-        online.lobbyServer.client.GetLobbies();
+        online.client.GetLobbies();
     }
 
     // Need to be thread safe (cf UIOnline)

@@ -35,6 +35,12 @@ public class OnlinePlayerController : NetworkBehaviour
     [SyncVar]
     bool isSpawned = false;
 
+    // TODO: Remove this hack and do a proper online object.
+    [SyncVar(hook=nameof(OnPlayerStateChanged))]
+    PlayerController.PlayerStates        playerState;
+    [SyncVar(hook=nameof(OnPlayerVehicleStateChanged))]
+    PlayerController.PlayerVehicleStates playerVehicleState;
+
     public Transform cameraFocusable;
 
     public bool IsSpawned() => isSpawned;
@@ -138,14 +144,13 @@ public class OnlinePlayerController : NetworkBehaviour
     // Update clients about their states.
     void OnVehicleStateChange(PlayerController.PlayerVehicleStates state) {
         RpcSetCameraFocus(self_PlayerController.GetTransform());
-        RpcSetVehicleState(state);
+        playerVehicleState = state;
     }
 
     void OnStateChange(PlayerController.PlayerStates state)
     {
-        RpcSetState(state);
+        playerState = state;
     }
-
 
     [Command]
     public void CmdModifyReadyState(bool state) {
@@ -258,13 +263,16 @@ public class OnlinePlayerController : NetworkBehaviour
         Debug.LogError("End OnlinePlayerController wait for dependencies.");
     }
 
-
     public override void OnStartClient()
     {
         // OnStartuserver will setup the OnlineStub if need be, so we init here
         // only if we are client only, and not the local player.
         if (!isServer && !isLocalPlayer)
         {
+            UnityEngine.Debug.LogError("OnlinePlayerInit : client.");
+            if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
+
+            self_PlayerController.InitAsOnlineStub();
             // add a camera focusable
             // NOTE:
             // For now it is local only, but in the future we might want to have it spawned on the server
@@ -295,10 +303,11 @@ public class OnlinePlayerController : NetworkBehaviour
         yield return StartCoroutine(WaitForDependencies());
 
         if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
+
+        self_PlayerController.OnStateChange += OnStateChange;
+        self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
+
         self_PlayerController.Init();
-
-
-
         // Set underlying player controller to not apply any inputs.
         // Instead send inputs to the server and wait for server answer that will
         // update states.
@@ -308,8 +317,6 @@ public class OnlinePlayerController : NetworkBehaviour
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
         Access.GameSettings().IsOnline = true;
-
-
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned)
@@ -324,9 +331,6 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             yield return null;
         }
-
-    
-        
     }
 
     [TargetRpc]
@@ -356,16 +360,13 @@ public class OnlinePlayerController : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    void RpcSetState(PlayerController.PlayerStates state) {
-        UnityEngine.Debug.LogError("RpcSetState : " + state.ToString());
-        if(!isServer) self_PlayerController.TransitionFromTo(self_PlayerController.playerState, state);
+    void OnPlayerStateChanged(PlayerController.PlayerStates oldState, PlayerController.PlayerStates newState) {
+        if(!isServer) self_PlayerController.TransitionFromTo(oldState, newState);
     }
 
-    [ClientRpc]
-    void RpcSetVehicleState(PlayerController.PlayerVehicleStates state) {
-        UnityEngine.Debug.LogError("RpcSetVehicleState : " + state.ToString());
-        if(!isServer) self_PlayerController.TransitionTo(state);
+    void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState,PlayerController.PlayerVehicleStates newState) {
+        UnityEngine.Debug.LogWarning("OnPlayerVehicleStateChanged : " + newState.ToString());
+        if(!isServer) self_PlayerController.TransitionTo(newState);
     }
 
     [TargetRpc]
@@ -382,8 +383,8 @@ public class OnlinePlayerController : NetworkBehaviour
         Access.UIPlayerOnline().LinkToPlayer(this);
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         
-        InitPlayerDamageable();
-        InitPlayerDamagers();
+        //InitPlayerDamageable();
+        //InitPlayerDamagers();
 
         CmdModifyLoadedState(true);
     }

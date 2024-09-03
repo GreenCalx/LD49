@@ -12,19 +12,21 @@ public class UITitleScreen : UIPanelTabbed
     public UIPanelTabbed nameEntryPanel;
     public UIProfileCards profilePanel;
 
-    
-    void Start()
+    protected override void Awake()
     {
+        base.Awake();
+        UnityEngine.Debug.Log("awake");
         inputMgr = Access.PlayerInputsManager().player1;
 
-        activate();
-        cancelDeactivatePanel = false;
+        init  ();
+        select();
     }
 
     void OnDestroy()
     {
         deactivate();
     }
+
     protected override void ProcessInputs(InputManager currentMgr, GameController entry){
         base.ProcessInputs(currentMgr, entry);
 
@@ -59,11 +61,28 @@ public class UITitleScreen : UIPanelTabbed
         Schnibble.Utils.ExitGame();
     }
 
-    public void launchDemo()
-    {
+    public void launchOnline() {
         PlayerController pc = Access.Player();
         if (!!pc)
-            Destroy(pc.gameObject);
+        Destroy(pc.gameObject);
+
+        Access.GameSettings().isLocal = false;
+
         Access.SceneLoader().loadScene("OfflineRoom");
+    }
+
+    public void launchLocal() {
+        PlayerController pc = Access.Player();
+        if (!!pc)
+        Destroy(pc.gameObject);
+
+        Access.GameSettings().isLocal = true;
+
+        Access.SceneLoader().loadScene("OfflineRoom");
+    }
+
+    public void launchDemo()
+    {
+        UnityEngine.Debug.LogError("Not implemented");
     }
 }

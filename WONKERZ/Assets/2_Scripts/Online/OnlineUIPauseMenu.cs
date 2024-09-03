@@ -89,6 +89,7 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
     {
         panel.onDeactivate.Invoke();
         // save & exit here
+        NetworkClient.Disconnect();
 
         Access.SceneLoader().loadScene(Constants.SN_TITLE);
     }

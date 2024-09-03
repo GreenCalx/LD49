@@ -30,6 +30,44 @@ using Wonkerz;
 
         public string selectedTrial = "";
 
+        public Action OnRoomStartHostCB;
+        public Action OnRoomClientEnterCB;
+        public Action OnRoomClientExitCB;
+        public Action OnRoomStartClientCB;
+        public Action OnRoomStopClientCB;
+        public Action OnRoomClientSceneChangedCB;
+        public Action OnRoomServerPlayersReadyCB;
+
+        public override void OnRoomClientDisconnect()
+        {
+            OnRoomStopClientCB?.Invoke();
+        }
+
+        public override void OnRoomStartClient()
+        {
+            OnRoomStartClientCB?.Invoke();
+        }
+
+        public override void OnRoomStartHost()
+        {
+            OnRoomStartHostCB?.Invoke();
+        }
+
+        public override void OnRoomClientEnter()
+        {
+            OnRoomClientEnterCB?.Invoke();
+        }
+
+        public override void OnRoomClientExit()
+        {
+            OnRoomClientExitCB?.Invoke();
+        }
+
+        public override void OnRoomClientSceneChanged()
+        {
+            OnRoomClientSceneChangedCB?.Invoke();
+        }
+
         IEnumerator SeekOnlineGameManager()
         {
             while (onlineGameManager==null)
@@ -37,6 +75,10 @@ using Wonkerz;
                 yield return null;
             }
 
+        }
+
+        public void StartGameScene() {
+            ServerChangeScene(GameplayScene);
         }
 
         /// <summary>
@@ -116,10 +158,10 @@ using Wonkerz;
         public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
         {
             if (sceneOperation == SceneOperation.UnloadAdditive)
-                StartCoroutine(UnloadAdditive(sceneName));
+            StartCoroutine(UnloadAdditive(sceneName));
 
             if (sceneOperation == SceneOperation.LoadAdditive)
-                StartCoroutine(LoadAdditive(sceneName));
+            StartCoroutine(LoadAdditive(sceneName));
         }
 
 
@@ -143,7 +185,7 @@ using Wonkerz;
                 loadingSceneAsync = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
 
                 while (loadingSceneAsync != null && !loadingSceneAsync.isDone)
-                    yield return null;
+                yield return null;
                 subsceneLoaded = true;
             }
 
@@ -216,15 +258,16 @@ using Wonkerz;
 
         public override void OnRoomServerPlayersReady()
         {
+            OnRoomServerPlayersReadyCB?.Invoke();
             // calling the base method calls ServerChangeScene as soon as all players are in Ready state.
-            if (Mirror.Utils.IsHeadless())
+            //if (Mirror.Utils.IsHeadless())
             {
-                base.OnRoomServerPlayersReady();
+                //base.OnRoomServerPlayersReady();
             }
-            else
-            {
-                showStartButton = true;
-            }
+            //else
+            //{
+            //    showStartButton = true;
+            // }
         }
 
         public override void OnGUI()
