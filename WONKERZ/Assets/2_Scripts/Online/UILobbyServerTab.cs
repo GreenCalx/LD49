@@ -8,6 +8,7 @@ using Mirror;
 using System.Net;
 using System.Net.Sockets;
 using TMPro;
+using Wonkerz;
 
 [System.Serializable]
 public class UIConnectionStateText
@@ -156,12 +157,14 @@ public class UILobbyServerTab : UITextTab
     IEnumerator Coro_OnClientConnected() {
         yield return StartCoroutine(WaitTimerLatency());
 
+
         deactivate();
 
         serverList.deactivate();
         serverList.online.deactivate();
 
         serverList.online.SetState(UIOnline.States.InRoom);
+        Access.GameSettings().goToState = UIOnline.States.InRoom;
     }
 
     public void OnClientError(TransportError error, string reason) {
