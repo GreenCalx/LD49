@@ -5,6 +5,7 @@ using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
 using Wonkerz; // TODO : include me in namespace
+using UnityEngine.SceneManagement;
 
 public class UITitleScreen : UIPanelTabbed
 {
@@ -20,6 +21,13 @@ public class UITitleScreen : UIPanelTabbed
 
         init  ();
         select();
+
+        // NOTE: if we come back from online, we make sure to delete the network manager.
+        if (NetworkRoomManagerExt.singleton != null)
+        {
+            SceneManager.MoveGameObjectToScene(NetworkRoomManagerExt.singleton.gameObject.transform.root.gameObject, SceneManager.GetActiveScene());
+            GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
+        }
     }
 
     void OnDestroy()

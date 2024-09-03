@@ -212,13 +212,21 @@ using Wonkerz;
 
         public override void OnRoomStopClient()
         {
-            base.OnRoomStopClient();
+            UnityEngine.Debug.Log("OnRoomClientStop");
+
+            SceneManager.UnloadSceneAsync(Constants.SN_OPENCOURSE);
+            if (selectedTrial != "") SceneManager.UnloadSceneAsync(selectedTrial);
+
             Access.GameSettings().IsOnline = false;
         }
 
         public override void OnRoomStopServer()
         {
-            base.OnRoomStopServer();
+            UnityEngine.Debug.Log("OnRoomServerStop");
+
+            SceneManager.UnloadSceneAsync(Constants.SN_OPENCOURSE);
+            if (selectedTrial != "") SceneManager.UnloadSceneAsync(selectedTrial);
+
             Access.GameSettings().IsOnline = false;
         }
 
@@ -283,6 +291,20 @@ using Wonkerz;
                 subsceneLoaded = true;
                 subsceneUnloaded = true;
                 ServerChangeScene(GameplayScene);
+            }
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            for (int i = 0; i < SceneManager.sceneCount; ++i) {
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene.name == RoomScene || scene.path == RoomScene ||
+                    scene.name == GameplayScene || scene.path == GameplayScene ||
+                    scene.name == offlineScene || scene.path == offlineScene ||
+                    scene.name == onlineScene || scene.path == onlineScene) { 
+                        SceneManager.UnloadSceneAsync(scene);
+                }
             }
         }
     }

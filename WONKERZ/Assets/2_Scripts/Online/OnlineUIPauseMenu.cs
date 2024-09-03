@@ -67,11 +67,10 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
             updateTrackDetails();
             updateLobbyInfo();
 
-            UIHandle.SetActive(true);
+            // NOTE: need to set input manager before calling SetActive as it will activate the UX.
             panel.inputMgr = attachedPlayer.inputMgr;
-            //panel.inputMgr = Access.PlayerInputsManager().all;
-            panel.onActivate.Invoke();
-            panel.activate();
+            //panel.init(); => not needed for now.
+            UIHandle.SetActive(true);
         }
     }
 
@@ -87,9 +86,24 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
 
     public void OnExitButton()
     {
-        panel.onDeactivate.Invoke();
         // save & exit here
-        NetworkClient.Disconnect();
+        if (NetworkRoomManagerExt.singleton != null)
+        {
+            if (NetworkServer.activeHost)
+            {
+                NetworkRoomManagerExt.singleton.StopHost();
+
+                GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
+                NetworkServer.Shutdown();
+            }
+            else if (NetworkClient.active)
+            {
+                NetworkRoomManagerExt.singleton.StopClient();
+
+                GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
+                NetworkClient.Shutdown();
+            }
+        }
 
         Access.SceneLoader().loadScene(Constants.SN_TITLE);
     }

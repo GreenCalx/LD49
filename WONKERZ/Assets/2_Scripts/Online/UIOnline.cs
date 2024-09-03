@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Wonkerz;
+using Schnibble.Managers;
 
 public class UIOnline : UIPanelTabbed
 {
@@ -203,6 +204,24 @@ public class UIOnline : UIPanelTabbed
                     StartCoroutine(Schnibble.Utils.CoroutineChain(
                         CoroWait(1.0f),
                         CoroSetState(States.Exit)));
+                }
+                break;
+            case States.MainMenu:
+                {
+                    SetState(States.Exit);
+                }
+                break;
+            case States.CreatingRoom:
+                {
+                    SetState(States.MainMenu);
+                }
+                break;
+            case States.InRoom:
+                {
+                    if (NetworkServer.activeHost) {
+                        roomServer.StopHost();
+                    }
+                    SetState(States.CreatingRoom);
                 }
                 break;
         }
@@ -530,11 +549,7 @@ public class UIOnline : UIPanelTabbed
             JoinLocalServer();
         }
         else
-            StartCoroutine(CoroTryConnect(SchLobbyClient.defaultRemoteEP, 5, 0.5f));
-    }
-
-    public override void deactivate()
-    {
+        StartCoroutine(CoroTryConnect(SchLobbyClient.defaultRemoteEP, 5, 0.5f));
     }
 
     public override void init()
