@@ -458,6 +458,8 @@ public class UIOnline : UIPanelTabbed
 
         roomServer.OnRoomStartClientCB += uiRoom.OnPlayerConnected;
         roomServer.OnRoomStopClientCB  += uiRoom.OnPlayerDisconnected;
+
+        roomServer.OnRoomClientSceneChangedCB += OnRoomSceneChanged;
     }
 
     public void RemoveRoomServerCallbacks() {
@@ -467,6 +469,8 @@ public class UIOnline : UIPanelTabbed
 
         roomServer.OnRoomStartClientCB -= uiRoom.OnPlayerConnected;
         roomServer.OnRoomStopClientCB  -= uiRoom.OnPlayerDisconnected;
+
+        roomServer.OnRoomClientSceneChangedCB -= OnRoomSceneChanged;
     }
 
     public void Start()
@@ -615,6 +619,14 @@ public class UIOnline : UIPanelTabbed
     public void OnRoomHostCreated()
     {
         StateSuccess();
+    }
+
+    public void OnRoomSceneChanged() {
+        //if changed to offline room, check which UX we want.
+        if (Mirror.Utils.IsSceneActive(roomServer.RoomScene)) {
+            SetState(Access.GameSettings().goToState);
+            Access.GameSettings().goToState = UIOnline.States.MainMenu;
+        }
     }
 
     // Following function can be called from threads.

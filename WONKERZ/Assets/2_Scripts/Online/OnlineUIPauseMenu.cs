@@ -19,6 +19,7 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
     public GameObject UIHandle;
     public UISelectableElement panel;
     public UISelectableElement debugPanel;
+    public UITab goToRoomTab;
 
     public enum EXITABLE_SCENES { SN_TITLE };
     public EXITABLE_SCENES sceneToLoadOnExit = EXITABLE_SCENES.SN_TITLE;
@@ -43,6 +44,15 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
             yield return null;
         }
         attachedPlayer.inputMgr.Attach(this as IControllable);
+
+        if (NetworkClient.activeHost) {
+            var tabs = (panel as UIPanelTabbed).tabs;
+            if (!tabs.Contains(goToRoomTab)) {
+                tabs.Add(goToRoomTab);
+                goToRoomTab.init();
+                goToRoomTab.gameObject.SetActive(true);
+            }
+        }
     }
 
     void OnDestroy()
@@ -82,6 +92,16 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         else
         attachedPlayer.UnFreeze();
         #endif
+    }
+
+    public void GoBackToRoom() {
+        if (NetworkRoomManagerExt.singleton != null) {
+            if (NetworkClient.activeHost)
+            {
+                Access.GameSettings().goToState = UIOnline.States.InRoom;
+                NetworkRoomManagerExt.singleton.ServerChangeScene(NetworkRoomManagerExt.singleton.RoomScene);
+            }
+        }
     }
 
     public void OnExitButton()
