@@ -48,6 +48,11 @@ public class OnlinePlayerController : NetworkBehaviour
     public bool IsLoaded()  => isLoaded;
     public bool IsLockAndLoaded() => IsReady() && IsLoaded();
 
+    void Start()
+    {
+        InitPlayerDamageable();
+        InitPlayerDamagers();
+    }
 
     void FixedUpdate()
     {
@@ -73,12 +78,34 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void InitPlayerDamagers()
     {
+        StartCoroutine(InitPlayerDamagersCo());
+    }
+
+    IEnumerator InitPlayerDamagersCo()
+    {
+        while (!isLoaded || !isSpawned)
+        {
+            yield return null;
+        }
+
         self_oDamagers = new List<OnlineDamager>(5);
 
         WkzCar cc = self_PlayerController.car.GetCar();
+        while (cc==null)
+        {
+            cc = self_PlayerController.car.GetCar();
+            yield return null;
+        }
 
         // body damager
         GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
+        while (bodyRef==null)
+        {
+            bodyRef = self_PlayerController.GetRigidbody().gameObject;
+            yield return null;
+        }
+
+
         OnlineDamager body_dmgr = bodyRef.GetComponent<OnlineDamager>();
         if (body_dmgr==null)
             body_dmgr = bodyRef.AddComponent<OnlineDamager>();
@@ -99,9 +126,24 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void InitPlayerDamageable()
     {
+        StartCoroutine(InitPlayerDamageableCo());
+    }
+
+    IEnumerator InitPlayerDamageableCo()
+    {
+        while (!isLoaded || !isSpawned)
+        {
+            yield return null;
+        }
+        
         self_oDamageable = null;
 
         GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
+        while (bodyRef==null)
+        {
+            bodyRef = self_PlayerController.GetRigidbody().gameObject;
+            yield return null;
+        }
         OnlineDamageable body_dmgbl = bodyRef.GetComponent<OnlineDamageable>();
         if (body_dmgbl==null)
             body_dmgbl = bodyRef.AddComponent<OnlineDamageable>();
@@ -382,9 +424,6 @@ public class OnlinePlayerController : NetworkBehaviour
 
         Access.UIPlayerOnline().LinkToPlayer(this);
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-        
-        //InitPlayerDamageable();
-        //InitPlayerDamagers();
 
         CmdModifyLoadedState(true);
     }
