@@ -475,7 +475,8 @@ namespace Wonkerz
                 this.LogError("No powercontroller, please assign one or add a PowerController script to this object.");
             }
 
-            TransitionFromTo(playerState, PlayerStates.Frozen);
+            TransitionFromTo(playerState, PlayerStates.Frozen);
+
         }
 
         // ----- Scene listeners
@@ -776,17 +777,20 @@ namespace Wonkerz
                         {
                             case PlayerVehicleStates.Car:
                                 {
-                                    var rb = GetRigidbody();
-                                    if (rb)
+                                    if (IsInAir())
                                     {
-                                        var aerialMaxForce = GetAerialMaxForce();
-                                        var torque = new Vector3(aerialMaxForce * weightInput.average.x,
-                                            0,
-                                            -aerialMaxForce * weightInput.average.y);
+                                        var rb = GetRigidbody();
+                                        if (rb)
+                                        {
+                                            var aerialMaxForce = GetAerialMaxForce();
+                                            var torque = new Vector3(aerialMaxForce * weightInput.average.y,
+                                                0,
+                                                -aerialMaxForce * weightInput.average.x);
 
-                                        torque = rb.transform.TransformDirection(torque);
+                                            //torque = rb.transform.TransformDirection(torque);
 
-                                        rb.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                                            rb.AddRelativeTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+                                        }
                                     }
                                     break;
                                 }
