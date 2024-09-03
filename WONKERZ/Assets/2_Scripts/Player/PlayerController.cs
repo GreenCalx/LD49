@@ -237,6 +237,7 @@ namespace Wonkerz
                             case PlayerVehicleStates.Car:
                                 {
                                     ActivateMode(car.gameObject, car.car.chassis.GetBody());
+                                    jumpDecal = car.GetCar().jumpDecal;
                                     break;
                                 }
                             case PlayerVehicleStates.Plane:
@@ -263,6 +264,7 @@ namespace Wonkerz
                             case PlayerVehicleStates.Car:
                                 {
                                     ActivateMode(car.gameObject, car.car.chassis.GetBody());
+                                    jumpDecal = car.GetCar().jumpDecal;
                                     break;
                                 }
                             case PlayerVehicleStates.Plane:
@@ -473,7 +475,7 @@ namespace Wonkerz
                 this.LogError("No powercontroller, please assign one or add a PowerController script to this object.");
             }
 
-            TransitionFromTo(playerState, PlayerStates.Frozen);
+            TransitionFromTo(playerState, PlayerStates.Frozen);
         }
 
         // ----- Scene listeners
@@ -1029,23 +1031,8 @@ namespace Wonkerz
             //      like instead of sending InputForward, send Move(x,y)
             if (inputMode == InputMode.Online && currentMgr != null)
             {
-
-                // nocheckin
-                if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
-                {
-                    UnityEngine.Debug.LogError("Pressed B: client");
-                    int breakHere = 0;
-                }
-
                 lastInputs = inputs.Serialize();
                 return;
-            }
-
-            // nocheckin
-            if (inputs.GetButtonState((int)PlayerInputs.InputCode.AirplaneMode).down)
-            {
-                UnityEngine.Debug.LogError("Pressed B:server or not online");
-                int breakHere = 0;
             }
 
             int weightX = (int)PlayerInputs.InputCode.WeightX;
