@@ -117,8 +117,8 @@ public class UIPlayerOnline : MonoBehaviour
         {
             return;
         }
+        float speed = onlinePlayer.playerSpeed;
 
-        var speed = (float)player.car.car.GetCurrentSpeedInKmH_FromWheels();
         // TODO: compute max theoretical speed from car specs.
         var maxSpeed = 300.00f;
         var ratio = Mathf.Clamp01(Mathf.Abs(speed) / maxSpeed);

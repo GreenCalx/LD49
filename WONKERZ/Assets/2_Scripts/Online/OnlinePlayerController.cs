@@ -29,6 +29,8 @@ public class OnlinePlayerController : NetworkBehaviour
     // It will not modify it directly but send a cmd to send it.
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
+    public float playerSpeed = 0f;
+    [SyncVar]
     bool isReady = false;
     [SyncVar]
     bool isLoaded = false;
@@ -56,6 +58,8 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (isServer)
+            playerSpeed = (float)self_PlayerController.car.GetCar().GetCurrentSpeedInKmH_FromWheels();
         if ((self_oDamagers!=null)&&(self_oDamagers.Count > 0))
             UpdatePlayerDamagers();
     }
@@ -63,10 +67,10 @@ public class OnlinePlayerController : NetworkBehaviour
     private void UpdatePlayerDamagers()
     {
         int damage = 0;
-        WkzCar cc = self_PlayerController.car.GetCar();
-        if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
+        //WkzCar cc = self_PlayerController.car.GetCar();
+        if (playerSpeed > minSpeedToDoDamage)
         { 
-            damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
+            damage = (int) Mathf.Abs(playerSpeed);
             damage +=(int) Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
         }
 
