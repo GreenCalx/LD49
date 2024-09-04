@@ -110,6 +110,9 @@ public class OnlineCollectible : NetworkBehaviour
         {
             OnlinePlayerController locPlayer = AC.attachedOnlinePlayer;
 
+            if (locPlayer.bag.HasAPowerEquipped && IsPowerCollectible())
+                return; // player already has a power we don't collect
+
             if (iCollider.transform.IsChildOf(locPlayer.transform))
                 OnCollect(locPlayer);
             
@@ -160,5 +163,11 @@ public class OnlineCollectible : NetworkBehaviour
         public void RpcCollectFX()
         {
             CollectFX();
+        }
+
+        private bool IsPowerCollectible()
+        {
+            return (collectibleType==ONLINE_COLLECTIBLES.KLANCE_POWER) ||
+                    (collectibleType==ONLINE_COLLECTIBLES.PLAUNCHER);
         }
 }

@@ -9,7 +9,7 @@ using Mirror;
 public enum TRACKEVENTS
 {
     LOWGRAVITY = 0,
-    TSUNAMI = 1
+    HIGHTIDE = 1
 }
 
 /////////////////////
@@ -35,29 +35,40 @@ public class OnlineTrackEvent
 
 public class GravityTrackEvent : OnlineTrackEvent
 {
+    private Vector3 initGravity = Vector3.zero;
     public GravityTrackEvent()
     {
         trackEventType = TRACKEVENTS.LOWGRAVITY;
         name = "Low Gravity !";
         duration = 10f;
+        initGravity = Physics.gravity;
     }
+
     public override void EffectOn()
     {
+        RpcGravityChange( initGravity / 2f );
+    }
 
+    [ClientRpc]
+    public void RpcGravityChange(Vector3 iNewGravity)
+    {
+        Physics.gravity = iNewGravity;
     }
 
     public override void EffectOff()
     {
+        RpcGravityChange( initGravity );
         DestroySelf();
     }
 }
 
-public class TsunamiTrackEvent : OnlineTrackEvent
+public class HighTideTrackEvent : OnlineTrackEvent
 {
-    public TsunamiTrackEvent()
+    private Vector3 initWaterPosition = Vector3.zero;
+    public HighTideTrackEvent()
     {
-        trackEventType = TRACKEVENTS.TSUNAMI;
-        name = "Tsunami";
+        trackEventType = TRACKEVENTS.HIGHTIDE;
+        name = "High Tide!";
         duration = 10f;
     }
     public override void EffectOn()

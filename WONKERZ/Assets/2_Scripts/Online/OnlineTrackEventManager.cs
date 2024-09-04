@@ -9,10 +9,12 @@ using Mirror;
 
 public class OnlineTrackEventManager : NetworkBehaviour
 {
+    [SyncVar]
    public OnlineTrackEvent activeEvent;
    private Coroutine trackEventCo;
     public float nextEventTime = 0f;
-
+    
+    [Server]
     public void SpawnEvent()
     {
         if (trackEventCo!=null)
@@ -25,7 +27,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         int selected = UnityEngine.Random.Range(0,n_eventTypes);
 
         activeEvent = GetEvent(selected);
-        RefreshUI();
+        RpcRefreshUI(activeEvent);
 
         activeEvent.EffectOn();
         trackEventCo = StartCoroutine(WaitForEventIsOver());
@@ -44,7 +46,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         activeEvent.EffectOff();
         activeEvent = null;
 
-        RefreshUI();
+        RpcRefreshUI(null);
     }
 
     public OnlineTrackEvent GetEvent(int iEventTypeIndex)
@@ -55,8 +57,8 @@ public class OnlineTrackEventManager : NetworkBehaviour
             case (int)TRACKEVENTS.LOWGRAVITY:
                 ev = new GravityTrackEvent();
                 break;
-            case (int)TRACKEVENTS.TSUNAMI:
-                ev = new TsunamiTrackEvent();
+            case (int)TRACKEVENTS.HIGHTIDE:
+                ev = new HighTideTrackEvent();
                 break;
             default:
                 break;
@@ -64,19 +66,20 @@ public class OnlineTrackEventManager : NetworkBehaviour
         return ev;
     }
 
-    private void RefreshUI()
+    [ClientRpc]
+    private void RpcRefreshUI(OnlineTrackEvent iEvent)
     {
         UIPlayerOnline pui = Access.UIPlayerOnline();
         if (pui==null)
             return;
 
-        if (activeEvent!=null)
+        if (iEvent!=null)
         {
             // show
             StartCoroutine(DelayedUIShow(pui, true));
             pui.TrackEventOnFXHandle.gameObject.SetActive(true);
             pui.TrackEventOffFXHandle.gameObject.SetActive(false);
-            pui.TrackEventNameTxt.text = activeEvent.name;
+            pui.TrackEventNameTxt.text = iEvent.name;
         }
         else {
 
