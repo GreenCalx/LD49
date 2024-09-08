@@ -18,10 +18,12 @@ public class OnlinePlayerController : NetworkBehaviour
 
     [Header("Mand Refs")]
     public PlayerController self_PlayerController;
+    public PowerController self_powerController;
     public Transform self_weightMeshHandle;
     public GameObject prefabCameraFocusable;
     public List<OnlineDamager> self_oDamagers;
     public OnlineDamageable self_oDamageable;
+    
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
     [Header("Internals")]

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Wonkerz {
     public class UIWorldSpaceHint : MonoBehaviour
     {
+        public bool isOnline = true;
         public bool facePlayer  = false;
         public bool faceCamera  = false;
         public bool yMotionAnim = false;
@@ -31,7 +32,11 @@ namespace Wonkerz {
         // Start is called before the first frame update
         void Start()
         {
-            playerTransform = Access.Player().GetTransform().transform;
+            if (!isOnline)
+                playerTransform = Access.Player().GetTransform().transform;
+            else
+                playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
+
             CM = Access.CameraManager();
             initScale = transform.localScale;
             initPosition = transform.position;

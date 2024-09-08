@@ -90,7 +90,17 @@ public class OnlineCollectibleBag : NetworkBehaviour
     IEnumerator Init() {
         yield return StartCoroutine(WaitForDependencies());
 
-        owner = OnlineGameManager.Get().localPlayer;
+        //owner = OnlineGameManager.Get().localPlayer;
+        owner = GetComponentInParent<OnlinePlayerController>();
+        if (owner.isClientOnly)
+        {
+            if (owner != OnlineGameManager.Get().localPlayer)
+            {
+                //owner = null;
+                yield break;
+            }
+        }
+        
 
         if (isServer)
         {
@@ -170,7 +180,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
             default:
                 break;
         }
-        if (isServerOnly)
+        if (isServer && isClient)
             UpdateCar();
         else
             RpcUpdateCar();
@@ -183,14 +193,25 @@ public class OnlineCollectibleBag : NetworkBehaviour
     }
 
     /// POWERS
-    public void CollectPower(OnlineCollectible iCollectiblePower)
+    [TargetRpc]
+    public void RpcCollectPower(OnlineCollectible iCollectiblePower)
     {
         PowerController powerC = owner.GetComponent<PowerController>();
-
         powerC.EquipCollectiblePower(iCollectiblePower);
+    }
 
+    public void CollectPower(OnlineCollectible iCollectiblePower)
+    {
         // TODO : Replace power management ?
         HasAPowerEquipped = true;
+        if ( isServer && !owner.isLocalPlayer)
+        {
+            RpcCollectPower(iCollectiblePower);
+            return;
+        }
+
+        PowerController powerC = owner.self_PlayerController.self_PowerController;
+        powerC.EquipCollectiblePower(iCollectiblePower);
     }
 
 
@@ -207,7 +228,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         updateWeight();
     }
 
-    [ClientRpc]
+    [TargetRpc]
     public void RpcUpdateCar()
     {
         UpdateCar();
