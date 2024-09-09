@@ -17,8 +17,8 @@ using Mirror;
 public class OnlineUIPauseMenu : MonoBehaviour, IControllable
 {
     public GameObject UIHandle;
-    public UISelectableElement panel;
-    public UISelectableElement debugPanel;
+    public UIControllableElement panel;
+    public UIControllableElement debugPanel;
     public UITab goToRoomTab;
 
     public enum EXITABLE_SCENES { SN_TITLE };

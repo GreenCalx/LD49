@@ -30,10 +30,10 @@ public class UICamera : GameCamera
         // try to find a new camera with our type.
         // HACK:
         var cameras = GameObject.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (var cam in cameras) {
-            if (cam.name == "Main Camera" && cam != this.gameObject) {
-                if (cam.GetComponent<UICamera>()) {
-                    var uiCam = cam.GetComponent<UICamera>();
+        foreach (var camera in cameras) {
+            if (camera.name == "Main Camera" && camera != cam) {
+                if (camera.GetComponent<UICamera>()) {
+                    var uiCam = camera.GetComponent<UICamera>();
                     uiCam.enabled = true;
                     uiCam.cam.enabled = true;
                     uiCam.gameObject.SetActive(true);

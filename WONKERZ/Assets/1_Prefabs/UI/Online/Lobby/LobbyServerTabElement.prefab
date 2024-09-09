@@ -76,10 +76,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 0}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -93,16 +89,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 0
+  isOnDisableCallingDeactivate: 0
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 0
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 6631104729108891809}
 --- !u!1 &6631104729108891822
 GameObject:

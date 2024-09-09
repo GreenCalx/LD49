@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using Mirror;
 
+using Schnibble;
+
 using Wonkerz;
     public enum ONLINE_GAME_STATE {
         NONE = 0,
@@ -37,6 +39,15 @@ using Wonkerz;
         public Action OnRoomStopClientCB;
         public Action OnRoomClientSceneChangedCB;
         public Action OnRoomServerPlayersReadyCB;
+
+        public Action<TransportError, string> OnClientErrorCB;
+
+        public override void OnClientError(TransportError error, string reason)
+        {
+            base.OnClientError(error, reason);
+
+            OnClientErrorCB?.Invoke(error, reason);
+        }
 
         public override void OnRoomClientDisconnect()
         {
@@ -212,7 +223,7 @@ using Wonkerz;
 
         public override void OnRoomStopClient()
         {
-            UnityEngine.Debug.Log("OnRoomClientStop");
+            this.Log("OnRoomClientStop");
 
             SceneManager.UnloadSceneAsync(Constants.SN_OPENCOURSE);
             if (selectedTrial != "") SceneManager.UnloadSceneAsync(selectedTrial);
@@ -222,7 +233,7 @@ using Wonkerz;
 
         public override void OnRoomStopServer()
         {
-            UnityEngine.Debug.Log("OnRoomServerStop");
+            this.Log("OnRoomServerStop");
 
             SceneManager.UnloadSceneAsync(Constants.SN_OPENCOURSE);
             if (selectedTrial != "") SceneManager.UnloadSceneAsync(selectedTrial);

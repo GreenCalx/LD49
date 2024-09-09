@@ -14,8 +14,8 @@ namespace Wonkerz {
     public class UIPauseMenu : MonoBehaviour, IControllable
     {
         public GameObject UIHandle;
-        public UISelectableElement panel;
-        public UISelectableElement debugPanel;
+        public UIControllableElement panel;
+        public UIControllableElement debugPanel;
 
         public enum EXITABLE_SCENES { SN_TITLE, SN_HUB };
         public EXITABLE_SCENES sceneToLoadOnExit = EXITABLE_SCENES.SN_TITLE;

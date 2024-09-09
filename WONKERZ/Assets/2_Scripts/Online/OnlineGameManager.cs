@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using Wonkerz;
 
+using Schnibble;
+
 // Network object specs
 //
 // description : This is the main manager. It is effectively a singleton that will manage
@@ -72,7 +74,7 @@ public class OnlineGameManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        Debug.LogError("Start onlineGameManager : server.");
+        this.LogError("Start onlineGameManager : server.");
         // TODO: remove this as we are already kinda a singleton ourselves.
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
@@ -107,22 +109,22 @@ public class OnlineGameManager : NetworkBehaviour
         // Therefor if we dont have the same number of players in the room/lobby and spawned players there is a problem.
         // TODO:
         // Add a timeout if we cannot have all players spawed for 10s or something.
-        Debug.LogError("Waiting for client to spawn.");
+        this.LogError("Waiting for client to spawn.");
         while (uniquePlayers.Count != expectedPlayersFromLobby)
         {
-            Debug.LogError("Number of client spawned: " + uniquePlayers.Count);
+            this.LogError("Number of client spawned: " + uniquePlayers.Count);
             yield return null;
         }
-        Debug.LogError("AllClientSpawned." + uniquePlayers.Count);
+        this.LogError("AllClientSpawned." + uniquePlayers.Count);
     }
 
     [Server]
     IEnumerator WaitForAllPlayersToBeReady()
     {
         // When a client press start to ready up it will set its isReady flag on its OnlinePlayerController
-        Debug.LogError("Waiting for clients to be ready.");
+        this.LogError("Waiting for clients to be ready.");
         while (!AreAllPlayersReady()) {yield return null;}
-        Debug.LogError("AllClientReady.");
+        this.LogError("AllClientReady.");
     }
 
     [Server]
@@ -133,9 +135,9 @@ public class OnlineGameManager : NetworkBehaviour
         // After a client has spawned we wait for it to be "loaded" meaning every dependencies are resolved client-side.
         // This is to avoid having Rpc sent when the client is not fully loaded.
         // This should not happen, but for now it happens sometimes because Mirror does not spown the localPlayer as if it was a real NetworkServer.Spawn I guess.
-        Debug.LogError("Waiting for clients to be loaded.");
+        this.LogError("Waiting for clients to be loaded.");
         while (!AreAllPlayersLoaded()) {yield return null;}
-        Debug.LogError("AllClientLoaded.");
+        this.LogError("AllClientLoaded.");
     }
 
     [Server]
@@ -146,7 +148,7 @@ public class OnlineGameManager : NetworkBehaviour
 
     [Server]
     void FreezeAllPlayers(bool state) {
-        Debug.LogError("server: FreezeAllPlayers " + state.ToString());
+        this.LogError("server: FreezeAllPlayers " + state.ToString());
         foreach(var opc in uniquePlayers) opc.FreezePlayer(state);
     }
 
@@ -410,7 +412,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcLaunchOnlineStartLine()
     {
         if (startLine == null) {
-            UnityEngine.Debug.LogError("Starting OnlineStartLine but object is null.");
+            this.LogError("Starting OnlineStartLine but object is null.");
             return;
         }
         startLine.LaunchCountdown();

@@ -577,23 +577,12 @@ namespace Wonkerz
 
         void Start()
         {
-            UnityEngine.Debug.LogError("player controller : awake.");
-            UnityEngine.Debug.LogError("player controller : awake => Remember that now we are not automatic and might have broken the local plays.");
+            this.LogWarn("player controller : awake => Remember that now we are not automatic and might have broken the local plays.");
 
             // We dont do anything automatically now,
             // Because we might be an online stub on the client!
             // If something wants to update us, so be it...
             return;
-        }
-
-        void OnEnable()
-        {
-            UnityEngine.Debug.LogError("player controller : onenable.");
-        }
-
-        void OnDisable()
-        {
-            UnityEngine.Debug.LogError("player controller : ondisable.");
         }
 
         void OnDestroy()
@@ -905,7 +894,7 @@ namespace Wonkerz
 
             Access.CameraManager()?.OnTargetChange(GetTransform());
 
-            UnityEngine.Debug.LogError("ActivateMode" + GetTransform().name);
+            this.Log("ActivateMode" + GetTransform().name);
         }
 
         public void DeactivateMode(PlayerVehicleStates mode)
@@ -1027,7 +1016,7 @@ namespace Wonkerz
         {
             if (inputs == null)
             {
-                UnityEngine.Debug.LogWarning("ProcessInputs inputs is null.");
+                this.LogWarn("ProcessInputs inputs is null.");
                 return;
             }
             // Online mode register inputs and send them to the server.

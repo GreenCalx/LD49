@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Schnibble.UI;
+using Schnibble;
 
 // TODO: move this to the real network room.
 // might even need to be something on the lobby server.
@@ -31,8 +32,6 @@ public class UIRoom : UIPanelTabbed
     public bool showGameStartButton = false;
     public GameObject startGameButton;
 
-    Coroutine coro_updateLatency;
-
     void Start() {
         uiOnline = (Parent as UIOnline);
     }
@@ -43,21 +42,24 @@ public class UIRoom : UIPanelTabbed
 
         if (uiOnline == null) Start();
 
-        coro_updateLatency = StartCoroutine(UpdateLatency());
-
         uiOnline.roomServer.OnRoomServerPlayersReadyCB += OnAllPlayersReady;
         uiOnline.roomServer.OnRoomClientSceneChangedCB += OnGameLoaded;
     }
 
+    public override void deactivate()
+    {
+        base.deactivate();
+    }
+
     public void OnGameLoaded() {
         // Deactivate UX.
-        if (NetworkClient.active && Utils.IsSceneActive(uiOnline.roomServer.GameplayScene)) {
+        if (NetworkClient.active && Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene)) {
             uiOnline.SetState(UIOnline.States.Deactivated);
         }
     }
 
     public void OnAllPlayersReady() {
-        UnityEngine.Debug.Log("OnAllPlayersReady");
+        this.Log("OnAllPlayersReady");
         // Start game
         if (showGameStartButton) {
             // TODO: Show start button to start the game on host
@@ -67,14 +69,18 @@ public class UIRoom : UIPanelTabbed
     }
 
     public void OnPlayerConnected() {
-        if (uiOnline == null) return;
-        UnityEngine.Debug.Log("OnPlayerConnected: " + uiOnline.roomServer.roomSlots.Count);
+        if (uiOnline == null) {
+            uiOnline = (Parent as UIOnline);
+        };
+        this.Log("OnPlayerConnected: " + uiOnline.roomServer.roomSlots.Count);
         UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
     }
 
     public void OnPlayerDisconnected() {
-        if (uiOnline == null) return;
-        UnityEngine.Debug.Log("OnPlayerDisconnected: " + uiOnline.roomServer.roomSlots.Count);
+        if (uiOnline == null) {
+            uiOnline = (Parent as UIOnline);
+        };
+        this.Log("OnPlayerDisconnected: " + uiOnline.roomServer.roomSlots.Count);
         UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
     }
 
@@ -82,15 +88,9 @@ public class UIRoom : UIPanelTabbed
         // TODO: Update already existing slots instead of creating again all slots.
 
         // Clean-up
-        if (coro_updateLatency != null)
-        {
-            StopCoroutine(coro_updateLatency);
-            coro_updateLatency = null;
-        }
         foreach (var s in uiPlayerSlots)
         {
             // clean-up callbacks to avoid dead objects being called.
-            s.roomPlayer.OnReadyStateChangedCB -= s.OnReadyStateChanged;
             GameObject.Destroy(s.gameObject);
         }
         uiPlayerSlots.Clear();
@@ -108,23 +108,15 @@ public class UIRoom : UIPanelTabbed
             playerData.latency = -1;
 
             var uiSlot = AddPlayer(playerData);
-
-            (slot as NetworkRoomPlayerExt).OnReadyStateChangedCB += uiSlot.OnReadyStateChanged;
         }
-        // start again
-        coro_updateLatency = StartCoroutine(UpdateLatency());
     }
 
     public UIRoom_PlayerSlot AddPlayer(UIPlayerSlotData data) {
         //var playerSlot = UIRoom_PlayerSlot.Create(this.gameObject, data.backgroundColor, data.name, data.readyState);
         var slot = GameObject.Instantiate(UIPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_PlayerSlot>();
 
-        slot.roomPlayer = data.player;
-
-        slot.SetBackgroundColor(data.backgroundColor);
-        slot.SetPlayerName(data.name);
-        slot.OnReadyStateChanged(data.readyState, data.readyState);
-        slot.OnUpdateLatency(data.latency);
+        slot.AttachRoomPlayer(data.player);
+        slot.UpdateView();
 
         slot.gameObject.SetActive(true);
 
@@ -142,17 +134,6 @@ public class UIRoom : UIPanelTabbed
         uiPlayerSlots.Add(slot);
         // might need to return the newly created object at some point?
         return slot;
-    }
-
-    IEnumerator UpdateLatency() {
-        while (true) {
-            for(int i =0; i < uiPlayerSlots.Count ; ++i) {
-                var slot = uiPlayerSlots[i];
-                int latency = (int)(slot.roomPlayer.rtt * 1000);
-                slot.OnUpdateLatency(latency);
-            }
-            yield return new WaitForSeconds(0.5f);
-        }
     }
 
     public void showReadyUpButton(bool show, UIRoom_PlayerSlot slot) {

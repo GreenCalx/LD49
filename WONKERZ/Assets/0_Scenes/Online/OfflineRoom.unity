@@ -169,13 +169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 434629046}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -189,16 +182,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 0
+  isOnDisableCallingDeactivate: 0
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 225949605}
 --- !u!1 &156854369
 GameObject:
@@ -370,13 +360,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1697621501}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -402,16 +385,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 0
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 156854372}
 --- !u!1 &165812834
 GameObject:
@@ -657,13 +637,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 865397226}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -689,16 +662,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 0
+  isOnDisableCallingDeactivate: 0
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 295455723}
 --- !u!224 &295455722
 RectTransform:
@@ -1156,25 +1126,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1697621501}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1697621501}
-        m_TargetAssemblyTypeName: UIOnline, WkzCore
-        m_MethodName: StateError
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -1188,23 +1139,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 1
   inputActivate: 
+  selector_latch: 0
+  inputCancel: 
+  useDefaultCancelPanelConfirmation: 1
+  cancelDeactivatePanel: 1
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  selector_latch: 0
-  inputMgrIsUnique: 1
-  useDefaultCancelPanelConfirmation: 1
-  cancelDeactivatePanel: 1
   tabs:
   - {fileID: 133746205}
   navigationMode: 0
-  enablingIsActivation: 1
   UIPlayerSlot_prefab: {fileID: 1725610305151340580, guid: 16a607e42823713448e8e389de8f9953, type: 3}
   background: {fileID: 165812835}
   readyUpButton: {fileID: 133746203}
@@ -1506,25 +1458,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1697621501}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1697621501}
-        m_TargetAssemblyTypeName: UIOnline, WkzCore
-        m_MethodName: StateError
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -1538,24 +1471,25 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 1
   inputActivate: 
+  selector_latch: 0.2
+  inputCancel: 
+  useDefaultCancelPanelConfirmation: 1
+  cancelDeactivatePanel: 1
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  selector_latch: 0.2
-  inputMgrIsUnique: 1
-  useDefaultCancelPanelConfirmation: 1
-  cancelDeactivatePanel: 1
   tabs:
   - {fileID: 1910477381}
   - {fileID: 295455721}
   navigationMode: 1
-  enablingIsActivation: 1
 --- !u!1 &1099761016
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,25 +1520,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1697621501}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1697621501}
-        m_TargetAssemblyTypeName: UIOnline, WkzCore
-        m_MethodName: StateError
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -1618,23 +1533,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 1
   inputActivate: 
+  selector_latch: 0.2
+  inputCancel: 
+  useDefaultCancelPanelConfirmation: 1
+  cancelDeactivatePanel: 1
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  selector_latch: 0.2
-  inputMgrIsUnique: 1
-  useDefaultCancelPanelConfirmation: 1
-  cancelDeactivatePanel: 1
   tabs:
   - {fileID: 2040846215}
   navigationMode: 0
-  enablingIsActivation: 1
 --- !u!4 &1099761019
 Transform:
   m_ObjectHideFlags: 0
@@ -2461,13 +2377,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1697621501}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -2493,16 +2402,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 1
+  useParentInputs: 0
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 1686866893}
 --- !u!1 &1697621496
 GameObject:
@@ -2619,13 +2525,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 0}
-  copyColorFromParent: 0
-  selected_color: {r: 0.9150943, g: 0.74863315, b: 0, a: 1}
-  deselected_color: {r: 1, g: 1, b: 1, a: 1}
-  activated_color: {r: 0, g: 1, b: 0.41082764, a: 1}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -2639,26 +2538,41 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 0
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 0
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 0
-  inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
+  isTakingInputPrecedence: 1
+  useParentInputs: 0
+  inputActivate: UIActivate
   selector_latch: 0.2
-  inputMgrIsUnique: 1
+  inputCancel: UICancel
   useDefaultCancelPanelConfirmation: 1
   cancelDeactivatePanel: 0
-  tabs: []
-  navigationMode: 1
-  enablingIsActivation: 1
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  stateMessage:
+  - Connecting to server list...
+  - Connecting to room...
+  - Creating room...
+  - In main menu...
+  - In room
+  - Deactivated
+  - Exit
+  - Connected to server list!
+  - Connected to room!
+  - Cannot connect to server list, please try again later.
+  - Server in maintenance, please try again later.
+  - Room does not exists, please refresh server list.
+  - Cannot connect to room, please try again.
+  - Password is incorrect! Please try again.
+  - Sorry, something went wrong! Please try again.
   roomServer: {fileID: 484714454}
   stateMessageText: {fileID: 420026928}
-  uiMainMenu: {fileID: 865397224}
-  uiRoomCreationMenu: {fileID: 1099761016}
+  uiMainMenu: {fileID: 865397226}
+  uiRoomCreationMenu: {fileID: 1099761018}
   uiRoom: {fileID: 434629046}
   uiServerList: {fileID: 481722121}
 --- !u!1 &1910477379
@@ -2714,13 +2628,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 865397226}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -2746,16 +2653,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 0
+  isOnDisableCallingDeactivate: 0
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 1910477383}
 --- !u!114 &1910477382
 MonoBehaviour:
@@ -3213,13 +3117,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Parent: {fileID: 1099761018}
-  copyColorFromParent: 1
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
-  onCancel:
-    m_PersistentCalls:
-      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -3245,16 +3142,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  inheritsInputMgr: 1
+  isOnEnableCallingActivate: 0
+  isOnDisableCallingDeactivate: 0
+  useParentInputManager: 1
   inputMgr: {fileID: 0}
-  copyInputsFromParent: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputActivate: 
-  inputUp: 
-  inputDown: 
-  inputLeft: 
-  inputRight: 
-  inputCancel: 
-  toActivate: {fileID: 0}
   text: {fileID: 2040846213}
 --- !u!1 &2131623141
 GameObject:

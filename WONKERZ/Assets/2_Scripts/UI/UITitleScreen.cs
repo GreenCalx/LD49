@@ -13,14 +13,11 @@ public class UITitleScreen : UIPanelTabbed
     public UIPanelTabbed nameEntryPanel;
     public UIProfileCards profilePanel;
 
-    protected override void Awake()
+    protected override void OnEnable()
     {
-        base.Awake();
-        UnityEngine.Debug.Log("awake");
         inputMgr = Access.PlayerInputsManager().player1;
 
-        init  ();
-        select();
+        base.OnEnable();
 
         // NOTE: if we come back from online, we make sure to delete the network manager.
         if (NetworkRoomManagerExt.singleton != null)
@@ -30,19 +27,12 @@ public class UITitleScreen : UIPanelTabbed
         }
     }
 
-    void OnDestroy()
+    public override void cancel()
     {
-        deactivate();
-    }
+        base.cancel();
 
-    protected override void ProcessInputs(InputManager currentMgr, GameController entry){
-        base.ProcessInputs(currentMgr, entry);
-
-        if ((entry.Get(PlayerInputs.GetIdx(inputCancel)) as GameInputButton).GetState().down)
-        {
-            // propose to quit to desktop
-            confirmExitPanel.onActivate?.Invoke();
-        }
+        //open confirm panel.
+        confirmExitPanel.activate();
     }
 
     public void launchNewGame()
@@ -50,17 +40,10 @@ public class UITitleScreen : UIPanelTabbed
         nameEntryPanel.onActivate?.Invoke();
 
         profilePanel.mode = UIProfileCards.FD_MODE.WRITE;
-        // profilePanel.onActivate?.Invoke();
-
-        // Access.SceneLoader().loadScene(Constants.SN_INTRO);
     }
 
     public void launchLoadGame()
     {
-        // Access.CollectiblesManager().loadJars();
-        // Access.GameProgressSaveManager().Load();
-
-        // Access.SceneLoader().loadScene(Constants.SN_HUB);
         profilePanel.mode = UIProfileCards.FD_MODE.READ;
         profilePanel.onActivate?.Invoke();
     }
@@ -71,18 +54,15 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchOnline() {
         PlayerController pc = Access.Player();
-        if (!!pc)
-        Destroy(pc.gameObject);
+        if (!!pc) Destroy(pc.gameObject);
 
         Access.GameSettings().isLocal = false;
-
         Access.SceneLoader().loadScene("OfflineRoom");
     }
 
     public void launchLocal() {
         PlayerController pc = Access.Player();
-        if (!!pc)
-        Destroy(pc.gameObject);
+        if (!!pc) Destroy(pc.gameObject);
 
         Access.GameSettings().isLocal = true;
 
@@ -91,6 +71,6 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchDemo()
     {
-        UnityEngine.Debug.LogError("Not implemented");
+        this.LogError("Not implemented");
     }
 }

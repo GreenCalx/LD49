@@ -12,25 +12,36 @@ public class UIRoom_PlayerSlot : MonoBehaviour
     public GameObject playerName;
     public GameObject readyState;
 
-    public NetworkRoomPlayerExt roomPlayer;
+    NetworkRoomPlayerExt roomPlayer;
+    public void AttachRoomPlayer(NetworkRoomPlayerExt player) {
+        if (roomPlayer != null && roomPlayer != player) {
+            roomPlayer.onAnyChange -= UpdateView;
+        }
+        roomPlayer = player;
+        if (roomPlayer != null) {
+            roomPlayer.onAnyChange += UpdateView;
+        }
+    }
 
-    public void OnReadyStateChanged(bool oldState, bool newState ) {
-        SetReadyState(newState);
-
-        UnityEngine.Debug.Log("OnReadyStateChanged :" + newState);
-
-        if (roomPlayer.isLocalPlayer) {
-            UnityEngine.Debug.Log("OnReadyStateChanged localPlayer:" + roomPlayer.isLocalPlayer);
-            this.gameObject.transform.parent.GetComponent<UIRoom>().showReadyUpButton(!newState, this);
+    public void UpdateView() {
+        // pull player infos.
+        SetBackgroundColor(roomPlayer.infos.backgroundColor);
+        SetPlayerName(roomPlayer.infos.playerName);
+        SetLatency((int)(roomPlayer.infos.rtt * 1000));
+        // pull player states.
+        SetReadyState(roomPlayer.readyToBegin);
+        if (!roomPlayer.readyToBegin) {
+            // Player is not ready,
+            // for now we only show a button if we are the current player that is not ready.
+            if (roomPlayer.isLocalPlayer) {
+                // TODO: better child/parent.
+                this.gameObject.transform.parent.GetComponent<UIRoom>().showReadyUpButton(!roomPlayer.readyToBegin, this);
+            }
         }
     }
 
     public void ChangeReadyState() {
         roomPlayer.CmdChangeReadyState(true);
-    }
-
-    public void OnUpdateLatency(int latency) {
-        SetLatency(latency);
     }
 
     public static UIRoom_PlayerSlot Create(GameObject parent, Color backgroundColor, string playerName, bool readyState) {

@@ -10,46 +10,25 @@ using System.Net.Sockets;
 
 public class UILobbyServerList : UIPanelTabbedScrollable
 {
+    // Externals 
+
     public VerticalLayoutGroup layout;
 
     public UILobbyServerTab lobbyTabObject;
 
     public UIOnline online { get; private set; }
 
-    public class DisplayRoomListCmd : UIOnline.MainThreadCommand
-    {
-        List<Lobby> lobbies;
-        UILobbyServerList ui;
-        public DisplayRoomListCmd(List<Lobby> lobbies, UILobbyServerList ui)
-        {
-            this.lobbies = lobbies;
-            this.ui = ui;
-        }
-
-        public override void Do()
-        {
-            foreach (var lobby in lobbies)
-            {
-                ui.CreateLobbyTab(lobby);
-            }
-
-            ui.SelectTab(0);
-
-            OnCmdSuccess?.Invoke();
-        }
-    };
-
     public override void activate()
     {
         base.activate();
 
         if (Parent == null) {
-            UnityEngine.Debug.LogError("Please connect a parent to the UILobbyServerList.");
+            this.LogError("Please connect a parent to the UILobbyServerList.");
             return;
         }
         online = Parent as UIOnline;
         if (online == null) {
-            UnityEngine.Debug.LogError("Please connect a parent of type UIOnline to the UILobbyServerList.");
+            this.LogError("Please connect a parent of type UIOnline to the UILobbyServerList.");
             return;
         }
 
@@ -72,6 +51,28 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
         // Carefull: SetActive will call OnDisable whict will call deactivate, cousing StackOverflowError.
         this.gameObject.SetActive(false);
+    }
+
+    // Interenals
+
+    Queue<MainThreadCommand> pendingCommands = new Queue<MainThreadCommand>();
+
+    protected override void Update()
+    {
+        base.Update();
+
+        while (pendingCommands.Count != 0)
+        {
+            var cmd = pendingCommands.Dequeue();
+            if (cmd == null)
+            {
+                this.LogError("Command is null => very weird!");
+            }
+            else
+            {
+                cmd.Do();
+            }
+        }
     }
 
     // Called from UX: this is thread safe.
@@ -98,7 +99,30 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
     // Need to be thread safe (cf UIOnline)
 
-    public void OnLobbyListReady(SchLobbyClient.RoomListData data) {
-        online.pendingCommands.Enqueue(new DisplayRoomListCmd(data.lobbies, this));
+    class DisplayRoomListCmd : MainThreadCommand
+    {
+        List<Lobby> lobbies;
+        UILobbyServerList ui;
+        public DisplayRoomListCmd(List<Lobby> lobbies, UILobbyServerList ui)
+        {
+            this.lobbies = lobbies;
+            this.ui = ui;
+        }
+
+        public override void Do()
+        {
+            foreach (var lobby in lobbies)
+            {
+                ui.CreateLobbyTab(lobby);
+            }
+
+            ui.SelectTab(0);
+
+            OnCmdSuccess?.Invoke();
+        }
+    };
+
+    void OnLobbyListReady(SchLobbyClient.RoomListData data) {
+        pendingCommands.Enqueue(new DisplayRoomListCmd(data.lobbies, this));
     }
 }

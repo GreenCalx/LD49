@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Wonkerz;
+using System;
+
+using Schnibble;
 
 // Network object specs
 //
@@ -13,7 +16,9 @@ using Wonkerz;
 public class OnlinePlayerController : NetworkBehaviour
 {
     [Header("OnlinePlayerController")]
-    public string onlinePlayerName;
+    string _onlinePlayerName;
+    public string onlinePlayerName { get => _onlinePlayerName; set { _onlinePlayerName = value; onAnyChange?.Invoke(); } }
+
     public OnlineCollectibleBag bag;
 
     [Header("Mand Refs")]
@@ -31,21 +36,43 @@ public class OnlinePlayerController : NetworkBehaviour
     // It will not modify it directly but send a cmd to send it.
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
-    public float playerSpeed = 0f;
+    bool _isReady = false;
+    public bool isReady { get => _isReady; private set {_isReady = value; onAnyChange?.Invoke();}}
     [SyncVar]
-    bool isReady = false;
+    bool _isLoaded = false;
+    public bool isLoaded { get => _isLoaded; private set {_isLoaded = value; onAnyChange?.Invoke();}}
     [SyncVar]
-    bool isLoaded = false;
-    [SyncVar]
-    bool isSpawned = false;
+    bool _isSpawned = false;
+    public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke();}}
 
     // TODO: Remove this hack and do a proper online object.
     [SyncVar(hook=nameof(OnPlayerStateChanged))]
     PlayerController.PlayerStates        playerState;
     [SyncVar(hook=nameof(OnPlayerVehicleStateChanged))]
     PlayerController.PlayerVehicleStates playerVehicleState;
+    // wheelOmega needs to be updated by the server.
+    [SyncVar(hook=nameof(OnUpdateOmegas))]
+    float[] omegas = new float[4];
+
+    public void OnUpdateOmegas(float[] oldValues, float[] newValues) {
+        if (isServer) return;
+
+        var chassis = self_PlayerController.car.GetCar().chassis;
+        var axle = chassis.axles[0];
+        axle.right.SetAngularVelocity(newValues[0]);
+        axle.left .SetAngularVelocity(newValues[1]);
+
+        axle = chassis.axles[1];
+        axle.right.SetAngularVelocity(newValues[2]);
+        axle.left .SetAngularVelocity(newValues[3]);
+    }
 
     public Transform cameraFocusable;
+
+    // Will be called when anything changes on this online player.
+    // To do this we removed any public variable to have getter/setter
+    // that call this callback if anyone is listening.
+    public Action onAnyChange;
 
     public bool IsSpawned() => isSpawned;
     public bool IsReady()   => isReady;
@@ -60,19 +87,28 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if (isServer)
-            playerSpeed = (float)self_PlayerController.car.GetCar().GetCurrentSpeedInKmH_FromWheels();
         if ((self_oDamagers!=null)&&(self_oDamagers.Count > 0))
             UpdatePlayerDamagers();
+
+        if (IsLoaded()) {
+            var chassis = self_PlayerController.car.GetCar().chassis;
+            var axle = chassis.axles[0];
+            omegas[0] = axle.right.GetAngularVelocity();
+            omegas[1] = axle.left.GetAngularVelocity();
+
+            axle = chassis.axles[1];
+            omegas[2] = axle.right.GetAngularVelocity();
+            omegas[3] = axle.left.GetAngularVelocity();
+        }
     }
 
     private void UpdatePlayerDamagers()
     {
         int damage = 0;
-        //WkzCar cc = self_PlayerController.car.GetCar();
-        if (playerSpeed > minSpeedToDoDamage)
+        WkzCar cc = self_PlayerController.car.GetCar();
+        if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
         { 
-            damage = (int) Mathf.Abs(playerSpeed);
+            damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
             damage +=(int) Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
         }
 
@@ -167,7 +203,7 @@ public class OnlinePlayerController : NetworkBehaviour
         //means we need on online stub with a few extras: no rendering, etc...I
         if (!isClient || (isClient && !isLocalPlayer))
         {
-            UnityEngine.Debug.LogError("OnlinePlayerInit : server.");
+            this.LogError("OnlinePlayerInit : server.");
             // server : no need to wait for dependencies => they should be local and loaded asap locally.
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
             self_PlayerController.InitOnServer();
@@ -214,7 +250,7 @@ public class OnlinePlayerController : NetworkBehaviour
     public void CmdModifySpawnedState(bool state) {
         if (state)
         {
-            Debug.LogError("Server received client spawned.");
+            this.LogError("Server received client spawned.");
 
             OnlineGameManager.Get().AddPlayer(this);
 
@@ -295,7 +331,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     IEnumerator WaitForDependencies()
     {
-        Debug.LogError("Start OnlinePlayerController wait for dependencies.");
+        this.LogError("Start OnlinePlayerController wait for dependencies.");
 
         // Wait for OnlineGameManager to setup.
         while (NetworkRoomManagerExt.singleton == null) { yield return null; }
@@ -308,7 +344,7 @@ public class OnlinePlayerController : NetworkBehaviour
         while (Access.UIPlayerOnline() == null) { yield return null; }
         while (Access.CameraManager() == null) { yield return null; }
 
-        Debug.LogError("End OnlinePlayerController wait for dependencies.");
+        this.LogError("End OnlinePlayerController wait for dependencies.");
     }
 
     public override void OnStartClient()
@@ -317,7 +353,7 @@ public class OnlinePlayerController : NetworkBehaviour
         // only if we are client only, and not the local player.
         if (!isServer && !isLocalPlayer)
         {
-            UnityEngine.Debug.LogError("OnlinePlayerInit : client.");
+            this.LogError("OnlinePlayerInit : client.");
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
 
             self_PlayerController.InitAsOnlineStub();
@@ -345,7 +381,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     IEnumerator InitLocalPlayer()
     {
-        UnityEngine.Debug.LogError("OnlinePlayerInit : client local player.");
+        this.LogError("OnlinePlayerInit : client local player.");
         // client but local: need to wait dependencies as some things might not be loaded.
         // It is probably a wrong statement: every dependencies should be loaded when this object is calling Start() ?
         yield return StartCoroutine(WaitForDependencies());
@@ -403,7 +439,7 @@ public class OnlinePlayerController : NetworkBehaviour
         if (t != null)
         {
             // Update camera focus.
-            Debug.LogError("RpcSetCameraFocus." + t.gameObject.name);
+            this.LogError("RpcSetCameraFocus." + t.gameObject.name);
             Access.CameraManager()?.OnTargetChange(t);
         }
     }
@@ -413,7 +449,7 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState,PlayerController.PlayerVehicleStates newState) {
-        UnityEngine.Debug.LogWarning("OnPlayerVehicleStateChanged : " + newState.ToString());
+        this.LogWarn("OnPlayerVehicleStateChanged : " + newState.ToString());
         if(!isServer) self_PlayerController.TransitionTo(newState);
     }
 

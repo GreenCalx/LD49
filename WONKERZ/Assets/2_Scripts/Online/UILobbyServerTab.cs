@@ -50,43 +50,19 @@ public class UILobbyServerTab : UITextTab
     UIConnectionStateText connectionState;
     UILobbyServerList serverList;
 
-    public class NATPunchClientCmd : UIOnline.MainThreadCommand
+    public class NATPunchClientCmd : UIOnline.UIOnlineMainThreadCommand
     {
-        UILobbyServerTab tab;
+        int id;
         IPEndPoint       ep;
 
-        public NATPunchClientCmd(UILobbyServerTab tab, IPEndPoint ep) {
-            this.tab = tab;
+        public NATPunchClientCmd(UIOnline uiOnline, int id, IPEndPoint ep):base(uiOnline) {
             this.ep = ep;
+            this.id = id;
         }
 
         public override void Do()
         {
-            // Setup client remotePoint as host.
-            var uiOnline   = tab.serverList.online;
-            var roomServer = uiOnline.roomServer;
-
-            (roomServer.transport as PortTransport).Port = (ushort)ep.Port;
-            roomServer.networkAddress                    = ep.Address.ToString();
-            if (!NetworkClient.active) {
-                // need to startClient to get back localEndPoint.
-                // Mirror should send several messages to try to connect, almost like a NATPunch \o/
-                roomServer.StartClient();
-                // now that client is started, send to server the port.
-                NetworkWriter writer = NetworkWriterPool.Get();
-                writer.WriteByte((byte)SchLobbyServer.OpCode.NATPunchIP);
-
-                SchLobbyServer.NATPunchIP data = new SchLobbyServer.NATPunchIP();
-                data.senderID = uiOnline.client.id;
-                data.port     = (roomServer.transport as SchCustomRelayKcpTransport).GetClientLocalEndPoint().Port;
-                data.receiverID = tab.lobby.hostID;
-
-                writer.Write(data);
-
-                tab.serverList.online.client.Send(writer);
-
-                UnityEngine.Debug.Log("Lobby client: [NATPunchIP] to " + uiOnline.client.remoteEndPoint.ToString());
-            }
+            uiOnline.ConnectToRoom(ep, id);
         }
     }
 
@@ -95,7 +71,7 @@ public class UILobbyServerTab : UITextTab
 
         serverList = Parent as UILobbyServerList;
         if (serverList == null) {
-            UnityEngine.Debug.LogError("Please connect a Parent of type UILobbyServerList to UILobbyServerTab.");
+            this.LogError("Please connect a Parent of type UILobbyServerList to UILobbyServerTab.");
         }
 
         text.text = lobby.name;
@@ -108,7 +84,7 @@ public class UILobbyServerTab : UITextTab
         for (int i = 0; i < 10; ++i) {
             if (NetworkClient.active) break;
 
-            UnityEngine.Debug.Log("coroutine tryconnectserver.");
+            this.Log("coroutine tryconnectserver.");
             serverList.online.roomServer.StartClient();
             yield return new WaitForSeconds(0.25f);
         }
@@ -122,12 +98,31 @@ public class UILobbyServerTab : UITextTab
         }
     }
 
+    Queue<MainThreadCommand> pendingCommands = new Queue<MainThreadCommand>();
+    override protected void Update()
+    {
+        base.Update();
+
+        while (pendingCommands.Count != 0)
+        {
+            var cmd = pendingCommands.Dequeue();
+            if (cmd == null)
+            {
+                this.LogError("Command is null => very weird!");
+            }
+            else
+            {
+                cmd.Do();
+            }
+        }
+    }
+
     // Callbacks
 
     void RegisterCallbacks() {
-        NetworkManager.singleton.transport.OnClientConnected += OnClientConnected;
-        serverList.online.client.OnStartNATPunch += OnNATPunch;
-    }
+                                                   NetworkManager.singleton.transport.OnClientConnected += OnClientConnected;
+    serverList.online.client.OnStartNATPunch += OnNATPunch;
+}
 
     void RemoveCallbacks() {
         NetworkManager.singleton.transport.OnClientConnected -= OnClientConnected;
@@ -168,15 +163,14 @@ public class UILobbyServerTab : UITextTab
     }
 
     public void OnClientError(TransportError error, string reason) {
-        UnityEngine.Debug.Log("OnClientError.");
+        this.Log("OnClientError.");
         serverList.online.activate();
 
         RemoveCallbacks();
     }
 
     // Need to be on main thread (cf UIOnline)
-
     public void OnNATPunch(IPEndPoint toNATPunch) {
-        serverList.online.pendingCommands.Enqueue(new NATPunchClientCmd(this, toNATPunch));
+        pendingCommands.Enqueue(new NATPunchClientCmd(this.serverList.online, this.lobby.hostID, toNATPunch));
     }
 }

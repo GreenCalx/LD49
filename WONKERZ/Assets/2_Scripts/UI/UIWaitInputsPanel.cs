@@ -4,7 +4,7 @@ using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
 
-public class UIWaitInputsPanel : UIPanelControlable
+public class UIWaitInputsPanel : UIPanel
 {
     private bool wait = false;
     private float waitBeforeInputs = 0.5f;

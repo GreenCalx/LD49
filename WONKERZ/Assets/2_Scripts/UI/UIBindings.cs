@@ -74,8 +74,6 @@ public class UIBindings : UIPanelTabbedScrollable
         tab.Parent = this;
         tab.init();
 
-        tab.toActivate = waitingForInput;
-
         this.tabs.Add(tab);
     }
 

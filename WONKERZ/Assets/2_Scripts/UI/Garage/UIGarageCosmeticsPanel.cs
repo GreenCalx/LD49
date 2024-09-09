@@ -129,7 +129,7 @@ namespace Wonkerz {
             Image ui_img = go.GetComponent<Image>();
 
             uigpc.Parent = iNavParent;
-            uigpc.copyInputsFromParent = true;
+            uigpc.useParentInputs = true;
             uigpc.parts_to_colorize = iParts;
             uigpc.material = iCosmetic.material;
             //Material mat = Resources.Load(iCosmetic.matName, typeof(Material)) as Material;
@@ -206,7 +206,7 @@ namespace Wonkerz {
             Image ui_img = go.GetComponent<Image>();
 
             uigps.Parent = navparent;
-            uigps.copyInputsFromParent = true;
+            uigps.useParentInputs = true;
             uigps.carPart = iCosmetic.carPart;
             uigps.skinName = iCosmetic.name;
         
@@ -240,7 +240,7 @@ namespace Wonkerz {
             Image ui_img = go.GetComponent<Image>();
 
             uigpd.Parent = navparent;
-            uigpd.copyInputsFromParent = true;
+            uigpd.useParentInputs= true;
             uigpd.carPart = iCosmetic.carPart;
             uigpd.skinName = iCosmetic.name;
 

@@ -14,6 +14,9 @@ public class UIBindingElement : UISelectableElement
 
     public PlayerInputs.InputCode inputKey;
 
+    public override void init() {}
+    public override void deinit() {}
+
     public void SetBinding(Controller.InputCode c){
 
         (Parent as UIBindings).SetBinding(c, inputKey);
