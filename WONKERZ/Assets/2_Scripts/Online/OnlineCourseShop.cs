@@ -91,7 +91,13 @@ public class OnlineCourseShop : NetworkBehaviour
         {
             // can buy
             playerInShop.bag.nuts -= shopItem.cost;
-            shopItem.item.OnCollect(playerInShop);
+            //shopItem.item.OnCollect(playerInShop);
+
+            GameObject NewObject = Instantiate(shopItem.item.gameObject);
+            NewObject.transform.position = playerInShop.self_PlayerController.GetTransform().position;
+            NewObject.transform.parent = null;
+
+            NetworkServer.Spawn(NewObject);
 
         } else {
             // cannot buy
