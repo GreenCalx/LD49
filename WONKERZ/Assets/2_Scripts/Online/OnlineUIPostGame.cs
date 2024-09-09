@@ -1,17 +1,12 @@
-using System.Linq;
-using System.Collections;
-
-using System.Collections.Generic;
-using UnityEngine;
-using Schnibble;
+using Mirror;
 using Schnibble.Managers;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 using Wonkerz;
 
-using TMPro;
-
-using Mirror;
-
-public class OnlineUIPostGame : NetworkBehaviour, IControllable
+public class OnlineUIPostGame : MonoBehaviour, IControllable
 {
     [Header("Prefabs Refs")]
     public GameObject prefab_UIPostGameLine;
@@ -23,18 +18,17 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
     public OnlinePlayerController OPC;
     private List<UIOnlinePostGameLine> lines = new List<UIOnlinePostGameLine>();
 
-    public override void OnStartClient()
+    public void OnEnable()
     {
-        base.OnStartClient();
-
         StartCoroutine(InitCo());
     }
 
-    public override void OnStopClient()
-    {
-        base.OnStopClient();
-
-        Access.Player().inputMgr.Detach(this as IControllable);
+    public void OnDisable() {
+        if (OPC) {
+            if (OPC.self_PlayerController) {
+                OPC.self_PlayerController.inputMgr.Detach(this as IControllable);
+            }
+        }
     }
 
     void Update()
@@ -45,33 +39,33 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
     private void updatePostGameTimeLbl()
     {
         // We might not have fully loaded but it is fine.
-        if (NetworkRoomManagerExt.singleton                   == null) return;
+        if (NetworkRoomManagerExt.singleton == null) return;
         if (NetworkRoomManagerExt.singleton.onlineGameManager == null) return;
 
         float trackTime = NetworkRoomManagerExt.singleton.onlineGameManager.postGameTime;
         int trackTime_val_min = (int)(trackTime / 60);
-        if (trackTime_val_min<0)
+        if (trackTime_val_min < 0)
         {
             trackTime_val_min = 0;
         }
         string trackTime_str_min = trackTime_val_min.ToString();
-        if (trackTime_str_min.Length<=1)
+        if (trackTime_str_min.Length <= 1)
         {
-            trackTime_str_min = "0"+trackTime_str_min;
+            trackTime_str_min = "0" + trackTime_str_min;
         }
 
         int trackTime_val_sec = (int)(trackTime % 60);
-        if (trackTime_val_sec<0)
+        if (trackTime_val_sec < 0)
         {
             trackTime_val_min = 0;
         }
         string trackTime_str_sec = trackTime_val_sec.ToString();
-        if (trackTime_str_sec.Length<=1)
+        if (trackTime_str_sec.Length <= 1)
         {
-            trackTime_str_sec = "0"+trackTime_str_sec;
+            trackTime_str_sec = "0" + trackTime_str_sec;
         }
 
-        timeLbl.text = trackTime_str_min +":"+ trackTime_str_sec;
+        timeLbl.text = trackTime_str_min + ":" + trackTime_str_sec;
     }
 
     public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
@@ -110,8 +104,9 @@ public class OnlineUIPostGame : NetworkBehaviour, IControllable
         #endif
     }
 
-    IEnumerator WaitForDependencies() {
-        while(OPC==null)    
+    IEnumerator WaitForDependencies()
+    {
+        while (OPC == null)
         {
             OPC = Access.Player()?.GetComponent<OnlinePlayerController>();
             yield return null;

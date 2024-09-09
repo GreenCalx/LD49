@@ -54,8 +54,27 @@ public class OnlinePlayerController : NetworkBehaviour
     [SyncVar(hook=nameof(OnUpdateOmegas))]
     float[] omegas = new float[4];
 
-    public void OnUpdateOmegas(float[] oldValues, float[] newValues) {
-        if (isServer) return;
+    public void OnUpdateOmegas(float[] oldValues, float[] newValues)
+    {
+        if (self_PlayerController == null)
+        {
+            this.LogError("OnUpdateOmegas: player is null");
+            return;
+        }
+        if (self_PlayerController.car = null)
+        {
+            this.LogError("OnUpdateOmegas: car is null");
+            return;
+        }
+        if (self_PlayerController.car.GetCar() == null)
+        {
+            this.LogError("OnUpdateOmegas: car is null");
+            return;
+        }
+        if (self_PlayerController.car.GetCar().chassis == null) {
+            this.LogError("OnUpdateOmegas: chassis is null");
+            return;
+        }
 
         var chassis = self_PlayerController.car.GetCar().chassis;
         var axle = chassis.axles[0];
@@ -465,6 +484,7 @@ public class OnlinePlayerController : NetworkBehaviour
         CmdFreezePlayer(true);
 
         Access.UIPlayerOnline().LinkToPlayer(this);
+
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
 
         CmdModifyLoadedState(true);

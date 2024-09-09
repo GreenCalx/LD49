@@ -175,17 +175,6 @@ using Wonkerz;
             StartCoroutine(LoadAdditive(sceneName));
         }
 
-
-
-        // public override void OnRoomClientSceneChanged()
-        // {
-        //     if (sceneOperation == SceneOperation.UnloadAdditive)
-        //         StartCoroutine(UnloadAdditive(sceneName));
-
-        //     if (sceneOperation == SceneOperation.LoadAdditive)
-        //         StartCoroutine(LoadAdditive(sceneName));
-        // }
-
         IEnumerator LoadAdditive(string sceneName)
         {
             // host client is on server...don't load the additive scene again

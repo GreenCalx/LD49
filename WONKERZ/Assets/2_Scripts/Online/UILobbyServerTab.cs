@@ -120,8 +120,8 @@ public class UILobbyServerTab : UITextTab
     // Callbacks
 
     void RegisterCallbacks() {
-                                                   NetworkManager.singleton.transport.OnClientConnected += OnClientConnected;
-    serverList.online.client.OnStartNATPunch += OnNATPunch;
+        NetworkManager.singleton.transport.OnClientConnected += OnClientConnected;
+        serverList.online.client.OnStartNATPunch += OnNATPunch;
 }
 
     void RemoveCallbacks() {
@@ -151,7 +151,6 @@ public class UILobbyServerTab : UITextTab
     }
     IEnumerator Coro_OnClientConnected() {
         yield return StartCoroutine(WaitTimerLatency());
-
 
         deactivate();
 

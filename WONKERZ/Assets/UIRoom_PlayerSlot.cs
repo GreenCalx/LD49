@@ -23,7 +23,13 @@ public class UIRoom_PlayerSlot : MonoBehaviour
         }
     }
 
+    void OnDestroy() {
+        if(roomPlayer != null)
+        roomPlayer.onAnyChange -= UpdateView;
+    }
+
     public void UpdateView() {
+        if (roomPlayer == null) return;
         // pull player infos.
         SetBackgroundColor(roomPlayer.infos.backgroundColor);
         SetPlayerName(roomPlayer.infos.playerName);
