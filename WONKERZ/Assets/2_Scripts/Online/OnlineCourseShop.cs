@@ -13,6 +13,7 @@ public class OnlineCourseShop : NetworkBehaviour
     public List<OnlineCollectible> items;
     public List<OnlineShopItem> worldShopItems;
     public CameraFocusable self_focusable;
+    public Animator self_Animator;
     [Header("Internals")]
     
     [SyncVar]
@@ -20,21 +21,45 @@ public class OnlineCourseShop : NetworkBehaviour
     public int selected_idx;
     private Vector3 focusableInitPosition = Vector3.zero;
 
+    // Animations
+    private readonly string PointLeftParm = "PointLeftItem"; // item1
+    private readonly string PointRightParm = "PointRightItem"; // item0
+    private readonly string ShopOpenedParm = "ShopOpened";
+    private readonly string ExitShopTrigg = "ExitShop";
+
     public void Start()
     {
         focusableInitPosition = self_focusable.transform.position;
+    }
+
+    public void Update()
+    {
+        if (!!self_focusable && self_focusable.isFocus)
+        {
+            if (self_Animator)
+            {
+                self_Animator.SetBool(ShopOpenedParm, true);
+            }
+        }
     }
 
     public void EnterShop()
     {
         selected_idx = 0;
         
-
         DisplayShop();
     }
 
     public void QuitShop()
     {
+
+        if (self_Animator)
+        {
+            self_Animator.SetTrigger(ExitShopTrigg);
+            self_Animator.SetBool(ShopOpenedParm, false);
+            self_Animator.SetBool(PointLeftParm, false);
+            self_Animator.SetBool(PointRightParm, false);
+        }
 
         foreach(OnlineShopItem shopItem in worldShopItems)
         {
@@ -82,6 +107,12 @@ public class OnlineCourseShop : NetworkBehaviour
         OnlineShopItem shopItem = worldShopItems[selected_idx];
         shopItem.isSelected = true;
         self_focusable.transform.position = shopItem.transform.position;
+
+        if (self_Animator)
+        {
+            self_Animator.SetBool(PointRightParm, (selected_idx==0));
+            self_Animator.SetBool(PointLeftParm, (selected_idx==1));
+        }
     }
 
     public void TryBuyItem()
