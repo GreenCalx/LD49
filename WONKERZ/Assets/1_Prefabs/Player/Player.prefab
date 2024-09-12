@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 2787543525527478033}
   - component: {fileID: 831714690002235619}
   - component: {fileID: 7197042104380501840}
-  - component: {fileID: 4760459115191775776}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -51,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c3f306dbcd92143a51dae0a4bf3326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputMode: 0
   self_PowerController: {fileID: 831714690002235619}
   repulseForce: {x: 0, y: 0, z: 0}
   onDeathClone: {fileID: 4165800749654020042, guid: 51c50675a628db346bf72e4f8ce29907, type: 3}
@@ -72,6 +72,7 @@ MonoBehaviour:
   damageSound: {fileID: 8300000, guid: e3e623ff0419b0f49bef6831b248113d, type: 3}
   inputMgr: {fileID: 0}
   jumpDecal: {fileID: 0}
+  lastInputs: 
 --- !u!114 &831714690002235619
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,6 +87,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turboParticles: {fileID: 1724764292144484328, guid: 2b8047e12c8eb2e47b0f7572a2ffc14f, type: 3}
   SpinPowerObject_Ref: {fileID: 5482149802637659645}
+  KnightLanceObject_Ref: {fileID: 0}
+  PalletLauncherObject_Ref: {fileID: 0}
+  PalletRef: {fileID: 0}
 --- !u!114 &7197042104380501840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,14 +122,6 @@ MonoBehaviour:
   time_waited_after_line: 0
   recorded_time_trick: 0
   ready_to_rec_line: 0
---- !u!81 &4760459115191775776
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2705171154291085488}
-  m_Enabled: 1
 --- !u!1001 &2860166233884086120
 PrefabInstance:
   m_ObjectHideFlags: 0

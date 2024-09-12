@@ -20,9 +20,14 @@ namespace Wonkerz
             public WonkInputsSaveData[] playerData;
         }
 
-        public override void Awake()
+        // Do not call start or awake, as we will be specifically called by an initializer.
+        public override void Start() {}
+        public override void Awake() {}
+
+        public override void init()
         {
-            base.Awake();
+            this.Log("init");
+            base.init();
             if (init_Player1)
             {
                 player1.controllers[0] = new GameControllerSlot(GameControllerSlot.Type.Xbox, new PlayerInputs().controller, 0);
@@ -44,7 +49,6 @@ namespace Wonkerz
                 all.controllers[0] = player1.controllers[0];
                 all.controllers[1] = player2.controllers[0];
             }
-
         }
 
         public override void Save()

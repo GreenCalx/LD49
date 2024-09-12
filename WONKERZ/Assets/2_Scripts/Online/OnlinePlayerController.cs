@@ -1,11 +1,10 @@
 using Mirror;
+using Schnibble;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Wonkerz;
-using System;
-
-using Schnibble;
 
 // Network object specs
 //
@@ -15,6 +14,8 @@ using Schnibble;
 
 public class OnlinePlayerController : NetworkBehaviour
 {
+    public static OnlinePlayerController localPlayer = null;
+
     [Header("OnlinePlayerController")]
     string _onlinePlayerName;
     public string onlinePlayerName { get => _onlinePlayerName; set { _onlinePlayerName = value; onAnyChange?.Invoke(); } }
@@ -28,7 +29,7 @@ public class OnlinePlayerController : NetworkBehaviour
     public GameObject prefabCameraFocusable;
     public List<OnlineDamager> self_oDamagers;
     public OnlineDamageable self_oDamageable;
-    
+
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
     [Header("Internals")]
@@ -37,21 +38,21 @@ public class OnlinePlayerController : NetworkBehaviour
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
     bool _isReady = false;
-    public bool isReady { get => _isReady; private set {_isReady = value; onAnyChange?.Invoke();}}
+    public bool isReady { get => _isReady; private set { _isReady = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isLoaded = false;
-    public bool isLoaded { get => _isLoaded; private set {_isLoaded = value; onAnyChange?.Invoke();}}
+    public bool isLoaded { get => _isLoaded; private set { _isLoaded = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isSpawned = false;
-    public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke();}}
+    public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke(); } }
 
     // TODO: Remove this hack and do a proper online object.
-    [SyncVar(hook=nameof(OnPlayerStateChanged))]
-    PlayerController.PlayerStates        playerState;
-    [SyncVar(hook=nameof(OnPlayerVehicleStateChanged))]
+    [SyncVar(hook = nameof(OnPlayerStateChanged))]
+    PlayerController.PlayerStates playerState;
+    [SyncVar(hook = nameof(OnPlayerVehicleStateChanged))]
     PlayerController.PlayerVehicleStates playerVehicleState;
     // wheelOmega needs to be updated by the server.
-    [SyncVar(hook=nameof(OnUpdateOmegas))]
+    [SyncVar(hook = nameof(OnUpdateOmegas))]
     float[] omegas = new float[4];
 
     public void OnUpdateOmegas(float[] oldValues, float[] newValues)
@@ -61,7 +62,7 @@ public class OnlinePlayerController : NetworkBehaviour
             this.LogError("OnUpdateOmegas: player is null");
             return;
         }
-        if (self_PlayerController.car = null)
+        if (self_PlayerController.car == null)
         {
             this.LogError("OnUpdateOmegas: car is null");
             return;
@@ -71,7 +72,8 @@ public class OnlinePlayerController : NetworkBehaviour
             this.LogError("OnUpdateOmegas: car is null");
             return;
         }
-        if (self_PlayerController.car.GetCar().chassis == null) {
+        if (self_PlayerController.car.GetCar().chassis == null)
+        {
             this.LogError("OnUpdateOmegas: chassis is null");
             return;
         }
@@ -79,11 +81,11 @@ public class OnlinePlayerController : NetworkBehaviour
         var chassis = self_PlayerController.car.GetCar().chassis;
         var axle = chassis.axles[0];
         axle.right.SetAngularVelocity(newValues[0]);
-        axle.left .SetAngularVelocity(newValues[1]);
+        axle.left.SetAngularVelocity(newValues[1]);
 
         axle = chassis.axles[1];
         axle.right.SetAngularVelocity(newValues[2]);
-        axle.left .SetAngularVelocity(newValues[3]);
+        axle.left.SetAngularVelocity(newValues[3]);
     }
 
     public Transform cameraFocusable;
@@ -94,8 +96,8 @@ public class OnlinePlayerController : NetworkBehaviour
     public Action onAnyChange;
 
     public bool IsSpawned() => isSpawned;
-    public bool IsReady()   => isReady;
-    public bool IsLoaded()  => isLoaded;
+    public bool IsReady() => isReady;
+    public bool IsLoaded() => isLoaded;
     public bool IsLockAndLoaded() => IsReady() && IsLoaded();
 
     void Start()
@@ -106,10 +108,11 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void FixedUpdate()
     {
-        if ((self_oDamagers!=null)&&(self_oDamagers.Count > 0))
+        if ((self_oDamagers != null) && (self_oDamagers.Count > 0))
             UpdatePlayerDamagers();
 
-        if (IsLoaded()) {
+        if (IsLoaded())
+        {
             var chassis = self_PlayerController.car.GetCar().chassis;
             var axle = chassis.axles[0];
             omegas[0] = axle.right.GetAngularVelocity();
@@ -126,12 +129,12 @@ public class OnlinePlayerController : NetworkBehaviour
         int damage = 0;
         WkzCar cc = self_PlayerController.car.GetCar();
         if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
-        { 
-            damage = (int) Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
-            damage +=(int) Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
+        {
+            damage = (int)Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
+            damage += (int)Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
         }
 
-        foreach( OnlineDamager d in self_oDamagers )
+        foreach (OnlineDamager d in self_oDamagers)
         {
             d.damage = damage;
         }
@@ -152,7 +155,7 @@ public class OnlinePlayerController : NetworkBehaviour
         self_oDamagers = new List<OnlineDamager>(5);
 
         WkzCar cc = self_PlayerController.car.GetCar();
-        while (cc==null)
+        while (cc == null)
         {
             cc = self_PlayerController.car.GetCar();
             yield return null;
@@ -160,7 +163,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
         // body damager
         GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
-        while (bodyRef==null)
+        while (bodyRef == null)
         {
             bodyRef = self_PlayerController.GetRigidbody().gameObject;
             yield return null;
@@ -168,17 +171,17 @@ public class OnlinePlayerController : NetworkBehaviour
 
 
         OnlineDamager body_dmgr = bodyRef.GetComponent<OnlineDamager>();
-        if (body_dmgr==null)
+        if (body_dmgr == null)
             body_dmgr = bodyRef.AddComponent<OnlineDamager>();
         body_dmgr.owner = gameObject;
         self_oDamagers.Add(body_dmgr);
 
         // wheel damagers
         List<WkzWheelCollider> wheels = new List<WkzWheelCollider>(self_PlayerController.gameObject.GetComponentsInChildren<WkzWheelCollider>());
-        foreach( WkzWheelCollider w in wheels)
+        foreach (WkzWheelCollider w in wheels)
         {
             OnlineDamager wheel_dmgr = w.gameObject.GetComponent<OnlineDamager>();
-            if (wheel_dmgr==null)
+            if (wheel_dmgr == null)
                 wheel_dmgr = w.gameObject.AddComponent<OnlineDamager>();
             wheel_dmgr.owner = gameObject;
             self_oDamagers.Add(wheel_dmgr);
@@ -196,17 +199,17 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             yield return null;
         }
-        
+
         self_oDamageable = null;
 
         GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
-        while (bodyRef==null)
+        while (bodyRef == null)
         {
             bodyRef = self_PlayerController.GetRigidbody().gameObject;
             yield return null;
         }
         OnlineDamageable body_dmgbl = bodyRef.GetComponent<OnlineDamageable>();
-        if (body_dmgbl==null)
+        if (body_dmgbl == null)
             body_dmgbl = bodyRef.AddComponent<OnlineDamageable>();
         self_oDamageable = body_dmgbl;
         self_oDamageable.owner = gameObject;
@@ -222,7 +225,7 @@ public class OnlinePlayerController : NetworkBehaviour
         //means we need on online stub with a few extras: no rendering, etc...I
         if (!isClient || (isClient && !isLocalPlayer))
         {
-            this.LogError("OnlinePlayerInit : server.");
+            this.Log("OnlinePlayerInit : server.");
             // server : no need to wait for dependencies => they should be local and loaded asap locally.
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
             self_PlayerController.InitOnServer();
@@ -240,12 +243,13 @@ public class OnlinePlayerController : NetworkBehaviour
     void OnStartServerInit()
     {
         // TODO: remove anything linked to input poll, rendering, etc...
-        self_PlayerController.OnStateChange        += OnStateChange;
+        self_PlayerController.OnStateChange += OnStateChange;
         self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
     }
 
     // Update clients about their states.
-    void OnVehicleStateChange(PlayerController.PlayerVehicleStates state) {
+    void OnVehicleStateChange(PlayerController.PlayerVehicleStates state)
+    {
         RpcSetCameraFocus(self_PlayerController.GetTransform());
         playerVehicleState = state;
     }
@@ -256,20 +260,23 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     [Command]
-    public void CmdModifyReadyState(bool state) {
+    public void CmdModifyReadyState(bool state)
+    {
         isReady = state;
     }
 
     [Command]
-    public void CmdModifyLoadedState(bool state) {
+    public void CmdModifyLoadedState(bool state)
+    {
         isLoaded = state;
     }
 
     [Command]
-    public void CmdModifySpawnedState(bool state) {
+    public void CmdModifySpawnedState(bool state)
+    {
         if (state)
         {
-            this.LogError("Server received client spawned.");
+            this.Log("Server received client spawned.");
 
             OnlineGameManager.Get().AddPlayer(this);
 
@@ -288,11 +295,12 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     [Server]
-    public void FreezePlayer(bool state) {
+    public void FreezePlayer(bool state)
+    {
         if (self_PlayerController)
         {
             if (state) self_PlayerController.Freeze();
-            else       self_PlayerController.UnFreeze();
+            else self_PlayerController.UnFreeze();
         }
     }
 
@@ -350,7 +358,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     IEnumerator WaitForDependencies()
     {
-        this.LogError("Start OnlinePlayerController wait for dependencies.");
+        this.Log("Start OnlinePlayerController wait for dependencies.");
 
         // Wait for OnlineGameManager to setup.
         while (NetworkRoomManagerExt.singleton == null) { yield return null; }
@@ -360,10 +368,10 @@ public class OnlinePlayerController : NetworkBehaviour
         while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
 
         // Wait for objcet that we need to access at init time.
-        while (Access.UIPlayerOnline() == null) { yield return null; }
+        //while (Access.UIPlayerOnline() == null) { yield return null; }
         while (Access.CameraManager() == null) { yield return null; }
 
-        this.LogError("End OnlinePlayerController wait for dependencies.");
+        this.Log("End OnlinePlayerController wait for dependencies.");
     }
 
     public override void OnStartClient()
@@ -372,7 +380,7 @@ public class OnlinePlayerController : NetworkBehaviour
         // only if we are client only, and not the local player.
         if (!isServer && !isLocalPlayer)
         {
-            this.LogError("OnlinePlayerInit : client.");
+            this.Log("OnlinePlayerInit : client.");
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
 
             self_PlayerController.InitAsOnlineStub();
@@ -400,7 +408,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     IEnumerator InitLocalPlayer()
     {
-        this.LogError("OnlinePlayerInit : client local player.");
+        this.Log("OnlinePlayerInit : client local player.");
         // client but local: need to wait dependencies as some things might not be loaded.
         // It is probably a wrong statement: every dependencies should be loaded when this object is calling Start() ?
         yield return StartCoroutine(WaitForDependencies());
@@ -419,18 +427,18 @@ public class OnlinePlayerController : NetworkBehaviour
         OnlineGameManager.Get().localPlayer = this;
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
-        Access.GameSettings().IsOnline = true;
+        Access.GameSettings().isOnline = true;
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned)
             CmdModifySpawnedState(true);
 
         // init damagers/damageables
-        while(self_PlayerController.GetRigidbody() == null)
+        while (self_PlayerController.GetRigidbody() == null)
         {
             yield return null;
         }
-        while (self_PlayerController.car.GetCar() ==null)
+        while (self_PlayerController.car.GetCar() == null)
         {
             yield return null;
         }
@@ -443,7 +451,7 @@ public class OnlinePlayerController : NetworkBehaviour
     }
     IEnumerator WaitSubSceneToLoad()
     {
-        while(!NetworkRoomManagerExt.singleton.subsceneLoaded)
+        while (!NetworkRoomManagerExt.singleton.subsceneLoaded)
         {
             yield return null;
         }
@@ -458,18 +466,20 @@ public class OnlinePlayerController : NetworkBehaviour
         if (t != null)
         {
             // Update camera focus.
-            this.LogError("RpcSetCameraFocus." + t.gameObject.name);
+            this.Log("RpcSetCameraFocus." + t.gameObject.name);
             Access.CameraManager()?.OnTargetChange(t);
         }
     }
 
-    void OnPlayerStateChanged(PlayerController.PlayerStates oldState, PlayerController.PlayerStates newState) {
-        if(!isServer) self_PlayerController.TransitionFromTo(oldState, newState);
+    void OnPlayerStateChanged(PlayerController.PlayerStates oldState, PlayerController.PlayerStates newState)
+    {
+        if (!isServer) self_PlayerController.TransitionFromTo(oldState, newState);
     }
 
-    void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState,PlayerController.PlayerVehicleStates newState) {
-        this.LogWarn("OnPlayerVehicleStateChanged : " + newState.ToString());
-        if(!isServer) self_PlayerController.TransitionTo(newState);
+    void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState, PlayerController.PlayerVehicleStates newState)
+    {
+        this.Log("OnPlayerVehicleStateChanged : " + newState.ToString());
+        if (!isServer) self_PlayerController.TransitionTo(newState);
     }
 
     [TargetRpc]
@@ -483,9 +493,7 @@ public class OnlinePlayerController : NetworkBehaviour
     {
         CmdFreezePlayer(true);
 
-        Access.UIPlayerOnline().LinkToPlayer(this);
-
-        Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        //Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
 
         CmdModifyLoadedState(true);
     }
@@ -504,7 +512,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void TakeDamage(OnlineDamageSnapshot iDamageSnap)
     {
-        self_PlayerController.takeDamage( 
+        self_PlayerController.takeDamage(
             iDamageSnap.damage,
             iDamageSnap.worldOrigin,
             iDamageSnap.ownerVelocity,

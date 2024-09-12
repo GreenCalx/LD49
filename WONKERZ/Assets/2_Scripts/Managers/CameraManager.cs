@@ -21,7 +21,21 @@ namespace Wonkerz
         public GameObject transitionCameraRef;
         public GameObject deathCameraRef;
         [Header("Debug")]
-        public GameCamera active_camera;
+        GameCamera _active_camera;
+
+        GameCamera defaultCamera;
+        public GameCamera active_camera {
+            get
+            {
+                return _active_camera;
+            }
+            set
+            {
+                _active_camera = value;
+                onCameraChanged?.Invoke();
+            }
+        }
+
         public Dictionary<GameCamera.CAM_TYPE, GameCamera> cameras =
             new Dictionary<GameCamera.CAM_TYPE, GameCamera>();
         public bool inTransition = false;
@@ -41,6 +55,8 @@ namespace Wonkerz
         private GameObject deathCamInst;
         private float elapsedTimeToResetCamView = 0f;
 
+        public Action onCameraChanged;
+
         ///
         private static CameraManager inst;
 
@@ -50,14 +66,13 @@ namespace Wonkerz
             private set { inst = value; }
         }
 
-
-        // Start is called before the first frame update
-        void Start()
-        {
+        public void init() {
+            this.Log("init.");
             inTransition = false;
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
             Access.PlayerInputsManager().player1.Attach(this as IControllable);
 
+            //changeCamera(GameCamera.CAM_TYPE.INIT, false);
         }
 
         // Update is called once per frame
@@ -97,26 +112,40 @@ namespace Wonkerz
             }
         }
 
+        void Reset() {
+            if (active_camera) {
+                active_camera.disable();
+            }
+            active_camera = null;
+            cameras.Clear();
+        }
+
         // resets CameraManager status (active camera, etc..) upon new scene load
         // Avoid bad transitions and such for now
         // Might need to change if we decide to make a Spyro style entry in the level thru portals
         void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            // refresh cameras and disable active_camera
-            active_camera = null;
-            cameras.Clear();
-
-            // Set to init cam
-            changeCamera(GameCamera.CAM_TYPE.INIT, false);
-            if (active_camera != null)
+            // If we are loading in single mode
+            // we reset the cameraManager and take care of initialization of the new camera in the scene.
+            // Else we dont know yet what to do with the cameras, they might not even be initialized at all, etc...
+            //if (mode == LoadSceneMode.Single)
             {
-                InitCamera initCam = active_camera.GetComponent<InitCamera>();
-                if ((initCam != null) && (initCam.nextCam != null))
+                Reset();
+                // changeCamera will try to find a camera of type init: dangerous we could have multiples.
+                changeCamera(GameCamera.CAM_TYPE.INIT, false);
+                if (active_camera != null)
                 {
-                    operateCameraSwitch(initCam.nextCam);
+                    InitCamera initCam = active_camera.GetComponent<InitCamera>();
+                    if ((initCam != null) && (initCam.nextCam != null))
+                    {
+                        operateCameraSwitch(initCam.nextCam);
+                    }
                 }
             }
+        }
 
+        void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
+            OnSceneLoaded(newScene, LoadSceneMode.Single);
         }
 
         public void OnTargetChange(Transform t)
@@ -141,7 +170,7 @@ namespace Wonkerz
             for (int i = 0; i < game_cams.Length; i++)
             {
                 GameCamera currcam = game_cams[i];
-                if (currcam.camType == iType)
+                if (currcam.camType == iType && currcam.gameObject.scene == SceneManager.GetActiveScene())
                 {
                     retval = currcam;
                     break;
@@ -166,53 +195,104 @@ namespace Wonkerz
             return retval;
         }
 
-        // Retrieves only the first found CAM_TYPE camera
-        public void changeCamera(GameCamera.CAM_TYPE iNewCamType, bool iTransitionCam)
-        {
-            // 0 : Clean up nulls CameraType to free space for new ones
+        void CleanUpNull() {
             var null_keys = cameras.Where(e => e.Value == null).Select(e => e.Key).ToList();
             foreach (var rm_me in null_keys)
             {
                 cameras.Remove(rm_me);
             }
+        }
 
-            // 1 : Do I have a CAM_TYPE available ?
-            nextCamera = null;
-            if (!cameras.ContainsKey(iNewCamType))
+        bool findCamera(GameCamera.CAM_TYPE type, out GameCamera result) {
+            result = null;
+            if (!cameras.ContainsKey(type))
             {
-                // > N : Try to find CAM_TYPE in scene
-                nextCamera = findCameraInScene(iNewCamType);
-                if (nextCamera == null)
+                result = findCameraInScene(type);
+                if (result == null)
                 {
-                    this.LogError("Unable to find a camera for type : " + iNewCamType.ToString());
-                    this.LogError("Failed to switch Camera. Selecting first of the list as fallback.");
-                    if (cameras.Count > 0)
-                    {
-                        operateCameraSwitch(cameras.Values.GetEnumerator().Current);
-                        return;
-                    }
-                    else
-                    {
-                        this.LogError("No Camera available in CameraManager. Exiting changeCamera().");
-                        return;
+                    this.LogError("Unable to find a camera for type : " + type.ToString());
+                    return false;
+                }
+
+                return true;
+            }
+
+            return cameras.TryGetValue(type, out result);
+        }
+
+        // Retrieves only the first found CAM_TYPE camera
+        public void changeCamera(GameCamera.CAM_TYPE iNewCamType, bool iTransitionCam)
+        {
+            this.Log("changeCamera");
+            // 0 : Clean up nulls CameraType to free space for new ones
+            CleanUpNull();
+            // 1 : Do I have a CAM_TYPE available ?
+            if (!findCamera(iNewCamType, out nextCamera)) {
+                if (cameras.Count > 0)
+                {
+                    this.LogWarn("Failed to find camera of type" + iNewCamType + "=> Selecting first of the list as fallback.");
+                    nextCamera = cameras.Values.GetEnumerator().Current;
+                    if (nextCamera == null) {
+                        this.LogWarn("Failed to find camera of type" + iNewCamType + "=> use default camera.");
+                        if (defaultCamera == null) {
+                            var camGO = new GameObject();
+                            var cam = camGO.AddComponent<Camera>();
+                            defaultCamera = camGO.AddComponent<UICamera>();
+                            defaultCamera.cam = cam;
+                            defaultCamera.disable();
+                            camGO.transform.parent = this.gameObject.transform;
+                        }
+                        nextCamera = defaultCamera;
+                        iTransitionCam = false;
                     }
                 }
-                //  > Add it to mgr cams
-                cameras.Add(iNewCamType, nextCamera);
+                else
+                {
+                    this.LogWarn("Failed to find camera of type" + iNewCamType + "=> use default camera.");
+                    if (defaultCamera == null) {
+                        var camGO = new GameObject();
+                        var cam = camGO.AddComponent<Camera>();
+                        defaultCamera = camGO.AddComponent<UICamera>();
+                        defaultCamera.cam = cam;
+                        defaultCamera.disable();
+                        camGO.transform.parent = this.gameObject.transform;
+                    }
+                    nextCamera = defaultCamera;
+                    iTransitionCam = false;
+                }
             }
-            else
-            {
-                // cam already stored, retrieve it for transition
-                cameras.TryGetValue(iNewCamType, out nextCamera);
-            }
-
             // 2 : Deactivate active_camera
             if (!iTransitionCam)
             {
+                this.Log("changeCamera is not a transitionCam => operateCameraSwitch to " + nextCamera.name);
                 operateCameraSwitch(nextCamera);
                 return;
             }
 
+            if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
+            {
+                if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
+                initTransition(nextCamera);
+                else
+                operateCameraSwitch(nextCamera);
+            }
+            else
+            {
+                operateCameraSwitch(nextCamera);
+            }
+        }
+
+        public void changeCamera(GameCamera nextCam, bool iTransitionCam) {
+            this.Log("changeCamera");
+
+            nextCamera = nextCam;
+
+            if (!iTransitionCam)
+            {
+                operateCameraSwitch(nextCamera);
+            }
+
+            // transition if previous camera was defined
             if ((active_camera != null) && (active_camera.gameObject.scene.IsValid()))
             {
                 if (active_camera.gameObject.scene == nextCamera.gameObject.scene)
@@ -304,63 +384,53 @@ namespace Wonkerz
         private void operateCameraSwitch(GameCamera iNewCam)
         {
             if (inTransition)
-            return;
+            {
+                this.LogWarn("Trying to operate switch when inTransition is true.");
+                return;
+            }
 
-            if (iNewCam == null) {
+            if (iNewCam == null)
+            {
                 this.LogWarn("Trying to operate camera switch to null camera.");
                 return;
             }
 
-            if (active_camera != null)
-            {
-                if (iNewCam.gameObject == active_camera.gameObject)
+            if (active_camera != null && iNewCam.gameObject == active_camera.gameObject) {
+                this.Log("New camera is already the active camera.");
                 return;
             }
 
 
-            if ((active_camera == null) && (iNewCam.camType != GameCamera.CAM_TYPE.INIT))
-            {
-                changeCamera(GameCamera.CAM_TYPE.INIT, false);
-            }
+            //if ((active_camera == null) && (iNewCam.camType != GameCamera.CAM_TYPE.INIT))
+            //{
+            //   changeCamera(GameCamera.CAM_TYPE.INIT, false);
+            //}
 
             bool sceneTransition =
                 (active_camera != null) &&
                 (active_camera.camType == GameCamera.CAM_TYPE.INIT) &&
                 (iNewCam.camType != GameCamera.CAM_TYPE.INIT);
 
-
             if (active_camera != null)
             {
                 switchToonPipeline(active_camera.gameObject, iNewCam.gameObject);
-
-                active_camera.gameObject.SetActive(false);
-                active_camera.enabled = false;
-                active_camera.cam.enabled = false;
-
-                // iNewCam.transform.position = active_camera.transform.position;
-                // iNewCam.transform.rotation = active_camera.transform.rotation;
+                active_camera.disable();
             }
 
-            // Debug Cam switches below
-            string new_cam_name = ((iNewCam == null) ? "null" : iNewCam.gameObject.name);
+            // For debug purposes, but we log at the end => there can still be errors after those lines, we dont know.
+            string new_cam_name  = ((iNewCam == null) ? "null" : iNewCam.gameObject.name);
             string prev_cam_name = ((active_camera == null) ? "null" : active_camera.gameObject.name);
-            this.Log("CamSwitch : " + new_cam_name + " FROM " + prev_cam_name);
-
 
             active_camera = iNewCam;
-
-            active_camera.enabled = true;
-            active_camera.cam.enabled = true;
-            active_camera.gameObject.SetActive(true);
-
+            active_camera.enable();
             active_camera.init();
 
             PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
-            if (!!PMM)
-            PMM.SetCamera(active_camera.cam);
+            if (!!PMM          ) PMM.SetCamera(active_camera.cam);
+            if (sceneTransition) Access.SceneLoader().asyncTransitionLock = false;
 
-            if (sceneTransition)
-            Access.SceneLoader().asyncTransitionLock = false;
+            // Debug Cam switches below
+            this.Log("CamSwitch : " + new_cam_name + " FROM " + prev_cam_name);
         }
 
         public bool interpolatePosition(Transform iStart, Transform iEnd)
@@ -416,13 +486,12 @@ namespace Wonkerz
                 return;
             }
 
-            new_tp.mgr = prev_tp.mgr;
+            new_tp.mgr       = prev_tp.mgr;
             new_tp.mainLight = prev_tp.mainLight;
 
-            new_tp.enabled = true;
+            new_tp.enabled   = true;
 
-            if (!new_tp.init_done)
-            new_tp.init();
+            if (!new_tp.init_done) new_tp.init();
         }
 
         public void launchDeathCam()

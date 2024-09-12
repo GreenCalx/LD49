@@ -10,8 +10,8 @@ using Mirror;
 public class OnlineTrackEventManager : NetworkBehaviour
 {
     [SyncVar]
-   public OnlineTrackEvent activeEvent;
-   private Coroutine trackEventCo;
+    public OnlineTrackEvent activeEvent;
+    private Coroutine trackEventCo;
     public float nextEventTime = 0f;
     
     [Server]
@@ -69,9 +69,9 @@ public class OnlineTrackEventManager : NetworkBehaviour
     [ClientRpc]
     private void RpcRefreshUI(OnlineTrackEvent iEvent)
     {
-        UIPlayerOnline pui = Access.UIPlayerOnline();
+        var pui = OnlineGameManager.Get().UIPlayer;
         if (pui==null)
-            return;
+        return;
 
         if (iEvent!=null)
         {

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6631104728283757692}
   - component: {fileID: 6631104728283757693}
   - component: {fileID: 2363994770715039712}
+  - component: {fileID: 8518624940031225247}
   m_Layer: 5
   m_Name: LobbyServerTabElement
   m_TagString: Untagged
@@ -75,6 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0532d841fde3da844b95eea9c64321cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiTheme:
+    rid: -2
   Parent: {fileID: 0}
   onSelect:
     m_PersistentCalls:
@@ -96,7 +99,33 @@ MonoBehaviour:
   isTakingInputPrecedence: 0
   useParentInputs: 1
   inputActivate: 
+  label: {fileID: 8518624940031225247}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+--- !u!114 &8518624940031225247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6631104728283757691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiTheme:
+    rid: -2
+  Parent: {fileID: 2363994770715039712}
   text: {fileID: 6631104729108891809}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &6631104729108891822
 GameObject:
   m_ObjectHideFlags: 0

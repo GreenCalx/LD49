@@ -58,7 +58,7 @@ public class OnlineCasinoRoulette : NetworkBehaviour
     /// Thus we (hopefully) can't reach these lines  if we are not local player
     public void PlayRoulette()
     {
-        if (Access.LocalPlayer().isClientOnly)
+        if (isClientOnly)
         {
             CmdPlayRoulette();
             return;
@@ -67,7 +67,6 @@ public class OnlineCasinoRoulette : NetworkBehaviour
         self_RB.angularVelocity = Vector3.zero;
         Spin();
         currentAngularVelocityMag =    self_RB.angularVelocity.magnitude;
-
     }
 
     [Command]

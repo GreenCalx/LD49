@@ -17,7 +17,7 @@ namespace Wonkerz {
 
         void Start()
         {
-            if (Access.GameSettings().IsOnline)
+            if (Access.GameSettings().isOnline)
             {
                 foreach(Transform t in transform)
                 {

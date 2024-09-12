@@ -37,9 +37,9 @@ namespace Wonkerz {
             {
                 is_loading = true;
             
-                if (invisibleLoading)
-                Access.SceneLoader().asyncPreWarm(PORTAL_SCENE_TARGET);
-                else
+                //if (invisibleLoading)
+                //Access.SceneLoader().asyncPreWarm(PORTAL_SCENE_TARGET);
+                //else
                 Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET);
             }
         }

@@ -13,11 +13,12 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
         public double rtt;
     };
 
-    [SyncVar]
+    [SyncVar(hook=nameof(OnUpdateInfos))]
     public RoomPlayerInfos _infos;
     public RoomPlayerInfos infos { get => _infos; set { _infos = value; onAnyChange?.Invoke(); } }
 
     public Action onAnyChange;
+    public Action onReadyStateChanged;
     // Maintain latency up to date.
     // Because it is only available on the server.
     // For now it means we will send all data instead of just syncing the rtt
@@ -33,7 +34,7 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
 
         while (true) {
             RoomPlayerInfos newInfos = new RoomPlayerInfos();
-            newInfos.playerName = name;
+            newInfos.playerName = gameObject.name;
             newInfos.backgroundColor = _infos.backgroundColor;
             newInfos.rtt = connectionToClient.rtt;
             infos = newInfos;
@@ -41,6 +42,10 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
         }
 
         yield break;
+    }
+
+    void OnUpdateInfos(RoomPlayerInfos oldInfos, RoomPlayerInfos newInfos) {
+        onAnyChange?.Invoke();
     }
 
     public override void OnStartServer()
@@ -77,11 +82,13 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
     public override void OnClientEnterRoom()
     {
         gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
+        onAnyChange?.Invoke();
     }
 
     public override void IndexChanged(int oldIndex, int newIndex)
     {
         gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
+        onAnyChange?.Invoke();
     }
 
     public override void ReadyStateChanged(bool oldReadyState, bool newReadyState)

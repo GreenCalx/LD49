@@ -23,32 +23,67 @@ public class UIRoom : UIPanelTabbed
 
     public GameObject UIPlayerSlot_prefab;
     List<UIRoom_PlayerSlot> uiPlayerSlots = new List<UIRoom_PlayerSlot>(roomPlayerCount);
+    UIRoom_PlayerSlot localPlayerSlot = null;
 
     UIOnline uiOnline;
 
     public RectTransform background;
-    public GameObject readyUpButton;
+    public GameObject readyUpButtonPrefab;
+    GameObject readyUpButton = null;
 
     public bool showGameStartButton = false;
-    public GameObject startGameButton;
-
-    void Start() {
-        uiOnline = (Parent as UIOnline);
-    }
+    public GameObject startGameButtonPrefab;
+    GameObject startGameButton = null;
 
     public override void activate()
     {
         base.activate();
 
-        if (uiOnline == null) Start();
+        uiPlayerSlots = new List<UIRoom_PlayerSlot>(roomPlayerCount);
+
+        if (uiOnline == null)
+        {
+            uiOnline = (Parent as UIOnline);
+        }
 
         uiOnline.roomServer.OnRoomServerPlayersReadyCB += OnAllPlayersReady;
         uiOnline.roomServer.OnRoomClientSceneChangedCB += OnGameLoaded;
+
+        UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
     }
 
     public override void deactivate()
     {
         base.deactivate();
+
+        uiOnline.roomServer.OnRoomServerPlayersReadyCB -= OnAllPlayersReady;
+        uiOnline.roomServer.OnRoomClientSceneChangedCB -= OnGameLoaded;
+
+        foreach (UITab t in tabs)
+        {
+            if (t != null) Destroy(t.gameObject);
+        }
+        tabs.Clear();
+    }
+
+    public override void cancel() {
+        // if player is ready, we don't cancel the panel,
+        // we set state to Not ready.
+        if (localPlayerSlot && localPlayerSlot.roomPlayer.readyToBegin) {
+            localPlayerSlot.ChangeReadyState(!localPlayerSlot.roomPlayer.readyToBegin);
+        } else
+        {
+            base.cancel();
+
+            if (NetworkServer.activeHost)
+            {
+                uiOnline.roomServer.StopHost();
+            }
+            else if (NetworkClient.isConnected)
+            {
+                uiOnline.roomServer.StopClient();
+            }
+        }
     }
 
     public void OnGameLoaded() {
@@ -64,6 +99,7 @@ public class UIRoom : UIPanelTabbed
         if (showGameStartButton) {
             // TODO: Show start button to start the game on host
         } else {
+            uiOnline.SetState(UIOnline.States.Deactivated);
             uiOnline.roomServer.StartGameScene();
         }
     }
@@ -95,6 +131,11 @@ public class UIRoom : UIPanelTabbed
         }
         uiPlayerSlots.Clear();
 
+        foreach (var t in tabs) {
+            if (t.gameObject) GameObject.Destroy(t.gameObject);
+        }
+        tabs.Clear();
+
         // Create again all slots objects
         for (int i = 0; i < roomSlots.Count; ++i)
         {
@@ -108,6 +149,12 @@ public class UIRoom : UIPanelTabbed
             playerData.latency = -1;
 
             var uiSlot = AddPlayer(playerData);
+            tabs.Add(uiSlot);
+
+            if (slot.isLocalPlayer)
+            {
+                localPlayerSlot = uiSlot;
+            }
         }
     }
 
@@ -115,9 +162,12 @@ public class UIRoom : UIPanelTabbed
         //var playerSlot = UIRoom_PlayerSlot.Create(this.gameObject, data.backgroundColor, data.name, data.readyState);
         var slot = GameObject.Instantiate(UIPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_PlayerSlot>();
 
-        slot.AttachRoomPlayer(data.player);
-        slot.UpdateView();
+        slot.Parent = this;
+        slot.init();
 
+        slot.AttachRoomPlayer(data.player);
+
+        slot.UpdateView();
         slot.gameObject.SetActive(true);
 
         // Get current window size.
@@ -136,13 +186,26 @@ public class UIRoom : UIPanelTabbed
         return slot;
     }
 
-    public void showReadyUpButton(bool show, UIRoom_PlayerSlot slot) {
-        readyUpButton.SetActive(show);
-        if (show) {
-            var tab = readyUpButton.GetComponent<UITextTab>();
-            tab.onActivate.AddListener(slot.ChangeReadyState);
+    // called from localPlayer slot when changing.
+    public void UpdateReadyStateButton(UIRoom_PlayerSlot slot) {
+        if (slot.roomPlayer.readyToBegin) {
+            if (readyUpButton != null) {
+                Destroy(readyUpButton.gameObject);
+            }
+        } else {
+            if (readyUpButton == null) readyUpButton = Instantiate(readyUpButtonPrefab, this.gameObject.transform);
 
-            this.tabs.Add(tab);
+            readyUpButton.SetActive(true);
+
+            var tab = readyUpButton.GetComponent<UITextTab>();
+            tab.onActivate.AddListener(delegate { slot.ChangeReadyState(true); });
+
+            if (!tabs.Contains(tab))
+            {
+                tabs.Add(tab);
+                tab.init();
+                tab.deselect();
+            }
         }
     }
 }

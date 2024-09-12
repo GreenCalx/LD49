@@ -47,6 +47,29 @@ public class UIPlayerOnline : MonoBehaviour
 
         // updateSpeedCounter();
         // updateLifePool();
+        StartCoroutine(Schnibble.Utils.CoroutineChain(
+            WaitForGameManager(),
+            WaitForLocalPlayer()));
+    }
+
+    void ShowUITrackTime(bool value) {
+        showTrackTime = value;
+    }
+
+    IEnumerator WaitForGameManager() {
+        while (OnlineGameManager.Get() == null) {
+            yield return null;
+        }
+        OnlineGameManager.Get().onShowUITrackTime += ShowUITrackTime;
+    }
+
+    IEnumerator WaitForLocalPlayer() {
+
+        while (OnlineGameManager.Get().localPlayer == null) {
+            yield return null;
+        }
+
+        LinkToPlayer(OnlineGameManager.Get().localPlayer);
     }
 
     public void LinkToPlayer(OnlinePlayerController iOPC)

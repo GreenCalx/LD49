@@ -69,13 +69,16 @@ namespace Wonkerz {
                 else if (iHolder == Constants.GO_PLAYERUI)
                 {
                     handler = checkCacheObject(iHolder, ref GO_UIPLAYER);
-                } else if (iHolder == Constants.GO_PHYSXMATMGR)
+                }
+                else if (iHolder == Constants.GO_PHYSXMATMGR)
                 {
                     handler = checkCacheObject(iHolder, ref GO_PHYSXMATMGR);
-                } else if ( iHolder == Constants.GO_OFFGAMEMGR)
+                }
+                else if (iHolder == Constants.GO_OFFGAMEMGR)
                 {
                     handler = checkCacheObject(iHolder, ref GO_OFFGAMEMGR);
-                } else if ( iHolder == Constants.GO_UIONPLAYER)
+                }
+                else if (iHolder == Constants.GO_UIONPLAYER)
                 {
                     handler = checkCacheObject(iHolder, ref GO_UIONPLAYER);
                 }
@@ -102,7 +105,7 @@ namespace Wonkerz {
                 GO_UIPLAYER = null;
                 GO_PHYSXMATMGR = null;
                 GO_OFFGAMEMGR = null;
-                GO_UIONPLAYER = null; 
+                GO_UIONPLAYER = null;
             }
         }
 
@@ -114,153 +117,61 @@ namespace Wonkerz {
         }
 
         // Generic function to get mgr from manager object.
-        public static T Get<T>() {
-            if (typeof(T) == typeof(PlayerController)      ) return cache.getObject<T>(Constants.GO_PLAYER      , true)  ;
-            if (typeof(T) == typeof(CheckPointManager)     ) return cache.getObject<T>(Constants.GO_CPManager   , false) ;
-            if (typeof(T) == typeof(UIGarageTestManager)   ) return cache.getObject<T>(Constants.GO_TESTMANAGER , false) ;
-            if (typeof(T) == typeof(PhysicsMaterialManager)) return cache.getObject<T>(Constants.GO_PHYSXMATMGR , false) ;
-            if (typeof(T) == typeof(UIGarage)              ) return cache.getObject<T>(Constants.GO_UIGARAGE    , false) ;
-            if (typeof(T) == typeof(SoundManagerLoop)      ) return cache.getObject<T>(Constants.GO_SOUNDMANAGER, false) ;
+        public static T Get<T>()
+        {
+            if (typeof(T) == typeof(PlayerController))       return cache.getObject<T>(Constants.GO_PLAYER      , true);
+            if (typeof(T) == typeof(CheckPointManager))      return cache.getObject<T>(Constants.GO_CPManager   , false);
+            if (typeof(T) == typeof(UIGarageTestManager))    return cache.getObject<T>(Constants.GO_TESTMANAGER , false);
+            if (typeof(T) == typeof(PhysicsMaterialManager)) return cache.getObject<T>(Constants.GO_PHYSXMATMGR , false);
+            if (typeof(T) == typeof(UIGarage))               return cache.getObject<T>(Constants.GO_UIGARAGE    , false);
+            if (typeof(T) == typeof(SoundManagerLoop))       return cache.getObject<T>(Constants.GO_SOUNDMANAGER, false);
             SchLog.LogError("[Access] Trying to get unknown object : maybe you meant to use GetMgr?");
             return default(T);
         }
-        public static T GetMgr<T>() {
+        public static T GetMgr<T>()
+        {
             return cache.getObject<T>(Constants.GO_MANAGERS, false);
         }
-        public static T GetUI<T>() {
+
+        public static T GetUI<T>()
+        {
+            if (typeof(T) == typeof(UIGarage)) return cache.getObject<T>(Constants.GO_UIGARAGE, false);
+
             return cache.getObject<T>(Constants.GO_PLAYERUI, true);
         }
 
-        public static GameSettings GameSettings()
-        {
-            return cache.getObject<GameSettings>(Constants.GO_MANAGERS, false);
+        public static T GetOnlineUI<T>() {
+            return cache.getObject<T>(Constants.GO_UIONPLAYER, true);
         }
 
-        public static PlayerInputsManager PlayerInputsManager()
-        {
-            return cache.getObject<PlayerInputsManager>(Constants.GO_MANAGERS, false);
-        }
-        public static CameraManager CameraManager()
-        {
-            return cache.getObject<CameraManager>(Constants.GO_MANAGERS, false);
-        }
+        public static UIGarageTestManager     TestManager            () {return Get   <UIGarageTestManager    >();}
+        public static CheckPointManager       CheckPointManager      () {return Get   <CheckPointManager      >();}
+        public static PlayerController        Player                 () {return Get   <PlayerController       >();}
+        public static SoundManagerLoop        SoundManager           () {return Get   <SoundManagerLoop       >();}
+        public static PhysicsMaterialManager  PhysicsMaterialManager () {return Get   <PhysicsMaterialManager >();}
+        public static GameSettings            GameSettings           () {return GetMgr<GameSettings           >();}
+        public static PlayerInputsManager     PlayerInputsManager    () {return GetMgr<PlayerInputsManager    >();}
+        public static CameraManager           CameraManager          () {return GetMgr<CameraManager          >();}
+        public static SceneLoader             SceneLoader            () {return GetMgr<SceneLoader            >();}
+        public static CollectiblesManager     CollectiblesManager    () {return GetMgr<CollectiblesManager    >();}
+        public static PlayerCosmeticsManager  PlayerCosmeticsManager () {return GetMgr<PlayerCosmeticsManager >();}
+        public static TrackManager            TrackManager           () {return GetMgr<TrackManager           >();}
+        public static BountyArray             BountyArray            () {return GetMgr<BountyArray            >();}
+        public static GameProgressSaveManager GameProgressSaveManager() {return GetMgr<GameProgressSaveManager>();}
 
-        public static UIGarageTestManager TestManager()
-        {
-            return cache.getObject<UIGarageTestManager>(Constants.GO_TESTMANAGER, false);
+        public static UISecondaryFocus   UISecondaryFocus    () {
+            if (GameSettings().isOnline) return GetOnlineUI<UISecondaryFocus>();
+            else                         return GetUI      <UISecondaryFocus>();
         }
+        //public static UIPlayerOnline     UIPlayerOnline      () {return GetOnlineUI<UIPlayerOnline    >();}
+        public static UISpeedAndLifePool UISpeedAndLifePool  () {return GetUI      <UISpeedAndLifePool>();}
+        public static UIGarage           UIGarage            () {return GetUI      <UIGarage          >(); }
+        public static UIBountyUnlocked   UIBountyUnlocked    () {return GetUI      <UIBountyUnlocked  >();}
+        public static LevelEntryUI       LevelEntryUI        () {return GetUI      <LevelEntryUI      >();}
+        public static UIWonkerzBar       UIWonkerzBar        () {return GetUI      <UIWonkerzBar      >();}
+        public static UICheckpoint       UICheckpoint        () {return GetUI      <UICheckpoint      >();}
+        public static UITrackEvent       UITrackEvent        () {return GetUI      <UITrackEvent      >();}
 
-        public static CheckPointManager CheckPointManager()
-        {
-            return cache.getObject<CheckPointManager>(Constants.GO_CPManager, false);
-        }
-
-        public static PlayerController Player()
-        {
-            // GameSettings GS = Access.GameSettings();
-            // if (GS.IsOnline)
-            // {
-            //     return cache.getObject<PlayerController>(GS.OnlinePlayerAlias, true);
-            // }
-            return cache.getObject<PlayerController>(Constants.GO_PLAYER, true);
-        }
-
-        public static UIGarage UIGarage()
-        {
-            return cache.getObject<UIGarage>(Constants.GO_UIGARAGE, false);
-        }
-
-        public static SoundManagerLoop SoundManager()
-        {
-            return cache.getObject<SoundManagerLoop>(Constants.GO_SOUNDMANAGER, false);
-        }
-
-        public static SceneLoader SceneLoader()
-        {
-            return cache.getObject<SceneLoader>(Constants.GO_MANAGERS, false);
-        }
-
-
-        public static CollectiblesManager CollectiblesManager()
-        {
-            return cache.getObject<CollectiblesManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static PlayerCosmeticsManager PlayerCosmeticsManager()
-        {
-            return cache.getObject<PlayerCosmeticsManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static TrackManager TrackManager()
-        {
-            return cache.getObject<TrackManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static BountyArray BountyArray()
-        {
-            return cache.getObject<BountyArray>(Constants.GO_MANAGERS, false);
-        }
-        public static GameProgressSaveManager GameProgressSaveManager()
-        {
-            return cache.getObject<GameProgressSaveManager>(Constants.GO_MANAGERS, false);
-        }
-
-        public static UISpeedAndLifePool UISpeedAndLifePool()
-        {
-            return cache.getObject<UISpeedAndLifePool>(Constants.GO_PLAYERUI, true);
-        }
-
-        public static UISecondaryFocus UISecondaryFocus()
-        {
-            if (GameSettings().IsOnline)
-                return cache.getObject<UISecondaryFocus>(Constants.GO_UIONPLAYER, true);
-            else
-                return cache.getObject<UISecondaryFocus>(Constants.GO_PLAYERUI, true);
-        }
-
-        public static UIBountyUnlocked UIBountyUnlocked()
-        {
-            return cache.getObject<UIBountyUnlocked>(Constants.GO_PLAYERUI, true);
-        }
-
-        public static LevelEntryUI LevelEntryUI()
-        {
-            return cache.getObject<LevelEntryUI>(Constants.GO_PLAYERUI, true);
-        }
-        public static UIWonkerzBar UIWonkerzBar()
-        {
-            return cache.getObject<UIWonkerzBar>(Constants.GO_PLAYERUI, true);
-        }
-        public static UICheckpoint UICheckpoint()
-        {
-            return cache.getObject<UICheckpoint>(Constants.GO_PLAYERUI, true);
-        }
-        
-        public static UITrackEvent UITrackEvent()
-        {
-            return cache.getObject<UITrackEvent>(Constants.GO_PLAYERUI, true);
-        }
-
-        public static PhysicsMaterialManager PhysicsMaterialManager()
-        {
-            return cache.getObject<PhysicsMaterialManager>(Constants.GO_PHYSXMATMGR, false);
-        }
-
-        // ONLINE MODE
-        // public static OfflineGameManager OfflineGameManager()
-        // {
-        //     return cache.getObject<OfflineGameManager>(Constants.GO_OFFGAMEMGR, false);
-        // }
-
-        public static UIPlayerOnline UIPlayerOnline()
-        {
-            return cache.getObject<UIPlayerOnline>(Constants.GO_UIONPLAYER, false);
-        }
-
-        public static OnlinePlayerController LocalPlayer()
-        {
-            return Access.Player()?.GetComponent<OnlinePlayerController>();
-        }
 
 }
 }

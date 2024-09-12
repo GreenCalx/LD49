@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System;
 using UnityEngine;
 using Wonkerz;
 
@@ -15,7 +16,6 @@ using Schnibble;
 // Client side:
 //    - Manage UX related states: when all player are loaded, ready, etc...
 //
-//
 // Server side:
 //    - keep track of connected player with a SyncList<OnlinePlayerController> uniquePlayers
 //    - Start the ServerRoutine which will wait for players state and act accordingly => start game, start trial, etc. 
@@ -30,15 +30,22 @@ public class OnlineGameManager : NetworkBehaviour
         return NetworkRoomManagerExt.singleton.onlineGameManager;
     }
 
+    [Header("UX")]
+    [SerializeField]
+    GameObject     UIWaitForPlayers;
+    [SerializeField]
+    public UIPlayerOnline UIPlayer;
+    [SerializeField]
+    OnlineUIPostGame UIPostGame;
+    [SerializeField]
+    OnlineUIPauseMenu UIPauseMenu;
+
     [SyncVar]
     public bool openCourseLoaded = false;
     [SyncVar]
     public bool trialLoaded = false;
     [SyncVar]
     public bool openCourseUnLoaded = false;
-
-    [Header("References")]
-    public OnlineUIPostGame uiPostGame_sceneObject;
 
     [Header("Tweaks")] // not the right place ?
     public uint countdown; // in seconds
@@ -60,13 +67,12 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public bool gameLaunched;
     [Header("Manual mand refs")]
-    [SerializeField]
-    GameObject      UIWaitForPlayers;
     public OnlineTrackEventManager trackEventManager;
     [Header("Auto Refs")]
     public OnlineStartLine startLine;
     public OnlineTrialManager trialManager;
-    
+
+    public Action<bool> onShowUITrackTime;
 
     /* ----------------------------------
     Server
@@ -74,7 +80,7 @@ public class OnlineGameManager : NetworkBehaviour
 
     public override void OnStartServer()
     {
-        this.LogError("Start onlineGameManager : server.");
+        this.Log("Start onlineGameManager : server.");
         // TODO: remove this as we are already kinda a singleton ourselves.
         expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
@@ -109,22 +115,22 @@ public class OnlineGameManager : NetworkBehaviour
         // Therefor if we dont have the same number of players in the room/lobby and spawned players there is a problem.
         // TODO:
         // Add a timeout if we cannot have all players spawed for 10s or something.
-        this.LogError("Waiting for client to spawn.");
+        this.Log("Waiting for client to spawn.");
         while (uniquePlayers.Count != expectedPlayersFromLobby)
         {
-            this.LogError("Number of client spawned: " + uniquePlayers.Count);
+            this.Log("Number of client spawned: " + uniquePlayers.Count);
             yield return null;
         }
-        this.LogError("AllClientSpawned." + uniquePlayers.Count);
+        this.Log("AllClientSpawned." + uniquePlayers.Count);
     }
 
     [Server]
     IEnumerator WaitForAllPlayersToBeReady()
     {
         // When a client press start to ready up it will set its isReady flag on its OnlinePlayerController
-        this.LogError("Waiting for clients to be ready.");
+        this.Log("Waiting for clients to be ready.");
         while (!AreAllPlayersReady()) {yield return null;}
-        this.LogError("AllClientReady.");
+        this.Log("AllClientReady.");
     }
 
     [Server]
@@ -135,20 +141,23 @@ public class OnlineGameManager : NetworkBehaviour
         // After a client has spawned we wait for it to be "loaded" meaning every dependencies are resolved client-side.
         // This is to avoid having Rpc sent when the client is not fully loaded.
         // This should not happen, but for now it happens sometimes because Mirror does not spown the localPlayer as if it was a real NetworkServer.Spawn I guess.
-        this.LogError("Waiting for clients to be loaded.");
+        this.Log("Waiting for clients to be loaded.");
         while (!AreAllPlayersLoaded()) {yield return null;}
-        this.LogError("AllClientLoaded.");
+        this.Log("AllClientLoaded.");
     }
 
     [Server]
     IEnumerator StartGame() {
         countdownElapsed = 0f;
+
+        UIPlayer.gameObject.SetActive(true);
+
         yield return StartCoroutine(Countdown());
     }
 
     [Server]
     void FreezeAllPlayers(bool state) {
-        this.LogError("server: FreezeAllPlayers " + state.ToString());
+        this.Log("server: FreezeAllPlayers " + state.ToString());
         foreach(var opc in uniquePlayers) opc.FreezePlayer(state);
     }
 
@@ -377,28 +386,36 @@ public class OnlineGameManager : NetworkBehaviour
 
     override public void OnStartClient() {
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
+
+        UIPlayer.gameObject.SetActive(false);
+        UIPostGame.gameObject.SetActive(false);
+        UIWaitForPlayers.gameObject.SetActive(true);
+        // Do we really want the menu to be activable during waiting of players?
+        UIPauseMenu.gameObject.SetActive(true);
     }
 
     [ClientRpc]
     void RpcAllPlayersLoaded() {
-        uiPostGame_sceneObject.gameObject.SetActive(false);
-        uiPostGame_sceneObject.updatePlayerRankingsLbl(this);
+        UIPostGame.gameObject.SetActive(false);
+        UIPostGame.updatePlayerRankingsLbl(this);
     }
 
     [ClientRpc]
     void RpcAllPlayersLockAndLoaded() {
         UIWaitForPlayers.SetActive(false);
+        UIPlayer.gameObject.SetActive(true);
     }
 
     [ClientRpc]
     void RpcPostGame() { 
-        uiPostGame_sceneObject.gameObject.SetActive(true);
-        UIWaitForPlayers.SetActive(false);
+        UIPostGame.gameObject.SetActive(true);
+        UIWaitForPlayers.gameObject.SetActive(false);
     }
 
     [ClientRpc]
     void WaitForOtherPlayersToBeReady() {
         UIWaitForPlayers.SetActive(true);
+        UIPlayer.gameObject.SetActive(false);
     }
 
     [ClientRpc]
@@ -421,6 +438,6 @@ public class OnlineGameManager : NetworkBehaviour
     [ClientRpc]
     public void RpcShowUITrackTime(bool iState)
     {
-        Access.UIPlayerOnline().showTrackTime = iState;
+        UIPlayer.showTrackTime = iState;
     }
 }

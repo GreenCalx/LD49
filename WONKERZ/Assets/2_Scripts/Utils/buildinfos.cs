@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class buildinfos : MonoBehaviour
 {
-    string version = "Build version : " + Constants.MajorVersion + "." + Constants.MinorVersion;
+    public static readonly string version = "Build version : " + Constants.MajorVersion + "." + Constants.MinorVersion;
     // Start is called before the first frame update
     void OnGUI()
     {

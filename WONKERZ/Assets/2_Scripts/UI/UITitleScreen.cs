@@ -53,20 +53,57 @@ public class UITitleScreen : UIPanelTabbed
     }
 
     public void launchOnline() {
+        // TODO: do not remove player but switch between local, online, etc...
+        // There should probably be no player at all on the titleScreen anyway.
         PlayerController pc = Access.Player();
-        if (!!pc) Destroy(pc.gameObject);
+        if (!!pc)
+        {
+            Destroy(pc.gameObject);
+            var mainCam = Access.GetMgr<CameraManager>().active_camera.cam;
+            if (mainCam != null)
+            {
+                AudioListener al = null;
+                if (!mainCam.gameObject.TryGetComponent<AudioListener>(out al))
+                {
+                    al = mainCam.gameObject.AddComponent<AudioListener>();
+                }
+
+                if (al == null) {
+                    this.LogError("Weird shit.");
+                }
+
+                al.enabled = true;
+            }
+        }
 
         Access.GameSettings().isLocal = false;
-        Access.SceneLoader().loadScene("OfflineRoom");
+        Access.SceneLoader().loadRootSceneWithLoadingScreen("OfflineRoom");
     }
 
     public void launchLocal() {
         PlayerController pc = Access.Player();
-        if (!!pc) Destroy(pc.gameObject);
+        if (!!pc)
+        {
+            Destroy(pc.gameObject);
+            var mainCam = Access.GetMgr<CameraManager>().active_camera.cam;
+            if (mainCam != null)
+            {
+                AudioListener al = null;
+                if (!mainCam.gameObject.TryGetComponent<AudioListener>(out al))
+                {
+                    al = mainCam.gameObject.AddComponent<AudioListener>();
+                }
+
+                if (al == null) {
+                    this.LogError("Weird shit.");
+                }
+
+                al.enabled = true;
+            }
+        }
 
         Access.GameSettings().isLocal = true;
-
-        Access.SceneLoader().loadScene("OfflineRoom");
+        Access.SceneLoader().loadRootSceneWithLoadingScreen("OfflineRoom");
     }
 
     public void launchDemo()

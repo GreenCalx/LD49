@@ -32,9 +32,10 @@ public class GameProgressSaveManager : MonoBehaviour
     private bool errorAtLoad = false;
 
     public string profileDataFilePath;
-    
-    void Awake()
+
+    public void init()
     {
+        this.Log("init.");
         fp_prefix = Application.persistentDataPath + Constants.FD_SAVEFILES; // unauthorized in constructor so not const..
         if (!Directory.Exists(fp_prefix))
         {

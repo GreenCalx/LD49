@@ -24,6 +24,7 @@ public abstract class MainThreadCommand
 
 public class UIOnline : UIPanel
 {
+    public static UIOnline singleton;
     // Externals
 
     public class UIOnlineMainThreadCommand : MainThreadCommand
@@ -115,6 +116,7 @@ public class UIOnline : UIPanel
 
     public void SetState(States toState)
     {
+        this.Log("SetState : " + toState.ToString());
         switch (toState)
         {
             case States.ConnectingToLobbyServer:
@@ -183,14 +185,13 @@ public class UIOnline : UIPanel
                 }break;
             case States.Exit:
                 {
+                    deactivate();
                     // Remove room if need be
                     client.Close();
-
-                    // Go back to last menu
                     // Carefull we need to move back the network manager to the active scene so that it is deleted when
-                    // loading back the title scene.
-                    SceneManager.MoveGameObjectToScene(roomServer.gameObject.transform.root.gameObject, SceneManager.GetActiveScene());
-                    SceneManager.LoadScene(Constants.SN_TITLE, LoadSceneMode.Single);
+                    var sceneLoader = Access.SceneLoader();
+                    sceneLoader.ResetDontDestroyOnLoad();
+                    sceneLoader.loadRootScene(Constants.SN_TITLE);
                 } break;
         }
         state = toState;
@@ -302,6 +303,17 @@ public class UIOnline : UIPanel
                 {
                 } break;
         }
+    }
+
+    public override void cancel()
+    {
+        base.cancel();
+
+        Hide();
+    }
+
+    public void Exit() {
+        SetState(States.Exit);
     }
 
     public void CreateRoom()
@@ -428,10 +440,11 @@ public class UIOnline : UIPanel
     override public void deactivate()
     {
         base.deactivate();
-        
-        SetState(States.Deactivated);
 
         RemoveLobbyServerCallbacks();
+        RemoveRoomServerCallbacks();
+        
+        SetState(States.Deactivated);
     }
 
     // Internals
@@ -528,33 +541,88 @@ public class UIOnline : UIPanel
 
     void RegisterRoomServerCallbacks() {
         roomServer.OnRoomStartHostCB   += OnRoomHostCreated;
-        roomServer.OnRoomClientEnterCB += uiRoom.OnPlayerConnected;
-        roomServer.OnRoomClientExitCB  += uiRoom.OnPlayerDisconnected;
 
-        roomServer.OnRoomStartClientCB += uiRoom.OnPlayerConnected;
-        roomServer.OnRoomStopClientCB  += uiRoom.OnPlayerDisconnected;
+        roomServer.OnRoomClientEnterCB += OnRoomClientEnter;
+        roomServer.OnRoomClientExitCB  += OnRoomClientExit;
+        // roomServer.OnRoomClientEnterCB += uiRoom.OnPlayerConnected;
+        // roomServer.OnRoomClientExitCB  += uiRoom.OnPlayerDisconnected;
+
+        roomServer.OnRoomStartClientCB += OnRoomStartClient;
+        roomServer.OnRoomStopClientCB  += OnRoomStopClient;
+
+        roomServer.OnRoomStopServerCB += OnRoomStopServer;
 
         roomServer.OnRoomClientSceneChangedCB += OnRoomSceneChanged;
 
         roomServer.OnClientErrorCB += OnRoomClientError;
+
+        // OnNetworkManagerChange is static.
+        // It means we could add ourselves again.
+        NetworkRoomManagerExt.OnNetworkManagerChange -= OnNetworkManagerChange;
+        NetworkRoomManagerExt.OnNetworkManagerChange += OnNetworkManagerChange;
     }
 
     void RemoveRoomServerCallbacks() {
         roomServer.OnRoomStartHostCB   -= OnRoomHostCreated;
-        roomServer.OnRoomClientEnterCB -= uiRoom.OnPlayerConnected;
-        roomServer.OnRoomClientExitCB  -= uiRoom.OnPlayerDisconnected;
 
-        roomServer.OnRoomStartClientCB -= uiRoom.OnPlayerConnected;
-        roomServer.OnRoomStopClientCB  -= uiRoom.OnPlayerDisconnected;
+        roomServer.OnRoomClientEnterCB -= OnRoomClientEnter;
+        roomServer.OnRoomClientExitCB  -= OnRoomClientExit;
+
+        roomServer.OnRoomStartClientCB -= OnRoomStartClient;
+        roomServer.OnRoomStopClientCB  -= OnRoomStopClient;
+
+        roomServer.OnRoomStopServerCB -= OnRoomStopServer;
 
         roomServer.OnRoomClientSceneChangedCB -= OnRoomSceneChanged;
 
         roomServer.OnClientErrorCB -= OnRoomClientError;
+
+        NetworkRoomManagerExt.OnNetworkManagerChange -= OnNetworkManagerChange;
     }
 
+    void OnNetworkManagerChange() {
+        this.Log("OnNetworkManagerChange");
+        roomServer = NetworkRoomManagerExt.singleton;
+        client.roomManager = roomServer;
+        RegisterRoomServerCallbacks();
+    }
+
+    void OnRoomClientEnter() {
+        this.Log("OnRoomClientEnter");
+
+        if (uiRoom.isActivated) uiRoom.UpdatePlayerSlots(roomServer.roomSlots);
+    }
+
+    void OnRoomClientExit() {
+        this.Log("OnRoomClientExit");
+
+        if (uiRoom.isActivated) uiRoom.UpdatePlayerSlots(roomServer.roomSlots);
+    }
+
+    void OnRoomStartClient() {
+        this.Log("OnRoomStartClient");
+    }
+
+    void OnRoomStopClient() {
+        this.Log("OnRoomStopClient");
+    }
+
+    void OnRoomStopServer() {
+        this.Log("OnRoomStopServer");
+
+        client.RemoveLobby();
+    }
 
     override protected void Awake()
     {
+        if (singleton == null) {
+            singleton = this;
+            Access.SceneLoader().SetDontDestroyOnLoad(singleton.gameObject);
+        } else {
+            DestroyImmediate(this.gameObject);
+            return;
+        }
+
         base.Awake();
 
         inputMgr      = Access.PlayerInputsManager().player1;
@@ -629,6 +697,7 @@ public class UIOnline : UIPanel
     }
 
     void OnRoomSceneChanged() {
+        this.Log("OnRoomSceneChanged");
         //if changed to offline room, check which UX we want.
         if (Mirror.Utils.IsSceneActive(roomServer.RoomScene)) {
             SetState(Access.GameSettings().goToState);
@@ -666,13 +735,16 @@ public class UIOnline : UIPanel
     // TODO: is queue thread safe? should be right?
     void OnRoomCreated(SchLobbyClient.RoomCreatedData data)
     {
+        this.Log("OnRoomCreated");
         pendingCommands.Enqueue(new CreateRoomCmd(this));
     }
 
     void OnRoomRemoved() {
+        this.Log("OnRoomRemoved");
     }
 
     void OnRoomJoined() {
+        this.Log("OnRoomJoined");
     }
 
     class OnNATPunchCmd : UIOnlineMainThreadCommand
@@ -710,6 +782,7 @@ public class UIOnline : UIPanel
 
     void OnConnected(int id)
     {
+        this.Log("OnConnected");
         pendingCommands.Enqueue(new OnConnectedCmd(this, state));
     }
 
@@ -728,6 +801,7 @@ public class UIOnline : UIPanel
 
     void OnDisconnected()
     {
+        this.Log("OnDisconnected");
         pendingCommands.Enqueue(new OnDisconnectedCmd(this, state));
     }
 
@@ -750,10 +824,12 @@ public class UIOnline : UIPanel
 
     void OnLobbyClientError(SchLobbyClient.ErrorCode errorCode)
     {
+        this.LogError("Lobby error : " + errorCode);
         pendingCommands.Enqueue(new OnLobbyClientErrorCmd(this, state, errorCode));
     }
 
     void OnRoomClientError(TransportError error, string reason) {
         this.LogError("Room error:" + reason);
+        Exit();
     }
 }

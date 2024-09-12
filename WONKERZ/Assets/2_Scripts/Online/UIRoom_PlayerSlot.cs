@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Schnibble.UI;
 
-public class UIRoom_PlayerSlot : MonoBehaviour
+public class UIRoom_PlayerSlot : UITab
 {
     public GameObject background;
     public GameObject latency;
     public GameObject playerName;
+
     public GameObject readyState;
 
-    NetworkRoomPlayerExt roomPlayer;
+    public NetworkRoomPlayerExt roomPlayer {get; private set; }
     public void AttachRoomPlayer(NetworkRoomPlayerExt player) {
         if (roomPlayer != null && roomPlayer != player) {
             roomPlayer.onAnyChange -= UpdateView;
@@ -23,7 +25,7 @@ public class UIRoom_PlayerSlot : MonoBehaviour
         }
     }
 
-    void OnDestroy() {
+    override protected void OnDestroy() {
         if(roomPlayer != null)
         roomPlayer.onAnyChange -= UpdateView;
     }
@@ -36,27 +38,13 @@ public class UIRoom_PlayerSlot : MonoBehaviour
         SetLatency((int)(roomPlayer.infos.rtt * 1000));
         // pull player states.
         SetReadyState(roomPlayer.readyToBegin);
-        if (!roomPlayer.readyToBegin) {
-            // Player is not ready,
-            // for now we only show a button if we are the current player that is not ready.
-            if (roomPlayer.isLocalPlayer) {
-                // TODO: better child/parent.
-                this.gameObject.transform.parent.GetComponent<UIRoom>().showReadyUpButton(!roomPlayer.readyToBegin, this);
-            }
+        if (roomPlayer.isLocalPlayer) {
+            (Parent as UIRoom).UpdateReadyStateButton(this);
         }
     }
 
-    public void ChangeReadyState() {
-        roomPlayer.CmdChangeReadyState(true);
-    }
-
-    public static UIRoom_PlayerSlot Create(GameObject parent, Color backgroundColor, string playerName, bool readyState) {
-        UIRoom_PlayerSlot slot = parent.AddComponent<UIRoom_PlayerSlot>();
-
-        slot.SetBackgroundColor(backgroundColor);
-        slot.SetPlayerName(playerName);
-        slot.SetReadyState(readyState);
-        return slot;
+    public void ChangeReadyState(bool value) {
+        roomPlayer.CmdChangeReadyState(value);
     }
 
     public void SetPosition(int x, int y) {

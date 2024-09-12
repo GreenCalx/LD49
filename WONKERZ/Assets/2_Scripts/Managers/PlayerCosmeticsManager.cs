@@ -42,9 +42,8 @@ namespace Wonkerz {
 
         private static List<GameObject> players = new List<GameObject>();
 
-
-        void Start()
-        {
+        public void init() {
+            this.Log("init");
             resetPlayersToCustomize();
         }
 

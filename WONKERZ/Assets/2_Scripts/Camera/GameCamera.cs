@@ -43,8 +43,7 @@ public class GameCamera : MonoBehaviour
     public Camera cam;
     protected float initial_FOV;
 
-    public virtual void init() {
-    }
+    public virtual void init() {}
 
     public virtual void Awake() {
         if (cam == null) cam = GetComponent<Camera>();
@@ -57,5 +56,17 @@ public class GameCamera : MonoBehaviour
             cam.transform.localPosition = Vector3.zero;
             cam.fieldOfView = initial_FOV;
         }
+    }
+
+    public virtual void disable() {
+        this.gameObject.SetActive(false);
+        this.enabled            = false;
+        this.cam.enabled        = false;
+    }
+
+    public virtual void enable() {
+        this.enabled            = true;
+        this.cam.enabled        = true;
+        this.gameObject.SetActive(true);
     }
 }

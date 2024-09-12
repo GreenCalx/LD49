@@ -596,6 +596,8 @@ namespace Wonkerz
                 sceneLoader.afterLoadScene.RemoveListener(OnAfterLoadScene);
                 sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);
             }
+
+            Access.GetMgr<AudioListenerManager>().UnsetListener(GetRigidbody()?.gameObject);
         }
 
         // Jump logic
@@ -893,6 +895,8 @@ namespace Wonkerz
             }
 
             Access.CameraManager()?.OnTargetChange(GetTransform());
+
+            Access.GetMgr<AudioListenerManager>().SetListener(rb.gameObject);
 
             this.Log("ActivateMode" + GetTransform().name);
         }

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1482348120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1482348121}
+  m_Layer: 0
+  m_Name: DDOL
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1482348121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1482348120}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2461822761771495986}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2461822761771495987
 GameObject:
   m_ObjectHideFlags: 0
@@ -17,8 +48,9 @@ GameObject:
   - component: {fileID: 610670227064521680}
   - component: {fileID: 6406061366281777605}
   - component: {fileID: -1292285153376040016}
-  - component: {fileID: 1844676545904051825}
+  - component: {fileID: 3173517242787066787}
   - component: {fileID: -5754234224573047130}
+  - component: {fileID: 1844676545904051825}
   - component: {fileID: 1088823065795957811}
   - component: {fileID: -485847373434331477}
   - component: {fileID: 4424019266700067974}
@@ -40,7 +72,8 @@ Transform:
   m_LocalPosition: {x: 73.7995, y: -144.20084, z: -268.87674}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1482348121}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -76,7 +109,6 @@ MonoBehaviour:
   transitionDuration: 0.5
   deathCamDuration: 2
   cameraRotationOrder: 0100000002000000
-  focusables: []
 --- !u!114 &8553312098393095324
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +157,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+  dontDestroyOnLoadObject: {fileID: 1482348120}
 --- !u!114 &2461822761663601311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +248,30 @@ MonoBehaviour:
   bountyMatrix:
     bounty_unlock_matrix_data:
       ResourcesPath: 
+--- !u!114 &3173517242787066787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17806d8007c64e04090ba81a6e115f34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-5754234224573047130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea5fb59ec85cc7e4595db03a8125b58e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1844676545904051825
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,18 +287,6 @@ MonoBehaviour:
   defaultCarCollection: {fileID: 11400000, guid: 45e54de0e441fbb4bb721eb0df2872b5, type: 2}
   cosmeticCollection: {fileID: 11400000, guid: 20f8d05651587b54faaa9e00e89213c4, type: 2}
   availableCosmetics: 
---- !u!114 &-5754234224573047130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2461822761771495987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea5fb59ec85cc7e4595db03a8125b58e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1088823065795957811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,5 +333,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07ba52af3613faf44afc2e0a543a1410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isLocal: 0
   IsOnline: 0
   OnlinePlayerAlias: Player
+  goToState: 3
+  defaultUITheme:
+    textTheme:
+      font: {fileID: 11400000, guid: 85bed524455e91342b8dde07a9a678e3, type: 2}
+      colorGradient: 1
+      colorGradientAsset: {fileID: 11400000, guid: 7902a131d7b17e3409ed11f95ff75e36, type: 2}
+      fontStyle: 0
+      alignmentOptions: 514
+      overflowModes: 0
+    colorTheme:
+      selected: {r: 1, g: 0.57634825, b: 0, a: 1}
+      deselected: {r: 0.509434, g: 0.2949003, b: 0, a: 1}
+      activated: {r: 0, g: 1, b: 0.2397871, a: 1}
+      deactivated: {r: 0.012815909, g: 0.509434, b: 0.024648393, a: 1}

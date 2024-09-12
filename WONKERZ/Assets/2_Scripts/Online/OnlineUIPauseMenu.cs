@@ -109,6 +109,8 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         // save & exit here
         if (NetworkRoomManagerExt.singleton != null)
         {
+            // make shure we dont go back to offline room.
+            NetworkRoomManagerExt.singleton.offlineScene = "";
             if (NetworkServer.activeHost)
             {
                 NetworkRoomManagerExt.singleton.StopHost();
@@ -125,7 +127,8 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
             }
         }
 
-        Access.SceneLoader().loadScene(Constants.SN_TITLE);
+        Access.SceneLoader().ResetDontDestroyOnLoad();
+        Access.SceneLoader().loadRootSceneWithLoadingScreen(Constants.SN_TITLE);
     }
 
     public void OnCameraToggleChange(bool value)

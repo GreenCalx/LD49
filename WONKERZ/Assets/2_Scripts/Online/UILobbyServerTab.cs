@@ -74,7 +74,7 @@ public class UILobbyServerTab : UITextTab
             this.LogError("Please connect a Parent of type UILobbyServerList to UILobbyServerTab.");
         }
 
-        text.text = lobby.name;
+        label.text.text = lobby.name;
     }
 
     // Force connection to be one second to avoid very fast message blinking.
@@ -152,12 +152,9 @@ public class UILobbyServerTab : UITextTab
     IEnumerator Coro_OnClientConnected() {
         yield return StartCoroutine(WaitTimerLatency());
 
-        deactivate();
-
         serverList.deactivate();
-        serverList.online.deactivate();
-
         serverList.online.SetState(UIOnline.States.InRoom);
+
         Access.GameSettings().goToState = UIOnline.States.InRoom;
     }
 

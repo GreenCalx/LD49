@@ -9,38 +9,13 @@ public class UICamera : GameCamera
     {
         camType = CAM_TYPE.UI;
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        Access.CameraManager().changeCamera(camType, true);
+
+    void OnEnable() {
+        Access.GetMgr<AudioListenerManager>().SetListener(this.gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+    void OnDisable() {
+        Access.GetMgr<AudioListenerManager>().UnsetListener(this.gameObject);
     }
-
-    public override void init()
-    {
-        
-    }
-
-    void OnDestroy() {
-        // try to find a new camera with our type.
-        // HACK:
-        var cameras = GameObject.FindObjectsByType<Camera>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        foreach (var camera in cameras) {
-            if (camera.name == "Main Camera" && camera != cam) {
-                if (camera.GetComponent<UICamera>()) {
-                    var uiCam = camera.GetComponent<UICamera>();
-                    uiCam.enabled = true;
-                    uiCam.cam.enabled = true;
-                    uiCam.gameObject.SetActive(true);
-                    uiCam.Start();
-                    break;
-                }
-            }
-        }
-    }
-}}
+}
+}
