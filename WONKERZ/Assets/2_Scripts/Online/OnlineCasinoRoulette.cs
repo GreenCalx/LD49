@@ -20,10 +20,9 @@ public class OnlineCasinoRoulette : NetworkBehaviour
     [SyncVar]
     public bool isSpinning = false;
 
-    void Start()
+    public override void OnStartServer()
     {
-        if (self_RB==null)
-            self_RB = GetComponent<Rigidbody>();
+        if (self_RB==null) self_RB = GetComponent<Rigidbody>();
 
         self_RB.maxAngularVelocity = angularVelocityThreshold + 1f;
 

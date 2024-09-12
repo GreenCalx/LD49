@@ -415,8 +415,9 @@ public class OnlinePlayerController : NetworkBehaviour
 
         if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
 
-        self_PlayerController.OnStateChange += OnStateChange;
-        self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
+        // Updated by server.
+        //self_PlayerController.OnStateChange += OnStateChange;
+        //self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
 
         self_PlayerController.Init();
         // Set underlying player controller to not apply any inputs.
@@ -458,7 +459,6 @@ public class OnlinePlayerController : NetworkBehaviour
         Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         CmdModifyLoadedState(true);
     }
-
 
     [TargetRpc]
     void RpcSetCameraFocus(Transform t)

@@ -88,6 +88,12 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public override void OnRoomClientSceneChanged()
     {
+        // HACK:Check if we loaded the open course.
+        // TODO: this is very bad please fix asap!
+        var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
+        if (openCourseScene.IsValid()) {
+            SceneManager.SetActiveScene(openCourseScene);
+        }
         OnRoomClientSceneChangedCB?.Invoke();
     }
 

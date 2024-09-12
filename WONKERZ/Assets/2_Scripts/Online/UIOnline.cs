@@ -544,8 +544,6 @@ public class UIOnline : UIPanel
 
         roomServer.OnRoomClientEnterCB += OnRoomClientEnter;
         roomServer.OnRoomClientExitCB  += OnRoomClientExit;
-        // roomServer.OnRoomClientEnterCB += uiRoom.OnPlayerConnected;
-        // roomServer.OnRoomClientExitCB  += uiRoom.OnPlayerDisconnected;
 
         roomServer.OnRoomStartClientCB += OnRoomStartClient;
         roomServer.OnRoomStopClientCB  += OnRoomStopClient;

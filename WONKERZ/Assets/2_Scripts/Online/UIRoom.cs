@@ -104,35 +104,24 @@ public class UIRoom : UIPanelTabbed
         }
     }
 
-    public void OnPlayerConnected() {
-        if (uiOnline == null) {
-            uiOnline = (Parent as UIOnline);
-        };
-        this.Log("OnPlayerConnected: " + uiOnline.roomServer.roomSlots.Count);
-        UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
-    }
-
-    public void OnPlayerDisconnected() {
-        if (uiOnline == null) {
-            uiOnline = (Parent as UIOnline);
-        };
-        this.Log("OnPlayerDisconnected: " + uiOnline.roomServer.roomSlots.Count);
-        UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
-    }
-
     public void UpdatePlayerSlots(List<NetworkRoomPlayer> roomSlots) {
         // TODO: Update already existing slots instead of creating again all slots.
 
         // Clean-up
         foreach (var s in uiPlayerSlots)
         {
-            // clean-up callbacks to avoid dead objects being called.
-            GameObject.Destroy(s.gameObject);
+            if (s != null && s.gameObject != null)
+            {
+                // clean-up callbacks to avoid dead objects being called.
+                GameObject.Destroy(s.gameObject);
+            }
         }
         uiPlayerSlots.Clear();
 
         foreach (var t in tabs) {
-            if (t.gameObject) GameObject.Destroy(t.gameObject);
+            if (t != null && t.gameObject != null) { 
+                GameObject.Destroy(t.gameObject);
+            }
         }
         tabs.Clear();
 
