@@ -1,5 +1,6 @@
 using Mirror;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Wonkerz;
@@ -47,12 +48,17 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public bool openCourseUnLoaded = false;
 
+    [Header("References")]
+    public GameObject prefab_onlineTrialRoulette;
+
     [Header("Tweaks")] // not the right place ?
     public uint countdown; // in seconds
     public uint gameDuration = 180; // in Seconds
     public uint postGameDuration = 30;
     public uint trackEventTimeStep = 60;
+    public List<string> trialPool = new List<string>(){ "RaceTrial01", "MountainTrial01" };
     public string selectedTrial = "RaceTrial01";
+    
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
     public OnlinePlayerController localPlayer;
@@ -99,7 +105,8 @@ public class OnlineGameManager : NetworkBehaviour
         yield return StartCoroutine(WaitForAllPlayersToBeReady());
 
         RpcAllPlayersLockAndLoaded();
-
+        
+        yield return StartCoroutine(SpinTrialRoulette());
         yield return StartCoroutine(StartGame());
         yield return StartCoroutine(GameLoop());
         yield return StartCoroutine(WaitTrialSessions());
@@ -338,6 +345,38 @@ public class OnlineGameManager : NetworkBehaviour
         //RpcRefreshOfflineGameMgr();
 
         yield break;
+    }
+
+        [Server]
+    IEnumerator SpinTrialRoulette()
+    {
+        GameObject inst = Instantiate(prefab_onlineTrialRoulette);
+        inst.transform.parent = null;
+        NetworkServer.Spawn(inst);  
+
+        OnlineTrialRoulette asRoulette = inst.GetComponent<OnlineTrialRoulette>();
+        
+        yield return new WaitForFixedUpdate();
+        asRoulette.init(trialPool);
+        
+        yield return new WaitForFixedUpdate();
+        asRoulette.Spin();
+        
+        yield return new WaitForFixedUpdate();
+        while (asRoulette.IsSpinning())
+        {
+            yield return null;
+        }
+        yield return new WaitForFixedUpdate();
+        asRoulette.StopSpin();
+        selectedTrial = asRoulette.RetrieveSelectedTrial();
+
+        yield return new WaitForSeconds(2f);
+
+        
+
+        NetworkServer.Destroy(inst);
+        Destroy(inst);
     }
 
     [Server]
