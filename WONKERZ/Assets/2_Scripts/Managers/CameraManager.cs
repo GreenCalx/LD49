@@ -23,7 +23,21 @@ namespace Wonkerz
         [Header("Debug")]
         GameCamera _active_camera;
 
-        GameCamera defaultCamera;
+        GameCamera _defaultCamera = null;
+        GameCamera defaultCamera {
+                get {
+                    if (_defaultCamera == null) {
+                        var camGO = new GameObject("defaultCamera");
+                        var cam = camGO.AddComponent<Camera>();
+                        _defaultCamera = camGO.AddComponent<UICamera>();
+                        _defaultCamera.cam = cam;
+                        _defaultCamera.disable();
+
+                        camGO.transform.parent = this.gameObject.transform;
+                    }
+                    return _defaultCamera;
+                }
+        }
         public GameCamera active_camera {
             get
             {
@@ -69,7 +83,7 @@ namespace Wonkerz
         public void init() {
             this.Log("init.");
             inTransition = false;
-            SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            SceneManager.sceneLoaded += OnSceneLoaded;
             Access.PlayerInputsManager().player1.Attach(this as IControllable);
 
             //changeCamera(GameCamera.CAM_TYPE.INIT, false);
@@ -130,21 +144,25 @@ namespace Wonkerz
             // Else we dont know yet what to do with the cameras, they might not even be initialized at all, etc...
             //if (mode == LoadSceneMode.Single)
             {
-                Reset();
-                // changeCamera will try to find a camera of type init: dangerous we could have multiples.
-                changeCamera(GameCamera.CAM_TYPE.INIT, false);
-                if (active_camera != null)
+                this.Log("OnSceneLoaded :" + scene.name);
+                var camera = findCameraInScene(GameCamera.CAM_TYPE.INIT, scene);
+                if (camera)
                 {
-                    InitCamera initCam = active_camera.GetComponent<InitCamera>();
-                    if ((initCam != null) && (initCam.nextCam != null))
+                    var initCamera = camera.GetComponent<InitCamera>();
+                    if (initCamera != null && initCamera.nextCam != null)
                     {
-                        operateCameraSwitch(initCam.nextCam);
+                        operateCameraSwitch(initCamera);
+                        operateCameraSwitch(initCamera.nextCam);
+                    }
+                } else {
+                    if (active_camera == null) {
+                        operateCameraSwitch(null);
                     }
                 }
             }
         }
 
-        void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
+        public void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
             OnSceneLoaded(newScene, LoadSceneMode.Single);
         }
 
@@ -162,7 +180,7 @@ namespace Wonkerz
         // Only one per CAM_TYPE is retrieved for now as we don't need more
         // Thus if we want to have multiple cameras for the hub, we'll need to update
         // this logic.
-        private GameCamera findCameraInScene(GameCamera.CAM_TYPE iType)
+        private GameCamera findCameraInScene(GameCamera.CAM_TYPE iType, Scene scene)
         {
             GameCamera[] game_cams = FindObjectsOfType<GameCamera>(true/*include inactives*/);
             GameCamera retval = null;
@@ -170,7 +188,7 @@ namespace Wonkerz
             for (int i = 0; i < game_cams.Length; i++)
             {
                 GameCamera currcam = game_cams[i];
-                if (currcam.camType == iType && currcam.gameObject.scene == SceneManager.GetActiveScene())
+                if (currcam.camType == iType && currcam.gameObject.scene == scene)
                 {
                     retval = currcam;
                     break;
@@ -207,7 +225,7 @@ namespace Wonkerz
             result = null;
             if (!cameras.ContainsKey(type))
             {
-                result = findCameraInScene(type);
+                result = findCameraInScene(type, SceneManager.GetActiveScene());
                 if (result == null)
                 {
                     this.LogError("Unable to find a camera for type : " + type.ToString());
@@ -234,14 +252,6 @@ namespace Wonkerz
                     nextCamera = cameras.Values.GetEnumerator().Current;
                     if (nextCamera == null) {
                         this.LogWarn("Failed to find camera of type" + iNewCamType + "=> use default camera.");
-                        if (defaultCamera == null) {
-                            var camGO = new GameObject();
-                            var cam = camGO.AddComponent<Camera>();
-                            defaultCamera = camGO.AddComponent<UICamera>();
-                            defaultCamera.cam = cam;
-                            defaultCamera.disable();
-                            camGO.transform.parent = this.gameObject.transform;
-                        }
                         nextCamera = defaultCamera;
                         iTransitionCam = false;
                     }
@@ -249,14 +259,6 @@ namespace Wonkerz
                 else
                 {
                     this.LogWarn("Failed to find camera of type" + iNewCamType + "=> use default camera.");
-                    if (defaultCamera == null) {
-                        var camGO = new GameObject();
-                        var cam = camGO.AddComponent<Camera>();
-                        defaultCamera = camGO.AddComponent<UICamera>();
-                        defaultCamera.cam = cam;
-                        defaultCamera.disable();
-                        camGO.transform.parent = this.gameObject.transform;
-                    }
                     nextCamera = defaultCamera;
                     iTransitionCam = false;
                 }
@@ -374,7 +376,7 @@ namespace Wonkerz
         public void endTransition()
         {
             inTransition = false;
-            GameCamera camToDestroy = findCameraInScene(GameCamera.CAM_TYPE.TRANSITION);
+            GameCamera camToDestroy = findCameraInScene(GameCamera.CAM_TYPE.TRANSITION, SceneManager.GetActiveScene());
             if (camToDestroy != null)
             Destroy(camToDestroy.gameObject);
             if (transitionStart.gameObject != null)
@@ -391,8 +393,8 @@ namespace Wonkerz
 
             if (iNewCam == null)
             {
-                this.LogWarn("Trying to operate camera switch to null camera.");
-                return;
+                this.LogWarn("Trying to operate camera switch to null camera => use default");
+                iNewCam = defaultCamera;
             }
 
             if (active_camera != null && iNewCam.gameObject == active_camera.gameObject) {

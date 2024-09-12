@@ -34,7 +34,7 @@ public class OnlinePlayerController : NetworkBehaviour
     public float minSpeedToDoDamage = 30f;
     [Header("Internals")]
     // Client has authority on this,
-    // It will not modify it directly but send a cmd to send it.
+    // It will not modify it directly but send a cmd to try to modify it.
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
     bool _isReady = false;
@@ -52,338 +52,423 @@ public class OnlinePlayerController : NetworkBehaviour
     [SyncVar(hook = nameof(OnPlayerVehicleStateChanged))]
     PlayerController.PlayerVehicleStates playerVehicleState;
     // wheelOmega needs to be updated by the server.
-    [SyncVar(hook = nameof(OnUpdateOmegas))]
-    float[] omegas = new float[4];
+    SyncList<float> omegas = new SyncList<float>();
 
-    public void OnUpdateOmegas(float[] oldValues, float[] newValues)
+    public void OnUpdateOmegas(SyncList<float>.Operation op, int itemIndex, float oldItem, float newItem)
     {
-        if (self_PlayerController == null)
-        {
-            this.LogError("OnUpdateOmegas: player is null");
-            return;
+        this.Log("OnUpdateOmegas");
+        if (omegas.Count != 4) {
+            this.Log("omegas is not yet ready, count is " + omegas.Count);
         }
-        if (self_PlayerController.car == null)
+        else
         {
-            this.LogError("OnUpdateOmegas: car is null");
-            return;
-        }
-        if (self_PlayerController.car.GetCar() == null)
-        {
-            this.LogError("OnUpdateOmegas: car is null");
-            return;
-        }
-        if (self_PlayerController.car.GetCar().chassis == null)
-        {
-            this.LogError("OnUpdateOmegas: chassis is null");
-            return;
-        }
+            if (self_PlayerController == null)
+            {
+                this.LogError("OnUpdateOmegas: player is null");
+                return;
+            }
+            if (self_PlayerController.car == null)
+            {
+                this.LogError("OnUpdateOmegas: car is null");
+                return;
+            }
+            if (self_PlayerController.car.GetCar() == null)
+            {
+                this.LogError("OnUpdateOmegas: car is null");
+                return;
+            }
+            if (self_PlayerController.car.GetCar().chassis == null)
+            {
+                this.LogError("OnUpdateOmegas: chassis is null");
+                return;
+            }
 
-        var chassis = self_PlayerController.car.GetCar().chassis;
-        var axle = chassis.axles[0];
-        axle.right.SetAngularVelocity(newValues[0]);
-        axle.left.SetAngularVelocity(newValues[1]);
+            var chassis = self_PlayerController.car.GetCar().chassis;
+            var axle = chassis.axles[0];
 
-        axle = chassis.axles[1];
-        axle.right.SetAngularVelocity(newValues[2]);
-        axle.left.SetAngularVelocity(newValues[3]);
+            axle.right.SetAngularVelocity(omegas[0]);
+            axle.left.SetAngularVelocity(omegas[1]);
+
+            axle = chassis.axles[1];
+            axle.right.SetAngularVelocity(omegas[2]);
+            axle.left.SetAngularVelocity(omegas[3]);
+        }
     }
 
     public Transform cameraFocusable;
 
-    // Will be called when anything changes on this online player.
-    // To do this we removed any public variable to have getter/setter
-    // that call this callback if anyone is listening.
-    public Action onAnyChange;
+        // Will be called when anything changes on this online player.
+        // To do this we removed any public variable to have getter/setter
+        // that call this callback if anyone is listening.
+        public Action onAnyChange;
 
-    public bool IsSpawned() => isSpawned;
-    public bool IsReady() => isReady;
-    public bool IsLoaded() => isLoaded;
-    public bool IsLockAndLoaded() => IsReady() && IsLoaded();
+        public bool IsSpawned()       => isSpawned;
+        public bool IsReady()         => isReady;
+        public bool IsLoaded()        => isLoaded;
+        public bool IsLockAndLoaded() => IsReady() && IsLoaded();
 
-    void Start()
-    {
-        InitPlayerDamageable();
-        InitPlayerDamagers();
-    }
-
-    void FixedUpdate()
-    {
-        if ((self_oDamagers != null) && (self_oDamagers.Count > 0))
+        void FixedUpdate()
+        {
+            if ((self_oDamagers != null) && (self_oDamagers.Count > 0))
             UpdatePlayerDamagers();
 
-        if (IsLoaded())
-        {
-            var chassis = self_PlayerController.car.GetCar().chassis;
-            var axle = chassis.axles[0];
-            omegas[0] = axle.right.GetAngularVelocity();
-            omegas[1] = axle.left.GetAngularVelocity();
+            if (isServer)
+            {
+                if (IsLoaded())
+                {
+                    if (self_PlayerController.IsCar())
+                    {
+                        this.LogError("FixedUpdate : UpdateOmegas");
+                        var chassis = self_PlayerController.car.GetCar().chassis;
+                        var axle = chassis.axles[0];
+                        omegas[0] = axle.right.GetAngularVelocity();
+                        omegas[1] = axle.left.GetAngularVelocity();
 
-            axle = chassis.axles[1];
-            omegas[2] = axle.right.GetAngularVelocity();
-            omegas[3] = axle.left.GetAngularVelocity();
-        }
-    }
-
-    private void UpdatePlayerDamagers()
-    {
-        int damage = 0;
-        WkzCar cc = self_PlayerController.car.GetCar();
-        if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
-        {
-            damage = (int)Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
-            damage += (int)Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
+                        axle = chassis.axles[1];
+                        omegas[2] = axle.right.GetAngularVelocity();
+                        omegas[3] = axle.left.GetAngularVelocity();
+                    }
+                }
+            }
         }
 
-        foreach (OnlineDamager d in self_oDamagers)
+        private void UpdatePlayerDamagers()
         {
-            d.damage = damage;
-        }
-    }
+            int damage = 0;
+            WkzCar cc = self_PlayerController.car.GetCar();
+            if (cc.GetCurrentSpeedInKmH() > minSpeedToDoDamage)
+            {
+                damage = (int)Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
+                damage += (int)Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
+            }
 
-    public void InitPlayerDamagers()
-    {
-        StartCoroutine(InitPlayerDamagersCo());
-    }
-
-    IEnumerator InitPlayerDamagersCo()
-    {
-        while (!isLoaded || !isSpawned)
-        {
-            yield return null;
+            foreach (OnlineDamager d in self_oDamagers)
+            {
+                d.damage = damage;
+            }
         }
 
-        self_oDamagers = new List<OnlineDamager>(5);
-
-        WkzCar cc = self_PlayerController.car.GetCar();
-        while (cc == null)
+        public void InitPlayerDamagers()
         {
-            cc = self_PlayerController.car.GetCar();
-            yield return null;
+            if (!isLoaded && !isSpawned)
+            {
+                this.LogError("InitPlayerDamegeable : not loaded or spawned.");
+                return;
+            }
+
+            self_oDamageable = null;
+
+            // Safely get the current player's rigidbody as a Car.
+            // It might be null, for instance if the state is not yet a rigidbody compliant state.
+            if (self_PlayerController == null) {
+                this.LogError("InitPlayerDameger : not loaded or spawned.");
+                return;
+            }
+
+            if (self_PlayerController.vehicleState != PlayerController.PlayerVehicleStates.Car) {
+                this.LogError("InitPlayerDameger : only implemented for car.");
+                return;
+            }
+
+            if (!self_PlayerController.car || !self_PlayerController.car.GetCar()) {
+                this.LogError("InitPlayerDameger : cannot get car");
+                return;
+            }
+
+            if (self_PlayerController.GetRigidbody() == null) {
+                this.LogError("InitPlayerDameger : rigidbody is null");
+                return;
+            }
+            if (self_PlayerController.GetRigidbody().gameObject == null) {
+                this.LogError("InitPlayerDameger : rigidbody's gameobject is null");
+                return;
+            }
+
+            self_oDamagers = new List<OnlineDamager>(5);
+
+            // body damager
+            GameObject       bodyRef     = self_PlayerController.GetRigidbody().gameObject;
+            OnlineDamager    bodyDmgr;
+            if (!bodyRef.TryGetComponent<OnlineDamager>(out bodyDmgr)) {
+                this.LogWarn("InitPlayerDamager : cannot retrieve OnlineDamager on body => trying to create one.");
+                bodyDmgr = bodyRef.AddComponent<OnlineDamager>();
+            }
+            if (bodyDmgr == null) {
+                this.LogError("InitPlayerDamager : cannot retrieve OnlineDamager on body or create one => catastrophique failure.");
+                return;
+            }
+
+            // Finally set references.
+            bodyDmgr.owner = gameObject;
+            self_oDamagers.Add(bodyDmgr);
+
+            // wheel damagers
+            List<WkzWheelCollider> wheels = new List<WkzWheelCollider>(self_PlayerController.gameObject.GetComponentsInChildren<WkzWheelCollider>());
+            if (wheels.Count == 0) {
+                this.LogError("InitPlayerDamager : cannot retrieve wheelColliders.");
+                return;
+            }
+
+            foreach (WkzWheelCollider w in wheels)
+            {
+                OnlineDamager wheelDmgr;
+                if (!w.gameObject.TryGetComponent<OnlineDamager>(out wheelDmgr)){
+                    this.LogWarn("InitPlayerDamager : cannot retrieve OnlineDamager on wheel => trying to create one.");
+                    wheelDmgr = w.gameObject.AddComponent<OnlineDamager>();
+                }
+
+                if (wheelDmgr == null) {
+                    this.LogError("InitPlayerDamager : cannot retrieve OnlineDamager on wheel or create one => catastrophique failure.");
+                    continue;
+                }
+
+                wheelDmgr.owner = gameObject;
+                self_oDamagers.Add(wheelDmgr);
+            }
+            this.Log("InitPlayerDamagers : success.");
         }
 
-        // body damager
-        GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
-        while (bodyRef == null)
+        public void InitPlayerDamageable()
         {
-            bodyRef = self_PlayerController.GetRigidbody().gameObject;
-            yield return null;
+            if (!isLoaded && !isSpawned)
+            {
+                this.LogError("InitPlayerDamegeable : not loaded or spawned.");
+                return;
+            }
+
+            self_oDamageable = null;
+
+            // Safely get the current player's rigidbody.
+            // It might be null, for instance if the state is not yet a rigidbody compliant state.
+            if (self_PlayerController == null) {
+                this.LogError("InitPlayerDamegeable : playerController is null");
+                return;
+            }
+
+            if (self_PlayerController.vehicleState != PlayerController.PlayerVehicleStates.Car) {
+                this.LogError("InitPlayerDameger : only implemented for car.");
+                return;
+            }
+
+            if (self_PlayerController.GetRigidbody() == null) {
+                this.LogError("InitPlayerDamegeable : rigidbody is null");
+                return;
+            }
+            if (self_PlayerController.GetRigidbody().gameObject == null) {
+                this.LogError("InitPlayerDamegeable : rigidbody's gameobject is null");
+                return;
+            }
+
+            // Safely get/create the OnlineDamagable.
+            GameObject       bodyRef     = self_PlayerController.GetRigidbody().gameObject;
+            OnlineDamageable bodyDmgble;
+            if (!bodyRef.TryGetComponent<OnlineDamageable>(out bodyDmgble)) {
+                this.LogWarn("InitPlayerDamageable : cannot retrieve OnlineDamageable => trying to create one.");
+                bodyDmgble = bodyRef.AddComponent<OnlineDamageable>();
+            }
+
+            if (bodyDmgble == null) {
+                this.LogError("InitPlayerDamageable : cannot retrieve OnlineDamageable or create one => catastrophique failure.");
+                return;
+            }
+
+            // Finally set to the right references.
+            self_oDamageable       = bodyDmgble;
+            self_oDamageable.owner = gameObject;
+
+            this.Log("InitPlayerDamageable : success.");
         }
 
+        /* ----------------------------------
+        Server
+        ------------------------------------ */
 
-        OnlineDamager body_dmgr = bodyRef.GetComponent<OnlineDamager>();
-        if (body_dmgr == null)
-            body_dmgr = bodyRef.AddComponent<OnlineDamager>();
-        body_dmgr.owner = gameObject;
-        self_oDamagers.Add(body_dmgr);
-
-        // wheel damagers
-        List<WkzWheelCollider> wheels = new List<WkzWheelCollider>(self_PlayerController.gameObject.GetComponentsInChildren<WkzWheelCollider>());
-        foreach (WkzWheelCollider w in wheels)
+        public override void OnStartServer()
         {
-            OnlineDamager wheel_dmgr = w.gameObject.GetComponent<OnlineDamager>();
-            if (wheel_dmgr == null)
-                wheel_dmgr = w.gameObject.AddComponent<OnlineDamager>();
-            wheel_dmgr.owner = gameObject;
-            self_oDamagers.Add(wheel_dmgr);
-        }
-    }
+            this.Log("OnStartServer");
 
-    public void InitPlayerDamageable()
-    {
-        StartCoroutine(InitPlayerDamageableCo());
-    }
-
-    IEnumerator InitPlayerDamageableCo()
-    {
-        while (!isLoaded || !isSpawned)
-        {
-            yield return null;
-        }
-
-        self_oDamageable = null;
-
-        GameObject bodyRef = self_PlayerController.GetRigidbody().gameObject;
-        while (bodyRef == null)
-        {
-            bodyRef = self_PlayerController.GetRigidbody().gameObject;
-            yield return null;
-        }
-        OnlineDamageable body_dmgbl = bodyRef.GetComponent<OnlineDamageable>();
-        if (body_dmgbl == null)
-            body_dmgbl = bodyRef.AddComponent<OnlineDamageable>();
-        self_oDamageable = body_dmgbl;
-        self_oDamageable.owner = gameObject;
-    }
-
-    /* ----------------------------------
-    Server
-    ------------------------------------ */
-
-    public override void OnStartServer()
-    {
-        // Server only or host but not the localplayer
-        //means we need on online stub with a few extras: no rendering, etc...I
-        if (!isClient || (isClient && !isLocalPlayer))
-        {
-            this.Log("OnlinePlayerInit : server.");
-            // server : no need to wait for dependencies => they should be local and loaded asap locally.
-            if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
-            self_PlayerController.InitOnServer();
-            // set name to whatever, cannot be "Player" => this is the name of the local player.
-            onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
-            gameObject.name = onlinePlayerName;
-            // NOTE: do we want to do this?
-            // for now we dont, but 
-            // AudioListener AL = GetComponentInChildren<AudioListener>();
-            // if (!!AL) { Destroy(AL); }
+            if (omegas == null) {
+                this.LogError("omegas list is null.");
+            } else {
+                omegas.AddRange(new float[]{0,0,0,0});
+                this.Log("omegas count is " + omegas.Count);
+            }
+            // Server only or host but not the localplayer
+            //means we need on online stub with a few extras: no rendering, etc...I
+            if (!isClient || (isClient && !isLocalPlayer))
+            {
+                this.Log("OnlinePlayerInit : server.");
+                // server : no need to wait for dependencies => they should be local and loaded asap locally.
+                if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
+                self_PlayerController.InitOnServer();
+                // set name to whatever, cannot be "Player" => this is the name of the local player.
+                onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
+                gameObject.name = onlinePlayerName;
+                // NOTE: do we want to do this?
+                // for now we dont, but 
+                // AudioListener AL = GetComponentInChildren<AudioListener>();
+                // if (!!AL) { Destroy(AL); }
+            }
             OnStartServerInit();
         }
-    }
 
-    void OnStartServerInit()
-    {
-        // TODO: remove anything linked to input poll, rendering, etc...
-        self_PlayerController.OnStateChange += OnStateChange;
-        self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
-    }
-
-    // Update clients about their states.
-    void OnVehicleStateChange(PlayerController.PlayerVehicleStates state)
-    {
-        RpcSetCameraFocus(self_PlayerController.GetTransform());
-        playerVehicleState = state;
-    }
-
-    void OnStateChange(PlayerController.PlayerStates state)
-    {
-        playerState = state;
-    }
-
-    [Command]
-    public void CmdModifyReadyState(bool state)
-    {
-        isReady = state;
-    }
-
-    [Command]
-    public void CmdModifyLoadedState(bool state)
-    {
-        isLoaded = state;
-    }
-
-    [Command]
-    public void CmdModifySpawnedState(bool state)
-    {
-        if (state)
+        void OnStartServerInit()
         {
-            this.Log("Server received client spawned.");
-
-            OnlineGameManager.Get().AddPlayer(this);
-
-            self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
-
-            isSpawned = state;
-
-            // Ask this client to load.
-            RpcLoad();
-        }
-        else
-        {
-            isSpawned = state;
+            // TODO: remove anything linked to input poll, rendering, etc...
+            self_PlayerController.OnStateChange += OnStateChange;
+            self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
         }
 
-    }
-
-    [Server]
-    public void FreezePlayer(bool state)
-    {
-        if (self_PlayerController)
+        // Update clients about their states.
+        void OnVehicleStateChange(PlayerController.PlayerVehicleStates state)
         {
-            if (state) self_PlayerController.Freeze();
-            else self_PlayerController.UnFreeze();
+            this.Log("OnVehicleStateChange : " + state.ToString());
+
+            RpcSetCameraFocus(self_PlayerController.GetTransform());
+
+            playerVehicleState = state;
+            //server
+            InitPlayerDamageable();
+            InitPlayerDamagers();
         }
-    }
 
-    [Command]
-    public void CmdFreezePlayer(bool state)
-    {
-        FreezePlayer(state);
-    }
-
-    [Command]
-    public void CmdSendPlayerInputs(byte[] playerInputs)
-    {
-        // Deserialize inputs.
-        Schnibble.Managers.GameController gc = Schnibble.Managers.GameController.Deserialize((int)PlayerInputs.InputCode.Count, playerInputs);
-        // Execute inputs.
-        (self_PlayerController as Schnibble.Managers.IControllable).ProcessInputs(null, gc);
-        // Normally any results should be broadcasted back to clients.
-    }
-
-    [Command]
-    public void CmdNotifyPlayerFinishedTrial()
-    {
-        if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)
+        void OnStateChange(PlayerController.PlayerStates state)
         {
-            // that would be a very bad error
-            return;
+            this.Log("OnStateChange : " + state.ToString());
+            playerState = state;
         }
-        NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
 
-    }
+        [Command]
+        public void CmdModifyReadyState(bool state)
+        {
+            isReady = state;
+        }
 
-    // [Command]
-    // public void CmdBreakObject(OnlineBreakableObject iOBO)
-    // {
-    //     iOBO.BreakObject(this);
-    // }
+        [Command]
+        public void CmdModifyLoadedState(bool state)
+        {
+            isLoaded = state;
+        }
 
-    [Server]
-    public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
-    {
-        self_PlayerController.ForceTransform(iNewPos, iNewRot);
-        self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+        [Command]
+        public void CmdModifySpawnedState(bool state)
+        {
+            if (state)
+            {
+                this.Log("Server received client spawned.");
 
-        // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
-        // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+                OnlineGameManager.Get().AddPlayer(this);
 
-        // //// relocates player root and seems to work
-        // transform.position = iNewPos;
-        // transform.rotation = iNewRot;
-    }
+                self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
-    /* ----------------------------------
-    Client 
-    ------------------------------------ */
+                isSpawned = state;
 
-    IEnumerator WaitForDependencies()
-    {
-        this.Log("Start OnlinePlayerController wait for dependencies.");
+                // Ask this client to load.
+                RpcLoad();
+            }
+            else
+            {
+                isSpawned = state;
+            }
 
-        // Wait for OnlineGameManager to setup.
-        while (NetworkRoomManagerExt.singleton == null) { yield return null; }
-        while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
+        }
 
-        // Wait for any scene to load.
-        while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
+        [Server]
+        public void FreezePlayer(bool state)
+        {
+            if (self_PlayerController)
+            {
+                if (state) self_PlayerController.Freeze();
+                else self_PlayerController.UnFreeze();
+            }
+        }
 
-        // Wait for objcet that we need to access at init time.
-        //while (Access.UIPlayerOnline() == null) { yield return null; }
-        while (Access.CameraManager() == null) { yield return null; }
+        [Command]
+        public void CmdFreezePlayer(bool state)
+        {
+            FreezePlayer(state);
+        }
 
-        this.Log("End OnlinePlayerController wait for dependencies.");
-    }
+        [Command]
+        public void CmdSendPlayerInputs(byte[] playerInputs)
+        {
+            // Deserialize inputs.
+            Schnibble.Managers.GameController gc = Schnibble.Managers.GameController.Deserialize((int)PlayerInputs.InputCode.Count, playerInputs);
+            // Execute inputs.
+            (self_PlayerController as Schnibble.Managers.IControllable).ProcessInputs(null, gc);
+            // Normally any results should be broadcasted back to clients.
+        }
+
+        [Command]
+        public void CmdNotifyPlayerFinishedTrial()
+        {
+            if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)
+            {
+                // that would be a very bad error
+                return;
+            }
+            NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
+
+        }
+
+        // [Command]
+        // public void CmdBreakObject(OnlineBreakableObject iOBO)
+        // {
+        //     iOBO.BreakObject(this);
+        // }
+
+        [Server]
+        public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
+        {
+            self_PlayerController.ForceTransform(iNewPos, iNewRot);
+            self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+
+            // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
+            // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+
+            // //// relocates player root and seems to work
+            // transform.position = iNewPos;
+            // transform.rotation = iNewRot;
+        }
+
+        /* ----------------------------------
+        Client 
+        ------------------------------------ */
+
+        IEnumerator WaitForDependencies()
+        {
+            this.Log("Start OnlinePlayerController wait for dependencies.");
+
+            // Wait for OnlineGameManager to setup.
+            while (NetworkRoomManagerExt.singleton == null) { yield return null; }
+            while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
+
+            // Wait for any scene to load.
+            while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
+
+            // Wait for objcet that we need to access at init time.
+            //while (Access.UIPlayerOnline() == null) { yield return null; }
+            while (Access.CameraManager() == null) { yield return null; }
+
+            this.Log("End OnlinePlayerController wait for dependencies.");
+        }
 
     public override void OnStartClient()
     {
+        this.Log("OnStartClient");
         // OnStartuserver will setup the OnlineStub if need be, so we init here
         // only if we are client only, and not the local player.
         if (!isServer && !isLocalPlayer)
         {
             this.Log("OnlinePlayerInit : client.");
+            omegas.Callback += OnUpdateOmegas;
+
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
 
             self_PlayerController.InitAsOnlineStub();
+
+            // might have already changed
+
             // add a camera focusable
             // NOTE:
             // For now it is local only, but in the future we might want to have it spawned on the server
@@ -392,10 +477,18 @@ public class OnlinePlayerController : NetworkBehaviour
             // We do not set isSpawnde because we are not the local player that will receive the commands from the server.
             // We were asked to spawn BY the server.
         }
+
+        // self_PlayerController might already have been set to car?
+        InitPlayerDamageable();
+        InitPlayerDamagers();
     }
 
     public override void OnStartLocalPlayer()
     {
+        this.Log("OnStartLocalPlayer");
+
+        if (!isServer) omegas.Callback += OnUpdateOmegas;
+
         StartCoroutine(InitLocalPlayer());
     }
 
@@ -420,6 +513,7 @@ public class OnlinePlayerController : NetworkBehaviour
         //self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
 
         self_PlayerController.Init();
+
         // Set underlying player controller to not apply any inputs.
         // Instead send inputs to the server and wait for server answer that will
         // update states.
@@ -432,7 +526,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned)
-            CmdModifySpawnedState(true);
+        CmdModifySpawnedState(true);
 
         // init damagers/damageables
         while (self_PlayerController.GetRigidbody() == null)
@@ -479,7 +573,12 @@ public class OnlinePlayerController : NetworkBehaviour
     void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState, PlayerController.PlayerVehicleStates newState)
     {
         this.Log("OnPlayerVehicleStateChanged : " + newState.ToString());
+
         if (!isServer) self_PlayerController.TransitionTo(newState);
+
+        // init damager/damageable
+        InitPlayerDamageable();
+        InitPlayerDamagers();
     }
 
     [TargetRpc]
@@ -492,6 +591,10 @@ public class OnlinePlayerController : NetworkBehaviour
     void Load()
     {
         CmdFreezePlayer(true);
+
+        // might have been updated to a new state.
+        InitPlayerDamageable();
+        InitPlayerDamagers();
 
         //Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
 

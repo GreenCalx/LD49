@@ -88,11 +88,15 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public override void OnRoomClientSceneChanged()
     {
-        // HACK:Check if we loaded the open course.
-        // TODO: this is very bad please fix asap!
+        this.Log("OnRoomClientSceneChanged.");
+        // // HACK:Check if we loaded the open course.
+        // // TODO: this is very bad please fix asap!
         var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
-        if (openCourseScene.IsValid()) {
-            SceneManager.SetActiveScene(openCourseScene);
+        if (openCourseScene.IsValid())
+        {
+            this.Log("OnRoomClientSceneChanged : open course.");
+            Access.GetMgr<CameraManager>().OnActiveSceneChanged(openCourseScene, openCourseScene);
+            //     //SceneManager.SetActiveScene(openCourseScene);
         }
         OnRoomClientSceneChangedCB?.Invoke();
     }
@@ -126,7 +130,20 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             Access.GameSettings().isOnline = true;
             roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
             StartCoroutine(SeekOnlineGameManager());
+
         }
+
+
+        var scene = SceneManager.GetSceneByName(sceneName);
+        if (!scene.IsValid())
+        {
+            scene = SceneManager.GetSceneByPath(sceneName);
+            if (!scene.IsValid())
+            {
+                this.LogError("OnRoomServerSceneChanged : cannot find scene " + sceneName);
+            }
+        }
+        Access.GetMgr<CameraManager>().OnActiveSceneChanged(scene, scene);
     }
 
     public IEnumerator ServerLoadOpenCourse()
@@ -137,7 +154,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             loadSceneMode = LoadSceneMode.Additive
         });
 
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.SN_OPENCOURSE));
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.SN_OPENCOURSE));
         subsceneLoaded = true;
     }
 

@@ -121,6 +121,21 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
     public void InitStatRefValues()
     {
+        if (owner == null) {
+            this.LogError("InitStatRefValues : No owner.");
+            return;
+        }
+
+        if (owner.self_PlayerController == null) {
+            this.LogError("InitStatRefValues : No playerController.");
+            return;
+        }
+
+        if (!owner.self_PlayerController.IsCar()) {
+            this.LogWarn("InitStatRefValues : only implemented for car.");
+            return;
+        }
+
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
         accelInitValue = (float)wCar.motor.mutDef.maxTorque;

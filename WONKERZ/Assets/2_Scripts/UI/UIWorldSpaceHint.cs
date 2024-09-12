@@ -29,22 +29,48 @@ namespace Wonkerz {
 
         private CameraManager CM;
 
+        bool usable = false;
+
         // Start is called before the first frame update
         void Start()
         {
-            if (!isOnline)
+            if (!isOnline) {
                 playerTransform = Access.Player().GetTransform().transform;
-            else
-                playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
+            }
+            else {
+                StartCoroutine(WaitForPlayer());
+                usable = false;
+                return;
+            }
+            playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
 
             CM = Access.CameraManager();
             initScale = transform.localScale;
             initPosition = transform.position;
+
+            usable = true;
+        }
+
+        IEnumerator WaitForPlayer() {
+            while (OnlineGameManager.Get()             == null) {yield return null;}
+            while (OnlineGameManager.Get().localPlayer == null) {yield return null;}
+            var player = OnlineGameManager.Get().localPlayer;
+            while (player.self_PlayerController        == null) {yield return null; }
+            while (player.self_PlayerController.GetTransform() == null) {yield return null; }
+
+            playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
+
+            CM = Access.CameraManager();
+            initScale = transform.localScale;
+            initPosition = transform.position;
+            usable = true;
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (!usable) return;
+
             if (facePlayer)
             transform.LookAt(playerTransform);
 

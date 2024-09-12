@@ -63,7 +63,6 @@ namespace Wonkerz
         public void TransitionTo(PlayerVehicleStates to)
         {
             TransitionFromTo(vehicleState, to);
-            OnVehicleStateChange?.Invoke(vehicleState);
         }
 
         public void TransitionFromTo(PlayerStates from, PlayerStates to)
@@ -285,6 +284,8 @@ namespace Wonkerz
                         break;
                     }
             }
+
+            OnVehicleStateChange?.Invoke(vehicleState);
         }
 
         public PowerController self_PowerController;
