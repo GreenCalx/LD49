@@ -21,6 +21,9 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public static Action OnNetworkManagerChange;
 
     public Dictionary<NetworkRoomPlayerExt, OnlinePlayerController> roomplayersToGameplayersDict;
+
+    // data for syncvars
+    public OnlineRoomData    onlineRoomData;
     public OnlineGameManager onlineGameManager;
 
     public ONLINE_GAME_STATE gameState = ONLINE_GAME_STATE.NONE;
@@ -31,6 +34,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public string selectedTrial = "";
 
+    // TODO: replace actions by only one action with operationtype and data?
     public Action OnRoomStartHostCB;
     public Action OnRoomClientEnterCB;
     public Action OnRoomClientExitCB;
@@ -41,6 +45,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public Action OnRoomStopServerCB;
 
     public Action<TransportError, string> OnClientErrorCB;
+
+    public Action<bool> OnShowPreGameCountdown;
 
     public override void Awake()
     {
@@ -130,9 +136,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             Access.GameSettings().isOnline = true;
             roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
             StartCoroutine(SeekOnlineGameManager());
-
         }
-
 
         var scene = SceneManager.GetSceneByName(sceneName);
         if (!scene.IsValid())
@@ -311,18 +315,15 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     bool showStartButton;
 
+
     public override void OnRoomServerPlayersReady()
     {
-        OnRoomServerPlayersReadyCB?.Invoke();
-        // calling the base method calls ServerChangeScene as soon as all players are in Ready state.
-        //if (Mirror.Utils.IsHeadless())
-        {
-            //base.OnRoomServerPlayersReady();
+        if (onlineRoomData != null) {
+
+            onlineRoomData.showPreGameCountdown = true;
+            onlineRoomData.preGameCountdownTime = 5.0f;
         }
-        //else
-        //{
-        //    showStartButton = true;
-        // }
+        OnRoomServerPlayersReadyCB?.Invoke();
     }
 
     public override void OnGUI()

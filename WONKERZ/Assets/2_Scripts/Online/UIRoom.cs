@@ -4,6 +4,7 @@ using Schnibble.Managers;
 using Schnibble.UI;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 // TODO: move this to the real network room.
 // might even need to be something on the lobby server.
@@ -43,7 +44,9 @@ public class UIRoom : UIPanelTabbed
 
     static readonly string readyUpButton = "UIStart";
 
-    public UILabel readyUpHint;
+    public UILabel   readyUpHint;
+    public UILabel   countdownHint;
+    public UIElement fadingPanel;
 
     protected override void ProcessInputs(InputManager currentMgr, GameController Entry)
     {
@@ -72,6 +75,11 @@ public class UIRoom : UIPanelTabbed
 
         uiOnline.roomServer.OnRoomServerPlayersReadyCB += OnAllPlayersReady;
         uiOnline.roomServer.OnRoomClientSceneChangedCB += OnGameLoaded;
+        uiOnline.roomServer.OnShowPreGameCountdown += OnShowPreGameCountdown;
+
+        readyUpHint.Hide();
+        countdownHint.Hide();
+        fadingPanel.Hide();
 
         UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
     }
@@ -132,9 +140,92 @@ public class UIRoom : UIPanelTabbed
         }
         else
         {
-            uiOnline.SetState(UIOnline.States.Deactivated);
+        }
+    }
+
+    void OnShowPreGameCountdown(bool show) {
+        if (NetworkRoomManagerExt.singleton == null) {
+            this.LogError("NetworkManager is null.");
+            return;
+        }
+
+        if (NetworkRoomManagerExt.singleton.onlineRoomData == null) {
+            this.LogError("OnlineRoomData is null.");
+            return;
+        }
+
+        if (show)
+        {
+            if (NetworkRoomManagerExt.singleton.onlineRoomData.isServer)
+            {
+                StartCoroutine(CountdownBeforeStart_Server(5));
+            }
+            else
+            {
+                StartCoroutine(CountdownBeforeStart_Client(5 * 3));
+            }
+        }
+    }
+
+    public IEnumerator CountdownBeforeStart_Server(int seconds) {
+        var ogm = NetworkRoomManagerExt.singleton.onlineRoomData;
+        ogm.preGameCountdownTime = seconds;
+
+        countdownHint.Show();
+        fadingPanel  .Show();
+
+        float timeoutTime = seconds * 3;
+
+        bool hasError = false;
+        while (ogm.preGameCountdownTime > 0.0f) {
+            ogm.preGameCountdownTime -= Time.deltaTime;
+
+            countdownHint.text.text = ((int)(ogm.preGameCountdownTime)).ToString();
+
+            if (!uiOnline.roomServer.allPlayersReady) {
+                ogm.showPreGameCountdown = false;
+                hasError = true;
+                break;
+            }
+
+            yield return null;
+        }
+
+        countdownHint.Hide();
+        fadingPanel  .Hide();
+
+        if (!hasError) {
+            ogm.showPreGameCountdown = false;
             uiOnline.roomServer.StartGameScene();
         }
+
+        yield break;
+    }
+
+    public IEnumerator CountdownBeforeStart_Client(float timeoutTime) {
+        var ogm = NetworkRoomManagerExt.singleton.onlineRoomData;
+
+        countdownHint.Show();
+        fadingPanel  .Show();
+
+        bool hasError = false;
+        while (ogm.showPreGameCountdown) {
+            timeoutTime -= Time.deltaTime;
+            if (timeoutTime < 0.0f) {
+                // TODO: show error message.
+                hasError = true;
+                break;
+            }
+
+            countdownHint.text.text = ((int)(ogm.preGameCountdownTime)).ToString();
+
+            yield return null;
+        }
+
+        countdownHint.Hide();
+        fadingPanel  .Hide();
+
+        yield break;
     }
 
     public void UpdatePlayerSlots(List<NetworkRoomPlayer> roomSlots)
