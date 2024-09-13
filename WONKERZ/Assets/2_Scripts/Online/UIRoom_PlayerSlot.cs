@@ -8,11 +8,11 @@ using Schnibble.UI;
 
 public class UIRoom_PlayerSlot : UITab
 {
-    public GameObject background;
-    public GameObject latency;
-    public GameObject playerName;
-
-    public GameObject readyState;
+    public Image   background;
+    public UILabel latency;
+    public UILabel playerName;
+    public UILabel readyState;
+    public UIElement hostCrown;
 
     public NetworkRoomPlayerExt roomPlayer {get; private set; }
     public void AttachRoomPlayer(NetworkRoomPlayerExt player) {
@@ -23,6 +23,13 @@ public class UIRoom_PlayerSlot : UITab
         if (roomPlayer != null) {
             roomPlayer.onAnyChange += UpdateView;
         }
+    }
+
+    public override void init()
+    {
+        base.init();
+
+        hostCrown.Hide();
     }
 
     override protected void OnDestroy() {
@@ -39,6 +46,14 @@ public class UIRoom_PlayerSlot : UITab
         // pull player states.
         // TODO: only react to the change instead of every frame.
         SetReadyState(roomPlayer.readyToBegin);
+
+        // host : can we know without using the diagnostics index?
+        if (roomPlayer.index == 0) {
+            hostCrown.Show();
+        } else {
+            hostCrown.Hide();
+        }
+
         if (roomPlayer.isLocalPlayer) {
             (Parent as UIRoom).OnLocalPlayerReadyStateChanged(roomPlayer.readyToBegin);
         }
@@ -54,18 +69,18 @@ public class UIRoom_PlayerSlot : UITab
     }
 
     public void SetBackgroundColor(Color c) {
-        this.background.GetComponent<Image>().color = c;
+        this.background.color = c;
     }
 
     public void SetPlayerName(string playerName) {
-        this.playerName.GetComponent<TextMeshProUGUI>().text = playerName;
+        this.playerName.text.text = playerName;
     }
 
     public void SetReadyState(bool readyState) {
-        this.readyState.GetComponent<TextMeshProUGUI>().text = readyState ? "Lock and loaded!" : "Wait for me!";
+        this.readyState.text.text = readyState ? "Lock and loaded!" : "Wait for me!";
     }
 
     public void SetLatency(int latency) {
-        this.latency.GetComponent<TextMeshProUGUI>().text = latency.ToString() + " ms";
+        this.latency.text.text = latency.ToString() + " ms";
     }
 }
