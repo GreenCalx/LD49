@@ -1,9 +1,9 @@
-using System.Collections;
+using Mirror;
+using Schnibble;
+using Schnibble.Managers;
+using Schnibble.UI;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
-using Schnibble.UI;
-using Schnibble;
 
 // TODO: move this to the real network room.
 // might even need to be something on the lobby server.
@@ -12,9 +12,9 @@ public struct UIPlayerSlotData
 {
     public NetworkRoomPlayerExt player;
     public string name;
-    public int    latency;
-    public bool   readyState;
-    public Color  backgroundColor;
+    public int latency;
+    public bool readyState;
+    public Color backgroundColor;
 };
 
 public class UIRoom : UIPanelTabbed
@@ -28,12 +28,36 @@ public class UIRoom : UIPanelTabbed
     UIOnline uiOnline;
 
     public RectTransform background;
-    public GameObject readyUpButtonPrefab;
-    GameObject readyUpButton = null;
+    //public GameObject readyUpButtonPrefab;
+    //GameObject readyUpButton = null;
 
     public bool showGameStartButton = false;
     public GameObject startGameButtonPrefab;
     GameObject startGameButton = null;
+
+    bool isGameLoading = false;
+
+    // string based for now.
+    static readonly string startHint = "Press ";
+    static readonly string readyUpHintEnd = " to ready up.";
+
+    static readonly string readyUpButton = "UIStart";
+
+    public UILabel readyUpHint;
+
+    protected override void ProcessInputs(InputManager currentMgr, GameController Entry)
+    {
+        base.ProcessInputs(currentMgr, Entry);
+
+        // start is ready button
+        if (localPlayerSlot != null)
+        {
+            if (Entry.GetButtonState(Entry.GetIdx(readyUpButton)).down)
+            {
+                localPlayerSlot.roomPlayer.CmdChangeReadyState(!localPlayerSlot.roomPlayer.readyToBegin);
+            }
+        }
+    }
 
     public override void activate()
     {
@@ -66,12 +90,15 @@ public class UIRoom : UIPanelTabbed
         tabs.Clear();
     }
 
-    public override void cancel() {
+    public override void cancel()
+    {
         // if player is ready, we don't cancel the panel,
         // we set state to Not ready.
-        if (localPlayerSlot && localPlayerSlot.roomPlayer.readyToBegin) {
+        if (localPlayerSlot && localPlayerSlot.roomPlayer.readyToBegin)
+        {
             localPlayerSlot.ChangeReadyState(!localPlayerSlot.roomPlayer.readyToBegin);
-        } else
+        }
+        else
         {
             base.cancel();
 
@@ -86,25 +113,32 @@ public class UIRoom : UIPanelTabbed
         }
     }
 
-    public void OnGameLoaded() {
+    public void OnGameLoaded()
+    {
         // Deactivate UX.
-        if (NetworkClient.active && Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene)) {
+        if (NetworkClient.active && Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene))
+        {
             uiOnline.SetState(UIOnline.States.Deactivated);
         }
     }
 
-    public void OnAllPlayersReady() {
+    public void OnAllPlayersReady()
+    {
         this.Log("OnAllPlayersReady");
         // Start game
-        if (showGameStartButton) {
+        if (showGameStartButton)
+        {
             // TODO: Show start button to start the game on host
-        } else {
+        }
+        else
+        {
             uiOnline.SetState(UIOnline.States.Deactivated);
             uiOnline.roomServer.StartGameScene();
         }
     }
 
-    public void UpdatePlayerSlots(List<NetworkRoomPlayer> roomSlots) {
+    public void UpdatePlayerSlots(List<NetworkRoomPlayer> roomSlots)
+    {
         // TODO: Update already existing slots instead of creating again all slots.
 
         // Clean-up
@@ -118,8 +152,10 @@ public class UIRoom : UIPanelTabbed
         }
         uiPlayerSlots.Clear();
 
-        foreach (var t in tabs) {
-            if (t != null && t.gameObject != null) { 
+        foreach (var t in tabs)
+        {
+            if (t != null && t.gameObject != null)
+            {
                 GameObject.Destroy(t.gameObject);
             }
         }
@@ -147,7 +183,8 @@ public class UIRoom : UIPanelTabbed
         }
     }
 
-    public UIRoom_PlayerSlot AddPlayer(UIPlayerSlotData data) {
+    public UIRoom_PlayerSlot AddPlayer(UIPlayerSlotData data)
+    {
         //var playerSlot = UIRoom_PlayerSlot.Create(this.gameObject, data.backgroundColor, data.name, data.readyState);
         var slot = GameObject.Instantiate(UIPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_PlayerSlot>();
 
@@ -163,11 +200,11 @@ public class UIRoom : UIPanelTabbed
         // TODO: move this to cache
         var uxSize = background.rect;
         int uxHeight = (int)uxSize.height;
-        int uxWidth  = (int)(uxSize.width - slot.background.GetComponent<RectTransform>().rect.width);
+        int uxWidth = (int)(uxSize.width - slot.background.GetComponent<RectTransform>().rect.width);
         // move to the right position
         int idx = uiPlayerSlots.Count;
 
-        int xPos = (uxWidth / roomPlayerCount) * idx - (uxWidth/2);
+        int xPos = (uxWidth / roomPlayerCount) * idx - (uxWidth / 2);
         slot.SetPosition(xPos, 0);
 
         uiPlayerSlots.Add(slot);
@@ -175,26 +212,48 @@ public class UIRoom : UIPanelTabbed
         return slot;
     }
 
-    // called from localPlayer slot when changing.
-    public void UpdateReadyStateButton(UIRoom_PlayerSlot slot) {
-        if (slot.roomPlayer.readyToBegin) {
-            if (readyUpButton != null) {
-                Destroy(readyUpButton.gameObject);
-            }
-        } else {
-            if (readyUpButton == null) readyUpButton = Instantiate(readyUpButtonPrefab, this.gameObject.transform);
-
-            readyUpButton.SetActive(true);
-
-            var tab = readyUpButton.GetComponent<UITextTab>();
-            tab.onActivate.AddListener(delegate { slot.ChangeReadyState(true); });
-
-            if (!tabs.Contains(tab))
+    public void OnLocalPlayerReadyStateChanged(bool newState)
+    {
+        if (readyUpHint != null)
+        {
+            if (!newState)
             {
-                tabs.Add(tab);
-                tab.init();
-                tab.deselect();
+                readyUpHint.text.text = startHint +
+                                        // TODO: make this more robust in InputManager.
+                                        inputMgr.controllers[0].controller.Get(readyUpButton).name +
+                                    readyUpHintEnd;
+                readyUpHint.Show();
+            }
+            else
+            {
+                readyUpHint.Hide();
             }
         }
     }
+
+    // called from localPlayer slot when changing.
+    // NOTE: note used anymore.o
+#if false
+    public void UpdateReadyStateButton(UIRoom_PlayerSlot slot) {
+            if (slot.roomPlayer.readyToBegin) {
+                if (readyUpButton != null) {
+                    Destroy(readyUpButton.gameObject);
+                }
+            } else {
+                if (readyUpButton == null) readyUpButton = Instantiate(readyUpButtonPrefab, this.gameObject.transform);
+
+                readyUpButton.SetActive(true);
+
+                var tab = readyUpButton.GetComponent<UITextTab>();
+                tab.onActivate.AddListener(delegate { slot.ChangeReadyState(true); });
+
+                if (!tabs.Contains(tab))
+                {
+                    tabs.Add(tab);
+                    tab.init();
+                    tab.deselect();
+                }
+            }
+        }
+#endif
 }

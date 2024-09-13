@@ -37,9 +37,10 @@ public class UIRoom_PlayerSlot : UITab
         SetPlayerName(roomPlayer.infos.playerName);
         SetLatency((int)(roomPlayer.infos.rtt * 1000));
         // pull player states.
+        // TODO: only react to the change instead of every frame.
         SetReadyState(roomPlayer.readyToBegin);
         if (roomPlayer.isLocalPlayer) {
-            (Parent as UIRoom).UpdateReadyStateButton(this);
+            (Parent as UIRoom).OnLocalPlayerReadyStateChanged(roomPlayer.readyToBegin);
         }
     }
 
