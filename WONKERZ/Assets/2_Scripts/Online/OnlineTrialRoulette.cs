@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 using TMPro;
 using Mirror;
@@ -17,6 +18,8 @@ public class OnlineTrialRoulette : NetworkBehaviour
     public float spinForce = 900000000f;
     public List<TextMeshProUGUI> trialLabelHandles;
     public Rigidbody roulette_rb;
+    public float snapAngleSpeed = 10f;
+    public bool HasSnapped = false;
 
     public void init(List<string> iTrials)
     {
@@ -64,34 +67,45 @@ public class OnlineTrialRoulette : NetworkBehaviour
 
     public void StopSpin()
     {
-        // 8 faces cylinder, we want a face to show str8 towards cam
-        Vector3 angles = roulette_rb.transform.rotation.eulerAngles;
-        float snapAngle = angles.x % 45f;
-
-        Debug.Log("Snap^Angle :" + snapAngle);
-
-        roulette_rb.isKinematic = true;
         roulette_rb.angularVelocity = Vector3.zero;
+        roulette_rb.isKinematic = true;
 
+        StartCoroutine(SnapAngleCo());
+    }
 
-        roulette_rb.transform.Rotate(snapAngle, 0f,0f);
+    IEnumerator SnapAngleCo()
+    {
+        HasSnapped = false;
+        Quaternion initRot = transform.rotation;
+
+        Vector3 angles = roulette_rb.transform.rotation.eulerAngles;
+        float snapAngle = angles.x + (angles.x % 45f);
+        Quaternion targetRot = Quaternion.Euler(new Vector3(snapAngle, angles.y, angles.z));
+
+        float timeCount = 0f;
+        while (Quaternion.Angle(transform.rotation, targetRot) > 0f)
+        {
+            transform.rotation = Quaternion.Lerp(initRot, targetRot, timeCount * snapAngleSpeed );
+            timeCount += Time.deltaTime;
+            yield return null;
+        }
+        HasSnapped = true;
     }
 
     public bool IsSpinning()
     {
-        return roulette_rb.angularVelocity.magnitude > Vector3.one.magnitude;
+        return roulette_rb.angularVelocity.magnitude > 0.1f;
     }
 
     public string RetrieveSelectedTrial()
     {
-        float simpAngle = roulette_rb.transform.rotation.eulerAngles.x % 360;
-        int selectedFace = (int)(simpAngle / 45f);
+        float simpAngle = roulette_rb.transform.rotation.eulerAngles.x % 360f;
+        int selectedFace = (int)Mathf.Floor(simpAngle / 45f);
         TextMeshProUGUI selectedTxt = trialLabelHandles[selectedFace];
 
         selectedTxt.overrideColorTags = true;
         selectedTxt.color = Color.yellow;
         selectedTxt.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
-        selectedTxt.text = "selected";
 
         return selectedTxt.text;
     }

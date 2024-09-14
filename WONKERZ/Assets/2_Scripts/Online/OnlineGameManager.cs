@@ -367,13 +367,20 @@ public class OnlineGameManager : NetworkBehaviour
         {
             yield return null;
         }
+        
         yield return new WaitForFixedUpdate();
         asRoulette.StopSpin();
+        
+        while (!asRoulette.HasSnapped)
+        {
+            yield return null;
+        }
+
+        yield return new WaitForFixedUpdate();
         selectedTrial = asRoulette.RetrieveSelectedTrial();
 
         yield return new WaitForSeconds(2f);
 
-        
 
         NetworkServer.Destroy(inst);
         Destroy(inst);
