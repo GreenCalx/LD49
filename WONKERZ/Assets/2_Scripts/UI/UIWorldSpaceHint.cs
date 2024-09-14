@@ -38,8 +38,8 @@ namespace Wonkerz {
                 playerTransform = Access.Player().GetTransform().transform;
             }
             else {
-                StartCoroutine(WaitForPlayer());
                 usable = false;
+                StartCoroutine(WaitForPlayer());
                 return;
             }
             playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
