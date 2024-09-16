@@ -154,8 +154,6 @@ public class UILobbyServerTab : UITextTab
 
         serverList.deactivate();
         serverList.online.SetState(UIOnline.States.InRoom);
-
-        Access.GameSettings().goToState = UIOnline.States.InRoom;
     }
 
     public void OnClientError(TransportError error, string reason) {

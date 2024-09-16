@@ -195,7 +195,12 @@ public class UIRoom : UIPanelTabbed
         fadingPanel  .Hide();
 
         if (!hasError) {
+            // Stop showing the countdown.
             ogm.showPreGameCountdown = false;
+            // Stop input processing.
+            StopInputs();
+            // Start the game scene.
+            // It will handle the transition effects and loading screen.
             uiOnline.roomServer.StartGameScene();
         }
 

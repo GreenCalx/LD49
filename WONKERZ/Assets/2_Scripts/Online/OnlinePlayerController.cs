@@ -56,7 +56,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void OnUpdateOmegas(SyncList<float>.Operation op, int itemIndex, float oldItem, float newItem)
     {
-        this.Log("OnUpdateOmegas");
+        //this.Log("OnUpdateOmegas");
         if (omegas.Count != 4) {
             this.Log("omegas is not yet ready, count is " + omegas.Count);
         }
@@ -118,7 +118,7 @@ public class OnlinePlayerController : NetworkBehaviour
                 {
                     if (self_PlayerController.IsCar())
                     {
-                        this.LogError("FixedUpdate : UpdateOmegas");
+                        //this.LogError("FixedUpdate : UpdateOmegas");
                         var chassis = self_PlayerController.car.GetCar().chassis;
                         var axle = chassis.axles[0];
                         omegas[0] = axle.right.GetAngularVelocity();

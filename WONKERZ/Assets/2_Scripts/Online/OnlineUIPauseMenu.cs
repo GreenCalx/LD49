@@ -98,7 +98,6 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         if (NetworkRoomManagerExt.singleton != null) {
             if (NetworkClient.activeHost)
             {
-                Access.GameSettings().goToState = UIOnline.States.InRoom;
                 NetworkRoomManagerExt.singleton.ServerChangeScene(NetworkRoomManagerExt.singleton.RoomScene);
             }
         }

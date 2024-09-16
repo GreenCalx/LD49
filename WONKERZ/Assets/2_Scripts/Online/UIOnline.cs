@@ -102,6 +102,8 @@ public class UIOnline : UIPanel
         "Sorry, something went wrong! Please try again.", // Unknown
     };
 
+    public static readonly string goBackHintStr = " BACK";
+
     // client to access the lobby server, this server will send us our clientID, the room list, etc...
     public SchLobbyClient client = new SchLobbyClient(0);
 
@@ -113,6 +115,7 @@ public class UIOnline : UIPanel
     public UISelectableElement uiRoomCreationMenu;
     public UIRoom              uiRoom;
     public UILobbyServerList   uiServerList;
+    public UIButtonHint        uiCancelButtonHint;
 
     public void SetState(States toState)
     {
@@ -125,6 +128,7 @@ public class UIOnline : UIPanel
                     uiMainMenu        .Hide();
                     uiRoomCreationMenu.Hide();
                     uiRoom            .Hide();
+                    uiCancelButtonHint.Hide();
 
                     StartCoroutineWithBarrier(CoroShowStateMessageWithMinTime(stateMessage[(int)toState], 1.0f));
                 } break;
@@ -134,6 +138,7 @@ public class UIOnline : UIPanel
                     uiMainMenu        .Hide();
                     uiRoomCreationMenu.Hide();
                     uiRoom            .Hide();
+                    uiCancelButtonHint.Hide();
 
                     StartCoroutineWithBarrier(CoroShowStateMessageWithMinTime(stateMessage[(int)toState], 1.0f));
                 } break;
@@ -144,6 +149,8 @@ public class UIOnline : UIPanel
                     uiRoom    .Hide();
 
                     uiRoomCreationMenu.Show();
+                    uiCancelButtonHint.Show();
+                    uiCancelButtonHint.SetButton((uiRoomCreationMenu as UIPanel).inputCancel, goBackHintStr);
                 } break;
 
             case States.MainMenu:
@@ -152,6 +159,8 @@ public class UIOnline : UIPanel
                     uiRoomCreationMenu.Hide();
 
                     uiMainMenu.Show();
+                    uiCancelButtonHint.Show();
+                    uiCancelButtonHint.SetButton((uiMainMenu as UIPanel).inputCancel, goBackHintStr);
                 } break;
 
             case States.InRoom:
@@ -160,6 +169,8 @@ public class UIOnline : UIPanel
                     uiMainMenu        .Hide();
 
                     uiRoom.Show();
+                    uiCancelButtonHint.Show();
+                    uiCancelButtonHint.SetButton((uiRoom as UIPanel).inputCancel, goBackHintStr);
                 } break;
             case States.Deactivated:
                 {
@@ -182,9 +193,13 @@ public class UIOnline : UIPanel
 
                     stateMessageText.enabled = false;
                     stateMessageText.gameObject.SetActive(false);
+
+                    uiCancelButtonHint.Hide();
                 }break;
             case States.Exit:
                 {
+                    uiCancelButtonHint.Hide();
+
                     deactivate();
                     // Remove room if need be
                     client.Close();
@@ -724,6 +739,14 @@ public class UIOnline : UIPanel
             (uiOnline.roomServer.transport as PortTransport).Port = port;
             //(uiOnline.roomServer.transport as PortTransport).Port = 0;
 
+            // make sure that there is not a room already running somewhere...
+            if (NetworkServer.active) {
+                NetworkServer.Shutdown();
+            }
+            if (NetworkClient.active) {
+                NetworkClient.Shutdown();
+            }
+            uiOnline.roomServer.StopHost();
             uiOnline.roomServer.StartHost();
 
             // We now listen when the server wants our NATPunch data.
