@@ -151,7 +151,9 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             // change scene.
             Access.SceneLoader().loadScene(newSceneName, new SceneLoader.SceneLoaderParams
             {
-                useTransitionOut = true,
+                useTransitionOut              = true,
+                useLoadingScene               = true,
+                useExternalLoadingSceneUnload = newSceneName == GameplayScene, // we want to remove the loading screen by-hand when every players are ready
                 onSceneLoadStart = OnSceneLoadingStart,
                 onSceneLoaded    = OnSceneLoadingStop
             });
@@ -185,7 +187,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     void OnSceneLoadingStop(AsyncOperation operation) {
         if (operation == loadingSceneAsync) {
-            this.Log("Finish loading.");
+            this.Log("Finish loading : allowActivation = " + operation.allowSceneActivation + " isValid=" + SceneManager.GetSceneByName(networkSceneName));
+            //SceneManager.SetActiveScene(SceneManager.GetSceneByName(networkSceneName));
         }
     }
 
@@ -208,8 +211,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnRoomServerSceneChanged(string sceneName)
     {
         this.Log("OnRoomServerSceneChanged");
-
-        Access.SceneLoader().unloadLoadingScene();
 
         // spawn the initial batch of Rewards
         if (sceneName == GameplayScene)
@@ -260,7 +261,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnRoomClientSceneChanged()
     {
         this.Log("OnRoomClientSceneChanged.");
-        Access.SceneLoader().unloadLoadingScene();
         // // HACK:Check if we loaded the open course.
         // // TODO: this is very bad please fix asap!
         var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
@@ -291,10 +291,12 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public IEnumerator ServerLoadOpenCourse()
     {
         subsceneLoaded = false;
-        yield return SceneManager.LoadSceneAsync(Constants.SN_OPENCOURSE, new LoadSceneParameters
+
+        yield return Access.SceneLoader().loadScene(Constants.SN_OPENCOURSE, new SceneLoader.SceneLoaderParams
         {
-            loadSceneMode = LoadSceneMode.Additive
+            sceneLoadingMode = LoadSceneMode.Additive,
         });
+
         subsceneLoaded = true;
     }
 
@@ -433,6 +435,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             onlineRoomData.showPreGameCountdown = true;
             onlineRoomData.preGameCountdownTime = 5.0f;
         }
+
         OnRoomServerPlayersReadyCB?.Invoke();
     }
 

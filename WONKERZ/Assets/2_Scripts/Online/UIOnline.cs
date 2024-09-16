@@ -198,19 +198,22 @@ public class UIOnline : UIPanel
                 }break;
             case States.Exit:
                 {
-                    uiCancelButtonHint.Hide();
-
-                    deactivate();
-                    // Remove room if need be
-                    client.Close();
                     // Carefull we need to move back the network manager to the active scene so that it is deleted when
                     var sceneLoader = Access.SceneLoader();
-                    sceneLoader.ResetDontDestroyOnLoad();
                     sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams{
                         useTransitionIn = true,
                         useTransitionOut = true,
+                        onEndTransition = delegate
+                        {
+                            uiCancelButtonHint.Hide();
+                            deactivate();
+                            // Remove room if need be
+                            client.Close();
+
+                            sceneLoader.ResetDontDestroyOnLoad();
+                        }
                     });
-                } break;
+        } break;
         }
         state = toState;
     }
@@ -303,9 +306,7 @@ public class UIOnline : UIPanel
                     stateMessageText.enabled = true;
                     stateMessageText.text = stateMessage[(int)Success.ConnectedToRoom];
 
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.InRoom)));
+                    SetState(States.InRoom);
                 }
                 break;
             case States.CreatingRoom:
@@ -313,9 +314,7 @@ public class UIOnline : UIPanel
                     stateMessageText.enabled = true;
                     stateMessageText.text = stateMessage[(int)Success.ConnectedToRoom];
 
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.InRoom)));
+                    SetState(States.InRoom);
                 }break;
             default:
                 {

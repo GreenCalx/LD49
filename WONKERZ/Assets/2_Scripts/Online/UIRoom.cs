@@ -123,6 +123,7 @@ public class UIRoom : UIPanelTabbed
 
     public void OnGameLoaded()
     {
+        this.Log("OnGameLoaded : isGameplayScene = " + Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene));
         // Deactivate UX.
         if (NetworkClient.active && Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene))
         {

@@ -102,6 +102,8 @@ public class OnlineGameManager : NetworkBehaviour
         RpcAllPlayersLoaded();
         FreezeAllPlayers(true);
 
+        Access.SceneLoader().unloadLoadingScene();
+
         yield return StartCoroutine(WaitForAllPlayersToBeReady());
 
         RpcAllPlayersLockAndLoaded();
