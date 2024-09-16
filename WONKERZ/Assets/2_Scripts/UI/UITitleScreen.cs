@@ -53,6 +53,19 @@ public class UITitleScreen : UIPanelTabbed
     }
 
     public void launchOnline() {
+        // check if we are using a profile.
+        var gameSaveManager = Access.GameProgressSaveManager();
+        // just to be sure
+        gameSaveManager.onProfileLoaded -= launchOnline;
+        gameSaveManager.onProfileLoaded -= launchLocal;
+
+        if (!gameSaveManager.HasActiveProfile()) {
+            // No profile selected => show profile selection/creation.
+            profilePanel.Show();
+            gameSaveManager.onProfileLoaded += launchOnline;
+            return;
+        }
+
         // TODO: do not remove player but switch between local, online, etc...
         // There should probably be no player at all on the titleScreen anyway.
         PlayerController pc = Access.Player();
@@ -85,6 +98,19 @@ public class UITitleScreen : UIPanelTabbed
     }
 
     public void launchLocal() {
+        // check if we are using a profile.
+        var gameSaveManager = Access.GameProgressSaveManager();
+        // just to be sure...
+        gameSaveManager.onProfileLoaded -= launchLocal;
+        gameSaveManager.onProfileLoaded -= launchOnline;
+
+        if (!gameSaveManager.HasActiveProfile()) {
+            // No profile selected => show profile selection/creation.
+            profilePanel.Show();
+            gameSaveManager.onProfileLoaded += launchLocal;
+            return;
+        }
+
         PlayerController pc = Access.Player();
         if (!!pc)
         {

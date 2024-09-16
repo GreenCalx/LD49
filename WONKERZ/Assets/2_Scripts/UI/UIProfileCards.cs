@@ -15,20 +15,18 @@ namespace Wonkerz {
         public enum FD_MODE {READ, WRITE};
         public FD_MODE mode;
         public List<UIProfileCardPanel> profileCards;
-        public string newProfileName = "FOOBAR";
+        public string newProfileName = "NewPlayer";
+        public UIPanel createProfilePanel;
 
         public void updateNewProfileName(string iS)
         {
             newProfileName = iS;
         }
-        // Start is called before the first frame update
-        void Start()
-        {
-            self_init();
-        }
 
-        public void self_init()
+        override public void init()
         {
+            base.init();
+
             profileCards = new List<UIProfileCardPanel>(tabs.Count);
             foreach(UITab t in tabs)
             {
@@ -50,6 +48,19 @@ namespace Wonkerz {
             }
         }
 
+        public void OnEndEditNewName() {
+            UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
+            if (uipcp==null)
+            {
+                this.LogError("Selected Card is not activable");
+                return;
+            }
+            string selected_profile_name = uipcp.profileName.text;
+
+            OverWriteProfile(selected_profile_name, newProfileName);
+            uipcp.profileName.text = newProfileName;
+        }
+
         public void activateSelectedCard()
         {
             UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
@@ -59,6 +70,11 @@ namespace Wonkerz {
                 return;
             }
             string selected_profile_name = uipcp.profileName.text;
+            if (string.IsNullOrEmpty(selected_profile_name) || selected_profile_name.ToLower() == "empty") {
+                this.Log("Empty profile selected : launch creation panel.");
+                createProfilePanel.Show();
+                return;
+            }
 
             if (mode==FD_MODE.WRITE)
             {
@@ -76,6 +92,11 @@ namespace Wonkerz {
             GameProgressSaveManager GPSM = Access.GameProgressSaveManager();
             GPSM.activeProfile = iProfileName;
             GPSM.Load();
+
+            // :NoOnline:
+            // NOTE: toffa: this is not used for online mode anymore.
+            // objects should listen to load profile event from GameProgressSaveManager.
+            #if false
             DialogBank.playerName = iProfileName;
 
             Access.CollectiblesManager().loadJars();
@@ -95,6 +116,7 @@ namespace Wonkerz {
                 useTransitionOut = true,
                 useLoadingScene = true,
             });
+            #endif
         }
 
         public void OverWriteProfile(string iOldProfileName, string iNewProfileName)
@@ -112,6 +134,8 @@ namespace Wonkerz {
             GPSM.updateFilePath();
             GPSM.ResetAndSave();
 
+            // cf :NoOnline:
+            #if false
             DialogBank.playerName = iNewProfileName;
 
             Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.SceneLoaderParams
@@ -120,6 +144,7 @@ namespace Wonkerz {
                 useTransitionOut = true,
                 useLoadingScene = true,
             });
+            #endif
         }
 
     }

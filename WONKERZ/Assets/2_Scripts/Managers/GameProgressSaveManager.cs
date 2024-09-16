@@ -24,7 +24,7 @@ public class GameProgressSaveManager : MonoBehaviour
     // Profile used to save 'user' specific GameProgressDatas
     // TODO Merge savefiles
     // TODO when all type of saves are merged, implement the logic around the profile.
-    public string activeProfile = "foobar";
+    public string activeProfile = "";
     private string fp_prefix = "";
     private readonly string fp_suffix = "GameProgressData.json";
     
@@ -32,6 +32,8 @@ public class GameProgressSaveManager : MonoBehaviour
     private bool errorAtLoad = false;
 
     public string profileDataFilePath;
+
+    public Action onProfileLoaded;
 
     public void init()
     {
@@ -60,6 +62,7 @@ public class GameProgressSaveManager : MonoBehaviour
             {
                 string dataToLoad = reader.ReadToEnd();
                 gameProgressData = JsonUtility.FromJson<GameProgressData>(dataToLoad);
+                onProfileLoaded?.Invoke();
             }
         } catch (IOException e)
         {
@@ -168,5 +171,9 @@ public class GameProgressSaveManager : MonoBehaviour
         {
             Directory.CreateDirectory(dir_path);
         }
+    }
+
+    public bool HasActiveProfile() {
+        return !string.IsNullOrEmpty(activeProfile);
     }
 }
