@@ -92,46 +92,129 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         OnRoomClientExitCB?.Invoke();
     }
 
-    public override void OnRoomClientSceneChanged()
+    public override void ServerChangeScene(string newSceneName)
     {
-        this.Log("OnRoomClientSceneChanged.");
-        // // HACK:Check if we loaded the open course.
-        // // TODO: this is very bad please fix asap!
-        var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
-        if (openCourseScene.IsValid())
-        {
-            this.Log("OnRoomClientSceneChanged : open course.");
-            Access.GetMgr<CameraManager>().OnActiveSceneChanged(openCourseScene, openCourseScene);
-            //     //SceneManager.SetActiveScene(openCourseScene);
-        }
-        OnRoomClientSceneChangedCB?.Invoke();
-    }
+        this.Log("ServerChangeScene : " + newSceneName + " server active : " + NetworkServer.active);
+        // override all the function, because base class is using directly SceneManager
+        // and we want to use our own manager.
+        // cf base class as we copied a lot of code from it.
 
-    IEnumerator SeekOnlineGameManager()
-    {
-        while (onlineGameManager == null)
+        if (string.IsNullOrWhiteSpace(newSceneName))
         {
-            yield return null;
+            this.LogError("ServerChangeScene empty scene name");
+            return;
         }
 
+        if (NetworkServer.isLoadingScene && newSceneName == networkSceneName)
+        {
+            this.LogError($"Scene change is already in progress for {newSceneName}");
+            return;
+        }
+
+        if (newSceneName == RoomScene)
+        {
+            foreach (NetworkRoomPlayer roomPlayer in roomSlots)
+            {
+                if (roomPlayer == null) continue;
+                // find the game-player object for this connection, and destroy it
+                NetworkIdentity identity = roomPlayer.GetComponent<NetworkIdentity>();
+                if (NetworkServer.active)
+                {
+                    // re-add the room object
+                    roomPlayer.CmdChangeReadyState(false);
+                    NetworkServer.ReplacePlayerForConnection(identity.connectionToClient, roomPlayer.gameObject);
+                }
+            }
+
+            allPlayersReady = false;
+        }
+
+        // Throw error if called from client
+        // Allow changing scene while stopping the server
+        if (!NetworkServer.active && newSceneName != offlineScene)
+        {
+            this.LogError("ServerChangeScene can only be called on an active server.");
+            return;
+        }
+
+        NetworkServer.SetAllClientsNotReady();
+        networkSceneName = newSceneName;
+
+        // Let server prepare for scene change
+        OnServerChangeScene(newSceneName);
+
+        // set server flag to stop processing messages while changing scenes
+        // it will be re-enabled in FinishLoadScene.
+        NetworkServer.isLoadingScene = true;
+
+        if (mode == NetworkManagerMode.Host) {
+            // change scene.
+            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.SceneLoaderParams
+            {
+                useTransitionOut = true,
+                onSceneLoadStart = OnSceneLoadingStart,
+                onSceneLoaded    = OnSceneLoadingStop
+            });
+        } else
+        {
+            loadingSceneAsync = SceneManager.LoadSceneAsync(newSceneName);
+        }
+        // ServerChangeScene can be called when stopping the server
+        // when this happens the server is not active so does not need to tell clients about the change
+        if (NetworkServer.active)
+        {
+            // notify all clients about the new scene
+            NetworkServer.SendToAll(new SceneMessage
+            {
+                sceneName = newSceneName
+            });
+        }
+
+        startPositionIndex = 0;
+        startPositions.Clear();
     }
 
-    public void StartGameScene()
+    public override void OnServerConnect(NetworkConnectionToClient conn)
     {
-        ServerChangeScene(GameplayScene);
+        OnRoomServerConnect(conn);
     }
 
-    /// <summary>
+    void OnSceneLoadingStart(AsyncOperation operation) {
+        loadingSceneAsync = operation;
+    }
+
+    void OnSceneLoadingStop(AsyncOperation operation) {
+        if (operation == loadingSceneAsync) {
+            this.Log("Finish loading.");
+        }
+    }
+
+    public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
+    {
+        this.Log("OnRoomServerSceneLoadedForPlayer");
+
+        OnlinePlayerController OPC = gamePlayer.GetComponent<OnlinePlayerController>();
+        NetworkRoomPlayerExt nrp = roomPlayer.GetComponent<NetworkRoomPlayerExt>();
+        roomplayersToGameplayersDict.Add(nrp, OPC);
+
+        conn.Send(new SceneMessage { sceneName = Constants.SN_OPENCOURSE, sceneOperation = SceneOperation.LoadAdditive, customHandling = true });
+
+        return true;
+    }
+
     /// This is called on the server when a networked scene finishes loading.
     /// </summary>
     /// <param name="sceneName">Name of the new scene.</param>
     public override void OnRoomServerSceneChanged(string sceneName)
     {
+        this.Log("OnRoomServerSceneChanged");
+
+        Access.SceneLoader().unloadLoadingScene();
+
         // spawn the initial batch of Rewards
         if (sceneName == GameplayScene)
         {
             StartCoroutine(ServerLoadOpenCourse());
-
             // do stuff
             Access.GameSettings().isOnline = true;
             roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
@@ -150,6 +233,61 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         Access.GetMgr<CameraManager>().OnActiveSceneChanged(scene, scene);
     }
 
+    public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
+    {
+        this.Log("OnClientChangeScene");
+        if (customHandling)
+        {
+            if (sceneOperation == SceneOperation.UnloadAdditive) StartCoroutine(UnloadAdditive(sceneName));
+            if (sceneOperation == SceneOperation.LoadAdditive  ) StartCoroutine(LoadAdditive  (sceneName));
+            if (sceneOperation == SceneOperation.Normal) {
+                // change of root scene => will delete everything.
+                // means we will have a loading screen.
+                if (NetworkServer.active) {
+                    //host mode
+                    // change scene.
+                    Access.SceneLoader().loadScene(sceneName, new SceneLoader.SceneLoaderParams
+                    {
+                        useTransitionOut = true,
+                        onSceneLoadStart = OnSceneLoadingStart,
+                        onSceneLoaded    = OnSceneLoadingStop
+                    });
+                }
+            }
+        }
+    }
+
+    public override void OnRoomClientSceneChanged()
+    {
+        this.Log("OnRoomClientSceneChanged.");
+        Access.SceneLoader().unloadLoadingScene();
+        // // HACK:Check if we loaded the open course.
+        // // TODO: this is very bad please fix asap!
+        var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
+        if (openCourseScene.IsValid())
+        {
+            this.Log("OnRoomClientSceneChanged : open course.");
+            Access.GetMgr<CameraManager>().OnActiveSceneChanged(openCourseScene, openCourseScene);
+            //     //SceneManager.SetActiveScene(openCourseScene);
+        }
+        OnRoomClientSceneChangedCB?.Invoke();
+    }
+
+    IEnumerator SeekOnlineGameManager()
+    {
+        while (onlineGameManager == null)
+        {
+            yield return null;
+        }
+    }
+
+    public void StartGameScene()
+    {
+        // custom loading scene.
+        this.Log("StartGameScene.");
+        ServerChangeScene(GameplayScene);
+    }
+
     public IEnumerator ServerLoadOpenCourse()
     {
         subsceneLoaded = false;
@@ -157,8 +295,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             loadSceneMode = LoadSceneMode.Additive
         });
-
-        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(Constants.SN_OPENCOURSE));
         subsceneLoaded = true;
     }
 
@@ -208,14 +344,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         subsceneUnloaded = true;
     }
 
-    public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
-    {
-        if (sceneOperation == SceneOperation.UnloadAdditive)
-            StartCoroutine(UnloadAdditive(sceneName));
-
-        if (sceneOperation == SceneOperation.LoadAdditive)
-            StartCoroutine(LoadAdditive(sceneName));
-    }
 
     IEnumerator LoadAdditive(string sceneName)
     {
@@ -281,16 +409,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         OnRoomStopServerCB?.Invoke();
     }
 
-    public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
-    {
-        OnlinePlayerController OPC = gamePlayer.GetComponent<OnlinePlayerController>();
-        NetworkRoomPlayerExt nrp = roomPlayer.GetComponent<NetworkRoomPlayerExt>();
-        roomplayersToGameplayersDict.Add(nrp, OPC);
-
-        conn.Send(new SceneMessage { sceneName = Constants.SN_OPENCOURSE, sceneOperation = SceneOperation.LoadAdditive, customHandling = true });
-
-        return true;
-    }
 
     public void clientLoadSelectedTrial()
     {
@@ -308,14 +426,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     }
 
-    // public override GameObject OnRoomServerCreateGamePlayer(NetworkConnectionToClient conn, GameObject roomPlayer)
-    // {
-
-    // }
-
-    bool showStartButton;
-
-
     public override void OnRoomServerPlayersReady()
     {
         if (onlineRoomData != null) {
@@ -324,22 +434,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             onlineRoomData.preGameCountdownTime = 5.0f;
         }
         OnRoomServerPlayersReadyCB?.Invoke();
-    }
-
-    public override void OnGUI()
-    {
-        base.OnGUI();
-
-        if (allPlayersReady && showStartButton && GUI.Button(new Rect(150, 300, 120, 20), "START GAME"))
-        {
-            // set to false to hide it in the game scene
-            showStartButton = false;
-
-            // initialize scene load status
-            subsceneLoaded = true;
-            subsceneUnloaded = true;
-            ServerChangeScene(GameplayScene);
-        }
     }
 
     public override void OnDestroy()

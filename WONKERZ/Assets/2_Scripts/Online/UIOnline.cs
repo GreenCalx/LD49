@@ -714,11 +714,6 @@ public class UIOnline : UIPanel
 
     void OnRoomSceneChanged() {
         this.Log("OnRoomSceneChanged");
-        //if changed to offline room, check which UX we want.
-        if (Mirror.Utils.IsSceneActive(roomServer.RoomScene)) {
-            SetState(Access.GameSettings().goToState);
-            Access.GameSettings().goToState = UIOnline.States.MainMenu;
-        }
     }
 
     // Following function can be called from threads.
