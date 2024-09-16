@@ -29,13 +29,20 @@ public class OnlineTrialManager : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        NetworkRoomManagerExt.singleton.onlineGameManager.trialManager = this;
+        StartCoroutine(GenericTrialInit());
+    }
+
+    IEnumerator WaitForDependencies() 
+    {
+        while (OnlineGameManager.Get()             == null) {yield return null;}
+    }
+
+    protected IEnumerator GenericTrialInit()
+    {
+        yield return StartCoroutine(WaitForDependencies());
+        OnlineGameManager.Get().trialManager = this;
         trialLaunched = false;
-
-        UpdateRenderSettings();
-
-        // if (isServer)
-        //     DispatchPlayersToPortals();
+        // UpdateRenderSettings();
     }
 
     // Update is called once per frame
@@ -47,12 +54,19 @@ public class OnlineTrialManager : NetworkBehaviour
         }
     }
 
-    void UpdateRenderSettings()
-    {
-        RenderSettings.skybox = skybox;
-        RenderSettings.sun = sun;
-    }
+    // Note :
+    // If still needed with new online scene workflow , move to OGM
+    // protected void UpdateRenderSettings()
+    // {
+    //     RenderSettings.skybox = skybox;
+    //     RenderSettings.sun = sun;
+    // }
 
+    // [ClientRPC]
+    // protected void RpcUpdateRenderSettings()
+    // {
+    //     UpdateRenderSettings();
+    // }
 
     [Server]
     protected void DispatchPlayersToPortals()
