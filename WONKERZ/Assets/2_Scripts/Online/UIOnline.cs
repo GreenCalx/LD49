@@ -112,7 +112,7 @@ public class UIOnline : UIPanel
     public TextMeshProUGUI     stateMessageText;
 
     public UISelectableElement uiMainMenu;
-    public UISelectableElement uiRoomCreationMenu;
+    public UICreateRoomMenu    uiRoomCreationMenu;
     public UIRoom              uiRoom;
     public UILobbyServerList   uiServerList;
     public UIButtonHint        uiCancelButtonHint;
@@ -335,7 +335,13 @@ public class UIOnline : UIPanel
 
     public void CreateRoom()
     {
-        client.CreateLobby("test name for now");
+        client.CreateLobby(new Lobby
+        {
+            maxPlayerCount = 4,
+            //cf :hastName: SchLobbyServer
+            hostName       = Access.GameProgressSaveManager().activeProfile,
+            name = uiRoomCreationMenu.GetRoomName(),
+        });
     }
 
     public void StartLocalServer()

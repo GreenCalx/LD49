@@ -47,6 +47,10 @@ public class UILobbyServerTab : UITextTab
 {
     public Lobby lobby;
 
+    public UILabel lobbyName;
+    public UILabel lobbyHostName;
+    public UILabel lobbyPlayerCount;
+
     UIConnectionStateText connectionState;
     UILobbyServerList serverList;
 
@@ -74,7 +78,9 @@ public class UILobbyServerTab : UITextTab
             this.LogError("Please connect a Parent of type UILobbyServerList to UILobbyServerTab.");
         }
 
-        label.text.text = lobby.name;
+        lobbyName.text.text        = lobby.name;
+        lobbyHostName.text.text    = lobby.hostName;
+        lobbyPlayerCount.text.text = lobby.roomPlayers.Count + " / " + lobby.maxPlayerCount;
     }
 
     // Force connection to be one second to avoid very fast message blinking.

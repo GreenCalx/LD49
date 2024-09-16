@@ -3,6 +3,7 @@ using Mirror;
 using System;
 using System.Collections;
 using Schnibble;
+using Wonkerz;
 
 public class NetworkRoomPlayerExt : NetworkRoomPlayer
 {
@@ -81,13 +82,17 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
 
     public override void OnClientEnterRoom()
     {
-        gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
+        if (isLocalPlayer) {
+            gameObject.name = Access.GameProgressSaveManager().activeProfile;
+        } else {
+            gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
+        }
         onAnyChange?.Invoke();
     }
 
     public override void IndexChanged(int oldIndex, int newIndex)
     {
-        gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
+        if (!isLocalPlayer) gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
         onAnyChange?.Invoke();
     }
 
