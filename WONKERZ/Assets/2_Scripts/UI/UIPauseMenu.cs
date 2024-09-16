@@ -87,7 +87,12 @@ namespace Wonkerz {
                     sceneToLoad = Constants.SN_TITLE;
                     break;
             }
-            Access.SceneLoader().loadScene(sceneToLoad);
+            Access.SceneLoader().loadScene(sceneToLoad, new SceneLoader.SceneLoaderParams
+            {
+                useTransitionIn = true,
+                useTransitionOut = true,
+                useLoadingScene =true,
+            });
         }
 
         public void OnCameraToggleChange(bool value)

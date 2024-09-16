@@ -468,7 +468,11 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcDisconnectPlayers()
     {
         NetworkClient.Disconnect();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE);
+        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams
+        {
+            useTransitionOut = true,
+            useTransitionIn  = true,
+        });
     }
 
     [ClientRpc]

@@ -40,7 +40,11 @@ namespace Wonkerz {
                 //if (invisibleLoading)
                 //Access.SceneLoader().asyncPreWarm(PORTAL_SCENE_TARGET);
                 //else
-                Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET);
+                Access.SceneLoader().loadScene(PORTAL_SCENE_TARGET, new SceneLoader.SceneLoaderParams {
+                    useLoadingScene = true,
+                    useTransitionIn = true,
+                    useTransitionOut = true,
+                });
             }
         }
     }

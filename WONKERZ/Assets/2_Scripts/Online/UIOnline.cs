@@ -191,7 +191,10 @@ public class UIOnline : UIPanel
                     // Carefull we need to move back the network manager to the active scene so that it is deleted when
                     var sceneLoader = Access.SceneLoader();
                     sceneLoader.ResetDontDestroyOnLoad();
-                    sceneLoader.loadRootScene(Constants.SN_TITLE);
+                    sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams{
+                        useTransitionIn = true,
+                        useTransitionOut = true,
+                    });
                 } break;
         }
         state = toState;

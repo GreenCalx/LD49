@@ -77,7 +77,11 @@ public class UITitleScreen : UIPanelTabbed
         }
 
         Access.GameSettings().isLocal = false;
-        Access.SceneLoader().loadRootSceneWithLoadingScreen("OfflineRoom");
+        Access.SceneLoader().loadScene("OfflineRoom", new SceneLoader.SceneLoaderParams{
+            useLoadingScene = true,
+            useTransitionIn = true,
+            useTransitionOut = true,
+        });
     }
 
     public void launchLocal() {
@@ -103,7 +107,12 @@ public class UITitleScreen : UIPanelTabbed
         }
 
         Access.GameSettings().isLocal = true;
-        Access.SceneLoader().loadRootSceneWithLoadingScreen("OfflineRoom");
+
+        Access.SceneLoader().loadScene("OfflineRoom", new SceneLoader.SceneLoaderParams{
+            useLoadingScene = true,
+            useTransitionIn = true,
+            useTransitionOut = true,
+        });
     }
 
     public void launchDemo()

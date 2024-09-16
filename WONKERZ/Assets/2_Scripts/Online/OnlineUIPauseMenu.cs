@@ -128,7 +128,11 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         }
 
         Access.SceneLoader().ResetDontDestroyOnLoad();
-        Access.SceneLoader().loadRootSceneWithLoadingScreen(Constants.SN_TITLE);
+        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams{
+            useTransitionOut = true,
+            useTransitionIn  = true,
+            sceneLoadingMode = LoadSceneMode.Single,
+        });
     }
 
     public void OnCameraToggleChange(bool value)

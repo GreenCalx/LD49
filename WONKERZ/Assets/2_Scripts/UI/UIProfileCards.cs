@@ -5,6 +5,7 @@ using static UnityEngine.Debug;
 using Schnibble;
 using Schnibble.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 
 namespace Wonkerz {
@@ -80,9 +81,20 @@ namespace Wonkerz {
             Access.CollectiblesManager().loadJars();
 
             if (GPSM.IsUniqueEventDone(UniqueEvents.UEVENTS.GP_IntroComplete))
-            Access.SceneLoader().loadScene(Constants.SN_HUB);
+            Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.SceneLoaderParams
+            {
+                useTransitionIn = true,
+                useTransitionOut = true,
+                useLoadingScene = true,
+                sceneLoadingMode = LoadSceneMode.Single,
+            });
             else
-            Access.SceneLoader().loadScene(Constants.SN_INTRO);
+            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.SceneLoaderParams
+            {
+                useTransitionIn = true,
+                useTransitionOut = true,
+                useLoadingScene = true,
+            });
         }
 
         public void OverWriteProfile(string iOldProfileName, string iNewProfileName)
@@ -102,7 +114,12 @@ namespace Wonkerz {
 
             DialogBank.playerName = iNewProfileName;
 
-            Access.SceneLoader().loadScene(Constants.SN_INTRO);
+            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.SceneLoaderParams
+            {
+                useTransitionIn = true,
+                useTransitionOut = true,
+                useLoadingScene = true,
+            });
         }
 
     }

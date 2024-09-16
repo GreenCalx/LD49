@@ -30,7 +30,10 @@ namespace Wonkerz {
                 }
             
 
-                Access.SceneLoader().loadScene(Constants.SN_FINISH);
+                Access.SceneLoader().loadScene(Constants.SN_FINISH, new SceneLoader.SceneLoaderParams{
+                    useTransitionIn = true,
+                    useTransitionOut = true,
+                });
             }
         }
     }

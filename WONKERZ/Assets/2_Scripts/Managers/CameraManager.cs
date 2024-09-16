@@ -429,7 +429,8 @@ namespace Wonkerz
 
             PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
             if (!!PMM          ) PMM.SetCamera(active_camera.cam);
-            if (sceneTransition) Access.SceneLoader().asyncTransitionLock = false;
+
+            //if (sceneTransition) Access.SceneLoader().asyncTransitionLock = false;
 
             // Debug Cam switches below
             this.Log("CamSwitch : " + new_cam_name + " FROM " + prev_cam_name);
