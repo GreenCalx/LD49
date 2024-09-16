@@ -20,10 +20,15 @@ public struct UIPlayerSlotData
 
 public class UIRoom : UIPanelTabbed
 {
+    // TODO: remove this! and set dircetly the lobby value.
     public static int roomPlayerCount = 4;
 
     public GameObject UIPlayerSlot_prefab;
+    public GameObject UIEmptyPlayerSlot_prefab;
+
     List<UIRoom_PlayerSlot> uiPlayerSlots = new List<UIRoom_PlayerSlot>(roomPlayerCount);
+    List<UIRoom_EmptySlot>  uiEmptySlots = new List<UIRoom_EmptySlot>(roomPlayerCount);
+
     UIRoom_PlayerSlot localPlayerSlot = null;
 
     UIOnline uiOnline;
@@ -249,6 +254,16 @@ public class UIRoom : UIPanelTabbed
         }
         uiPlayerSlots.Clear();
 
+        foreach (var e in uiEmptySlots)
+        {
+            if (e != null && e.gameObject != null)
+            {
+                // clean-up callbacks to avoid dead objects being called.
+                GameObject.Destroy(e.gameObject);
+            }
+        }
+        uiEmptySlots.Clear();
+
         foreach (var t in tabs)
         {
             if (t != null && t.gameObject != null)
@@ -259,25 +274,60 @@ public class UIRoom : UIPanelTabbed
         tabs.Clear();
 
         // Create again all slots objects
-        for (int i = 0; i < roomSlots.Count; ++i)
+        for (int i = 0; i < roomPlayerCount; ++i)
         {
-            var slot = roomSlots[i];
-
-            UIPlayerSlotData playerData;
-            playerData.backgroundColor = UnityEngine.Random.ColorHSV();
-            playerData.name = slot.name;
-            playerData.readyState = slot.readyToBegin;
-            playerData.player = slot as NetworkRoomPlayerExt;
-            playerData.latency = -1;
-
-            var uiSlot = AddPlayer(playerData);
-            tabs.Add(uiSlot);
-
-            if (slot.isLocalPlayer)
+            if (i < roomSlots.Count)
             {
-                localPlayerSlot = uiSlot;
+                var slot = roomSlots[i];
+
+                UIPlayerSlotData playerData;
+                playerData.backgroundColor = UnityEngine.Random.ColorHSV();
+                playerData.name = slot.name;
+                playerData.readyState = slot.readyToBegin;
+                playerData.player = slot as NetworkRoomPlayerExt;
+                playerData.latency = -1;
+
+                var uiSlot = AddPlayer(playerData);
+                tabs.Add(uiSlot);
+
+                if (slot.isLocalPlayer)
+                {
+                    localPlayerSlot = uiSlot;
+                }
+            } else {
+                // empty players.
+                var emptySlot = AddEmpty(i);
+                tabs.Add(emptySlot);
             }
         }
+
+        GetTab(CurrentTab()).select();
+    }
+
+    public UIRoom_EmptySlot AddEmpty(int idx) {
+        var result = Instantiate(UIEmptyPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_EmptySlot>();
+
+        result.gameObject.SetActive(true);
+        result.Parent = this;
+        result.init();
+        result.deselect();
+        // Get current window size.
+        // TODO: move this to cache
+        var uxSize = background.rect;
+        int uxHeight = (int)uxSize.height;
+        // TODO: take into account where the anchor is to compute the right position.
+        // TODO: add possibility for padding.
+        int uxWidth = (int)(uxSize.width);
+
+        int slotAvailableWidth = (uxWidth / roomPlayerCount);
+        int halfSlotAvailableWidth = slotAvailableWidth / 2;
+        // Centered on 0 => remove uxWidth to go negative for first indices
+        int xPos = slotAvailableWidth * (idx+1) - halfSlotAvailableWidth - (uxWidth / 2);
+        result.gameObject.transform.localPosition = new Vector3(xPos, 0, 0);
+
+        uiEmptySlots.Add(result);
+
+        return result;
     }
 
     public UIRoom_PlayerSlot AddPlayer(UIPlayerSlotData data)
@@ -287,6 +337,7 @@ public class UIRoom : UIPanelTabbed
 
         slot.Parent = this;
         slot.init();
+        slot.deselect();
 
         slot.AttachRoomPlayer(data.player);
 
@@ -297,11 +348,16 @@ public class UIRoom : UIPanelTabbed
         // TODO: move this to cache
         var uxSize = background.rect;
         int uxHeight = (int)uxSize.height;
-        int uxWidth = (int)(uxSize.width - slot.background.GetComponent<RectTransform>().rect.width);
+        // TODO: take into account where the anchor is to compute the right position.
+        // TODO: add possibility for padding.
+        int uxWidth = (int)(uxSize.width);
         // move to the right position
-        int idx = uiPlayerSlots.Count;
+        int idx = uiPlayerSlots.Count + 1;
 
-        int xPos = (uxWidth / roomPlayerCount) * idx - (uxWidth / 2);
+        int slotAvailableWidth = (uxWidth / roomPlayerCount);
+        int halfSlotAvailableWidth = slotAvailableWidth / 2;
+
+        int xPos = slotAvailableWidth * idx - halfSlotAvailableWidth - (uxWidth / 2);
         slot.SetPosition(xPos, 0);
 
         uiPlayerSlots.Add(slot);
