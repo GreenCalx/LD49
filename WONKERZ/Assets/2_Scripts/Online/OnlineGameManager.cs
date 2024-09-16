@@ -64,6 +64,8 @@ public class OnlineGameManager : NetworkBehaviour
     public OnlinePlayerController localPlayer;
     public int expectedPlayersFromLobby;
 
+    public bool waitForPlayersToBeReady = false;
+
     [SyncVar]
     public float countdownElapsed = 0f;
     [SyncVar]
@@ -104,7 +106,9 @@ public class OnlineGameManager : NetworkBehaviour
 
         Access.SceneLoader().unloadLoadingScene();
 
-        yield return StartCoroutine(WaitForAllPlayersToBeReady());
+        if (waitForPlayersToBeReady) {
+            yield return StartCoroutine(WaitForAllPlayersToBeReady());
+        }
 
         RpcAllPlayersLockAndLoaded();
         

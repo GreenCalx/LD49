@@ -81,9 +81,12 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
 
         transform.position = OPC.transform.position;
 
-        OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
 
-        UIReadyUpHandle.SetActive(true);
+        if (OGM.waitForPlayersToBeReady)
+        {
+            UIReadyUpHandle.SetActive(true);
+            OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
+        }
     }
 
     public void LaunchCountdown()
