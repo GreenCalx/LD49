@@ -35,6 +35,12 @@ public class GameProgressSaveManager : MonoBehaviour
 
     public Action onProfileLoaded;
 
+    void OnDestroy()
+    {
+        Save();
+    }
+
+
     public void init()
     {
         this.Log("init.");
@@ -44,7 +50,10 @@ public class GameProgressSaveManager : MonoBehaviour
             Directory.CreateDirectory(fp_prefix);
         }
 
+        activeProfile = PlayerPrefs.GetString("lastActiveProfile");
+
         updateFilePath();
+        Load();
     }
 
     public void updateFilePath()
@@ -89,6 +98,8 @@ public class GameProgressSaveManager : MonoBehaviour
             string dataToWrite = JsonUtility.ToJson(gameProgressData);
             writer.Write(dataToWrite);
         }
+
+        PlayerPrefs.SetString("lastActiveProfile", activeProfile);
     }
 
     public void ResetAndSave()
