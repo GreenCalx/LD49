@@ -6,6 +6,24 @@ namespace Wonkerz
 {
     public class WkzCarController : SchCarController
     {
+        // TODO: create real online version
+        // should be on anline object
+        PlayerController.InputMode _inputMode = PlayerController.InputMode.Local;
+        public PlayerController.InputMode inputMode {
+get
+            {
+                return _inputMode;
+            }
+            set
+            {
+                _inputMode = value;
+                if (wkzCar != null) {
+                    wkzCar.onlineMode = (SchMotoredVehicle.OnlineMode)((int)_inputMode);
+                }
+            }
+        }
+
+
         WkzCar wkzCar;
 
         int gearUpDown = (int)PlayerInputs.InputCode.ForwardBackward;

@@ -10,12 +10,52 @@ namespace Wonkerz
 {
     public class PlayerController : MonoBehaviour, IControllable
     {
+        // TODO: move this out!
         public enum InputMode
         {
             Local,
             Online,
         };
-        public InputMode inputMode = InputMode.Local;
+
+        bool _isServer = false;
+        public bool isServer {
+            get {
+                return _isServer;
+            }
+            set {
+                _isServer = value;
+                if (car) {
+                    car.inputMode = _isServer ? InputMode.Local : InputMode.Online;
+                }
+                if (boat) {
+                    boat.inputMode = _isServer ? InputMode.Local : InputMode.Online;
+                }
+                if (plane) {
+                    plane.inputMode = _isServer ? InputMode.Local : InputMode.Online;
+                }
+            }
+        }
+
+        InputMode _inputMode = InputMode.Local;
+        public InputMode inputMode {
+            get {
+                return _inputMode;
+            }
+            set {
+                _inputMode = value;
+                if (car) {
+                    car.inputMode = value;
+                }
+                if (boat) {
+                    boat.inputMode = value;
+                }
+                if (plane) {
+                    plane.inputMode = value;
+                }
+            }
+        }
+        // end TODO: move this out!
+
         // Simple State Machine
         public enum PlayerStates
         {

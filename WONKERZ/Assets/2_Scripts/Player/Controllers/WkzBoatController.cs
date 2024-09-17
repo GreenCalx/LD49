@@ -5,6 +5,8 @@ namespace Wonkerz
 {
     public class WkzBoatController : SchBoatController
     {
+        public PlayerController.InputMode inputMode = PlayerController.InputMode.Local;
+
         int brake = (int)PlayerInputs.InputCode.Break;
         int gear = (int)PlayerInputs.InputCode.ForwardBackward;
 

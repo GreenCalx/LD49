@@ -26,33 +26,54 @@ namespace Wonkerz
 {
     public class WkzWheelCollider : SchWheelCollider
     {
+        public override void Update() {
+            if (chassis)
+            {
+                var car = chassis.GetCar() as WkzCar;
+                if (car != null && car.onlineMode == SchMotoredVehicle.OnlineMode.Online)
+                {
+                    return;
+                }
+            }
+
+            base.Update();
+        }
         public override void FixedUpdate()
         {
+            if (chassis)
+            {
+                var car = chassis.GetCar() as WkzCar;
+                if (car != null && car.onlineMode == SchMotoredVehicle.OnlineMode.Online)
+                {
+                    return;
+                }
+            }
+
             base.FixedUpdate();
 
-            // reset from jump
-            if (suspension.GetLength() < suspension.lastLength || suspension.GetLength() >= suspension.GetMaxLength())
-            {
-                suspension.stiffnessMul = 1.0f;
-                suspension.dampingMul   = 1.0f;
-            }
+                // reset from jump
+                if (suspension.GetLength() < suspension.lastLength || suspension.GetLength() >= suspension.GetMaxLength())
+                {
+                    suspension.stiffnessMul = 1.0f;
+                    suspension.dampingMul   = 1.0f;
+                }
 
-            var wkzCar = chassis.GetCar() as WkzCar;
-            // centrifugal forces
-            AngularVelocity chassisAngVelY = (AngularVelocity)chassis.GetBody().angularVelocity.y;
-            if (Mathf.Abs((float)chassisAngVelY) > wkzCar.wkzDef.minCentrifugalVelocity)
-            {
-                Vector3 radius = suspension.GetAnchorA() - suspension.GetAnchorB();
-                Meter radiusLength = (Meter)radius.magnitude;
-                Vector3 radiusDir = radius / (float)radiusLength;
+                var wkzCar = chassis.GetCar() as WkzCar;
+                // centrifugal forces
+                AngularVelocity chassisAngVelY = (AngularVelocity)chassis.GetBody().angularVelocity.y;
+                if (Mathf.Abs((float)chassisAngVelY) > wkzCar.wkzDef.minCentrifugalVelocity)
+                {
+                    Vector3 radius = suspension.GetAnchorA() - suspension.GetAnchorB();
+                    Meter radiusLength = (Meter)radius.magnitude;
+                    Vector3 radiusDir = radius / (float)radiusLength;
 
-                Force centrifugalForceZ = wkzCar.wkzDef.centrifugalForceMul * (chassisAngVelY * chassisAngVelY) * (tire.mass * radiusLength);
+                    Force centrifugalForceZ = wkzCar.wkzDef.centrifugalForceMul * (chassisAngVelY * chassisAngVelY) * (tire.mass * radiusLength);
 
-                Vector3 up = Vector3.Cross(radiusDir, chassis.transform.right);
-                Vector3 tangent = Vector3.Cross(up, radiusDir);
-                UnityEngine.Debug.DrawLine(transform.position, transform.position + radiusDir * (float)centrifugalForceZ, Color.yellow);
-                chassis.GetBody().AddForceAtPosition((float)centrifugalForceZ * radiusDir, transform.position);
-            }
+                    Vector3 up = Vector3.Cross(radiusDir, chassis.transform.right);
+                    Vector3 tangent = Vector3.Cross(up, radiusDir);
+                    UnityEngine.Debug.DrawLine(transform.position, transform.position + radiusDir * (float)centrifugalForceZ, Color.yellow);
+                    chassis.GetBody().AddForceAtPosition((float)centrifugalForceZ * radiusDir, transform.position);
+                }
         }
     }
 }
