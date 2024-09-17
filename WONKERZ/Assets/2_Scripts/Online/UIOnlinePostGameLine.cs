@@ -26,7 +26,11 @@ public class UIOnlinePostGameLine : MonoBehaviour
     public void Refresh(OnlinePlayerController iPlayer)
     {
         playerName.text = iPlayer.onlinePlayerName;
-        
+        // HACK: make this better asap.
+        if (NetworkRoomManagerExt.singleton == null) return;
+        if (NetworkRoomManagerExt.singleton.onlineGameManager == null) return;
+        if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null) return;
+
         OnlineTrialManager OTM = NetworkRoomManagerExt.singleton.onlineGameManager.trialManager;
 
         // Look for DNF

@@ -70,7 +70,6 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
 
     public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
     {
-        #if false
         int lowest_rank = 1;
         foreach(OnlinePlayerController opc in iOGM.uniquePlayers)
         {
@@ -101,7 +100,6 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
             }
 
         }
-        #endif
     }
 
     IEnumerator WaitForDependencies()

@@ -1,11 +1,10 @@
 using Mirror;
+using Schnibble;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 using Wonkerz;
-
-using Schnibble;
 
 // Network object specs
 //
@@ -26,14 +25,15 @@ public class OnlineGameManager : NetworkBehaviour
 {
     // TODO:
     // Remove this and create a real singleton as we shauld have only one OnlineGameManager.
-    public static OnlineGameManager Get() {
+    public static OnlineGameManager Get()
+    {
         if (NetworkRoomManagerExt.singleton == null) return null;
         return NetworkRoomManagerExt.singleton.onlineGameManager;
     }
 
     [Header("UX")]
     [SerializeField]
-    GameObject     UIWaitForPlayers;
+    GameObject UIWaitForPlayers;
     [SerializeField]
     public UIPlayerOnline UIPlayer;
     [SerializeField]
@@ -56,9 +56,9 @@ public class OnlineGameManager : NetworkBehaviour
     public uint gameDuration = 180; // in Seconds
     public uint postGameDuration = 30;
     public uint trackEventTimeStep = 60;
-    public List<string> trialPool = new List<string>(){ "RaceTrial01", "MountainTrial01" };
+    public List<string> trialPool = new List<string>() { "RaceTrial01", "MountainTrial01" };
     public string selectedTrial = "RaceTrial01";
-    
+
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
     public OnlinePlayerController localPlayer;
@@ -97,21 +97,23 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [Server]
-    IEnumerator ServerRoutine() {
+    IEnumerator ServerRoutine()
+    {
         yield return StartCoroutine(WaitForAllClientToSpawn());
         yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
-        
+
         RpcAllPlayersLoaded();
         FreezeAllPlayers(true);
 
         Access.SceneLoader().unloadLoadingScene();
 
-        if (waitForPlayersToBeReady) {
+        if (waitForPlayersToBeReady)
+        {
             yield return StartCoroutine(WaitForAllPlayersToBeReady());
         }
 
         RpcAllPlayersLockAndLoaded();
-        
+
         yield return StartCoroutine(SpinTrialRoulette());
         yield return StartCoroutine(StartGame());
         yield return StartCoroutine(GameLoop());
@@ -145,7 +147,7 @@ public class OnlineGameManager : NetworkBehaviour
     {
         // When a client press start to ready up it will set its isReady flag on its OnlinePlayerController
         this.Log("Waiting for clients to be ready.");
-        while (!AreAllPlayersReady()) {yield return null;}
+        while (!AreAllPlayersReady()) { yield return null; }
         this.Log("AllClientReady.");
     }
 
@@ -158,12 +160,13 @@ public class OnlineGameManager : NetworkBehaviour
         // This is to avoid having Rpc sent when the client is not fully loaded.
         // This should not happen, but for now it happens sometimes because Mirror does not spown the localPlayer as if it was a real NetworkServer.Spawn I guess.
         this.Log("Waiting for clients to be loaded.");
-        while (!AreAllPlayersLoaded()) {yield return null;}
+        while (!AreAllPlayersLoaded()) { yield return null; }
         this.Log("AllClientLoaded.");
     }
 
     [Server]
-    IEnumerator StartGame() {
+    IEnumerator StartGame()
+    {
         countdownElapsed = 0f;
 
         UIPlayer.gameObject.SetActive(true);
@@ -172,16 +175,17 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [Server]
-    void FreezeAllPlayers(bool state) {
+    void FreezeAllPlayers(bool state)
+    {
         this.Log("server: FreezeAllPlayers " + state.ToString());
-        foreach(var opc in uniquePlayers) opc.FreezePlayer(state);
+        foreach (var opc in uniquePlayers) opc.FreezePlayer(state);
     }
 
     [Server]
     IEnumerator WaitTrialSessions()
     {
         AskPlayersToLoad();
-        foreach(OnlinePlayerController opc in uniquePlayers) { opc.RpcLoadSubScene(); }
+        foreach (OnlinePlayerController opc in uniquePlayers) { opc.RpcLoadSubScene(); }
 
         FreezeAllPlayers(true);
 
@@ -217,7 +221,7 @@ public class OnlineGameManager : NetworkBehaviour
         this.Log("Start trial loop.");
 
         trialManager.trialLaunched = true;
-        trialManager.trialIsOver   = false;
+        trialManager.trialIsOver = false;
 
         while (!trialManager.trialIsOver)
         {
@@ -235,22 +239,15 @@ public class OnlineGameManager : NetworkBehaviour
         gameLaunched = false;
 
         RpcPostGame();
-
         AskPlayersToReadyUp();
         postGameTime = postGameDuration;
-        while (!AreAllPlayersReady())
+
+        // Wait until either postGameTime is elapsed, or all players want to quit.
+        while (!AreAllPlayersReady() && postGameTime > 0.0f)
         {
             postGameTime -= Time.deltaTime;
-            if (postGameTime <= 0f)
-            {
-                break;
-            }
-
-            foreach (var opc in uniquePlayers)
-            if (opc != null && opc.connectionToClient != null) opc.connectionToClient.Disconnect();
             yield return null;
         }
-
 
         this.Log("End post game.");
 
@@ -321,7 +318,7 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator GameLoop()
     {
         RpcShowUITrackTime(true);
-        
+
         trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
 
         while (gameTime > 0)
@@ -333,7 +330,7 @@ public class OnlineGameManager : NetworkBehaviour
                 trackEventManager.SpawnEvent();
                 trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
             }
-            
+
             yield return null;
         }
 
@@ -363,30 +360,30 @@ public class OnlineGameManager : NetworkBehaviour
         yield break;
     }
 
-        [Server]
+    [Server]
     IEnumerator SpinTrialRoulette()
     {
         GameObject inst = Instantiate(prefab_onlineTrialRoulette);
         inst.transform.parent = null;
-        NetworkServer.Spawn(inst);  
+        NetworkServer.Spawn(inst);
 
         OnlineTrialRoulette asRoulette = inst.GetComponent<OnlineTrialRoulette>();
-        
+
         yield return new WaitForFixedUpdate();
         asRoulette.init(trialPool);
-        
+
         yield return new WaitForFixedUpdate();
         asRoulette.Spin();
-        
+
         yield return new WaitForFixedUpdate();
         while (asRoulette.IsSpinning())
         {
             yield return null;
         }
-        
+
         yield return new WaitForFixedUpdate();
         asRoulette.StopSpin();
-        
+
         while (!asRoulette.HasSnapped)
         {
             yield return null;
@@ -406,7 +403,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void AddPlayer(OnlinePlayerController iOPC)
     {
         // When a localPlayer is Spawned an the client at will call this function.
-        if (!uniquePlayers.Contains(iOPC)) {uniquePlayers.Add(iOPC);}
+        if (!uniquePlayers.Contains(iOPC)) { uniquePlayers.Add(iOPC); }
     }
 
     [Server]
@@ -416,7 +413,7 @@ public class OnlineGameManager : NetworkBehaviour
         // we need to specifically ask players to ready up.
         foreach (var opc in uniquePlayers)
         {
-            opc.CmdModifyReadyState(false);
+            opc.SetReadyState(false);
             ServerAskToReadyUp();
         }
     }
@@ -434,6 +431,7 @@ public class OnlineGameManager : NetworkBehaviour
             return false;
 
         foreach (var opc in uniquePlayers) if (!opc.IsReady()) return false;
+
         return true;
     }
 
@@ -452,7 +450,8 @@ public class OnlineGameManager : NetworkBehaviour
     Client
     ------------------------------------ */
 
-    override public void OnStartClient() {
+    override public void OnStartClient()
+    {
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
 
         UIPlayer.gameObject.SetActive(false);
@@ -463,37 +462,45 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    void RpcAllPlayersLoaded() {
+    void RpcAllPlayersLoaded()
+    {
         UIPostGame.gameObject.SetActive(false);
         UIPostGame.updatePlayerRankingsLbl(this);
     }
 
     [ClientRpc]
-    void RpcAllPlayersLockAndLoaded() {
+    void RpcAllPlayersLockAndLoaded()
+    {
         this.Log("RpcAllPlayersLockAndLoaded.");
         UIWaitForPlayers.SetActive(false);
         UIPlayer.gameObject.SetActive(true);
     }
 
     [ClientRpc]
-    void RpcPostGame() { 
+    void RpcPostGame()
+    {
         UIPostGame.gameObject.SetActive(true);
         UIWaitForPlayers.gameObject.SetActive(false);
     }
 
     [ClientRpc]
-    void WaitForOtherPlayersToBeReady() {
+    void WaitForOtherPlayersToBeReady()
+    {
         UIWaitForPlayers.SetActive(true);
         UIPlayer.gameObject.SetActive(false);
     }
 
     [ClientRpc]
-    void ServerAskToReadyUp() {
+    void ServerAskToReadyUp()
+    {
         this.Log("ServerAskToReadyUp.");
         waitForPlayersToBeReady = true;
-        if (startLine == null) {
+        if (startLine == null)
+        {
             this.LogError("Cannot find start line");
-        } else {
+        }
+        else
+        {
             // HACK: remove and change for a real callable init function.
             startLine.gameObject.SetActive(true);
             startLine.OnStartClient();
@@ -507,14 +514,15 @@ public class OnlineGameManager : NetworkBehaviour
         Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams
         {
             useTransitionOut = true,
-            useTransitionIn  = true,
+            useTransitionIn = true,
         });
     }
 
     [ClientRpc]
     public void RpcLaunchOnlineStartLine()
     {
-        if (startLine == null) {
+        if (startLine == null)
+        {
             this.LogError("Starting OnlineStartLine but object is null.");
             return;
         }

@@ -338,120 +338,125 @@ public class OnlinePlayerController : NetworkBehaviour
             playerState = state;
         }
 
-        [Command]
-        public void CmdModifyReadyState(bool state)
+    [Server]
+    public void SetReadyState(bool state) {
+        isReady = state;
+    }
+
+    [Command]
+    public void CmdModifyReadyState(bool state)
+    {
+        isReady = state;
+    }
+
+    [Command]
+    public void CmdModifyLoadedState(bool state)
+    {
+        isLoaded = state;
+    }
+
+    [Command]
+    public void CmdModifySpawnedState(bool state)
+    {
+        if (state)
         {
-            isReady = state;
+            this.Log("Server received client spawned.");
+
+            OnlineGameManager.Get().AddPlayer(this);
+
+            self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
+
+            isSpawned = state;
+
+            // Ask this client to load.
+            RpcLoad();
+        }
+        else
+        {
+            isSpawned = state;
         }
 
-        [Command]
-        public void CmdModifyLoadedState(bool state)
+    }
+
+    [Server]
+    public void FreezePlayer(bool state)
+    {
+        if (self_PlayerController)
         {
-            isLoaded = state;
+            if (state) self_PlayerController.Freeze();
+            else self_PlayerController.UnFreeze();
         }
+    }
 
-        [Command]
-        public void CmdModifySpawnedState(bool state)
+    [Command]
+    public void CmdFreezePlayer(bool state)
+    {
+        FreezePlayer(state);
+    }
+
+    [Command]
+    public void CmdSendPlayerInputs(byte[] playerInputs)
+    {
+        // Deserialize inputs.
+        Schnibble.Managers.GameController gc = Schnibble.Managers.GameController.Deserialize((int)PlayerInputs.InputCode.Count, playerInputs);
+        // Execute inputs.
+        (self_PlayerController as Schnibble.Managers.IControllable).ProcessInputs(null, gc);
+        // Normally any results should be broadcasted back to clients.
+    }
+
+    [Command]
+    public void CmdNotifyPlayerFinishedTrial()
+    {
+        if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)
         {
-            if (state)
-            {
-                this.Log("Server received client spawned.");
-
-                OnlineGameManager.Get().AddPlayer(this);
-
-                self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
-
-                isSpawned = state;
-
-                // Ask this client to load.
-                RpcLoad();
-            }
-            else
-            {
-                isSpawned = state;
-            }
-
+            // that would be a very bad error
+            return;
         }
+        NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
 
-        [Server]
-        public void FreezePlayer(bool state)
-        {
-            if (self_PlayerController)
-            {
-                if (state) self_PlayerController.Freeze();
-                else self_PlayerController.UnFreeze();
-            }
-        }
+    }
 
-        [Command]
-        public void CmdFreezePlayer(bool state)
-        {
-            FreezePlayer(state);
-        }
+    // [Command]
+    // public void CmdBreakObject(OnlineBreakableObject iOBO)
+    // {
+    //     iOBO.BreakObject(this);
+    // }
 
-        [Command]
-        public void CmdSendPlayerInputs(byte[] playerInputs)
-        {
-            // Deserialize inputs.
-            Schnibble.Managers.GameController gc = Schnibble.Managers.GameController.Deserialize((int)PlayerInputs.InputCode.Count, playerInputs);
-            // Execute inputs.
-            (self_PlayerController as Schnibble.Managers.IControllable).ProcessInputs(null, gc);
-            // Normally any results should be broadcasted back to clients.
-        }
+    [Server]
+    public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
+    {
+        self_PlayerController.ForceTransform(iNewPos, iNewRot);
+        self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
 
-        [Command]
-        public void CmdNotifyPlayerFinishedTrial()
-        {
-            if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)
-            {
-                // that would be a very bad error
-                return;
-            }
-            NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerHasFinished(this);
+        // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
+        // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
 
-        }
+        // //// relocates player root and seems to work
+        // transform.position = iNewPos;
+        // transform.rotation = iNewRot;
+    }
 
-        // [Command]
-        // public void CmdBreakObject(OnlineBreakableObject iOBO)
-        // {
-        //     iOBO.BreakObject(this);
-        // }
+    /* ----------------------------------
+    Client 
+    ------------------------------------ */
 
-        [Server]
-        public void Relocate(Vector3 iNewPos, Quaternion iNewRot)
-        {
-            self_PlayerController.ForceTransform(iNewPos, iNewRot);
-            self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+    IEnumerator WaitForDependencies()
+    {
+        this.Log("Start OnlinePlayerController wait for dependencies.");
 
-            // self_PlayerController.ForceTransform(Vector3.zero, Quaternion.identity);
-            // self_PlayerController.ForceVelocity(Vector3.zero, Vector3.zero);
+        // Wait for OnlineGameManager to setup.
+        while (NetworkRoomManagerExt.singleton == null) { yield return null; }
+        while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
 
-            // //// relocates player root and seems to work
-            // transform.position = iNewPos;
-            // transform.rotation = iNewRot;
-        }
+        // Wait for any scene to load.
+        while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
 
-        /* ----------------------------------
-        Client 
-        ------------------------------------ */
+        // Wait for objcet that we need to access at init time.
+        //while (Access.UIPlayerOnline() == null) { yield return null; }
+        while (Access.CameraManager() == null) { yield return null; }
 
-        IEnumerator WaitForDependencies()
-        {
-            this.Log("Start OnlinePlayerController wait for dependencies.");
-
-            // Wait for OnlineGameManager to setup.
-            while (NetworkRoomManagerExt.singleton == null) { yield return null; }
-            while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
-
-            // Wait for any scene to load.
-            while (!NetworkRoomManagerExt.singleton.subsceneLoaded) { yield return null; }
-
-            // Wait for objcet that we need to access at init time.
-            //while (Access.UIPlayerOnline() == null) { yield return null; }
-            while (Access.CameraManager() == null) { yield return null; }
-
-            this.Log("End OnlinePlayerController wait for dependencies.");
-        }
+        this.Log("End OnlinePlayerController wait for dependencies.");
+    }
 
     public override void OnStartClient()
     {
@@ -518,6 +523,7 @@ public class OnlinePlayerController : NetworkBehaviour
         // Instead send inputs to the server and wait for server answer that will
         // update states.
         self_PlayerController.inputMode = PlayerController.InputMode.Online;
+        self_PlayerController.isServer  = isServer;
 
         OnlineGameManager.Get().localPlayer = this;
         gameObject.name = Constants.GO_PLAYER;
@@ -550,7 +556,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             yield return null;
         }
-        Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        //Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         CmdModifyLoadedState(true);
     }
 
