@@ -116,6 +116,9 @@ public class OnlineGameManager : NetworkBehaviour
         yield return StartCoroutine(StartGame());
         yield return StartCoroutine(GameLoop());
         yield return StartCoroutine(WaitTrialSessions());
+
+        RpcAllPlayersLockAndLoaded();
+
         yield return StartCoroutine(Countdown());
         yield return StartCoroutine(TrialLoop());
         yield return StartCoroutine(PostGame());
@@ -198,9 +201,9 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        //RpcNotifyOfflineMgrAllPlayersLoaded();
-
         AskPlayersToReadyUp();
+        WaitForOtherPlayersToBeReady();
+
         while (!AreAllPlayersReady())
         {
             yield return null;
@@ -211,7 +214,10 @@ public class OnlineGameManager : NetworkBehaviour
 
     IEnumerator TrialLoop()
     {
+        this.Log("Start trial loop.");
+
         trialManager.trialLaunched = true;
+        trialManager.trialIsOver   = false;
 
         while (!trialManager.trialIsOver)
         {
@@ -220,11 +226,12 @@ public class OnlineGameManager : NetworkBehaviour
 
         trialManager.trialLaunched = false;
         // player ranks availables
-
+        this.Log("End trial loop.");
     }
 
     IEnumerator PostGame()
     {
+        this.Log("Start post game.");
         gameLaunched = false;
 
         RpcPostGame();
@@ -243,6 +250,9 @@ public class OnlineGameManager : NetworkBehaviour
             if (opc != null && opc.connectionToClient != null) opc.connectionToClient.Disconnect();
             yield return null;
         }
+
+
+        this.Log("End post game.");
 
         //unload
         NetworkRoomManagerExt.singleton.unloadSelectedTrial();
@@ -402,7 +412,13 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     public void AskPlayersToReadyUp()
     {
-        foreach (var opc in uniquePlayers) opc.CmdModifyReadyState(false);
+        // modifying the ready state is not sufficient because it is client authored.
+        // we need to specifically ask players to ready up.
+        foreach (var opc in uniquePlayers)
+        {
+            opc.CmdModifyReadyState(false);
+            ServerAskToReadyUp();
+        }
     }
 
     [Server]
@@ -454,6 +470,7 @@ public class OnlineGameManager : NetworkBehaviour
 
     [ClientRpc]
     void RpcAllPlayersLockAndLoaded() {
+        this.Log("RpcAllPlayersLockAndLoaded.");
         UIWaitForPlayers.SetActive(false);
         UIPlayer.gameObject.SetActive(true);
     }
@@ -468,6 +485,19 @@ public class OnlineGameManager : NetworkBehaviour
     void WaitForOtherPlayersToBeReady() {
         UIWaitForPlayers.SetActive(true);
         UIPlayer.gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    void ServerAskToReadyUp() {
+        this.Log("ServerAskToReadyUp.");
+        waitForPlayersToBeReady = true;
+        if (startLine == null) {
+            this.LogError("Cannot find start line");
+        } else {
+            // HACK: remove and change for a real callable init function.
+            startLine.gameObject.SetActive(true);
+            startLine.OnStartClient();
+        }
     }
 
     [ClientRpc]

@@ -893,6 +893,8 @@ namespace Wonkerz
                 ForceTransform(lastrb.transform.position, lastrb.transform.rotation);
                 ForceVelocity(lastrb.velocity, lastrb.angularVelocity);
                 rb.isKinematic = lastrb.isKinematic;
+
+                Access.GetMgr<AudioListenerManager>().UnsetListener(lastrb.gameObject);
             }
 
             Access.CameraManager()?.OnTargetChange(GetTransform());

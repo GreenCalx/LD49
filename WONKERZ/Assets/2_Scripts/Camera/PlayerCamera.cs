@@ -49,6 +49,14 @@ namespace Wonkerz
         private Queue<CameraFocusable> alreadyFocusedQ;
         protected UISecondaryFocus uISecondaryFocus;
 
+        void OnEnable() {
+            Access.GetMgr<AudioListenerManager>().SetListener(this.gameObject);
+        }
+
+        void OnDisable() {
+            Access.GetMgr<AudioListenerManager>().UnsetListener(this.gameObject);
+        }
+
         // Update is called once per frame
         void Update()
         {
