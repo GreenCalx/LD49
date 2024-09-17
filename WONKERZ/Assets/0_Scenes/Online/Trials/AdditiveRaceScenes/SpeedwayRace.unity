@@ -7174,6 +7174,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2897524401153139805, guid: 25252622b043cf04c87b01a73908a610, type: 3}
   m_PrefabInstance: {fileID: 1472796106}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1472796108 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2897524401153139804, guid: 25252622b043cf04c87b01a73908a610, type: 3}
+  m_PrefabInstance: {fileID: 1472796106}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1472796109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472796108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11346b2e3c00a444abecd2fc150ab686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  finishDetector: {fileID: 1452528078}
+  halfWayDetector: {fileID: 1763648966}
+  hasPlayerBeenHalfTrack: 0
 --- !u!1001 &1484235161
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8433,6 +8453,92 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 100, z: 150}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1763648964
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1763648965}
+  - component: {fileID: 1763648967}
+  - component: {fileID: 1763648966}
+  m_Layer: 0
+  m_Name: HalfTrackTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1763648965
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763648964}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -4.396}
+  m_LocalScale: {x: 1, y: 5, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1472796107}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1763648966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763648964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1dda1437eb9914d8acb608135b131b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInRange: 0
+  player: {fileID: 0}
+  dummy: {fileID: 0}
+  dummyInRange: 0
+  callBackOnPlayerEnterRange:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1472796109}
+        m_TargetAssemblyTypeName: Online_SpeedWayFinishLine, WkzCore
+        m_MethodName: SetPlayerPassedHalfTrack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  callBackOnPlayerInRange:
+    m_PersistentCalls:
+      m_Calls: []
+  callbackOnPlayerExitRange:
+    m_PersistentCalls:
+      m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
+--- !u!65 &1763648967
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763648964}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1789741018
 PrefabInstance:
