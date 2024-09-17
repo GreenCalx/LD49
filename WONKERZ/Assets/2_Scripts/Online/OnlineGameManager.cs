@@ -99,12 +99,20 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     IEnumerator ServerRoutine()
     {
-        yield return StartCoroutine(WaitForAllClientToSpawn());
+        yield return StartCoroutine(WaitForAllClientToSpawn    ());
         yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
+        // All players have been loaded inside the OnlineGameRoom,
+        // now we load the track.
+        NetworkRoomManagerExt.singleton.loadOpenCourse();
+        // wait for the track to be loaded.
+        while(!NetworkRoomManagerExt.singleton.subsceneLoaded) yield return null;
+        // do stuff
+        Access.GameSettings().isOnline = true;
 
         RpcAllPlayersLoaded();
         FreezeAllPlayers(true);
 
+        // Show the scene.
         Access.SceneLoader().unloadLoadingScene();
 
         if (waitForPlayersToBeReady)
@@ -243,7 +251,7 @@ public class OnlineGameManager : NetworkBehaviour
         postGameTime = postGameDuration;
 
         // Wait until either postGameTime is elapsed, or all players want to quit.
-        while (!AreAllPlayersReady() && postGameTime > 0.0f)
+        while (!AreAllPlayersReady() || postGameTime > 0.0f)
         {
             postGameTime -= Time.deltaTime;
             yield return null;
@@ -253,7 +261,6 @@ public class OnlineGameManager : NetworkBehaviour
 
         //unload
         NetworkRoomManagerExt.singleton.unloadSelectedTrial();
-
         // shutdown server
         RpcDisconnectPlayers();
         NetworkServer.Shutdown();
@@ -511,7 +518,7 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcDisconnectPlayers()
     {
         NetworkClient.Disconnect();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams
+        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
         {
             useTransitionOut = true,
             useTransitionIn = true,

@@ -80,7 +80,7 @@ public class UILobbyServerTab : UITextTab
 
         lobbyName.text.text        = lobby.name;
         lobbyHostName.text.text    = lobby.hostName;
-        lobbyPlayerCount.text.text = lobby.roomPlayers.Count + " / " + lobby.maxPlayerCount;
+        lobbyPlayerCount.text.text = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 1) + " / " + lobby.maxPlayerCount;
     }
 
     // Force connection to be one second to avoid very fast message blinking.

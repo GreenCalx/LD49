@@ -102,7 +102,7 @@ namespace Wonkerz {
             Access.CollectiblesManager().loadJars();
 
             if (GPSM.IsUniqueEventDone(UniqueEvents.UEVENTS.GP_IntroComplete))
-            Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.SceneLoaderParams
+            Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,
@@ -110,7 +110,7 @@ namespace Wonkerz {
                 sceneLoadingMode = LoadSceneMode.Single,
             });
             else
-            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.SceneLoaderParams
+            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,
@@ -138,7 +138,7 @@ namespace Wonkerz {
             #if false
             DialogBank.playerName = iNewProfileName;
 
-            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.SceneLoaderParams
+            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,

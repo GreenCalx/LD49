@@ -20,7 +20,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public static new NetworkRoomManagerExt singleton => NetworkManager.singleton as NetworkRoomManagerExt;
     public static Action OnNetworkManagerChange;
 
-    public Dictionary<NetworkRoomPlayerExt, OnlinePlayerController> roomplayersToGameplayersDict;
+    public Dictionary<NetworkRoomPlayerExt, OnlinePlayerController> roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
 
     // data for syncvars
     public OnlineRoomData    onlineRoomData;
@@ -28,9 +28,9 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public ONLINE_GAME_STATE gameState = ONLINE_GAME_STATE.NONE;
 
-    // Must be inited to true for correct AnySceneOperationOngoing()
-    public bool subsceneLoaded = true;
-    public bool subsceneUnloaded = true;
+    // TODO: more that one subscene.
+    public bool subsceneLoaded   = false;
+    public bool subsceneUnloaded = false;
 
     public string selectedTrial = "";
 
@@ -149,7 +149,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
         if (mode == NetworkManagerMode.Host) {
             // change scene.
-            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.SceneLoaderParams
+            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.LoadParams
             {
                 useTransitionOut              = true,
                 useLoadingScene               = true,
@@ -159,7 +159,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             });
         } else
         {
-            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.SceneLoaderParams {
+            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.LoadParams {
                 onSceneLoadStart = OnSceneLoadingStart,
                 onSceneLoaded = OnSceneLoadingStop
             });
@@ -189,10 +189,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     }
 
     void OnSceneLoadingStop(AsyncOperation operation) {
-        if (operation == loadingSceneAsync) {
-            this.Log("Finish loading : allowActivation = " + operation.allowSceneActivation + " isValid=" + SceneManager.GetSceneByName(networkSceneName));
-            //SceneManager.SetActiveScene(SceneManager.GetSceneByName(networkSceneName));
-        }
+        this.Log("Finish loading : allowActivation = " + operation.allowSceneActivation + " isValid=" + SceneManager.GetSceneByName(networkSceneName));
     }
 
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnectionToClient conn, GameObject roomPlayer, GameObject gamePlayer)
@@ -215,15 +212,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     {
         this.Log("OnRoomServerSceneChanged");
 
-        // spawn the initial batch of Rewards
-        if (sceneName == GameplayScene)
-        {
-            StartCoroutine(ServerLoadOpenCourse());
-            // do stuff
-            Access.GameSettings().isOnline = true;
-            roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
-            StartCoroutine(SeekOnlineGameManager());
-        }
 
         var scene = SceneManager.GetSceneByName(sceneName);
         if (!scene.IsValid())
@@ -234,7 +222,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 this.LogError("OnRoomServerSceneChanged : cannot find scene " + sceneName);
             }
         }
-        Access.GetMgr<CameraManager>().OnActiveSceneChanged(scene, scene);
     }
 
     public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
@@ -250,7 +237,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 if (NetworkServer.active) {
                     //host mode
                     // change scene.
-                    Access.SceneLoader().loadScene(sceneName, new SceneLoader.SceneLoaderParams
+                    Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams
                     {
                         useTransitionOut = true,
                         onSceneLoadStart = OnSceneLoadingStart,
@@ -264,24 +251,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnRoomClientSceneChanged()
     {
         this.Log("OnRoomClientSceneChanged.");
-        // // HACK:Check if we loaded the open course.
-        // // TODO: this is very bad please fix asap!
-        var openCourseScene = SceneManager.GetSceneByName(Constants.SN_OPENCOURSE);
-        if (openCourseScene.IsValid())
-        {
-            this.Log("OnRoomClientSceneChanged : open course.");
-            Access.GetMgr<CameraManager>().OnActiveSceneChanged(openCourseScene, openCourseScene);
-            //     //SceneManager.SetActiveScene(openCourseScene);
-        }
         OnRoomClientSceneChangedCB?.Invoke();
-    }
-
-    IEnumerator SeekOnlineGameManager()
-    {
-        while (onlineGameManager == null)
-        {
-            yield return null;
-        }
     }
 
     public void StartGameScene()
@@ -291,63 +261,89 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         ServerChangeScene(GameplayScene);
     }
 
-    public IEnumerator ServerLoadOpenCourse()
-    {
-        subsceneLoaded = false;
-
-        yield return Access.SceneLoader().loadScene(Constants.SN_OPENCOURSE, new SceneLoader.SceneLoaderParams
-        {
-            sceneLoadingMode = LoadSceneMode.Additive,
-        });
-
-        subsceneLoaded = true;
-    }
-
     public bool AnySceneOperationOngoing()
     {
         return !NetworkRoomManagerExt.singleton.subsceneLoaded ||
                 !NetworkRoomManagerExt.singleton.subsceneUnloaded;
     }
 
+    // Additive scene loading/unloading
+    [Server]
+    public void ServerSceneOperation(string sceneName, SceneOperation operation, bool sendSceneMessageToClient = true) {
+
+        switch (operation) {
+            case SceneOperation.LoadAdditive:{
+                Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams{
+                    useTransitionOut = true,
+                    useTransitionIn  = true,
+                    sceneLoadingMode = LoadSceneMode.Additive,
+                    onSceneLoadStart = delegate (AsyncOperation op) { subsceneLoaded = false; },
+                    onSceneLoaded    = delegate (AsyncOperation op) { subsceneLoaded = true ; },
+                });
+
+                if (NetworkServer.active && sendSceneMessageToClient)
+                {
+                    // notify all clients about the new scene
+                    NetworkServer.SendToAll(new SceneMessage
+                    {
+                        sceneName      = sceneName,
+                        sceneOperation = operation,
+                        customHandling = true,
+                    });
+                }
+
+            } break;
+            case SceneOperation.UnloadAdditive:{
+                Access.SceneLoader().unloadScene(sceneName, new SceneLoader.UnloadParams{
+                    onSceneUnloadStart = delegate (AsyncOperation op) { subsceneUnloaded = false; },
+                    onSceneUnloaded    = delegate (AsyncOperation op) { subsceneUnloaded = true ; },
+                });
+
+                if (NetworkServer.active && sendSceneMessageToClient)
+                {
+                    // notify all clients about the new scene
+                    NetworkServer.SendToAll(new SceneMessage
+                    {
+                        sceneName      = sceneName,
+                        sceneOperation = operation,
+                        customHandling = true,
+                    });
+                }
+            } break;
+            case SceneOperation.Normal: {
+                this.LogError("Should be handled by server directly with ServerSceneChange.");
+            } break;
+        }
+    }
+
+    // Additive scene loading on client :
+    // can it happens that a client load a scene only for itself? like instances or some shit?
+    public void ClientLoadScene(string sceneName) {
+        // for now do nothing...
+    }
+
+    [Server]
+    public void loadOpenCourse() {
+        ServerSceneOperation(Constants.SN_OPENCOURSE, SceneOperation.LoadAdditive);
+    }
+
+    [Server]
     public void unloadOpenCourse()
     {
-        StartCoroutine(ServerUnloadOpenCourse());
+        ServerSceneOperation(Constants.SN_OPENCOURSE, SceneOperation.UnloadAdditive);
     }
 
-    IEnumerator ServerUnloadOpenCourse()
-    {
-        subsceneUnloaded = false;
-        yield return Access.SceneLoader().unloadScene(Constants.SN_OPENCOURSE);
-        subsceneUnloaded = true;
-    }
-
+    [Server]
     public void loadSelectedTrial()
     {
-        StartCoroutine(ServerLoadTrial());
+        ServerSceneOperation(selectedTrial, SceneOperation.LoadAdditive);
     }
 
-    IEnumerator ServerLoadTrial()
-    {
-        subsceneLoaded = false;
-        yield return Access.SceneLoader().loadScene(selectedTrial, new  SceneLoader.SceneLoaderParams
-        {
-            sceneLoadingMode = LoadSceneMode.Additive
-        });
-        subsceneLoaded = true;
-    }
-
+    [Server]
     public void unloadSelectedTrial()
     {
-        StartCoroutine(ServerUnloadSelectedTrial());
+        ServerSceneOperation(selectedTrial, SceneOperation.UnloadAdditive);
     }
-
-    IEnumerator ServerUnloadSelectedTrial()
-    {
-        subsceneUnloaded = false;
-        yield return Access.SceneLoader().unloadScene(selectedTrial);
-        subsceneUnloaded = true;
-    }
-
 
     IEnumerator LoadAdditive(string sceneName)
     {
@@ -356,7 +352,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             subsceneLoaded = false;
             // Start loading the additive subscene
-            yield return Access.SceneLoader().loadScene(sceneName, new SceneLoader.SceneLoaderParams {
+            yield return Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams {
                 sceneLoadingMode = LoadSceneMode.Additive
             });
 
@@ -374,7 +370,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             subsceneLoaded = false;
 
-            yield return Access.SceneLoader().unloadScene(sceneName);
+            yield return Access.SceneLoader().unloadScene(sceneName, new SceneLoader.UnloadParams { });
             yield return Resources.UnloadUnusedAssets();
 
             subsceneLoaded = true;
@@ -389,10 +385,11 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         this.Log("OnRoomClientStop");
 
         // TODO: make this more robust... list of current active scenes of some sort?
+        // => simply do a Single load of loading scene?
         if (Mirror.Utils.IsSceneActive(GameplayScene))
         {
-            Access.SceneLoader().unloadScene(Constants.SN_OPENCOURSE);
-            if (selectedTrial != "") Access.SceneLoader().unloadScene(selectedTrial);
+            Access.SceneLoader().unloadScene(Constants.SN_OPENCOURSE, new SceneLoader.UnloadParams { });
+            if (selectedTrial != "") Access.SceneLoader().unloadScene(selectedTrial, new SceneLoader.UnloadParams { });
         }
 
         Access.GameSettings().isOnline = false;
@@ -404,8 +401,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
         if (Mirror.Utils.IsSceneActive(GameplayScene))
         {
-            Access.SceneLoader().unloadScene(Constants.SN_OPENCOURSE);
-            if (selectedTrial != "") Access.SceneLoader().unloadScene(selectedTrial);
+            Access.SceneLoader().unloadScene(Constants.SN_OPENCOURSE, new SceneLoader.UnloadParams { });
+            if (selectedTrial != "") Access.SceneLoader().unloadScene(selectedTrial, new SceneLoader.UnloadParams { });
         }
 
         Access.GameSettings().isOnline = false;
@@ -444,6 +441,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnDestroy()
     {
         base.OnDestroy();
+
+        // HACK: should be able to cleanup the online mess easily when qutting the game.
         for (int i = 0; i < SceneManager.sceneCount; ++i)
         {
             var scene = SceneManager.GetSceneAt(i);
@@ -452,7 +451,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 scene.name == offlineScene || scene.path == offlineScene ||
                 scene.name == onlineScene || scene.path == onlineScene)
             {
-                Access.SceneLoader().unloadScene(scene.name);
+                Access.SceneLoader().unloadScene(scene.name, new SceneLoader.UnloadParams { });
             }
         }
     }

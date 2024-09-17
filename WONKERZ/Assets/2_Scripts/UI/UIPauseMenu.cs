@@ -87,7 +87,7 @@ namespace Wonkerz {
                     sceneToLoad = Constants.SN_TITLE;
                     break;
             }
-            Access.SceneLoader().loadScene(sceneToLoad, new SceneLoader.SceneLoaderParams
+            Access.SceneLoader().loadScene(sceneToLoad, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,

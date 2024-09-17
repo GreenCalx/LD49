@@ -53,7 +53,7 @@ namespace Wonkerz {
             if (loadDebugGameProgress)
             loadGameProgress();
 
-            Access.SceneLoader().loadScene(hookedScene, new SceneLoader.SceneLoaderParams{});
+            Access.SceneLoader().loadScene(hookedScene, new SceneLoader.LoadParams{});
 
             killMe = true;
         }

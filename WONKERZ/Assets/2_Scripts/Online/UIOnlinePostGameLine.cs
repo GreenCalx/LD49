@@ -10,19 +10,6 @@ public class UIOnlinePostGameLine : MonoBehaviour
     public TextMeshProUGUI playerRank;
     public TextMeshProUGUI playerRaceTime;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void Refresh(OnlinePlayerController iPlayer)
     {
         playerName.text = iPlayer.onlinePlayerName;

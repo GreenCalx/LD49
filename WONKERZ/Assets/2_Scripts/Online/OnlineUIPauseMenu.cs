@@ -127,7 +127,7 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         }
 
         Access.SceneLoader().ResetDontDestroyOnLoad();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams{
+        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
             useTransitionOut = true,
             useTransitionIn  = true,
             sceneLoadingMode = LoadSceneMode.Single,

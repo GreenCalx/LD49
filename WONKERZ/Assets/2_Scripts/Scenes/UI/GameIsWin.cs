@@ -60,7 +60,7 @@ namespace Wonkerz {
             double time_offset = Time.time - start_time;
             if (key_pressed && (time_offset >= CLICK_TIME))
             {
-                Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.SceneLoaderParams
+                Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
                 {
                     useTransitionIn = true,
                     useTransitionOut = true,

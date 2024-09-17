@@ -126,6 +126,7 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
             if (start.GetState().down)
             {
                 OPC.CmdModifyReadyState(true);
+                NetworkClient.Disconnect();
             }
         }
     }

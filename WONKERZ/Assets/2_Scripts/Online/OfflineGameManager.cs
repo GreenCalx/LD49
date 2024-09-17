@@ -38,11 +38,6 @@ public class OfflineGameManager : MonoBehaviour
         {
             yield return null;
         }
-
-        while (NetworkRoomManagerExt.singleton.AnySceneOperationOngoing())
-        {
-            yield return null;
-        }
     }
 
     IEnumerator WaitForOtherPlayers()

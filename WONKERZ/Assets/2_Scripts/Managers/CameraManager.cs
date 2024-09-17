@@ -83,7 +83,9 @@ namespace Wonkerz
         public void init() {
             this.Log("init.");
             inTransition = false;
+
             SceneManager.sceneLoaded += OnSceneLoaded;
+
             Access.PlayerInputsManager().player1.Attach(this as IControllable);
 
             //changeCamera(GameCamera.CAM_TYPE.INIT, false);
@@ -160,10 +162,6 @@ namespace Wonkerz
                     }
                 }
             }
-        }
-
-        public void OnActiveSceneChanged(Scene oldScene, Scene newScene) {
-            OnSceneLoaded(newScene, LoadSceneMode.Single);
         }
 
         public void OnTargetChange(Transform t)

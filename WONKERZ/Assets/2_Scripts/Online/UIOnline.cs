@@ -200,7 +200,7 @@ public class UIOnline : UIPanel
                 {
                     // Carefull we need to move back the network manager to the active scene so that it is deleted when
                     var sceneLoader = Access.SceneLoader();
-                    sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.SceneLoaderParams{
+                    sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
                         useTransitionIn = true,
                         useTransitionOut = true,
                         onEndTransition = delegate
