@@ -130,4 +130,31 @@ public class OnlineTrialManager : NetworkBehaviour
     {
         return (dicPlayerTrialFinishPositions.Count == NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers.Count);
     }
+
+    public string GetTrialTime()
+    {
+        int trackTime_val_min = (int)(trialTime / 60);
+        if (trackTime_val_min<0)
+        {
+            trackTime_val_min = 0;
+        }
+        string trackTime_str_min = trackTime_val_min.ToString();
+        if (trackTime_str_min.Length<=1)
+        {
+            trackTime_str_min = "0"+trackTime_str_min;
+        }
+
+        int trackTime_val_sec = (int)(trialTime % 60);
+        if (trackTime_val_sec<0)
+        {
+            trackTime_val_min = 0;
+        }
+        string trackTime_str_sec = trackTime_val_sec.ToString();
+        if (trackTime_str_sec.Length<=1)
+        {
+            trackTime_str_sec = "0"+trackTime_str_sec;
+        }
+
+        return trackTime_str_min + ":" + trackTime_str_sec;
+    }
 }

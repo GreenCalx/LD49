@@ -40,30 +40,6 @@ public class UIOnlinePostGameLine : MonoBehaviour
         rank = OTM.dicPlayerTrialFinishPositions[iPlayer];
         playerRank.text = OTM.dicPlayerTrialFinishPositions[iPlayer].ToString();
         
-
-        float trackTime = OTM.trialTime;
-        int trackTime_val_min = (int)(trackTime / 60);
-        if (trackTime_val_min<0)
-        {
-            trackTime_val_min = 0;
-        }
-        string trackTime_str_min = trackTime_val_min.ToString();
-        if (trackTime_str_min.Length<=1)
-        {
-            trackTime_str_min = "0"+trackTime_str_min;
-        }
-
-        int trackTime_val_sec = (int)(trackTime % 60);
-        if (trackTime_val_sec<0)
-        {
-            trackTime_val_min = 0;
-        }
-        string trackTime_str_sec = trackTime_val_sec.ToString();
-        if (trackTime_str_sec.Length<=1)
-        {
-            trackTime_str_sec = "0"+trackTime_str_sec;
-        }
-
-        playerRaceTime.text = trackTime_str_min +":"+ trackTime_str_sec;
+        playerRaceTime.text = OTM.GetTrialTime();
     }
 }

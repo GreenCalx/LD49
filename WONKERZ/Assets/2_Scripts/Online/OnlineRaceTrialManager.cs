@@ -6,6 +6,9 @@ using Mirror;
 
 public class OnlineRaceTrialManager : OnlineTrialManager
 {
+    [Header("ORTM Manual Refs")]
+    public UIOnlineRaceTrial uiORT;
+
     [Header("Race Trial Specs")]
     public int n_laps = 3;
     public Transform CheckpointsHandle;
@@ -19,6 +22,15 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     void Start()
     {
         StartCoroutine(Init());
+    }
+
+    void Update()
+    {
+        if (!trialIsOver && trialLaunched)
+        {
+            trialTime += Time.deltaTime;
+            uiORT.RpcUpdateRaceTime(GetTrialTime());
+        }
     }
 
     IEnumerator Init()
@@ -43,10 +55,17 @@ public class OnlineRaceTrialManager : OnlineTrialManager
         dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
         foreach (OnlinePlayerController opc in OnlineGameManager.singleton.uniquePlayers)
         {
-            dicPlayersToLaps.Add(opc, 0);
+            dicPlayersToLaps.Add(opc, 1);
             dicPlayersToCP.Add(opc, RootCP);
+
+            if (opc.isClientOnly)
+                uiORT.RpcUpdateLap(1);
+            else
+                uiORT.updateLap(1);
         }
-        
+    
+        uiORT.RpcUpdateNLapsValue(n_laps);
+        uiORT.RpcUpdateRaceTime(GetTrialTime());
     }
 
     [Server]
@@ -63,9 +82,16 @@ public class OnlineRaceTrialManager : OnlineTrialManager
             {
                 // lap over !
                 dicPlayersToLaps[iOPC]++;
-                if (dicPlayersToLaps[iOPC] >= n_laps)
+            
+                if (dicPlayersToLaps[iOPC] > n_laps)
                 {
                     NotifyPlayerHasFinished(iOPC);
+                } else {
+
+                    if (iOPC.isClientOnly)
+                    { uiORT.RpcUpdateLap(dicPlayersToLaps[iOPC]); }
+                    else
+                    { uiORT.updateLap(dicPlayersToLaps[iOPC]); }
                 }
             }
             return;
@@ -84,5 +110,6 @@ public class OnlineRaceTrialManager : OnlineTrialManager
             return;
         }
     }
+
 
 }
