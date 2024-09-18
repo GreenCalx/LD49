@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
-using Schnibble;
+
 using TMPro;
+
+using Schnibble;
+using Schnibble.UI;
+
 using Wonkerz;
 
-public class UIPlayerOnline : MonoBehaviour
+public class UIPlayerOnline : UIElement 
 {
     public float nutTurnAnimDuration = 0.25f;
     public float nutAnimAngle = 90;
@@ -37,7 +42,8 @@ public class UIPlayerOnline : MonoBehaviour
     private int currNutsInBank = 0;
     private Coroutine rotateNutCo;
     private bool nutAnimMutex;
-    void Start()
+
+    protected override void Start()
     {
         updateLastCPTriggered("x");
         cpImageFilled.fillAmount = 0f;
@@ -57,19 +63,19 @@ public class UIPlayerOnline : MonoBehaviour
     }
 
     IEnumerator WaitForGameManager() {
-        while (OnlineGameManager.Get() == null) {
+        while (OnlineGameManager.singleton == null) {
             yield return null;
         }
-        OnlineGameManager.Get().onShowUITrackTime += ShowUITrackTime;
+        OnlineGameManager.singleton.onShowUITrackTime += ShowUITrackTime;
     }
 
     IEnumerator WaitForLocalPlayer() {
 
-        while (OnlineGameManager.Get().localPlayer == null) {
+        while (OnlineGameManager.singleton.localPlayer == null) {
             yield return null;
         }
 
-        LinkToPlayer(OnlineGameManager.Get().localPlayer);
+        LinkToPlayer(OnlineGameManager.singleton.localPlayer);
     }
 
     public void LinkToPlayer(OnlinePlayerController iOPC)
@@ -81,7 +87,7 @@ public class UIPlayerOnline : MonoBehaviour
         updateLifePool();
     }
 
-    void Update()
+    protected override void Update()
     {
         if (player==null)
         { return;}

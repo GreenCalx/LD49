@@ -34,13 +34,13 @@ public class OnlineTrialManager : NetworkBehaviour
 
     IEnumerator WaitForDependencies() 
     {
-        while (OnlineGameManager.Get()             == null) {yield return null;}
+        while (OnlineGameManager.singleton             == null) {yield return null;}
     }
 
     protected IEnumerator GenericTrialInit()
     {
         yield return StartCoroutine(WaitForDependencies());
-        OnlineGameManager.Get().trialManager = this;
+        OnlineGameManager.singleton.trialManager = this;
         trialLaunched = false;
         // UpdateRenderSettings();
     }
@@ -83,7 +83,7 @@ public class OnlineTrialManager : NetworkBehaviour
 
     public void NotifyLocalPlayerFinished()
     {
-        var localPC = OnlineGameManager.Get().localPlayer;
+        var localPC = OnlineGameManager.singleton.localPlayer;
         //OnlinePlayerController localPC = Access.OfflineGameManager().localPlayer;
         if (localPC.isClientOnly)
         {

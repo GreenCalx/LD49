@@ -22,14 +22,14 @@ namespace Wonkerz {
         public TextMeshProUGUI panelHintTxt;
         public TextMeshProUGUI cpHintTxt;
 
-        void Awake()
+        override protected void Awake()
         {
             base.Awake();
             inputMgr = Access.PlayerInputsManager().player1;
         }
 
         // Start is called before the first frame update
-        void Start()
+        override protected void Start()
         {
             string target_scene = Access.SceneLoader().targetScene;
             if (Array.Exists(Constants.SN_TRACKS, e => e == target_scene))
@@ -47,7 +47,7 @@ namespace Wonkerz {
         }
 
         // Update is called once per frame
-        void Update()
+        override protected void Update()
         {
             if (choice_made)
             {

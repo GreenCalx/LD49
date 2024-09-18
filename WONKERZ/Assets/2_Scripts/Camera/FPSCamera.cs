@@ -5,7 +5,7 @@ namespace Wonkerz
 
     public class FPSCamera : PlayerCamera
     {
-        void Awake()
+        protected override void Awake()
         {
             init();
         }

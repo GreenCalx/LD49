@@ -25,7 +25,7 @@ namespace Wonkerz {
         private Transform prevPathPoint;
         private Transform nextPathPoint;
         private int pathIterator;
-        void Awake()
+        override protected void Awake()
         {
             camType = CAM_TYPE.CINEMATIC;
         }
@@ -63,18 +63,10 @@ namespace Wonkerz {
             move();
         }
 
-        public override void launch()
-        {
-            CameraManager.Instance.changeCamera(this, transitionIn);
-            launched = true;
-        }
-
         public override void end()
         {
-            if (exitToCamTypeOnFinish)
-            CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
-            if (callbackOnTravellingDone!=null)
-            callbackOnTravellingDone.Invoke();
+            if (exitToCamTypeOnFinish)          CameraManager.Instance.changeCamera(camTypeOnFinish, transitionOut);
+            if (callbackOnTravellingDone!=null) callbackOnTravellingDone.Invoke();
         
             launched = false;
         }

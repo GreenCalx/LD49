@@ -19,8 +19,6 @@ public class UIConnectionStateText
         Connected,
     };
 
-    float messageDisplayTime = 1.0f;
-    float messageDisplayTimeCurrent = 0.0f;
 
     [SerializeField]
     TextMeshProUGUI text;
@@ -83,8 +81,6 @@ public class UILobbyServerTab : UITextTab
         lobbyPlayerCount.text.text = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 1) + " / " + lobby.maxPlayerCount;
     }
 
-    // Force connection to be one second to avoid very fast message blinking.
-    float connectionTimerLatency = 1.0f;
     float connectionTimer        = 0.0f;
     public IEnumerator TryConnectToServer() {
         for (int i = 0; i < 10; ++i) {

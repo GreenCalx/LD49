@@ -8,13 +8,15 @@ using Schnibble;
 
 public class SchnibbleFBXImporter : AssetPostprocessor
 {
-    readonly static string kCollider = "_collider";
-    readonly static string kColliderMesh = "_collider_mesh";
-    readonly static string kColliderBox = "_collider_box";
-    readonly static string kColliderSphere = "_collider_sphere";
-    readonly static string kColliderCapsule = "_collider_capsule";
+    #pragma warning disable CS0414
+    readonly static string kCollider           = "_collider";
+    readonly static string kColliderMesh       = "_collider_mesh";
+    readonly static string kColliderBox        = "_collider_box";
+    readonly static string kColliderSphere     = "_collider_sphere";
+    readonly static string kColliderCapsule    = "_collider_capsule";
     readonly static string kColliderMeshConvex = "_convex";
-    readonly static string kNoMesh = "_nomesh";
+    readonly static string kNoMesh             = "_nomesh";
+    #pragma warning restore CS0414
 
     readonly static string defaultSchnibbleErrorMaterial = "Materials/Sch-ErrorShader";
 

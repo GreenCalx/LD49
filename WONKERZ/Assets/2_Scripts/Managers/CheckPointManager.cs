@@ -119,9 +119,11 @@ namespace Wonkerz {
         {
             try{
                 Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                #pragma warning disable CS0168
             } catch (NullReferenceException e) {
                 this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
             }
+            #pragma warning restore CS0168
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)

@@ -11,25 +11,9 @@ namespace Wonkerz {
         public bool transitionOut = true;
         public bool exitToCamTypeOnFinish = true;
         protected bool launched = false;
-        void Awake()
+        protected override void Awake()
         {
             camType = CAM_TYPE.CINEMATIC;
-        }
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-        public override void init()
-        {
-
         }
 
         public virtual void launch()

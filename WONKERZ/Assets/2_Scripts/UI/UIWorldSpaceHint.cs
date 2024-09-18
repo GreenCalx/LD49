@@ -42,7 +42,7 @@ namespace Wonkerz {
                 StartCoroutine(WaitForPlayer());
                 return;
             }
-            playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
+            playerTransform = OnlineGameManager.singleton.localPlayer.self_PlayerController.GetTransform();
 
             CM = Access.CameraManager();
             initScale = transform.localScale;
@@ -52,13 +52,13 @@ namespace Wonkerz {
         }
 
         IEnumerator WaitForPlayer() {
-            while (OnlineGameManager.Get()             == null) {yield return null;}
-            while (OnlineGameManager.Get().localPlayer == null) {yield return null;}
-            var player = OnlineGameManager.Get().localPlayer;
+            while (OnlineGameManager.singleton             == null) {yield return null;}
+            while (OnlineGameManager.singleton.localPlayer == null) {yield return null;}
+            var player = OnlineGameManager.singleton.localPlayer;
             while (player.self_PlayerController        == null) {yield return null; }
             while (player.self_PlayerController.GetTransform() == null) {yield return null; }
 
-            playerTransform = OnlineGameManager.Get().localPlayer.self_PlayerController.GetTransform();
+            playerTransform = OnlineGameManager.singleton.localPlayer.self_PlayerController.GetTransform();
 
             CM = Access.CameraManager();
             initScale = transform.localScale;

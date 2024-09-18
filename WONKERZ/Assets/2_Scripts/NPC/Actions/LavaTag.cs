@@ -8,7 +8,7 @@ namespace Wonkerz {
     {
         private Material[] m_prevMaterials;
         MeshRenderer MR;
-        private bool enabled = false;
+        private bool isEnabled = false;
         private bool inited = false;
         // Start is called before the first frame update
         void Start()
@@ -45,7 +45,7 @@ namespace Wonkerz {
 
         private void killIfPlayer(Collision iCol)
         {
-            if (!enabled)
+            if (!isEnabled)
             return;
 
             if (Utils.collisionIsPlayer(iCol))
@@ -72,12 +72,12 @@ namespace Wonkerz {
                 MR.sharedMaterials = lavaMaterials.ToArray();
             }
 
-            enabled = true;
+            isEnabled = true;
         }
 
         public void disable()
         {
-            enabled = false;
+            isEnabled = false;
             if (!!MR)
             {
                 MR.sharedMaterials = m_prevMaterials;

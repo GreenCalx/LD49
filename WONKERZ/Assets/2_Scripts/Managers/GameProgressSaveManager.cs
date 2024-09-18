@@ -78,7 +78,8 @@ public class GameProgressSaveManager : MonoBehaviour
             // no file found, try to create a new one then call again the Load(). If it fails twice we give up.
             if (errorAtLoad)
             {
-                this.LogError("GameProgressSaveManager::Failed to locate/load fail for profile "+ activeProfile);
+                this.LogError(e.ToString());
+                this.LogError("Failed to locate/load fail for profile "+ activeProfile);
                 return;
             }
             

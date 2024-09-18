@@ -23,7 +23,6 @@ namespace Wonkerz {
         private Vector3 minPos;
         private Vector3 maxPos;
         private Vector3 initRot;
-        private float elapsedTime;
         private bool isGoingUp;
         private float travelTime;
         private float startTime;
@@ -59,7 +58,6 @@ namespace Wonkerz {
                 initRot = transform.eulerAngles;
                 minPos = transform.position - new Vector3(0f, yOscillation, 0f);
                 maxPos = transform.position + new Vector3(0f, yOscillation, 0f);
-                elapsedTime = 0f;
                 isGoingUp = !startUp;
                 travelTime = Vector3.Distance(minPos, maxPos);
                 startTime = Time.time;
@@ -123,7 +121,6 @@ namespace Wonkerz {
             { isGoingUp = !isGoingUp; startTime = Time.time; }
 
             transform.position = nextPos;
-            elapsedTime = 0f;
         }
 
         void fromDamageAnimate()

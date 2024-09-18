@@ -1,12 +1,18 @@
-using Mirror;
-using Schnibble.Managers;
+
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
+
 using UnityEngine;
+
+using Mirror;
+using TMPro;
+
+using Schnibble.UI;
+using Schnibble.Managers;
+
 using Wonkerz;
 
-public class OnlineUIPostGame : MonoBehaviour, IControllable
+public class OnlineUIPostGame : UIControllableElement
 {
     [Header("Prefabs Refs")]
     public GameObject prefab_UIPostGameLine;
@@ -18,12 +24,14 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
     public OnlinePlayerController OPC;
     private List<UIOnlinePostGameLine> lines = new List<UIOnlinePostGameLine>();
 
-    public void OnEnable()
+    int startInputIdx = (int)PlayerInputs.InputCode.UIStart;
+
+    protected override void OnEnable()
     {
         StartCoroutine(InitCo());
     }
 
-    public void OnDisable() {
+    protected override void OnDisable() {
         if (OPC) {
             if (OPC.self_PlayerController) {
                 OPC.self_PlayerController.inputMgr.Detach(this as IControllable);
@@ -31,7 +39,7 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
         }
     }
 
-    void Update()
+    protected override void Update()
     {
         updatePostGameTimeLbl();
     }
@@ -118,16 +126,12 @@ public class OnlineUIPostGame : MonoBehaviour, IControllable
         OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+    protected override void ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        var start = Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton;
-        if (start != null)
+        if (Entry.GetButtonState(startInputIdx).down)
         {
-            if (start.GetState().down)
-            {
-                OPC.CmdModifyReadyState(true);
-                NetworkClient.Disconnect();
-            }
+            OPC.CmdModifyReadyState(true);
+            NetworkClient.Disconnect();
         }
     }
 }

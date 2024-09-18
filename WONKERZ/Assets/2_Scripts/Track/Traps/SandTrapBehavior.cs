@@ -14,7 +14,7 @@ namespace Wonkerz {
         public Transform fourmillionRoot;
         public Material mat;
         public Material matIdle;
-        public MeshRenderer renderer;
+        public new MeshRenderer renderer;
         public MeshFilter meshFilter;
         [HideInInspector]
         public Mesh mesh;

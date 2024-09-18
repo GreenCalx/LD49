@@ -9,11 +9,6 @@ namespace Wonkerz {
         public List<COLORIZABLE_CAR_PARTS> parts_to_colorize;
         public Material material;
 
-        void Start()
-        {
-
-        }
-
         override public void activate()
         {
             base.activate();

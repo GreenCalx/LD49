@@ -12,7 +12,7 @@ namespace Wonkerz
 
         // Start is called before the first frame update
 
-        void Awake()
+        protected override void Awake()
         {
             camType = CAM_TYPE.OLD_TRACK;
             cam = GetComponent<Camera>();

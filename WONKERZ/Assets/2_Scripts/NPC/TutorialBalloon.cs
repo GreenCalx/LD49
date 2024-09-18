@@ -76,11 +76,13 @@ namespace Wonkerz
             {
                 pc = (PlayerCamera)curr_cam;
             }
+                #pragma warning disable CS0168
             catch (InvalidCastException e)
             {
                 LogWarning("Failed to cast active_camera to a PlayerCamera. Try again.");
                 yield break;
             }
+            #pragma warning restore CS0168
             if (null == pc)
             {
                 LogError("Wrong type of camera to launch tutorial balloon. Need a player camera.");

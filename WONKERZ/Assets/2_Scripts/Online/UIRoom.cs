@@ -37,11 +37,11 @@ public class UIRoom : UIPanelTabbed
     //public GameObject readyUpButtonPrefab;
     //GameObject readyUpButton = null;
 
+    #pragma warning disable CS0414
     public bool showGameStartButton = false;
     public GameObject startGameButtonPrefab;
     GameObject startGameButton = null;
-
-    bool isGameLoading = false;
+    #pragma warning restore CS0414
 
     // string based for now.
     static readonly string startHint = "Press ";
@@ -139,14 +139,6 @@ public class UIRoom : UIPanelTabbed
     public void OnAllPlayersReady()
     {
         this.Log("OnAllPlayersReady");
-        // Start game
-        if (showGameStartButton)
-        {
-            // TODO: Show start button to start the game on host
-        }
-        else
-        {
-        }
     }
 
     void OnShowPreGameCountdown(bool show) {
@@ -235,6 +227,10 @@ public class UIRoom : UIPanelTabbed
 
         countdownHint.Hide();
         fadingPanel  .Hide();
+
+        if (hasError) {
+            this.LogError("Timeout on countdown.");
+        }
 
         yield break;
     }

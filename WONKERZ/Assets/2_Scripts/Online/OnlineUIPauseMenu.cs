@@ -1,20 +1,24 @@
+using System;
+using System.Collections;
+using System.Collections.Generic; 
+
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System;
-using System.Collections;
-using System.Collections.Generic; 
+
 using TMPro;
+using Mirror;
+
 using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
+
 using Wonkerz;
-using Mirror;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
-public class OnlineUIPauseMenu : MonoBehaviour, IControllable
+public class OnlineUIPauseMenu : UIControllableElement 
 {
     public GameObject UIHandle;
     public UIControllableElement panel;
@@ -31,19 +35,17 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
     private PlayerController attachedPlayer;
     private List<UIOnlinePlayerInfoLine> playerInfoLines = new List<UIOnlinePlayerInfoLine>();
 
-    void Start()
+    override protected void OnEnable()
     {
-        StartCoroutine(WaitPlayerForInit());
-    }
-
-    IEnumerator WaitPlayerForInit()
-    {
-        while (attachedPlayer==null)
-        {
+        if (attachedPlayer == null) {
             attachedPlayer = Access.Player();
-            yield return null;
+            if (attachedPlayer == null) {
+                this.LogError("No player has been attached.");
+            }
         }
-        attachedPlayer.inputMgr.Attach(this as IControllable);
+
+        attachedPlayer.inputMgr.Attach(this);
+
 
         if (NetworkClient.activeHost) {
             var tabs = (panel as UIPanelTabbed).tabs;
@@ -55,18 +57,12 @@ public class OnlineUIPauseMenu : MonoBehaviour, IControllable
         }
     }
 
-    void OnDestroy()
-    {
-        try{
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
-        } catch (NullReferenceException e) {
-            this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
-        }
+    override protected void OnDisable() {
+        attachedPlayer.inputMgr.Detach(this);
     }
 
-    void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
+    override protected void ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-
         if (!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
         {
             return;

@@ -91,8 +91,6 @@ namespace Wonkerz
             Vector3 p_pos = Vector3.zero;
             if (p != null) p_pos = p.GetTransform().position;
 
-            float minDist = float.MaxValue;
-
             List<CameraFocusable> focusables = new List<CameraFocusable>();
 
             int layerMask = (1 << LayerMask.NameToLayer(Constants.LYR_CAMFOCUSABLE));

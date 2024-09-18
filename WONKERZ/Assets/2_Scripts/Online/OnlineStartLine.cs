@@ -66,15 +66,15 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     }
 
     IEnumerator WaitForDependencies() {
-        while (OnlineGameManager.Get()             == null) {yield return null;}
-        while (OnlineGameManager.Get().localPlayer == null) {yield return null;}
+        while (OnlineGameManager.singleton             == null) {yield return null;}
+        while (OnlineGameManager.singleton.localPlayer == null) {yield return null;}
     }
 
     IEnumerator Init()
     {
         yield return StartCoroutine(WaitForDependencies());
 
-        var OGM = OnlineGameManager.Get();
+        var OGM = OnlineGameManager.singleton;
 
         OPC           = OGM.localPlayer;
         OGM.startLine = this;
@@ -107,44 +107,36 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     IEnumerator countdownCo()
     {
         //OPC.self_PlayerController.Freeze();
-
-        var OGM = OnlineGameManager.Get();
-
-        while(OGM.countdownElapsed > 0.1f) // not synced yet
+        var OGM = OnlineGameManager.singleton;
+        //Play sounds each seconds.
+        int lastTime = 0;
+        while (OGM.countdownElapsed > 0.0f)
         {
-            yield return null;
-        }
-
-        audioSource.clip = countDownSFX0;
-        audioSource.Play(0);
-        int lastSec = 0;
-        while (OGM.countdownElapsed < OGM.countdown)
-        {
-            if (OGM.countdownElapsed >= (lastSec+1))
-            {
+            // check if we passed a second, from 3 to 2 for instance.
+            int  currentTime   = (int)OGM.countdownElapsed;
+            bool passedASecond = lastTime != currentTime;
+            if (passedASecond) {
                 audioSource.clip = countDownSFX0;
                 audioSource.Play(0);
-                UIStartTrackInst.updateDisplay(OGM.countdownElapsed);
-                lastSec+=1;
-            }     
+            } 
+
+            UIStartTrackInst.updateDisplay(OGM.countdownElapsed, !passedASecond);
             
             yield return null;
         }
-
+        // Play sound at the end.
         audioSource.clip = countDownSFX1;
         audioSource.Play(0);
-
-        UIStartTrackInst.updateDisplay(OGM.countdownElapsed);
+        // Make sure we show 0
+        UIStartTrackInst.updateDisplay(0);
         
         launchTrack();
-
-        //OPC.self_PlayerController.UnFreeze();
     }
 
     void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
     {
         if (Entry.GetButtonState((int)PlayerInputs.InputCode.UIStart).down) {
-            var localPlayer = OnlineGameManager.Get().localPlayer;
+            var localPlayer = OnlineGameManager.singleton.localPlayer;
             var readyState = !localPlayer.IsReady();
 
             UIIsReadyHandle.SetActive(readyState);
@@ -187,7 +179,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         
         Destroy(UIStartTrackInst.gameObject);
 
-        OnlineGameManager.Get().startLine = null;
+        OnlineGameManager.singleton.startLine = null;
 
         gameObject.SetActive(false);
     }

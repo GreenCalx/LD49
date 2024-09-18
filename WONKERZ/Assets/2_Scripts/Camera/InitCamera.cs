@@ -8,7 +8,7 @@ public class InitCamera : GameCamera
 {
     // Proccessed by CameraManager in the OnSceneLoaded
     public GameCamera nextCam;
-    void Start()
+    protected override void Awake()
     {
         camType = CAM_TYPE.INIT;
         cam = GetComponent<Camera>();

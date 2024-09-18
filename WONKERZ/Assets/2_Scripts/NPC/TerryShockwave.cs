@@ -9,23 +9,8 @@ public class TerryShockwave : MonoBehaviour
     public Vector3  shockwaveScaleStep;
     public AnimationCurve  YPosOverTime; // [0,1]
 
-    private float lifetimeElapsed = 0f;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        lifetimeElapsed = 0f;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void launch()
     {
-        lifetimeElapsed = 0f;
         StartCoroutine(spreadWave(this));
     }
 

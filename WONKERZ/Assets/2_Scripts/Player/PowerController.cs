@@ -126,7 +126,7 @@ namespace Wonkerz
 
         public void refreshUI()
         {
-            var ui = OnlineGameManager.Get().UIPlayer;
+            var ui = OnlineGameManager.singleton.UIPlayer;
             if (currentPower == null)
             {
                 ui.equippedPower.text = "--";

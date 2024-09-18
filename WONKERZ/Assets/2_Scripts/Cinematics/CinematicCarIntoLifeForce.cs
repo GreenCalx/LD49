@@ -74,11 +74,13 @@ namespace Wonkerz {
                     prevCamFocus = foc.focus;
                     foc.focus = lifeForce_Inst.transform;
                 }
+                #pragma warning disable CS0168
             } catch (InvalidCastException ice)
         {
             this.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
             return;
         }
+            #pragma warning restore CS0168
         }
 
         public void DismissFromCam()
@@ -92,11 +94,13 @@ namespace Wonkerz {
                     else
                     foc.focus = Access.Player().transform;
                 }
+                #pragma warning disable CS0168
             } catch (InvalidCastException ice)
         {
             this.LogError("CinematicCarIntoLifeForce::SetAsCamFocus needs a FollowObjectCamera as active camera");
             return;
         }
+            #pragma warning restore CS0168
         }
 
     }

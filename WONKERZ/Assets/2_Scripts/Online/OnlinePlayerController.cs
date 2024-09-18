@@ -383,7 +383,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             this.Log("Server received client spawned.");
 
-            OnlineGameManager.Get().AddPlayer(this);
+            OnlineGameManager.singleton.AddPlayer(this);
 
             self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
@@ -515,7 +515,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public override void OnStopLocalPlayer()
     {
-        OnlineGameManager.Get().localPlayer = null;
+        OnlineGameManager.singleton.localPlayer = null;
 
         Destroy(gameObject);
     }
@@ -541,7 +541,7 @@ public class OnlinePlayerController : NetworkBehaviour
         self_PlayerController.inputMode = PlayerController.InputMode.Online;
         self_PlayerController.isServer = isServer;
 
-        OnlineGameManager.Get().localPlayer = this;
+        OnlineGameManager.singleton.localPlayer = this;
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
         Access.GameSettings().isOnline = true;

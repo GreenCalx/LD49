@@ -5,7 +5,7 @@ namespace Wonkerz {
 */
 public class UICamera : GameCamera
 {
-    void Awake()
+    protected override void Awake()
     {
         camType = CAM_TYPE.UI;
     }

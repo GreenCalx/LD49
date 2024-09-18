@@ -23,7 +23,6 @@ namespace Wonkerz
         public List<GameObject> garageLights;
 
         private GameObject garageUI;
-        private bool playerInGarage;
         private bool garageOpened;
 
         [HideInInspector]
@@ -34,7 +33,6 @@ namespace Wonkerz
         // Start is called before the first frame update
         void Start()
         {
-            playerInGarage = false;
             Access.PlayerInputsManager().player1.Attach(this as IControllable);
         }
 

@@ -19,17 +19,14 @@ namespace Wonkerz
 
         private GameObject uiCheckList;
 
-        private bool playerInCheckList;
         private bool checkListOpened;
 
         private Vector3 playerPositionWhenEntered;
         private Transform playerTransform;
 
 
-        private float elapsedInteractibleAnim = 0f;
         void Start()
         {
-            playerInCheckList = false;
             Access.Player()?.inputMgr?.Attach(this as IControllable);
         }
 

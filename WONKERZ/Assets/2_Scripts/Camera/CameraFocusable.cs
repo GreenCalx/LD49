@@ -34,7 +34,6 @@ namespace Wonkerz
 
         [Header("Internals")]
         public bool isFocus = false;
-        private bool susbscribedToCamMgr = false;
         private CameraManager cameraManager;
 
         private UIFocusAction UIFocusAction_Inst;

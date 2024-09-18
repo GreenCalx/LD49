@@ -1056,8 +1056,6 @@ namespace Wonkerz
             //stateMachine.ForceState(invulState);
         }
 
-        bool modifierCalled = false;
-
         public byte[] lastInputs = null;
         void IControllable.ProcessInputs(InputManager currentMgr, GameController inputs)
         {

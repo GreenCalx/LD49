@@ -6,45 +6,40 @@ public class UIStartTrack : MonoBehaviour
 {
     public TMPro.TextMeshProUGUI countdown_txt;
 
+    // 1D alpha texture.
     public Texture2D opacityRamp;
+
     public AnimationCurve fontSizeRatioOverTime;
 
-
-    private float elapsedTime = 0f;
     private float initFontSize = 12f;
-    private string currString = "";
 
     void Start()
     {
-        elapsedTime = 0f;
         initFontSize = countdown_txt.fontSize;
     }
 
-    void Update()
+    // Must be called from outside.
+    // Caller knows if something happens to update the string, for instance passing from 3 to 2, to 1, etc...
+    public void updateDisplay(float iCurrCountdownValue, bool updateString = true)
     {
-        elapsedTime += Time.fixedDeltaTime;
+        if (updateString)
+        {
+            if (iCurrCountdownValue == 0.0f)
+            {
+                countdown_txt.text = "GO!";
+            }
+            else
+            {
+                countdown_txt.text = Mathf.CeilToInt(iCurrCountdownValue).ToString();
+            }
+        }
 
-        float curr_time = Mathf.Min(elapsedTime, 1f);
+        float normalizedTime = iCurrCountdownValue % 1.0f;
 
-        countdown_txt.fontSize = fontSizeRatioOverTime.Evaluate(curr_time) * initFontSize;
+        countdown_txt.fontSize = fontSizeRatioOverTime.Evaluate(normalizedTime) * initFontSize;
 
-        float width = opacityRamp.width;
-        Color newcolor = opacityRamp.GetPixel((int)(curr_time*width),0);
-        countdown_txt.alpha = newcolor.a;
+        float newAlpha = opacityRamp.GetPixelData<float>(0)[(int)(normalizedTime * opacityRamp.width)];
+        countdown_txt.alpha = newAlpha;
+
     }
-
-
-    // Update is called once per frame
-    public void updateDisplay(float iCurrCountdownValue)
-    {
-        if (iCurrCountdownValue < 1f)      {currString = "3";}
-        if ((iCurrCountdownValue >= 1f))   {currString = "2";}
-        if ((iCurrCountdownValue >= 2f))   {currString = "1";}
-        if ((iCurrCountdownValue >= 3f))   {currString = "GO!"; }
-
-        if (currString!=countdown_txt.text)
-        { countdown_txt.text = currString; elapsedTime = 0f; }
-    }
-
-
 }

@@ -734,7 +734,7 @@ public class UIOnline : UIPanel
             this.Log("CreateRoomCmd");
             // start room as a server and client locally
             uiOnline.roomServer.networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
-            var port = (ushort)UnityEngine.Random.RandomRange(10000, 65000);
+            var port = (ushort)UnityEngine.Random.Range(10000, 65000);
             // use port 0 to use any available port from the OS.
             (uiOnline.roomServer.transport as PortTransport).Port = port;
             //(uiOnline.roomServer.transport as PortTransport).Port = 0;

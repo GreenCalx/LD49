@@ -59,7 +59,7 @@ namespace Wonkerz {
             // Part to modify
         }
 
-        void Start()
+        override protected void Start()
         {
             refreshAvailableCosmetics();
         }

@@ -399,7 +399,9 @@ namespace Wonkerz
                             }
                         }
                     }
+                    #pragma warning disable CS0168
                     catch (InvalidCastException ice) { continue; }
+                    #pragma warning restore CS0168
 
                 }
             }

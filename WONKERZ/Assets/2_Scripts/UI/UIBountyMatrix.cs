@@ -15,7 +15,7 @@ namespace Wonkerz
         public TextMeshProUGUI tooltip_bountyName;
         public TextMeshProUGUI tooltip_bountyReward;
         // Start is called before the first frame update
-        void Start()
+        override protected void Start()
         {
             inputMgr = Access.PlayerInputsManager().player1;
 

@@ -1,39 +1,79 @@
-using Mirror;
-using Schnibble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+
+using Mirror;
+
+using Schnibble;
+using Schnibble.UI;
+
 using Wonkerz;
 
-// Network object specs
+
+// NetworkManager is not a NetworkBehaviour! We therefore need an object for server-client synchronisation.
 //
-// description : This is the main manager. It is effectively a singleton that will manage
-//               the syncronisation of every game state, like who is connected, loaded, countdown, track start, track change, etc.
+// Careful: this is a singleton, every new object will be destroyed if another one already exists.
 //
-// authority : server
+// OnlineGameManager is the object use for such syncronisation when the gameplay scene is launched.
+// It also act as a global UX Controller so that UX can be updated when the model changes.
+//
+// Sync direction : Server => client.
+// Authority      : Server
 //
 // Client side:
-//    - Manage UX related states: when all player are loaded, ready, etc...
+//    - React to change of SyncVars and react accordingly.
+//    - Set the spawnde/loaded/ready state on the server. 
 //
 // Server side:
 //    - keep track of connected player with a SyncList<OnlinePlayerController> uniquePlayers
-//    - Start the ServerRoutine which will wait for players state and act accordingly => start game, start trial, etc. 
+//    - StateMachine for the game : waiting for players, launching game, post game, etc...
 //
 
 public class OnlineGameManager : NetworkBehaviour
 {
-    // TODO:
-    // Remove this and create a real singleton as we shauld have only one OnlineGameManager.
-    public static OnlineGameManager Get()
-    {
-        if (NetworkRoomManagerExt.singleton == null) return null;
-        return NetworkRoomManagerExt.singleton.onlineGameManager;
+    #region singleton
+    [HideInInspector]
+    public static OnlineGameManager _instance = null;
+    public static OnlineGameManager singleton {
+        get
+        {
+            // no instance yet, might have one on the NetworkManager singleton?
+            if (_instance == null)
+            {
+                if (NetworkRoomManagerExt.singleton == null) return null;
+                return NetworkRoomManagerExt.singleton.onlineGameManager;
+            }
+            return _instance;
+        }
+        private set {_instance = value;}
     }
+    // Callback if the onlinegamemanager changes.
+    // Should probably not be used that much?
+    public static Action<OnlineGameManager> onOnlineGameManagerChanged;
+
+    void Start() {
+        if (_instance == null) {
+            _instance = this;
+            this.Log("OnlineGameManager : started.");
+            onOnlineGameManagerChanged?.Invoke(this);
+        } else {
+            this.LogWarn("OnlineGameManager : an instance already exists, this one will be destroyed.");
+            DestroyImmediate(this);
+        }
+    }
+
+    void OnDestroy() {
+        if (_instance == this) {
+            _instance = null;
+        }
+    }
+    #endregion
 
     [Header("UX")]
     [SerializeField]
-    GameObject UIWaitForPlayers;
+    UIElement UIWaitForPlayers;
     [SerializeField]
     public UIPlayerOnline UIPlayer;
     [SerializeField]
@@ -51,17 +91,21 @@ public class OnlineGameManager : NetworkBehaviour
     [Header("References")]
     public GameObject prefab_onlineTrialRoulette;
 
-    [Header("Tweaks")] // not the right place ?
-    public uint countdown; // in seconds
-    public uint gameDuration = 180; // in Seconds
-    public uint postGameDuration = 30;
-    public uint trackEventTimeStep = 60;
-    public List<string> trialPool = new List<string>() { "RaceTrial01", "MountainTrial01" };
-    public string selectedTrial = "RaceTrial01";
+    public class GameSettings
+    {
+        public uint countdownDuration; // in seconds
+        public uint gameDuration = 180; // in Seconds
+        public uint postGameDuration = 30;
+        public uint trackEventTimeStep = 60;
+        public List<string> trialPool = new List<string>() { "RaceTrial01", "MountainTrial01" };
+        public string selectedTrial = "RaceTrial01";
+    };
+    public GameSettings settings;
 
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
     public OnlinePlayerController localPlayer;
+
     public int expectedPlayersFromLobby;
 
     public bool waitForPlayersToBeReady = false;
@@ -81,6 +125,7 @@ public class OnlineGameManager : NetworkBehaviour
     public OnlineTrialManager trialManager;
 
     public Action<bool> onShowUITrackTime;
+
 
     /* ----------------------------------
     Server
@@ -177,7 +222,7 @@ public class OnlineGameManager : NetworkBehaviour
     {
         countdownElapsed = 0f;
 
-        UIPlayer.gameObject.SetActive(true);
+        UIPlayer.Show();
 
         yield return StartCoroutine(Countdown());
     }
@@ -214,7 +259,7 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         AskPlayersToReadyUp();
-        WaitForOtherPlayersToBeReady();
+        RpcWaitForOtherPlayersToBeReady();
 
         while (!AreAllPlayersReady())
         {
@@ -248,7 +293,7 @@ public class OnlineGameManager : NetworkBehaviour
 
         RpcPostGame();
         AskPlayersToReadyUp();
-        postGameTime = postGameDuration;
+        postGameTime = settings.postGameDuration;
 
         // Wait until either postGameTime is elapsed, or all players want to quit.
         while (!AreAllPlayersReady() || postGameTime > 0.0f)
@@ -304,20 +349,19 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     IEnumerator Countdown()
     {
-        countdownElapsed = 0f;
+        countdownElapsed = settings.countdownDuration;
         //FreezeAllPlayers(true);
-
         RpcLaunchOnlineStartLine();
 
-        while (countdownElapsed < countdown)
+        while (countdownElapsed > 0.0f)
         {
-            countdownElapsed += Time.deltaTime;
+            countdownElapsed -= Time.deltaTime;
             yield return null;
         }
 
         FreezeAllPlayers(false);
 
-        gameTime = gameDuration;
+        gameTime = settings.gameDuration;
         gameLaunched = true;
     }
 
@@ -326,7 +370,7 @@ public class OnlineGameManager : NetworkBehaviour
     {
         RpcShowUITrackTime(true);
 
-        trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
+        trackEventManager.nextEventTime = gameTime - settings.trackEventTimeStep;
 
         while (gameTime > 0)
         {
@@ -335,7 +379,7 @@ public class OnlineGameManager : NetworkBehaviour
             if (gameTime < trackEventManager.nextEventTime)
             {
                 trackEventManager.SpawnEvent();
-                trackEventManager.nextEventTime = gameTime - trackEventTimeStep;
+                trackEventManager.nextEventTime = gameTime - settings.trackEventTimeStep;
             }
 
             yield return null;
@@ -356,7 +400,7 @@ public class OnlineGameManager : NetworkBehaviour
         // Unload open course on server and load trial
         NetworkRoomManagerExt.singleton.unloadOpenCourse();
 
-        NetworkRoomManagerExt.singleton.selectedTrial = selectedTrial;
+        NetworkRoomManagerExt.singleton.selectedTrial = settings.selectedTrial;
         NetworkRoomManagerExt.singleton.loadSelectedTrial();
         // launch transition to trial on clients from server
         NetworkRoomManagerExt.singleton.clientLoadSelectedTrial();
@@ -377,7 +421,7 @@ public class OnlineGameManager : NetworkBehaviour
         OnlineTrialRoulette asRoulette = inst.GetComponent<OnlineTrialRoulette>();
 
         yield return new WaitForFixedUpdate();
-        asRoulette.init(trialPool);
+        asRoulette.init(settings.trialPool);
 
         yield return new WaitForFixedUpdate();
         asRoulette.Spin();
@@ -397,7 +441,7 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         yield return new WaitForFixedUpdate();
-        selectedTrial = asRoulette.RetrieveSelectedTrial();
+        settings.selectedTrial = asRoulette.RetrieveSelectedTrial();
 
         yield return new WaitForSeconds(2f);
 
@@ -421,7 +465,7 @@ public class OnlineGameManager : NetworkBehaviour
         foreach (var opc in uniquePlayers)
         {
             opc.SetReadyState(false);
-            ServerAskToReadyUp();
+            RpcAskToReadyUp();
         }
     }
 
@@ -461,46 +505,52 @@ public class OnlineGameManager : NetworkBehaviour
     {
         NetworkRoomManagerExt.singleton.onlineGameManager = this;
 
-        UIPlayer.gameObject.SetActive(false);
-        UIPostGame.gameObject.SetActive(false);
-        UIWaitForPlayers.gameObject.SetActive(true);
+        UIPlayer.Hide();
+        UIPostGame.Hide();
+        UIWaitForPlayers.Hide();
         // Do we really want the menu to be activable during waiting of players?
-        UIPauseMenu.gameObject.SetActive(true);
+        UIPauseMenu.Show();
     }
 
     [ClientRpc]
-    void RpcAllPlayersLoaded()
-    {
-        UIPostGame.gameObject.SetActive(false);
-        UIPostGame.updatePlayerRankingsLbl(this);
+    void RpcAllPlayersLoaded() {
+        this.Log("RpcAllPlayersLoaded.");
     }
 
     [ClientRpc]
     void RpcAllPlayersLockAndLoaded()
     {
         this.Log("RpcAllPlayersLockAndLoaded.");
-        UIWaitForPlayers.SetActive(false);
-        UIPlayer.gameObject.SetActive(true);
+
+        UIPlayer.Show();
     }
 
     [ClientRpc]
     void RpcPostGame()
     {
-        UIPostGame.gameObject.SetActive(true);
-        UIWaitForPlayers.gameObject.SetActive(false);
+        this.Log("RpcPostGame");
+
+        UIPostGame.Show();
+        UIWaitForPlayers.Hide();
     }
 
     [ClientRpc]
-    void WaitForOtherPlayersToBeReady()
+    void RpcWaitForOtherPlayersToBeReady()
     {
-        UIWaitForPlayers.SetActive(true);
-        UIPlayer.gameObject.SetActive(false);
+        this.Log("RpcWaitForOtherPlayersToBeReady.");
+
+        UIWaitForPlayers.Show();
+        UIPlayer.Hide();
     }
 
     [ClientRpc]
-    void ServerAskToReadyUp()
+    void RpcAskToReadyUp()
     {
-        this.Log("ServerAskToReadyUp.");
+        this.Log("RpcAskToReadyUp.");
+
+        // HACK:
+        // Activate the wait for players input.
+        // should probably be set on startline?
         waitForPlayersToBeReady = true;
         if (startLine == null)
         {
@@ -517,6 +567,8 @@ public class OnlineGameManager : NetworkBehaviour
     [ClientRpc]
     public void RpcDisconnectPlayers()
     {
+        this.Log("RpcDisconnectPlayers.");
+
         NetworkClient.Disconnect();
         Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
         {
@@ -528,17 +580,22 @@ public class OnlineGameManager : NetworkBehaviour
     [ClientRpc]
     public void RpcLaunchOnlineStartLine()
     {
+        this.Log("RpcLaunchOnlineStartLine.");
+
         if (startLine == null)
         {
             this.LogError("Starting OnlineStartLine but object is null.");
             return;
         }
+
         startLine.LaunchCountdown();
     }
 
     [ClientRpc]
     public void RpcShowUITrackTime(bool iState)
     {
+        this.Log("RpcShowUITrackTime.");
+
         UIPlayer.showTrackTime = iState;
     }
 }

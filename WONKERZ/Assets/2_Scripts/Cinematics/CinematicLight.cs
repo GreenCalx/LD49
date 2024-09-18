@@ -6,7 +6,7 @@ using UnityEngine;
 public class CinematicLight : MonoBehaviour
 {
     private float internalTimer = 0f;
-    private Light light;
+    private new Light light;
     // -------------------------------------
     // Exposed for Cinematic Nodes
 

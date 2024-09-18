@@ -36,13 +36,11 @@ public class SandWorm : MonoBehaviour
     private NavMeshAgent agent;
     private float timer;
 
-    private bool warpCC_started = false;
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent> ();
         timer = wanderTimer;
-        warpCC_started = false;
         defaultAgentOffset = agent.baseOffset;
 
         if (!agent.isOnNavMesh)

@@ -13,7 +13,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
     public OnlineTrackEvent activeEvent;
     private Coroutine trackEventCo;
     public float nextEventTime = 0f;
-    
+
     [Server]
     public void SpawnEvent()
     {
@@ -69,7 +69,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
     [ClientRpc]
     private void RpcRefreshUI(OnlineTrackEvent iEvent)
     {
-        var pui = OnlineGameManager.Get().UIPlayer;
+        var pui = OnlineGameManager.singleton.UIPlayer;
         if (pui==null)
         return;
 
@@ -89,7 +89,6 @@ public class OnlineTrackEventManager : NetworkBehaviour
         
             pui.TrackEventOnFXHandle.gameObject.SetActive(false);
             StartCoroutine(DelayedUIShow(pui, false));
-            
         }
     }
 

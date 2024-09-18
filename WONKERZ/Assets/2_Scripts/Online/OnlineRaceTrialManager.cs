@@ -41,7 +41,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
         dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
         // init dic players to CP
         dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
-        foreach (OnlinePlayerController opc in OnlineGameManager.Get().uniquePlayers)
+        foreach (OnlinePlayerController opc in OnlineGameManager.singleton.uniquePlayers)
         {
             dicPlayersToLaps.Add(opc, 0);
             dicPlayersToCP.Add(opc, RootCP);

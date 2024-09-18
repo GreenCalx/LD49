@@ -136,11 +136,13 @@ namespace Wonkerz {
                                 b.enabled = false; 
                                 //this.Log( "- disabling : " +  b.name); 
                             }
+                            #pragma warning disable CS0168
                         } catch( InvalidCastException ice ) 
                     { /* expected on pure components */}
 
                         GameObject.Destroy(typeComps[j]); 
                     }
+                    #pragma warning restore CS0168
                 }
             }
         

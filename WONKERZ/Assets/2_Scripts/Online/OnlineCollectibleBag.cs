@@ -83,18 +83,18 @@ public class OnlineCollectibleBag : NetworkBehaviour
     }
 
     IEnumerator WaitForDependencies() {
-        while (OnlineGameManager.Get() == null) yield return null;
-        while (OnlineGameManager.Get().localPlayer == null) yield return null;
+        while (OnlineGameManager.singleton == null) yield return null;
+        while (OnlineGameManager.singleton.localPlayer == null) yield return null;
     }
 
     IEnumerator Init() {
         yield return StartCoroutine(WaitForDependencies());
 
-        //owner = OnlineGameManager.Get().localPlayer;
+        //owner = OnlineGameManager.singleton.localPlayer;
         owner = GetComponentInParent<OnlinePlayerController>();
         if (owner.isClientOnly)
         {
-            if (owner != OnlineGameManager.Get().localPlayer)
+            if (owner != OnlineGameManager.singleton.localPlayer)
             {
                 //owner = null;
                 yield break;

@@ -5,7 +5,7 @@ namespace Wonkerz {
 
     public class HUBGaragist : MonoBehaviour
     {
-        public string name = "";
+        public new string name = "";
         public string trackname = "";
         // Start is called before the first frame update
         void Start()

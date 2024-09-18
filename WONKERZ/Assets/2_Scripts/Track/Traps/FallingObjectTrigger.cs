@@ -12,7 +12,6 @@ namespace Wonkerz {
         public int          damageOnPlayerWhenTriggered = 5;
 
         private bool triggered = false;
-        private bool stopped   = false;
 
         void OnTriggerEnter(Collider iCollider)
         {

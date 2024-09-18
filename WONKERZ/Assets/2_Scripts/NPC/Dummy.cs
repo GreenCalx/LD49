@@ -68,7 +68,6 @@ public class Dummy : MonoBehaviour
         }
 
         float yEpsilon = crossP_result.y / 2; // tilting on Y siminish the crossP result range
-        float zEpsilon = 0f; // axes of forward, doesnt change dot prod
         
         xEpsilon = epsilon + Mathf.Abs(yEpsilon);
         if (currFlip == FLIP.FRONT)

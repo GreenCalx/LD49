@@ -7,7 +7,9 @@ namespace Wonkerz
     {
         public PlayerController.InputMode inputMode = PlayerController.InputMode.Local;
 
+        #pragma warning disable CS0414
         int brake = (int)PlayerInputs.InputCode.Break;
+        #pragma warning restore CS0414
         int gear = (int)PlayerInputs.InputCode.ForwardBackward;
 
         void Awake()

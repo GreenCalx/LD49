@@ -9,7 +9,7 @@ using Schnibble.Managers;
 
 public class UIBindingElement : UISelectableElement
 {
-    public GameObject name;
+    public new GameObject name;
     public GameObject binding;
 
     public PlayerInputs.InputCode inputKey;

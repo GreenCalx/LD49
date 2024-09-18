@@ -2,7 +2,7 @@
 namespace Wonkerz {
     public class GaragistCollectible : AbstractCollectible
     {
-        public string name = "Garager";
+        public new string name = "Garager";
     
         protected override void OnCollect()
         {

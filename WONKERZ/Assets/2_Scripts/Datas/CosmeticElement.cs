@@ -17,7 +17,7 @@ public enum CosmeticType
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/CosmeticElement", order = 2)]
 public class CosmeticElement : ScriptableObject
 {
-    public string name = "";
+    public new string name = "";
     public CosmeticType cosmeticType;
 
     public bool isDefaultSkin = false;

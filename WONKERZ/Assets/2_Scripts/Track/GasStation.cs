@@ -37,7 +37,6 @@ namespace Wonkerz {
         private bool IsPumpingGas = false;
         private string animatorParm = "IsPumping";
         private string animatorStationActivationParm = "IsStationActivated";
-        private string animatorActivationState = "ActivateStation";
 
         public bool bypassNutsCost = false;
         private bool convertNuts = false;
@@ -115,9 +114,11 @@ namespace Wonkerz {
         {
             try{
                 Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                #pragma warning disable CS0168
             } catch (NullReferenceException e) {
                 this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
             }
+            #pragma warning restore CS0168
         
         }
 

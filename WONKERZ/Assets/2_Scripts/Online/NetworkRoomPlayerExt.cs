@@ -41,8 +41,6 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
             infos = newInfos;
             yield return new WaitForSeconds(0.2f);
         }
-
-        yield break;
     }
 
     void OnUpdateInfos(RoomPlayerInfos oldInfos, RoomPlayerInfos newInfos) {
