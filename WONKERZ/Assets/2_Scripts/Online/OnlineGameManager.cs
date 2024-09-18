@@ -93,22 +93,26 @@ public class OnlineGameManager : NetworkBehaviour
 
     public class GameSettings
     {
-        public uint countdownDuration; // in seconds
-        public uint gameDuration = 180; // in Seconds
-        public uint postGameDuration = 30;
+        public uint countdownDuration  = 3; // in seconds
+        public uint gameDuration       = 180; // in Seconds
+        public uint postGameDuration   = 30;
         public uint trackEventTimeStep = 60;
-        public List<string> trialPool = new List<string>() { "RaceTrial01", "MountainTrial01" };
-        public string selectedTrial = "RaceTrial01";
+        public List<string> trialPool  = new List<string>() {
+            "RaceTrial01",
+            "MountainTrial01"
+        };
+        public string selectedTrial    = "RaceTrial01";
     };
     public GameSettings settings;
 
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
+
     public OnlinePlayerController localPlayer;
 
-    public int expectedPlayersFromLobby;
-
     public bool waitForPlayersToBeReady = false;
+    bool allPlayersSpawned = false;
+    bool allPlayersLoaded  = false;
 
     [SyncVar]
     public float countdownElapsed = 0f;
@@ -126,45 +130,40 @@ public class OnlineGameManager : NetworkBehaviour
 
     public Action<bool> onShowUITrackTime;
 
-
-    /* ----------------------------------
-    Server
-    ------------------------------------ */
+    #region Server
 
     public override void OnStartServer()
     {
         this.Log("Start onlineGameManager : server.");
-        // TODO: remove this as we are already kinda a singleton ourselves.
-        expectedPlayersFromLobby = NetworkRoomManagerExt.singleton.roomSlots.Count;
-        NetworkRoomManagerExt.singleton.onlineGameManager = this;
-
         StartCoroutine(ServerRoutine());
     }
 
     [Server]
     IEnumerator ServerRoutine()
     {
-        yield return StartCoroutine(WaitForAllClientToSpawn    ());
-        yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
-        // All players have been loaded inside the OnlineGameRoom,
-        // now we load the track.
-        NetworkRoomManagerExt.singleton.loadOpenCourse();
-        // wait for the track to be loaded.
-        while(!NetworkRoomManagerExt.singleton.subsceneLoaded) yield return null;
-        // do stuff
+        NetworkRoomManagerExt manager = NetworkRoomManagerExt.singleton;
+
+        // NOTE: why do we need this bool?
         Access.GameSettings().isOnline = true;
 
+        yield return StartCoroutine(WaitForAllClientToSpawn    ());
+        yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
         RpcAllPlayersLoaded();
         FreezeAllPlayers(true);
+        // All players have been loaded inside the OnlineGameRoom,
+        // now we load the track.
+        yield return StartCoroutine(LoadScene(Constants.SN_OPENCOURSE));
+        // TODO: should we wait for all players to load the scene?
+        // arg for => we are sure that everyone has the same state
+        // arg against => one player might have a very slow PC and slow everyone dawn or make the server crash.
 
-        // Show the scene.
+        // Finally show the scene.
         Access.SceneLoader().unloadLoadingScene();
-
+        // Do we wait for players to input Start to be ready or directly start the game.
         if (waitForPlayersToBeReady)
         {
             yield return StartCoroutine(WaitForAllPlayersToBeReady());
         }
-
         RpcAllPlayersLockAndLoaded();
 
         yield return StartCoroutine(SpinTrialRoulette());
@@ -187,11 +186,15 @@ public class OnlineGameManager : NetworkBehaviour
         // TODO:
         // Add a timeout if we cannot have all players spawed for 10s or something.
         this.Log("Waiting for client to spawn.");
-        while (uniquePlayers.Count != expectedPlayersFromLobby)
+
+        allPlayersSpawned = false;
+        while (!allPlayersSpawned)
         {
             this.Log("Number of client spawned: " + uniquePlayers.Count);
+            allPlayersSpawned = uniquePlayers.Count != NetworkRoomManagerExt.singleton.roomSlots.Count;
             yield return null;
         }
+
         this.Log("AllClientSpawned." + uniquePlayers.Count);
     }
 
@@ -212,10 +215,36 @@ public class OnlineGameManager : NetworkBehaviour
         // After a client has spawned we wait for it to be "loaded" meaning every dependencies are resolved client-side.
         // This is to avoid having Rpc sent when the client is not fully loaded.
         // This should not happen, but for now it happens sometimes because Mirror does not spown the localPlayer as if it was a real NetworkServer.Spawn I guess.
-        this.Log("Waiting for clients to be loaded.");
-        while (!AreAllPlayersLoaded()) { yield return null; }
+        this.Log("WaitForAllPlayersToBeLoaded.");
+
+        allPlayersLoaded = false;
+        while (!allPlayersLoaded) {
+            allPlayersLoaded = AreAllPlayersLoaded();
+            yield return null;
+        }
+
         this.Log("AllClientLoaded.");
     }
+
+    [Server]
+    IEnumerator LoadScene(string sceneName) {
+        NetworkRoomManagerExt manager = NetworkRoomManagerExt.singleton;
+        // listen for loadOpenCourse callback;
+        bool sceneLoaded = false;
+        Action<string> callback = delegate (string scene) {
+            if (scene == Constants.SN_OPENCOURSE) {
+                sceneLoaded = true;
+            }
+        };
+
+        manager.OnRoomServerSceneChangedCB += callback;
+        manager.ServerSceneOperation(sceneName, SceneOperation.LoadAdditive);
+        while(!sceneLoaded) yield return null;
+        manager.OnRoomServerSceneChangedCB -= callback;
+
+        yield break;
+    }
+
 
     [Server]
     IEnumerator StartGame()
@@ -302,48 +331,10 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        this.Log("End post game.");
-
-        //unload
-        NetworkRoomManagerExt.singleton.unloadSelectedTrial();
         // shutdown server
         RpcDisconnectPlayers();
+
         NetworkServer.Shutdown();
-    }
-
-
-    [Server]
-    IEnumerator WaitSessions()
-    {
-        // Wait to load all scene.
-        while (!openCourseLoaded)
-        {
-            openCourseLoaded = NetworkRoomManagerExt.singleton.subsceneLoaded;
-
-            yield return null;
-        }
-
-        FreezeAllPlayers(true);
-
-        while (uniquePlayers.Count != expectedPlayersFromLobby)
-        {
-            yield return null;
-        }
-
-
-        while (!AreAllPlayersLoaded())
-        {
-            yield return null;
-        }
-
-        //RpcNotifyOfflineMgrAllPlayersLoaded();
-
-        while (!AreAllPlayersReady())
-        {
-            yield return null;
-        }
-
-        countdownElapsed = 0f;
     }
 
     [Server]
@@ -396,17 +387,9 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     IEnumerator LoadTrialScene()
     {
-
-        // Unload open course on server and load trial
-        NetworkRoomManagerExt.singleton.unloadOpenCourse();
-
-        NetworkRoomManagerExt.singleton.selectedTrial = settings.selectedTrial;
-        NetworkRoomManagerExt.singleton.loadSelectedTrial();
-        // launch transition to trial on clients from server
-        NetworkRoomManagerExt.singleton.clientLoadSelectedTrial();
-
-        //if (isServer)
-        //RpcRefreshOfflineGameMgr();
+        var manager = NetworkRoomManagerExt.singleton;
+        manager.ServerSceneOperation(Constants.SN_OPENCOURSE, SceneOperation.UnloadAdditive);
+        manager.ServerSceneOperation(settings.selectedTrial , SceneOperation.LoadAdditive  );
 
         yield break;
     }
@@ -478,10 +461,7 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     public bool AreAllPlayersReady()
     {
-        if (uniquePlayers.Count < expectedPlayersFromLobby)
-            return false;
-
-        foreach (var opc in uniquePlayers) if (!opc.IsReady()) return false;
+        foreach (var opc in uniquePlayers) if (!opc.isReady) return false;
 
         return true;
     }
@@ -489,17 +469,13 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     public bool AreAllPlayersLoaded()
     {
-        if (uniquePlayers.Count < expectedPlayersFromLobby)
-            return false;
-
-        foreach (var opc in uniquePlayers) if (!opc.IsLoaded()) return false;
+        foreach (var opc in uniquePlayers) if (!opc.isLoaded) return false;
         return true;
     }
 
+    #endregion
 
-    /* ----------------------------------
-    Client
-    ------------------------------------ */
+    #region Client
 
     override public void OnStartClient()
     {
@@ -598,4 +574,6 @@ public class OnlineGameManager : NetworkBehaviour
 
         UIPlayer.showTrackTime = iState;
     }
+
+    #endregion
 }

@@ -15,8 +15,8 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     
     [Header("Race Trial Internals")]
     public OnlineRaceCheckPoint RootCP;
-    public SyncDictionary<OnlinePlayerController, int> dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
-    public SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint> dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
+    public readonly SyncDictionary<OnlinePlayerController, int> dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
+    public readonly SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint> dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
     public LinkedList<OnlineRaceCheckPoint> checkpoints = new LinkedList<OnlineRaceCheckPoint>();
 
     void Start()
@@ -48,11 +48,6 @@ public class OnlineRaceTrialManager : OnlineTrialManager
 
         // init players
         // retrieved from OGM.uniquePlayers
-        
-        // init dic players to laps
-        dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
-        // init dic players to CP
-        dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
         foreach (OnlinePlayerController opc in OnlineGameManager.singleton.uniquePlayers)
         {
             dicPlayersToLaps.Add(opc, 1);

@@ -765,10 +765,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643efbbb0ee1cc44a9ac2806b25db146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _uiTheme:
+    rid: -2
+  Parent: {fileID: 0}
+  onSelect:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeselect:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls: []
+  activator: {fileID: 0}
+  isSelected: 0
+  isActivated: 0
+  isOnEnableCallingActivate: 1
+  isOnDisableCallingDeactivate: 1
+  useParentInputManager: 1
+  inputMgr: {fileID: 0}
+  isTakingInputPrecedence: 1
+  useParentInputs: 0
+  inputActivate: UIActivate
   prefab_UIPostGameLine: {fileID: 7188235053611523014, guid: 261d43b511d5fec42a1fc9577b3c5d4a, type: 3}
   timeLbl: {fileID: 365368352}
   postGameLines_Handle: {fileID: 481244938}
   OPC: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1 &481244937
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,7 +2186,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  UIWaitForPlayers: {fileID: 1056838089}
+  UIWaitForPlayers: {fileID: 1056838094}
   UIPlayer: {fileID: 2005518214250875840}
   UIPostGame: {fileID: 467298983}
   UIPauseMenu: {fileID: 501671849}
@@ -2164,15 +2194,7 @@ MonoBehaviour:
   trialLoaded: 0
   openCourseUnLoaded: 0
   prefab_onlineTrialRoulette: {fileID: 7056363291119687024, guid: d8c624c72a22b2849a702fb1c7699f7d, type: 3}
-  countdown: 3
-  gameDuration: 2
-  postGameDuration: 10
-  trackEventTimeStep: 15
-  trialPool:
-  - SpeedwayRace
-  selectedTrial: RaceTrial01
   localPlayer: {fileID: 0}
-  expectedPlayersFromLobby: 0
   waitForPlayersToBeReady: 0
   countdownElapsed: 0
   gameTime: 0
@@ -2559,6 +2581,7 @@ GameObject:
   - component: {fileID: 1056838093}
   - component: {fileID: 1056838092}
   - component: {fileID: 1056838091}
+  - component: {fileID: 1056838094}
   m_Layer: 0
   m_Name: UIWaitForEveryPlayers
   m_TagString: Untagged
@@ -2649,6 +2672,26 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1056838094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1056838089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c57313ae9fafa24b88761fdbb8fff47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiTheme:
+    rid: -2
+  Parent: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &1091680446 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3150674130453725355, guid: de27dc63356a2554d8f7454a07277633, type: 3}

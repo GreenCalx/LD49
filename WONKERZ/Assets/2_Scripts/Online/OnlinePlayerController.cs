@@ -1,16 +1,15 @@
-using Mirror;
-using Schnibble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+
+using Mirror;
+
+using Schnibble;
+
 using Wonkerz;
 
-// Network object specs
-//
-// Client side:
-//
-// Server side:
 
 public class OnlinePlayerController : NetworkBehaviour
 {
@@ -32,27 +31,29 @@ public class OnlinePlayerController : NetworkBehaviour
 
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
+
     [Header("Internals")]
-    // Client has authority on this,
+    // Client has "authority" on this, but server has authority on the object.
     // It will not modify it directly but send a cmd to try to modify it.
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
     bool _isReady = false;
-    public bool isReady { get => _isReady; private set { _isReady = value; onAnyChange?.Invoke(); } }
+    public bool isReady   { get => _isReady  ; private set { _isReady   = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isLoaded = false;
-    public bool isLoaded { get => _isLoaded; private set { _isLoaded = value; onAnyChange?.Invoke(); } }
+    public bool isLoaded  { get => _isLoaded ; private set { _isLoaded  = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isSpawned = false;
     public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke(); } }
 
+    #region duplicate of PlayerController values for online
     // TODO: Remove this hack and do a proper online object.
     [SyncVar(hook = nameof(OnPlayerStateChanged))]
     PlayerController.PlayerStates playerState;
     [SyncVar(hook = nameof(OnPlayerVehicleStateChanged))]
     PlayerController.PlayerVehicleStates playerVehicleState;
     // wheelOmega needs to be updated by the server.
-    SyncList<float> omegas = new SyncList<float>();
+    readonly SyncList<float> omegas = new SyncList<float>();
 
     public void OnUpdateOmegas(SyncList<float>.Operation op, int itemIndex, float oldItem, float newItem)
     {
@@ -95,18 +96,13 @@ public class OnlinePlayerController : NetworkBehaviour
             axle.left.SetAngularVelocity(omegas[3]);
         }
     }
+    #endregion
 
     public Transform cameraFocusable;
-
     // Will be called when anything changes on this online player.
     // To do this we removed any public variable to have getter/setter
     // that call this callback if anyone is listening.
     public Action onAnyChange;
-
-    public bool IsSpawned() => isSpawned;
-    public bool IsReady() => isReady;
-    public bool IsLoaded() => isLoaded;
-    public bool IsLockAndLoaded() => IsReady() && IsLoaded();
 
     void FixedUpdate()
     {
@@ -115,7 +111,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
         if (isServer)
         {
-            if (IsLoaded())
+            if (isLoaded)
             {
                 if (self_PlayerController.IsCar())
                 {
@@ -335,7 +331,7 @@ public class OnlinePlayerController : NetworkBehaviour
     void OnStartServerInit()
     {
         // TODO: remove anything linked to input poll, rendering, etc...
-        self_PlayerController.OnStateChange += OnStateChange;
+        self_PlayerController.OnStateChange        += OnStateChange;
         self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
     }
 

@@ -137,7 +137,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     {
         if (Entry.GetButtonState((int)PlayerInputs.InputCode.UIStart).down) {
             var localPlayer = OnlineGameManager.singleton.localPlayer;
-            var readyState = !localPlayer.IsReady();
+            var readyState = !localPlayer.isReady;
 
             UIIsReadyHandle.SetActive(readyState);
             UIReadyUpHandle.SetActive(!readyState);
