@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 using Mirror;
+
+using Schnibble;
 
 public enum ONLINE_COLLECTIBLES {
     NONE=0,
@@ -60,7 +63,7 @@ public class OnlineCollectible : NetworkBehaviour
         }
     }
 
-    
+
 
     [Server]
     public void SetAsNegative()
@@ -77,7 +80,7 @@ public class OnlineCollectible : NetworkBehaviour
 
         value = -1;
         RpcChangeImageToNegative();
-            
+
         Image img = GetComponentInChildren<Image>();
         if (!!img)
         {
@@ -109,13 +112,17 @@ public class OnlineCollectible : NetworkBehaviour
         if (!!AC)
         {
             OnlinePlayerController locPlayer = AC.attachedOnlinePlayer;
+            if (locPlayer == null) {
+                this.LogError("locPlayer is null.");
+            }
+
 
             if (locPlayer.bag.HasAPowerEquipped && IsPowerCollectible())
                 return; // player already has a power we don't collect
 
             if (iCollider.transform.IsChildOf(locPlayer.transform))
                 OnCollect(locPlayer);
-            
+
             DestroySelf();
         }
     }

@@ -46,7 +46,6 @@ public class UIRoom : UIPanelTabbed
     // string based for now.
     static readonly string startHint = "Press ";
     static readonly string readyUpHintEnd = " to ready up.";
-
     static readonly string readyUpButton = "UIStart";
 
     public UILabel   readyUpHint;
@@ -135,6 +134,7 @@ public class UIRoom : UIPanelTabbed
             uiOnline.SetState(UIOnline.States.Deactivated);
         }
     }
+
 
     public void OnAllPlayersReady()
     {

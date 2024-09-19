@@ -28,7 +28,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
 {
     [Header("MAND")]
     //public string track_name;
-    
+
     public GameObject UIStartTrackRef;
     public AudioSource  startLineCrossed_SFX;
     public GameObject meshModelHandle;
@@ -112,16 +112,18 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         int lastTime = 0;
         while (OGM.countdownElapsed > 0.0f)
         {
-            // check if we passed a second, from 3 to 2 for instance.
+            // check if we pass a second, from 3 to 2 for instance.
             int  currentTime   = (int)OGM.countdownElapsed;
             bool passedASecond = lastTime != currentTime;
+            lastTime = currentTime;
+
             if (passedASecond) {
                 audioSource.clip = countDownSFX0;
                 audioSource.Play(0);
-            } 
+            }
 
-            UIStartTrackInst.updateDisplay(OGM.countdownElapsed, !passedASecond);
-            
+            UIStartTrackInst.updateDisplay(OGM.countdownElapsed, passedASecond);
+
             yield return null;
         }
         // Play sound at the end.
@@ -129,7 +131,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         audioSource.Play(0);
         // Make sure we show 0
         UIStartTrackInst.updateDisplay(0);
-        
+
         launchTrack();
     }
 
@@ -176,7 +178,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         meshModelHandle.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(2f);
-        
+
         Destroy(UIStartTrackInst.gameObject);
 
         OnlineGameManager.singleton.startLine = null;

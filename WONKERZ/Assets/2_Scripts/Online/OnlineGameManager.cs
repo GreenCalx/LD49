@@ -24,7 +24,7 @@ using Wonkerz;
 //
 // Client side:
 //    - React to change of SyncVars and react accordingly.
-//    - Set the spawnde/loaded/ready state on the server. 
+//    - Set the spawnde/loaded/ready state on the server.
 //
 // Server side:
 //    - keep track of connected player with a SyncList<OnlinePlayerController> uniquePlayers
@@ -91,6 +91,7 @@ public class OnlineGameManager : NetworkBehaviour
     [Header("References")]
     public GameObject prefab_onlineTrialRoulette;
 
+    [System.Serializable]
     public class GameSettings
     {
         public uint countdownDuration  = 3; // in seconds
@@ -352,7 +353,7 @@ public class OnlineGameManager : NetworkBehaviour
 
         FreezeAllPlayers(false);
 
-        gameTime = settings.gameDuration;
+        gameTime     = settings.gameDuration;
         gameLaunched = true;
     }
 

@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic; 
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.Events;
@@ -18,7 +18,7 @@ using Wonkerz;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
-public class OnlineUIPauseMenu : UIControllableElement 
+public class OnlineUIPauseMenu : UIControllableElement
 {
     public GameObject UIHandle;
     public UIControllableElement panel;
@@ -41,11 +41,11 @@ public class OnlineUIPauseMenu : UIControllableElement
             attachedPlayer = Access.Player();
             if (attachedPlayer == null) {
                 this.LogError("No player has been attached.");
+                return;
             }
         }
 
         attachedPlayer.inputMgr.Attach(this);
-
 
         if (NetworkClient.activeHost) {
             var tabs = (panel as UIPanelTabbed).tabs;
