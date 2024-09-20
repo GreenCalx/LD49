@@ -289,7 +289,17 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         this.Log("OnRoomServerSceneLoadedForPlayer");
 
         OnlinePlayerController OPC = gamePlayer.GetComponent<OnlinePlayerController>();
-        NetworkRoomPlayerExt nrp = roomPlayer.GetComponent<NetworkRoomPlayerExt>();
+        NetworkRoomPlayerExt   nrp = roomPlayer.GetComponent<NetworkRoomPlayerExt>();
+
+        // copy data that we need during the game.
+        OPC.onlinePlayerName = nrp.name;
+        if (nrp.isServer) {
+            OPC.gameObject.name = Constants.GO_PLAYER;
+        } else {
+            // easier to debug if the gameObject has the name of the player.
+            OPC.gameObject.name = nrp.name + OPC.netId; // deduplicate if need be.
+        }
+
         roomplayersToGameplayersDict.Add(nrp, OPC);
 
         return true;

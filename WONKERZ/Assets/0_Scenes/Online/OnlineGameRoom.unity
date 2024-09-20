@@ -1221,7 +1221,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1161722561699528468, guid: de27dc63356a2554d8f7454a07277633, type: 3}
       propertyPath: tabs.Array.size
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1161722561699528468, guid: de27dc63356a2554d8f7454a07277633, type: 3}
       propertyPath: tabs.Array.data[3]
@@ -2194,7 +2194,15 @@ MonoBehaviour:
   trialLoaded: 0
   openCourseUnLoaded: 0
   prefab_onlineTrialRoulette: {fileID: 7056363291119687024, guid: d8c624c72a22b2849a702fb1c7699f7d, type: 3}
-  localPlayer: {fileID: 0}
+  settings:
+    countdownDuration: 3
+    gameDuration: 180
+    postGameDuration: 30
+    trackEventTimeStep: 60
+    trialPool:
+    - RaceTrial01
+    - MountainTrial01
+    selectedTrial: RaceTrial01
   waitForPlayersToBeReady: 0
   countdownElapsed: 0
   gameTime: 0

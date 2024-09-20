@@ -35,8 +35,11 @@ public class OnlineUIPauseMenu : UIControllableElement
     public PlayerController attachedPlayer;
     private List<UIOnlinePlayerInfoLine> playerInfoLines = new List<UIOnlinePlayerInfoLine>();
 
+    // Consider that it does not changed during the lifetime of this gameObject.
+    NetworkRoomManagerExt room;
+
     // Should be init or select.
-    override protected void OnEnable()
+    override public void init()
     {
         if (attachedPlayer == null) {
             attachedPlayer = Access.Player();
@@ -56,15 +59,23 @@ public class OnlineUIPauseMenu : UIControllableElement
                 goToRoomTab.gameObject.SetActive(true);
             }
         }
+
+        room = NetworkRoomManagerExt.singleton;
     }
 
-    override protected void OnDisable() {
+    override protected void Update() {
+        if (isActivated) {
+            updateLobbyInfo();
+        }
+    }
+
+    override public void deinit() {
         attachedPlayer.inputMgr.Detach(this);
     }
 
     override protected void ProcessInputs(InputManager currentMgr, GameController Entry)
     {
-        if (!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
+        if (!room.onlineGameManager.gameLaunched)
         {
             return;
         }
@@ -73,7 +84,6 @@ public class OnlineUIPauseMenu : UIControllableElement
         {
             updateTrackDetails();
             updateLobbyInfo();
-
             // NOTE: need to set input manager before calling SetActive as it will activate the UX.
             panel.inputMgr = attachedPlayer.inputMgr;
             //panel.init(); => not needed for now.
@@ -92,10 +102,10 @@ public class OnlineUIPauseMenu : UIControllableElement
     }
 
     public void GoBackToRoom() {
-        if (NetworkRoomManagerExt.singleton != null) {
+        if (room != null) {
             if (NetworkClient.activeHost)
             {
-                NetworkRoomManagerExt.singleton.ServerChangeScene(NetworkRoomManagerExt.singleton.RoomScene);
+                room.ServerChangeScene(room.RoomScene);
             }
         }
     }
@@ -103,22 +113,22 @@ public class OnlineUIPauseMenu : UIControllableElement
     public void OnExitButton()
     {
         // save & exit here
-        if (NetworkRoomManagerExt.singleton != null)
+        if (room != null)
         {
             // make shure we dont go back to offline room.
-            NetworkRoomManagerExt.singleton.offlineScene = "";
+            room.offlineScene = "";
             if (NetworkServer.activeHost)
             {
-                NetworkRoomManagerExt.singleton.StopHost();
+                room.StopHost();
 
-                GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
+                GameObject.Destroy(room.gameObject);
                 NetworkServer.Shutdown();
             }
             else if (NetworkClient.active)
             {
-                NetworkRoomManagerExt.singleton.StopClient();
+                room.StopClient();
 
-                GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
+                GameObject.Destroy(room.gameObject);
                 NetworkClient.Shutdown();
             }
         }
@@ -166,22 +176,30 @@ public class OnlineUIPauseMenu : UIControllableElement
         updateLobbyInfo();
     }
 
-    public void updateLobbyInfo()
-    {
-        NetworkRoomManagerExt room = NetworkRoomManagerExt.singleton;
-
+    void createInfoLines() {
         foreach(UIOnlinePlayerInfoLine oldline in playerInfoLines)
         {
             Destroy(oldline.gameObject);
         }
-        playerInfoLines = new List<UIOnlinePlayerInfoLine>();
-        foreach( OnlinePlayerController opc in room.onlineGameManager.uniquePlayers)
+        playerInfoLines = new List<UIOnlinePlayerInfoLine>(room.roomSlots.Count);
+        foreach (OnlinePlayerController opc in room.onlineGameManager.uniquePlayers)
         {
             UIOnlinePlayerInfoLine infoLine = Instantiate(UILobbyPlayerPrefab, UILobbyPlayerInfoHandle).GetComponent<UIOnlinePlayerInfoLine>();
-            infoLine.Refresh(opc);
+            infoLine.player = opc;
             playerInfoLines.Add(infoLine);
-
         }
+    }
+
+    public void updateLobbyInfo()
+    {
+        // Consider that for now there is no change in player count and index
+        // during the game.
+        // TODO: subscribe to room changes to reflect the changes.
+        if (playerInfoLines.Count != room.roomSlots.Count) {
+            createInfoLines();
+        }
+
+        foreach(var infoLine in playerInfoLines) infoLine.Refresh();
     }
 
     public void displayDebugPanel()

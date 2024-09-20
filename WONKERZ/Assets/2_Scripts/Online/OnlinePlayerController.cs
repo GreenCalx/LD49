@@ -317,13 +317,6 @@ public class OnlinePlayerController : NetworkBehaviour
             // server : no need to wait for dependencies => they should be local and loaded asap locally.
             if (self_PlayerController == null) self_PlayerController = GetComponent<PlayerController>();
             self_PlayerController.InitOnServer();
-            // set name to whatever, cannot be "Player" => this is the name of the local player.
-            onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
-            gameObject.name = onlinePlayerName;
-            // NOTE: do we want to do this?
-            // for now we dont, but
-            // AudioListener AL = GetComponentInChildren<AudioListener>();
-            // if (!!AL) { Destroy(AL); }
         }
         OnStartServerInit();
     }
