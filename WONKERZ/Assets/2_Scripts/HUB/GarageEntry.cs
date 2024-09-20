@@ -33,12 +33,12 @@ namespace Wonkerz
         // Start is called before the first frame update
         void Start()
         {
-            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Attach(this as IControllable);
         }
 
         void OnDestroy()
         {
-            Access.PlayerInputsManager()?.player1.Detach(this as IControllable);
+            Access.managers.playerInputsMgr?.player1.Detach(this as IControllable);
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
@@ -69,7 +69,7 @@ namespace Wonkerz
             garageUI.name = Constants.GO_UIGARAGE;
 
             //garageCamera.launch();
-            ManualCamera manCam = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+            ManualCamera manCam = Access.managers.cameraMgr.active_camera.GetComponent<ManualCamera>();
             if (manCam)
             {
                 manCam.forceAngles(true, new Vector2(0f, 90f));
@@ -110,7 +110,7 @@ namespace Wonkerz
             turnOffLights();
 
             //garageCamera.end();
-            ManualCamera manCam = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+            ManualCamera manCam = Access.managers.cameraMgr.active_camera.GetComponent<ManualCamera>();
             if (manCam)
             {
                 manCam.forceAngles(false, new Vector2(0f, 0f));
@@ -180,7 +180,7 @@ namespace Wonkerz
             }
             sun.SetActive(true);
             // update toon pipeline mainLight?
-            Access.CameraManager().changeMainLight(sun.GetComponent<Light>());
+            Access.managers.cameraMgr.changeMainLight(sun.GetComponent<Light>());
         }
         private void turnOnLights()
         {
@@ -191,7 +191,7 @@ namespace Wonkerz
             sun.SetActive(false);
 
             // update toon pipeline mainLight?
-            Access.CameraManager().changeMainLight(garageMainLight.GetComponent<Light>());
+            Access.managers.cameraMgr.changeMainLight(garageMainLight.GetComponent<Light>());
         }
     }
 

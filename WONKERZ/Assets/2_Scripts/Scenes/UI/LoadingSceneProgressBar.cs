@@ -17,7 +17,7 @@ namespace Wonkerz
 
         void Update()
         {
-            progressBar.fillAmount = Access.SceneLoader().operationProgress;
+            progressBar.fillAmount = Access.managers.sceneMgr.operationProgress;
         }
     }
 }

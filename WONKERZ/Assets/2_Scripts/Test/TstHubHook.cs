@@ -53,7 +53,7 @@ namespace Wonkerz {
             if (loadDebugGameProgress)
             loadGameProgress();
 
-            Access.SceneLoader().loadScene(hookedScene, new SceneLoader.LoadParams{});
+            Access.managers.sceneMgr.loadScene(hookedScene, new SceneLoader.LoadParams{});
 
             killMe = true;
         }
@@ -74,15 +74,15 @@ namespace Wonkerz {
 
         private void resetUniqueEvents()
         {
-            Access.GameProgressSaveManager().ResetAndSave();
+            Access.managers.gameProgressSaveMgr.ResetAndSave();
         }
 
         private void loadGameProgress()
         {
-            Access.GameProgressSaveManager().activeProfile = debugProfileName;
-            Access.GameProgressSaveManager().Load();
+            Access.managers.gameProgressSaveMgr.activeProfile = debugProfileName;
+            Access.managers.gameProgressSaveMgr.Load();
 
-            Access.CollectiblesManager().loadJars();
+            Access.managers.collectiblesMgr.loadJars();
         }
 
     }

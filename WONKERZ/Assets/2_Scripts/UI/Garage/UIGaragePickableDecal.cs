@@ -31,8 +31,8 @@ namespace Wonkerz {
         {
             base.activate();
 
-            Access.PlayerCosmeticsManager().changeDecal(skinID, carPart);
-        
+            Access.managers.playerCosmeticsMgr.changeDecal(skinID, carPart);
+
         }
 
         override public void select()

@@ -81,7 +81,7 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
     public override void OnClientEnterRoom()
     {
         if (isLocalPlayer) {
-            gameObject.name = Access.GameProgressSaveManager().activeProfile;
+            gameObject.name = Access.managers.gameProgressSaveMgr.activeProfile;
         } else {
             gameObject.name = "Room" + Constants.GO_PLAYER + this.index.ToString();
         }
@@ -99,4 +99,3 @@ public class NetworkRoomPlayerExt : NetworkRoomPlayer
         onAnyChange?.Invoke();
     }
 }
-

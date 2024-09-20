@@ -47,7 +47,7 @@ public class SwappableCar : NetworkBehaviour
         WkzCar wCar = car.GetComponent<WkzCar>();
         locPC.current.rb = wCar.rb;
 
-        CameraManager CM = Access.CameraManager();
+        CameraManager CM = Access.managers.cameraMgr;
         CM.OnTargetChange(locPC.transform);
 
         // update swappable car with old car from player

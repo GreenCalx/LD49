@@ -57,7 +57,7 @@ namespace Wonkerz {
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)
         {
-            // if (Access.PlayerInputsManager().player1 == currentMgr)
+            // if (Access.managers.playerInputsMgr.player1 == currentMgr)
             // {
             //     this.Log("IM_Player1");
             // }      

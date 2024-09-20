@@ -109,7 +109,23 @@ public class OnlineGameManager : NetworkBehaviour
     [Header("INTERNALS")]
     public readonly SyncList<OnlinePlayerController> uniquePlayers = new SyncList<OnlinePlayerController>();
 
-    public OnlinePlayerController localPlayer;
+    OnlinePlayerController _localPlayer;
+    public OnlinePlayerController localPlayer {
+        get => _localPlayer;
+        set
+        {
+            _localPlayer = value;
+            if (_localPlayer != null)
+            {
+                // TODO: shauld we have an event when the local player changes ?
+                // sounds like we might want to listen to such a change.
+                if (UIPauseMenu)
+                {
+                    UIPauseMenu.attachedPlayer = _localPlayer.self_PlayerController;
+                }
+            }
+        }
+    }
 
     public bool waitForPlayersToBeReady = false;
     bool allPlayersSpawned = false;
@@ -125,6 +141,7 @@ public class OnlineGameManager : NetworkBehaviour
     public bool gameLaunched;
     [Header("Manual mand refs")]
     public OnlineTrackEventManager trackEventManager;
+
     [Header("Auto Refs")]
     public OnlineStartLine startLine;
     public OnlineTrialManager trialManager;
@@ -145,7 +162,7 @@ public class OnlineGameManager : NetworkBehaviour
         NetworkRoomManagerExt manager = NetworkRoomManagerExt.singleton;
 
         // NOTE: why do we need this bool?
-        Access.GameSettings().isOnline = true;
+        Access.managers.gameSettings.isOnline = true;
 
         yield return StartCoroutine(WaitForAllClientToSpawn    ());
         yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
@@ -159,7 +176,7 @@ public class OnlineGameManager : NetworkBehaviour
         // arg against => one player might have a very slow PC and slow everyone dawn or make the server crash.
 
         // Finally show the scene.
-        Access.SceneLoader().unloadLoadingScene();
+        Access.managers.sceneMgr.unloadLoadingScene();
         // Do we wait for players to input Start to be ready or directly start the game.
         if (waitForPlayersToBeReady)
         {
@@ -485,8 +502,7 @@ public class OnlineGameManager : NetworkBehaviour
         UIPlayer.Hide();
         UIPostGame.Hide();
         UIWaitForPlayers.Hide();
-        // Do we really want the menu to be activable during waiting of players?
-        UIPauseMenu.Show();
+        UIPauseMenu.Hide();
     }
 
     [ClientRpc]
@@ -500,6 +516,7 @@ public class OnlineGameManager : NetworkBehaviour
         this.Log("RpcAllPlayersLockAndLoaded.");
 
         UIPlayer.Show();
+        UIPauseMenu.Show();
     }
 
     [ClientRpc]
@@ -547,7 +564,7 @@ public class OnlineGameManager : NetworkBehaviour
         this.Log("RpcDisconnectPlayers.");
 
         NetworkClient.Disconnect();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
+        Access.managers.sceneMgr.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
         {
             useTransitionOut = true,
             useTransitionIn = true,
@@ -561,7 +578,7 @@ public class OnlineGameManager : NetworkBehaviour
 
         if (startLine == null)
         {
-            this.LogError("Starting OnlineStartLine but object is null.");
+            this.LogError("Starting OnlineStartLine but startLine is null.");
             return;
         }
 

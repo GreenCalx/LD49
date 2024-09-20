@@ -15,7 +15,7 @@ namespace Wonkerz
         // Start is called before the first frame update
         public void Launch()
         {
-            PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
+            PlayerCamera cam = Access.managers.cameraMgr?.active_camera as PlayerCamera;
 
             camFocus.enableFocusActions = false;
             cam.SetSecondaryFocus(camFocus, showFocus);
@@ -25,7 +25,7 @@ namespace Wonkerz
 
         public void Stop()
         {
-            PlayerCamera cam = Access.CameraManager()?.active_camera as PlayerCamera;
+            PlayerCamera cam = Access.managers.cameraMgr?.active_camera as PlayerCamera;
             cam.resetFocus();
 
             camFocus.enableFocusActions = true;

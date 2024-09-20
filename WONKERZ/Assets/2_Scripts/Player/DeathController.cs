@@ -117,7 +117,7 @@ public class DeathController : MonoBehaviour
             deathScreen = Instantiate(deathUIRef);
         deathScreen.SetActive(true);
         deathText = deathScreen.GetComponent<DeathUI>().deathText;
-        Destroy(deathScreen, Access.CameraManager().deathCamDuration);
+        Destroy(deathScreen, Access.managers.cameraMgr.deathCamDuration);
 
         StartCoroutine(SelfKill());
     }

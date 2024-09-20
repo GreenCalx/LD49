@@ -21,7 +21,7 @@ namespace Wonkerz
 
         void Start()
         {
-            CM = Access.CameraManager();
+            CM = Access.managers.cameraMgr;
             CM.onCameraChanged += UpdateCamera;
 
             if (decalRenderer.cam == null)
@@ -50,7 +50,7 @@ namespace Wonkerz
 
         void UpdateCamera() {
             this.Log("cam change on decal");
-            var CM = Access.GetMgr<CameraManager>();
+            var CM = Access.managers.cameraMgr;
             decalRenderer.SetCamera(CM.active_camera?.cam);
         }
     }

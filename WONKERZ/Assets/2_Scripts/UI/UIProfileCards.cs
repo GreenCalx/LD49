@@ -39,7 +39,7 @@ namespace Wonkerz {
                 profileCards.Add(uipcp);
             }
 
-            List<string> profiles = Access.GameProgressSaveManager().GetAvailableProfileNames();
+            List<string> profiles = Access.managers.gameProgressSaveMgr.GetAvailableProfileNames();
             for (int i=0; i < profiles.Count; i++)
             {
                 if (i >= profileCards.Count)
@@ -82,14 +82,14 @@ namespace Wonkerz {
             } else {
                 LoadProfile(selected_profile_name);
             }
-        
+
         }
 
         public void LoadProfile(string iProfileName)
         {
             // selected profile
-    
-            GameProgressSaveManager GPSM = Access.GameProgressSaveManager();
+
+            GameProgressSaveManager GPSM = Access.managers.gameProgressSaveMgr;
             GPSM.activeProfile = iProfileName;
             GPSM.Load();
 
@@ -99,10 +99,10 @@ namespace Wonkerz {
             #if false
             DialogBank.playerName = iProfileName;
 
-            Access.CollectiblesManager().loadJars();
+            Access.managers.collectiblesMgr.loadJars();
 
             if (GPSM.IsUniqueEventDone(UniqueEvents.UEVENTS.GP_IntroComplete))
-            Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
+            Access.managers.sceneMgr.loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,
@@ -110,7 +110,7 @@ namespace Wonkerz {
                 sceneLoadingMode = LoadSceneMode.Single,
             });
             else
-            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
+            Access.managers.sceneMgr.loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,
@@ -123,8 +123,8 @@ namespace Wonkerz {
         {
             // selected profile
 
-            GameProgressSaveManager GPSM = Access.GameProgressSaveManager();
-        
+            GameProgressSaveManager GPSM = Access.managers.gameProgressSaveMgr;
+
             // Erase fill if exists
             GPSM.DeleteProfileIfExists(iOldProfileName);
 
@@ -138,7 +138,7 @@ namespace Wonkerz {
             #if false
             DialogBank.playerName = iNewProfileName;
 
-            Access.SceneLoader().loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
+            Access.managers.sceneMgr.loadScene(Constants.SN_INTRO, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,

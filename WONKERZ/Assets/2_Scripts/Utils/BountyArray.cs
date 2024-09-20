@@ -18,10 +18,10 @@ namespace Wonkerz
 
         public override void OnLoad(GameObject gameObject)
         {
-            BountyArray ba = Access.BountyArray();
+            BountyArray ba = Access.managers.bountyArray;
             if (!!ba)
             {
-                // 
+                //
                 //ba.unlockMatrix.xyz       = loadedBountyUnlockMatrix.xyz;
                 ba.bountyMatrix.bountiesUnlockStatus = loadedBountyUnlockMatrix.bountiesUnlockStatus;
 
@@ -120,7 +120,7 @@ namespace Wonkerz
 
             public List<CosmeticElement> GetAttachedCosmetics()
             {
-                return Access.PlayerCosmeticsManager()?.getCosmeticsFromIDs(cosmeticBountyIDs);
+                return Access.managers.playerCosmeticsMgr?.getCosmeticsFromIDs(cosmeticBountyIDs);
             }
 
             public string GetRewardsAsText()
@@ -187,7 +187,7 @@ namespace Wonkerz
 
             override public bool check()
             {
-                double best_time = Access.TrackManager().getRacePB(tsc.track_name, tsc.difficulty);
+                double best_time = Access.managers.trackMgr.getRacePB(tsc.track_name, tsc.difficulty);
                 int min = (int)(best_time / 60);
                 int sec = (int)(best_time % 60);
                 if (min < tsc.time.minutes)
@@ -210,7 +210,7 @@ namespace Wonkerz
             override public bool check()
             {
                 // check etc
-                // TrackManager TM = Access.TrackManager();
+                // TrackManager TM = Access.managers.trackMgr;
                 // if (TM.launchedTrackName != etc.track_name)
                 //     return false;
 
@@ -221,7 +221,7 @@ namespace Wonkerz
                 //         return e.isSolved;
                 //     }
                 // }
-                return Access.GameProgressSaveManager().IsUniqueEventDone(etc.eventID);
+                return Access.managers.gameProgressSaveMgr.IsUniqueEventDone(etc.eventID);
                 //return false;
             }
         }
@@ -256,7 +256,7 @@ namespace Wonkerz
         // TODO : O(2N²) iz bad
         public void updateArray()
         {
-            PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
+            PlayerCosmeticsManager pcm = Access.managers.playerCosmeticsMgr;
             if (pcm == null)
             { this.LogError("BountyArray::updateArray:: no Player cosmetics manager"); return; }
 

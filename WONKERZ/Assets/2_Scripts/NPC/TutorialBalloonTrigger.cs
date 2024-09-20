@@ -52,7 +52,7 @@ namespace Wonkerz
         {
             try
             {
-                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
             }
                 #pragma warning disable CS0168
             catch (NullReferenceException e)
@@ -121,7 +121,7 @@ namespace Wonkerz
         /// # MOVING WHEIGHT
         public void IsMovingWeightCond()
         {
-            PlayerInputsManager pim = Access.PlayerInputsManager();
+            PlayerInputsManager pim = Access.managers.playerInputsMgr;
             if (weight_pressed_elapsed >= 0.2f)
             {
                 HappyValidation();
@@ -130,7 +130,7 @@ namespace Wonkerz
 
         public void IsMovingWeightBackCond()
         {
-            PlayerInputsManager pim = Access.PlayerInputsManager();
+            PlayerInputsManager pim = Access.managers.playerInputsMgr;
             if ((weight_pressed_elapsed >= 0.5f) && (LJoyDown_pressed_elapsed >= 0.5f))
             {
                 HappyValidation();
@@ -163,7 +163,7 @@ namespace Wonkerz
         /// # FOCUS
         public void FocusValidationCond()
         {
-            CameraManager cm = Access.CameraManager();
+            CameraManager cm = Access.managers.cameraMgr;
             if (cm.active_camera == null)
             return;
 
@@ -198,7 +198,7 @@ namespace Wonkerz
         public void HappyValidation()
         {
             tutorialBalloon.updateDisplay(validationElements);
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
             tutorialCompleted = true;
         }
         // -------------

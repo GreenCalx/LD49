@@ -16,7 +16,7 @@ namespace Wonkerz
 
         void Start()
         {
-            if (Access.CollectiblesManager().hasGaragist(trackname))
+            if (Access.managers.collectiblesMgr.hasGaragist(trackname))
             {
                 gameObject.SetActive(false);
             }
@@ -33,7 +33,7 @@ namespace Wonkerz
             return;
 
             string scene_name = SceneManager.GetActiveScene().name;
-            if (Access.CollectiblesManager().hasCageKey(scene_name))
+            if (Access.managers.collectiblesMgr.hasCageKey(scene_name))
             {
                 // open cage
                 cageAnim.SetBool(openCageAnimParm, true);

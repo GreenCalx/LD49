@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Wonkerz
 {
-    public class WonkPlayerInputManager : PlayerInputsManager
+    public class WkzPlayerInputsManager : PlayerInputsManager
     {
         [System.Serializable]
         public struct WonkInputsSaveData
@@ -74,7 +74,7 @@ namespace Wonkerz
         public override void Load()
         {
             var json = GetSaveFileContent();
-            if (json == "")
+            if (string.IsNullOrEmpty(json))
             {
                 this.LogError("Loading failed");
                 return;

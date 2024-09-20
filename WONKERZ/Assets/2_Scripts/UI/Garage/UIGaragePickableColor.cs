@@ -12,10 +12,10 @@ namespace Wonkerz {
         override public void activate()
         {
             base.activate();
-        
+
             foreach(COLORIZABLE_CAR_PARTS ccp in parts_to_colorize)
             {
-                Access.PlayerCosmeticsManager().colorize( material , ccp);
+                Access.managers.playerCosmeticsMgr.colorize( material , ccp);
             }
         }
 

@@ -34,7 +34,7 @@ public class IntroTutorialTriggers : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        CM  = Access.CollectiblesManager();
+        CM  = Access.managers.collectiblesMgr;
         PC  = Access.Player();
         CPM = Access.CheckPointManager();
 

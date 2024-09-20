@@ -11,11 +11,11 @@ public class UICamera : GameCamera
     }
 
     void OnEnable() {
-        Access.GetMgr<AudioListenerManager>().SetListener(this.gameObject);
+        Access.managers.audioListenerMgr.SetListener(this.gameObject);
     }
 
     void OnDisable() {
-        Access.GetMgr<AudioListenerManager>().UnsetListener(this.gameObject);
+        Access.managers.audioListenerMgr.UnsetListener(this.gameObject);
     }
 }
 }

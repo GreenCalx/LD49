@@ -40,7 +40,7 @@ public class UIOnline : UIPanel
     // IMPORTANT: Do not modify order of enums, unless you also
     // modify the order in stateMessage variable!
 
-    // State machine 
+    // State machine
     // :Sync:
     public enum States
     {
@@ -97,7 +97,7 @@ public class UIOnline : UIPanel
         "Cannot connect to server list, please try again later.", // LobbyServerNotFound
        "Server in maintenance, please try again later.", // LobbyServerMaintenance
         "Room does not exists, please refresh server list.", // RoomNotFound
-        "Cannot connect to room, please try again.", // RoomCannotConnect 
+        "Cannot connect to room, please try again.", // RoomCannotConnect
         "Password is incorrect! Please try again.", // IncorrectPassword
         "Sorry, something went wrong! Please try again.", // Unknown
     };
@@ -179,37 +179,48 @@ public class UIOnline : UIPanel
                     // - all transient objects are destroyed.
                     // - all callbacks are removed.
                     // - all inputs are released.
-                    uiMainMenu.Hide();
-                    uiMainMenu.deactivate();
-                    uiMainMenu.deinit();
-                    
-                    uiRoom.Hide();
-                    uiMainMenu.deactivate();
-                    uiMainMenu.deinit();
+                    if (uiMainMenu) {
+                        uiMainMenu.Hide();
+                        uiMainMenu.deactivate();
+                        uiMainMenu.deinit();
+                    }
 
-                    uiRoomCreationMenu.Hide();
-                    uiRoomCreationMenu.deactivate();
-                    uiRoomCreationMenu.deinit();
+                    if (uiRoom)
+                    {
+                        uiRoom.Hide();
+                        uiRoom.deactivate();
+                        uiRoom.deinit();
+                    }
 
-                    stateMessageText.enabled = false;
-                    stateMessageText.gameObject.SetActive(false);
+                    if (uiRoomCreationMenu) {
+                        uiRoomCreationMenu.Hide();
+                        uiRoomCreationMenu.deactivate();
+                        uiRoomCreationMenu.deinit();
+                    }
 
-                    uiCancelButtonHint.Hide();
+                    if (stateMessageText) {
+                        stateMessageText.enabled = false;
+                        stateMessageText.gameObject.SetActive(false);
+                    }
+
+                    if (uiCancelButtonHint) {
+                        uiCancelButtonHint.Hide();
+                    }
                 }break;
             case States.Exit:
                 {
                     // Carefull we need to move back the network manager to the active scene so that it is deleted when
-                    var sceneLoader = Access.SceneLoader();
+                    var sceneLoader = Access.managers.sceneMgr;
                     sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
                         useTransitionIn = true,
                         useTransitionOut = true,
                         onEndTransition = delegate
                         {
-                            uiCancelButtonHint.Hide();
+                            if (uiCancelButtonHint) uiCancelButtonHint.Hide();
+
                             deactivate();
                             // Remove room if need be
-                            client.Close();
-
+                            if (client != null) client.Close();
                             sceneLoader.ResetDontDestroyOnLoad();
                         }
                     });
@@ -339,7 +350,7 @@ public class UIOnline : UIPanel
         {
             maxPlayerCount = 4,
             //cf :hastName: SchLobbyServer
-            hostName       = Access.GameProgressSaveManager().activeProfile,
+            hostName       = Access.managers.gameProgressSaveMgr.activeProfile,
             name = uiRoomCreationMenu.GetRoomName(),
         });
     }
@@ -450,7 +461,7 @@ public class UIOnline : UIPanel
         init();
         // On activation we try to connect
         // Will call back OnConnected, or OnError
-        if (Access.GameSettings().isLocal)
+        if (Access.managers.gameSettings.isLocal)
         {
             StartLocalServer();
             JoinLocalServer();
@@ -466,7 +477,7 @@ public class UIOnline : UIPanel
 
         RemoveLobbyServerCallbacks();
         RemoveRoomServerCallbacks();
-        
+
         SetState(States.Deactivated);
     }
 
@@ -638,7 +649,7 @@ public class UIOnline : UIPanel
     {
         if (singleton == null) {
             singleton = this;
-            Access.SceneLoader().SetDontDestroyOnLoad(singleton.gameObject);
+            Access.managers.sceneMgr.SetDontDestroyOnLoad(singleton.gameObject);
         } else {
             DestroyImmediate(this.gameObject);
             return;
@@ -646,7 +657,7 @@ public class UIOnline : UIPanel
 
         base.Awake();
 
-        inputMgr      = Access.PlayerInputsManager().player1;
+        inputMgr      = Access.managers.playerInputsMgr.player1;
 
         inputActivate = PlayerInputs.InputCode.UIValidate.ToString();
         inputCancel   = PlayerInputs.InputCode.UICancel.ToString();

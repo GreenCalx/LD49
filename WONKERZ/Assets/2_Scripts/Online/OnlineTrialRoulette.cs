@@ -45,7 +45,7 @@ public class OnlineTrialRoulette : NetworkBehaviour
         }
 
         // Place in middle of cam viewport
-        CameraManager CM = Access.CameraManager();
+        CameraManager CM = Access.managers.cameraMgr;
         Camera cam = CM.active_camera.cam;
         
         transform.parent = cam.transform;

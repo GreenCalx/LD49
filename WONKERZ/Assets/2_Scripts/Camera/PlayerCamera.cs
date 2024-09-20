@@ -50,11 +50,11 @@ namespace Wonkerz
         protected UISecondaryFocus uISecondaryFocus;
 
         void OnEnable() {
-            Access.GetMgr<AudioListenerManager>().SetListener(this.gameObject);
+            Access.managers.audioListenerMgr.SetListener(this.gameObject);
         }
 
         void OnDisable() {
-            Access.GetMgr<AudioListenerManager>().UnsetListener(this.gameObject);
+            Access.managers.audioListenerMgr.UnsetListener(this.gameObject);
         }
 
         // Update is called once per frame
@@ -179,7 +179,7 @@ namespace Wonkerz
         {
             findFocus();
             return;
-            
+
             // if (null == secondaryFocus)
             // { findFocus(); return; }
 
@@ -189,7 +189,7 @@ namespace Wonkerz
 
             // float minDist = float.MaxValue;
             // CameraFocusable chosenOne = null;
-            // List<CameraFocusable> focusables = Access.CameraManager().focusables;
+            // List<CameraFocusable> focusables = Access.managers.cameraMgr.focusables;
 
             // foreach (CameraFocusable f in focusables)
             // {
@@ -258,8 +258,8 @@ namespace Wonkerz
                         return -1;
                     else if (x_score < y_score)
                         return 1;
-                    else 
-                        return 0;
+                    else
+                    return 0;
                 }
             }
         }
@@ -273,9 +273,9 @@ namespace Wonkerz
 
         // score = DotProd + 1/CamDistance
         // MainFactor : The closest DotProduct to 1 the better (aligned with cam fwd thus camfocus aimed by player)
-        // Secondary : The smallest dist to the player the better [0f,1f] 
+        // Secondary : The smallest dist to the player the better [0f,1f]
         //
-        // TODO :   1/ Custom order priority to add to the score : other player > swappable car > crate = jar 
+        // TODO :   1/ Custom order priority to add to the score : other player > swappable car > crate = jar
         //          2/ We might want to have less Y coordinate impact upon alignement detection with dotprod
         private float GetCamFocusScore(CameraFocusable iCF)
         {

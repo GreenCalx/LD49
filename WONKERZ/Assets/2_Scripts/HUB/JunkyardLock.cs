@@ -9,7 +9,7 @@ namespace Wonkerz {
         // Start is called before the first frame update
         void Start()
         {
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             bool hasAllGaragers = true;
 
             hasAllGaragers =    cm.hasGaragist(Constants.SN_DESERT_TOWER)

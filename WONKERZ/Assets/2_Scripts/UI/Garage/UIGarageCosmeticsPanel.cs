@@ -67,12 +67,12 @@ namespace Wonkerz {
         public void refreshAvailableCosmetics()
         {
             // init from table
-            PlayerCosmeticsManager pcm = Access.PlayerCosmeticsManager();
-        
+            PlayerCosmeticsManager pcm = Access.managers.playerCosmeticsMgr;
+
             // populate default cosmetics
             List<CosmeticElement> defaults = pcm.getDefaultCarParts();
-            foreach(CosmeticElement c in defaults) 
-            { 
+            foreach(CosmeticElement c in defaults)
+            {
                 dispatchCosmeticElementInUI(c);
             }
 
@@ -85,7 +85,7 @@ namespace Wonkerz {
                 c_el.skinID = skin_id;
                 dispatchCosmeticElementInUI(c_el);
             }
-        
+
         }
 
         public void dispatchCosmeticElementInUI(CosmeticElement iCE)
@@ -134,7 +134,7 @@ namespace Wonkerz {
             uigpc.material = iCosmetic.material;
             //Material mat = Resources.Load(iCosmetic.matName, typeof(Material)) as Material;
 
-            ui_img.color = iCosmetic.material.color; 
+            ui_img.color = iCosmetic.material.color;
 
             iParent.tabs.Add(uigpc);
         }
@@ -209,11 +209,11 @@ namespace Wonkerz {
             uigps.useParentInputs = true;
             uigps.carPart = iCosmetic.carPart;
             uigps.skinName = iCosmetic.name;
-        
-            //ui_img.color = mat.color; 
+
+            //ui_img.color = mat.color;
 
             parent.tabs.Add(uigps);
-        
+
             if (iCosmetic.isDefaultSkin)
             uigps.setSkinID(-1);
             else
@@ -250,10 +250,10 @@ namespace Wonkerz {
             uigpd.setSkinID(-1);
             else
             uigpd.setSkinID(iCosmetic.skinID);
-        
-            //ui_img.color = mat.color; 
 
-        
+            //ui_img.color = mat.color;
+
+
         }
 
     }

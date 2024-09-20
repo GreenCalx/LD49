@@ -36,7 +36,7 @@ namespace Wonkerz {
 
             if (forceSinglePlayer)
             {
-                pc.inputMgr = Access.PlayerInputsManager().player1;
+                pc.inputMgr = Access.managers.playerInputsMgr.player1;
             }
 
             if (!bypassCinematic)
@@ -57,7 +57,7 @@ namespace Wonkerz {
 
             relocatePlayer(pc);
             if (camera_type != GameCamera.CAM_TYPE.UNDEFINED)
-            Access.CameraManager()?.changeCamera(camera_type, false);
+            Access.managers.cameraMgr?.changeCamera(camera_type, false);
 
             pc.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
@@ -77,7 +77,7 @@ namespace Wonkerz {
         void initTutorial()
         {
             CheckPointManager cpm = Access.CheckPointManager();
-            TrackManager tm = Access.TrackManager();
+            TrackManager tm = Access.managers.trackMgr;
             if (!!cpm && !!tm)
             {
                 tm.track_score.selected_diff = DIFFICULTIES.NONE;

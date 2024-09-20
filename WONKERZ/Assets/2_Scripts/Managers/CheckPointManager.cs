@@ -70,7 +70,7 @@ namespace Wonkerz {
             player = Access.Player();
             uiPlayer = Access.UISpeedAndLifePool();
             TT = player.GetComponent<TrickTracker>();
-            TrackMGR = Access.TrackManager();
+            TrackMGR = Access.managers.trackMgr;
 
             //refreshCameras();
             last_checkpoint = race_start;
@@ -118,7 +118,7 @@ namespace Wonkerz {
         void OnDestroy()
         {
             try{
-                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
                 #pragma warning disable CS0168
             } catch (NullReferenceException e) {
                 this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
@@ -325,7 +325,7 @@ namespace Wonkerz {
             }
 
             // reset manual camera behind the player
-            CameraManager CM = Access.CameraManager();
+            CameraManager CM = Access.managers.cameraMgr;
             if (CM.active_camera!=null)
             {
                 ManualCamera manual_cam = CM.active_camera.GetComponent<ManualCamera>();
@@ -374,12 +374,12 @@ namespace Wonkerz {
             }
             if (iFromDeath)
             {
-                Access.CollectiblesManager().jar.collectedNuts = 0;
+                Access.managers.collectiblesMgr.jar.collectedNuts = 0;
                 return;
             }
 
             currPanels = MAX_PANELS;
-            Access.CameraManager().TryResetView();
+            Access.managers.cameraMgr.TryResetView();
         }
 
         public void loadRaceStart()

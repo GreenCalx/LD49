@@ -85,7 +85,7 @@ namespace Wonkerz {
 
         public void EndDialog()
         {
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
             Access.Player().UnFreeze();
             callbackOnDialogDone.Invoke();
             Destroy(gameObject);

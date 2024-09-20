@@ -8,7 +8,7 @@ namespace Wonkerz {
         public AudioSource keyCollect_SFX;
         void Start()
         {
-            if (Access.CollectiblesManager().hasCageKey(trackname))
+            if (Access.managers.collectiblesMgr.hasCageKey(trackname))
             {
                 gameObject.SetActive(false);
             }
@@ -17,7 +17,7 @@ namespace Wonkerz {
         protected override void OnCollect()
         {
             Schnibble.Utils.SpawnAudioSource(keyCollect_SFX, transform);
-            Access.CollectiblesManager().applyCollectEffect(this);
+            Access.managers.collectiblesMgr.applyCollectEffect(this);
             Destroy(gameObject);
         }
     }

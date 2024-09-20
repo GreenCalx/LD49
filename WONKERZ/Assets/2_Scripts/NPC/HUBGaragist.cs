@@ -10,7 +10,7 @@ namespace Wonkerz {
         // Start is called before the first frame update
         void Start()
         {
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             if (cm.hasGaragist(trackname))
             {
                 for (int i = 0; i < transform.childCount; i++)

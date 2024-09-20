@@ -7,7 +7,7 @@ using System.IO;
 using Schnibble;
 
 /*******************************************************************
- *   
+ *
  *    ______________________________________________________________
  *   |
  *   |______________________________________________________________
@@ -27,7 +27,7 @@ public class GameProgressSaveManager : MonoBehaviour
     public string activeProfile = "";
     private string fp_prefix = "";
     private readonly string fp_suffix = "GameProgressData.json";
-    
+
     private GameProgressData gameProgressData;
     private bool errorAtLoad = false;
 
@@ -82,7 +82,7 @@ public class GameProgressSaveManager : MonoBehaviour
                 this.LogError("Failed to locate/load fail for profile "+ activeProfile);
                 return;
             }
-            
+
             Save(); // will create a file
             errorAtLoad = true;
             Load();
@@ -166,11 +166,11 @@ public class GameProgressSaveManager : MonoBehaviour
         System.IO.DirectoryInfo di = new DirectoryInfo(path);
         foreach (FileInfo file in di.GetFiles())
         {
-            file.Delete(); 
+            file.Delete();
         }
         foreach (DirectoryInfo dir in di.GetDirectories())
         {
-            dir.Delete(true); 
+            dir.Delete(true);
         }
 
         Directory.Delete(path);

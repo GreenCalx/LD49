@@ -17,7 +17,7 @@ namespace Wonkerz {
 
         void Start()
         {
-            if (Access.GameSettings().isOnline)
+            if (Access.managers.gameSettings.isOnline)
             {
                 foreach(Transform t in transform)
                 {
@@ -28,18 +28,18 @@ namespace Wonkerz {
 
             if (activateOnStart)
             {
-                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+                if (Access.managers.gameProgressSaveMgr.IsUniqueEventDone(gameProgressEventID))
                 {
                     foreach(Transform t in transform)
                     {
                         t.gameObject.SetActive(true);
                     }
-                }            
+                }
             }
 
             if (destroyOnStart)
             {
-                if (Access.GameProgressSaveManager().IsUniqueEventDone(gameProgressEventID))
+                if (Access.managers.gameProgressSaveMgr.IsUniqueEventDone(gameProgressEventID))
                 {
                     foreach(Transform t in transform)
                     {

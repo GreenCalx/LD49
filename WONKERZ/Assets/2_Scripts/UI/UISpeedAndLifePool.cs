@@ -22,7 +22,7 @@ namespace Wonkerz
         void Start()
         {
             player = Access.Player();
-            CM = Access.CollectiblesManager();
+            CM = Access.managers.collectiblesMgr;
 
             updateLastCPTriggered("x");
             cpImageFilled.fillAmount = 0f;

@@ -458,10 +458,10 @@ namespace Wonkerz
             // Apply camera effect.
             // Will change FoV, distance, etc.
 
-            // TODO: makethis work 
+            // TODO: makethis work
             var effectRatio = 0.0f;
 
-            CameraManager CamMgr = Access.CameraManager();
+            CameraManager CamMgr = Access.managers.cameraMgr;
             if (CamMgr?.active_camera is PlayerCamera)
             {
                 PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
@@ -523,7 +523,7 @@ namespace Wonkerz
         // ----- Scene listeners
         void InitSceneListeners()
         {
-            var scene_loader = Access.SceneLoader();
+            var scene_loader = Access.managers.sceneMgr;
             if (scene_loader == null)
             {
                 this.LogError("No scene loader available, world might be broken!");
@@ -593,7 +593,7 @@ namespace Wonkerz
             if (inputMgr == null)
             {
                 this.LogWarn("Input manager is null. Using default player 1.");
-                inputMgr = Access.PlayerInputsManager().player1;
+                inputMgr = Access.managers.playerInputsMgr.player1;
             }
 
 
@@ -630,7 +630,7 @@ namespace Wonkerz
         {
             if (inputMgr != null) inputMgr.Detach(this);
 
-            var sceneLoader = Access.SceneLoader();
+            var sceneLoader = Access.managers.sceneMgr;
             if (sceneLoader)
             {
                 sceneLoader.beforeLoadScene.RemoveListener(OnBeforeLoadScene);
@@ -638,7 +638,7 @@ namespace Wonkerz
                 sceneLoader.beforeEnableScene.RemoveListener(OnBeforeEnableScene);
             }
 
-            Access.GetMgr<AudioListenerManager>().UnsetListener(GetRigidbody()?.gameObject);
+            Access.managers.audioListenerMgr.UnsetListener(GetRigidbody()?.gameObject);
         }
 
         // Jump logic
@@ -894,7 +894,7 @@ namespace Wonkerz
             }
 
 
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             if (cm == null)
             {
                 return true;
@@ -918,7 +918,7 @@ namespace Wonkerz
             //     dc.objects.Add(rb);
             // }
             dc.Activate(iSteer);
-            Access.CameraManager().launchDeathCam();
+            Access.managers.cameraMgr.launchDeathCam();
         }
 
         public void ActivateMode(GameObject go, Rigidbody rb)
@@ -934,12 +934,12 @@ namespace Wonkerz
                 ForceVelocity(lastrb.velocity, lastrb.angularVelocity);
                 rb.isKinematic = lastrb.isKinematic;
 
-                Access.GetMgr<AudioListenerManager>().UnsetListener(lastrb.gameObject);
+                Access.managers.audioListenerMgr.UnsetListener(lastrb.gameObject);
             }
 
-            Access.CameraManager()?.OnTargetChange(GetTransform());
+            Access.managers.cameraMgr?.OnTargetChange(GetTransform());
 
-            Access.GetMgr<AudioListenerManager>().SetListener(rb.gameObject);
+            Access.managers.audioListenerMgr.SetListener(rb.gameObject);
 
             this.Log("ActivateMode" + GetTransform().name);
         }
@@ -963,7 +963,7 @@ namespace Wonkerz
             // IMPORTANT: do not set to null as the position/rotation needs to be copied to
             // init the next rb.
             //current.rb = null;
-            Access.CameraManager()?.OnTargetChange(GetTransform());
+            Access.managers.cameraMgr?.OnTargetChange(GetTransform());
         }
 
         public void ForceTransform(Vector3 position, Quaternion rotation)
@@ -1033,7 +1033,7 @@ namespace Wonkerz
             audioSource.Play();
 
             // lose nuts
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             int n_nuts = cm.getCollectedNuts();
 
             Vector3 contactNormal = iDamageSourceNormal;

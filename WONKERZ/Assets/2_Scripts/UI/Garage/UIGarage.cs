@@ -7,7 +7,7 @@ namespace Wonkerz
         protected override void Awake()
         {
             base.Awake();
-            inputMgr = Access.PlayerInputsManager().player1;
+            inputMgr = Access.managers.playerInputsMgr.player1;
         }
 
         override public void deactivate()

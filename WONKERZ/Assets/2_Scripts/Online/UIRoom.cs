@@ -92,8 +92,12 @@ public class UIRoom : UIPanelTabbed
     {
         base.deactivate();
 
-        uiOnline.roomServer.OnRoomServerPlayersReadyCB -= OnAllPlayersReady;
-        uiOnline.roomServer.OnRoomClientSceneChangedCB -= OnGameLoaded;
+        if (uiOnline) {
+            if (uiOnline.roomServer) {
+                uiOnline.roomServer.OnRoomServerPlayersReadyCB -= OnAllPlayersReady;
+                uiOnline.roomServer.OnRoomClientSceneChangedCB -= OnGameLoaded;
+            }
+        }
 
         foreach (UITab t in tabs)
         {
@@ -302,11 +306,11 @@ public class UIRoom : UIPanelTabbed
 
     public UIRoom_EmptySlot AddEmpty(int idx) {
         var result = Instantiate(UIEmptyPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_EmptySlot>();
-
-        result.gameObject.SetActive(true);
         result.Parent = this;
+
         result.init();
         result.deselect();
+        result.Show();
         // Get current window size.
         // TODO: move this to cache
         var uxSize = background.rect;
@@ -338,7 +342,8 @@ public class UIRoom : UIPanelTabbed
         slot.AttachRoomPlayer(data.player);
 
         slot.UpdateView();
-        slot.gameObject.SetActive(true);
+
+        slot.Show();
 
         // Get current window size.
         // TODO: move this to cache

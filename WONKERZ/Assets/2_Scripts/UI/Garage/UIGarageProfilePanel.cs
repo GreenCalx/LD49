@@ -6,7 +6,7 @@ namespace Wonkerz {
 
     public class UIGarageProfilePanel : UIGaragePanel
     {
-        //public int n_slots = 5;    
+        //public int n_slots = 5;
         [Header("MAND")]
         [SerializeField]
         private UIGarageProfile profile;
@@ -45,15 +45,15 @@ namespace Wonkerz {
             //profile.TORQUE_CURVE = new List<Keyframe>(cc.torqueCurve.keys);
             // WEIGHT
             //profile.WEIGHT_CURVE = new List<Keyframe>(cc.s.keys);
-        
+
             // COSMETICS
-            profile.skin_body       = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.MAIN);
-            profile.skin_back_bump  = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.BACK_BUMP);
-            profile.skin_front_bump = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.FRONT_BUMP);
-            profile.skin_hood       = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.HOOD);
-            profile.skin_left_door  = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.LEFT_DOOR);
-            profile.skin_right_door = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
-            profile.skin_wheel      = Access.PlayerCosmeticsManager().getCustomizationOfPart(COLORIZABLE_CAR_PARTS.WHEELS);
+            profile.skin_body       = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.MAIN);
+            profile.skin_back_bump  = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.BACK_BUMP);
+            profile.skin_front_bump = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.FRONT_BUMP);
+            profile.skin_hood       = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.HOOD);
+            profile.skin_left_door  = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.LEFT_DOOR);
+            profile.skin_right_door = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.RIGHT_DOOR);
+            profile.skin_wheel      = Access.managers.playerCosmeticsMgr.getCustomizationOfPart(COLORIZABLE_CAR_PARTS.WHEELS);
 
         }
 
@@ -79,7 +79,7 @@ namespace Wonkerz {
             // WEIGHT
             //cc.WEIGHT = new AnimationCurve(profile.WEIGHT_CURVE.ToArray());
             //color
-            PlayerCosmeticsManager PCM = Access.PlayerCosmeticsManager();
+            PlayerCosmeticsManager PCM = Access.managers.playerCosmeticsMgr;
 
             PCM.colorize(profile.skin_body.materialSkinID, COLORIZABLE_CAR_PARTS.MAIN);
             PCM.colorize(profile.skin_hood.materialSkinID, COLORIZABLE_CAR_PARTS.HOOD);

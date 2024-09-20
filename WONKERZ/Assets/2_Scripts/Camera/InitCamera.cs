@@ -15,7 +15,7 @@ public class InitCamera : GameCamera
     }
 
     void OnEnable() {
-        Access.GetMgr<AudioListenerManager>().SetListener(this.gameObject);
-        Access.GetMgr<CameraManager>().changeCamera(nextCam, false);
+        Access.managers.audioListenerMgr.SetListener(this.gameObject);
+        Access.managers.cameraMgr.changeCamera(nextCam, false);
     }
 }

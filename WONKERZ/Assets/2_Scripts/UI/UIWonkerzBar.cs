@@ -30,7 +30,7 @@ namespace Wonkerz {
 
         public void updateAllLetters()
         {
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             foreach (CollectibleWONKERZ.LETTERS let in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
             {
                 updateLetter(let, cm.hasWONKERZLetter(let));

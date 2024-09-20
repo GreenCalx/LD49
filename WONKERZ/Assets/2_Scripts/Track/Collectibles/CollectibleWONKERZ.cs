@@ -37,14 +37,14 @@ namespace Wonkerz {
         {
             gameObject.SetActive(false);
             //TODO : persist collected status
-            Access.CollectiblesManager().applyCollectEffect(this);
+            Access.managers.collectiblesMgr.applyCollectEffect(this);
             Access.UIWonkerzBar().display();
 
         
             // check if all letters are collected
             foreach (LETTERS l in Enum.GetValues(typeof(CollectibleWONKERZ.LETTERS)))
             {
-                if (!Access.CollectiblesManager().hasWONKERZLetter(l, Access.TrackManager().launchedTrackName))
+                if (!Access.managers.collectiblesMgr.hasWONKERZLetter(l, Access.managers.trackMgr.launchedTrackName))
                 {
                     Schnibble.Utils.SpawnAudioSource( onCollect_SFX, transform); // normal SFX
                     return;

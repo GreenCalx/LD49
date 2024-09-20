@@ -20,17 +20,17 @@ namespace Wonkerz {
             {
                 end_triggered = true;
 
-                Access.TrackManager().endTrack();
+                Access.managers.trackMgr.endTrack();
             
                 TrickTracker tt = Access.Player().gameObject.GetComponent<TrickTracker>();
                 if (!!tt)
                 {
-                    Access.TrackManager().addToScore(tt.storedScore);
+                    Access.managers.trackMgr.addToScore(tt.storedScore);
                     tt.storedScore = 0;
                 }
             
 
-                Access.SceneLoader().loadScene(Constants.SN_FINISH, new SceneLoader.LoadParams{
+                Access.managers.sceneMgr.loadScene(Constants.SN_FINISH, new SceneLoader.LoadParams{
                     useTransitionIn = true,
                     useTransitionOut = true,
                 });

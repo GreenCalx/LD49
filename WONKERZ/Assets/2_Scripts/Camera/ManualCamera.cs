@@ -60,7 +60,7 @@ namespace Wonkerz
         {
             try
             {
-                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
             }
             #pragma warning disable CS0168
             catch (NullReferenceException e)
@@ -85,7 +85,7 @@ namespace Wonkerz
             if (player) 
                 playerRef = player.GetTransform().gameObject;
 
-            Access.PlayerInputsManager().player1.Attach(this);
+            Access.managers.playerInputsMgr.player1.Attach(this);
 
             resetView();
         }

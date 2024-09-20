@@ -1,10 +1,25 @@
 using UnityEngine;
+
 using Schnibble;
 using Schnibble.Managers;
+
+// NOTE: be carefull with GameObject.Find =>it cannot be used in OnDisoble/OnDstroy functions
+// or it will throw an error.
+
+// We simplify things: just set all the values directly from the managers.
+// We still makes it possible to use the general cache, but it does not really
+// makes things hot or anything.
+// Anyway we need to know where to find the object in order to add it to the
+// cache, so it is easier to say to the object to add itself to the cache,
+// or add it to the cache at the beginning / from script and never touch it
+// again. At least do that for everything on the Manager object.
 
 namespace Wonkerz {
     public class Access
     {
+        // shortcut to WkzGlobalManager singleton to save keystrkes.
+        public static WkzGlobalManager managers;
+
         private class AccessCache
         {
             private GameObject GO_MGR;
@@ -128,10 +143,6 @@ namespace Wonkerz {
             SchLog.LogError("[Access] Trying to get unknown object : maybe you meant to use GetMgr?");
             return default(T);
         }
-        public static T GetMgr<T>()
-        {
-            return cache.getObject<T>(Constants.GO_MANAGERS, false);
-        }
 
         public static T GetUI<T>()
         {
@@ -149,18 +160,18 @@ namespace Wonkerz {
         public static PlayerController        Player                 () {return Get   <PlayerController       >();}
         public static SoundManagerLoop        SoundManager           () {return Get   <SoundManagerLoop       >();}
         public static PhysicsMaterialManager  PhysicsMaterialManager () {return Get   <PhysicsMaterialManager >();}
-        public static GameSettings            GameSettings           () {return GetMgr<GameSettings           >();}
-        public static PlayerInputsManager     PlayerInputsManager    () {return GetMgr<PlayerInputsManager    >();}
-        public static CameraManager           CameraManager          () {return GetMgr<CameraManager          >();}
-        public static SceneLoader             SceneLoader            () {return GetMgr<SceneLoader            >();}
-        public static CollectiblesManager     CollectiblesManager    () {return GetMgr<CollectiblesManager    >();}
-        public static PlayerCosmeticsManager  PlayerCosmeticsManager () {return GetMgr<PlayerCosmeticsManager >();}
-        public static TrackManager            TrackManager           () {return GetMgr<TrackManager           >();}
-        public static BountyArray             BountyArray            () {return GetMgr<BountyArray            >();}
-        public static GameProgressSaveManager GameProgressSaveManager() {return GetMgr<GameProgressSaveManager>();}
+        //public static GameSettings            GameSettings           () {return GetMgr<GameSettings           >();}
+        //public static PlayerInputsManager     PlayerInputsManager    () {return GetMgr<PlayerInputsManager    >();}
+        //public static CameraManager           CameraManager          () {return GetMgr<CameraManager          >();}
+        //public static SceneLoader             SceneLoader            () {return GetMgr<SceneLoader            >();}
+        //public static CollectiblesManager     CollectiblesManager    () {return GetMgr<CollectiblesManager    >();}
+        //public static PlayerCosmeticsManager  PlayerCosmeticsManager () {return GetMgr<PlayerCosmeticsManager >();}
+        //public static TrackManager            TrackManager           () {return GetMgr<TrackManager           >();}
+        //public static BountyArray             BountyArray            () {return GetMgr<BountyArray            >();}
+        //public static GameProgressSaveManager managers.gameProgressSaveMgr {return GetMgr<GameProgressSaveManager>();}
 
         public static UISecondaryFocus   UISecondaryFocus    () {
-            if (GameSettings().isOnline) return GetOnlineUI<UISecondaryFocus>();
+            if (managers.gameSettings.isOnline) return GetOnlineUI<UISecondaryFocus>();
             else                         return GetUI      <UISecondaryFocus>();
         }
         //public static UIPlayerOnline     UIPlayerOnline      () {return GetOnlineUI<UIPlayerOnline    >();}
@@ -171,7 +182,5 @@ namespace Wonkerz {
         public static UIWonkerzBar       UIWonkerzBar        () {return GetUI      <UIWonkerzBar      >();}
         public static UICheckpoint       UICheckpoint        () {return GetUI      <UICheckpoint      >();}
         public static UITrackEvent       UITrackEvent        () {return GetUI      <UITrackEvent      >();}
-
-
-}
+    }
 }

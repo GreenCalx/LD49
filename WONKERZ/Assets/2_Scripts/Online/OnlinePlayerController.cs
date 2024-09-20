@@ -321,7 +321,7 @@ public class OnlinePlayerController : NetworkBehaviour
             onlinePlayerName = Constants.GO_PLAYER + this.netId.ToString();
             gameObject.name = onlinePlayerName;
             // NOTE: do we want to do this?
-            // for now we dont, but 
+            // for now we dont, but
             // AudioListener AL = GetComponentInChildren<AudioListener>();
             // if (!!AL) { Destroy(AL); }
         }
@@ -454,7 +454,7 @@ public class OnlinePlayerController : NetworkBehaviour
     }
 
     /* ----------------------------------
-    Client 
+    Client
     ------------------------------------ */
 
     IEnumerator WaitForDependencies()
@@ -465,7 +465,7 @@ public class OnlinePlayerController : NetworkBehaviour
         while (NetworkRoomManagerExt.singleton == null) { yield return null; }
         while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
 
-        while (Access.CameraManager() == null) { yield return null; }
+        while (Access.managers.cameraMgr == null) { yield return null; }
 
         this.Log("End OnlinePlayerController wait for dependencies.");
     }
@@ -538,9 +538,10 @@ public class OnlinePlayerController : NetworkBehaviour
         self_PlayerController.isServer = isServer;
 
         OnlineGameManager.singleton.localPlayer = this;
+
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
-        Access.GameSettings().isOnline = true;
+        Access.managers.gameSettings.isOnline = true;
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned)
@@ -568,7 +569,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             yield return null;
         }
-        //Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        //Access.managers.cameraMgr?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
         CmdModifyLoadedState(true);
     }
 
@@ -579,7 +580,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             // Update camera focus.
             this.Log("RpcSetCameraFocus." + t.gameObject.name);
-            Access.CameraManager()?.OnTargetChange(t);
+            Access.managers.cameraMgr?.OnTargetChange(t);
         }
     }
 
@@ -614,7 +615,7 @@ public class OnlinePlayerController : NetworkBehaviour
         InitPlayerDamageable();
         InitPlayerDamagers();
 
-        //Access.CameraManager()?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
+        //Access.managers.cameraMgr?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
 
         CmdModifyLoadedState(true);
     }

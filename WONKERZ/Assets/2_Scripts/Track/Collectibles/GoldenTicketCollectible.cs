@@ -15,7 +15,7 @@ namespace Wonkerz
         {
             if (null != collect_SFX)
             Schnibble.Utils.SpawnAudioSource(collect_SFX, transform);
-            Access.CollectiblesManager().applyCollectEffect(this);
+            Access.managers.collectiblesMgr.applyCollectEffect(this);
             Destroy(gameObject);
         }
     }

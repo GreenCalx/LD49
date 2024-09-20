@@ -17,9 +17,9 @@ namespace Wonkerz
         // Start is called before the first frame update
         override protected void Start()
         {
-            inputMgr = Access.PlayerInputsManager().player1;
+            inputMgr = Access.managers.playerInputsMgr.player1;
 
-            bountyMatrix = Access.BountyArray();
+            bountyMatrix = Access.managers.bountyArray;
             activate();
         }
 
@@ -27,7 +27,7 @@ namespace Wonkerz
 
         override public void activate()
         {
-            bountyMatrix = Access.BountyArray();
+            bountyMatrix = Access.managers.bountyArray;
             bountyMatrix.initUI(this, tooltip_bountyDesc, tooltip_bountyName, tooltip_bountyReward);
             base.activate();
         }

@@ -19,7 +19,7 @@ namespace Wonkerz
 
         public override void OnLoad(GameObject gameObject)
         {
-            CollectiblesManager ccm = Access.CollectiblesManager();
+            CollectiblesManager ccm = Access.managers.collectiblesMgr;
             if (!!ccm)
             {
                 // 

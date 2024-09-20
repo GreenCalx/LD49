@@ -25,19 +25,19 @@ namespace Wonkerz {
         override protected void Awake()
         {
             base.Awake();
-            inputMgr = Access.PlayerInputsManager().player1;
+            inputMgr = Access.managers.playerInputsMgr.player1;
         }
 
         // Start is called before the first frame update
         override protected void Start()
         {
-            string target_scene = Access.SceneLoader().targetScene;
+            string target_scene = Access.managers.sceneMgr.targetScene;
             if (Array.Exists(Constants.SN_TRACKS, e => e == target_scene))
             {
                 // activate menu
                 trackNameTxt.text = target_scene;
                 childUIToActivate.SetActive(true);
-                Access.SceneLoader().lockScene();
+                Access.managers.sceneMgr.lockScene();
                 onActivate.Invoke();
 
             } else {
@@ -51,8 +51,8 @@ namespace Wonkerz {
         {
             if (choice_made)
             {
-                Access.TrackManager().track_score.selected_diff = chosen_difficulty;
-                Access.SceneLoader().unlockScene();
+                Access.managers.trackMgr.track_score.selected_diff = chosen_difficulty;
+                Access.managers.sceneMgr.unlockScene();
                 onDeactivate.Invoke();
 
                 deactivate();

@@ -13,12 +13,12 @@ namespace Wonkerz {
 
         public void save()
         {
-            Access.CollectiblesManager().saveJars();
+            Access.managers.collectiblesMgr.saveJars();
         }
 
         public void load()
         {
-            Access.CollectiblesManager().loadJars();
+            Access.managers.collectiblesMgr.loadJars();
         }
     }
 }

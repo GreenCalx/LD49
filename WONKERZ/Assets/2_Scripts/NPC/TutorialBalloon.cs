@@ -42,10 +42,10 @@ namespace Wonkerz
             set
             {
                 if (_currTrigger != null)
-                { Access.PlayerInputsManager().player1.Attach(_currTrigger as IControllable); }
+                { Access.managers.playerInputsMgr.player1.Attach(_currTrigger as IControllable); }
                 _currTrigger = value;
                 if (_currTrigger != null)
-                Access.PlayerInputsManager().player1.Detach(_currTrigger as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(_currTrigger as IControllable);
             }
 
             get { return _currTrigger; }
@@ -70,7 +70,7 @@ namespace Wonkerz
 
         IEnumerator launchOnFocused()
         {
-            GameCamera curr_cam = Access.CameraManager().active_camera;
+            GameCamera curr_cam = Access.managers.cameraMgr.active_camera;
             PlayerCamera pc;
             try
             {

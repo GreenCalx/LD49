@@ -10,12 +10,12 @@ namespace Wonkerz {
         // Start is called before the first frame update
         void Start()
         {
-            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Attach(this as IControllable);
         }
 
         void OnDestroy()
         {
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
         }
 
         void IControllable.ProcessInputs(InputManager currentMgr, GameController Entry)

@@ -74,12 +74,12 @@ namespace Wonkerz {
             if (triggered)
             {
                 if ((Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().down)
-                { 
+                {
                     if (!skipVotes.Contains(currentMgr))
                     skipVotes.Add(currentMgr);
                 }
                 else if ((Entry.Get((int) PlayerInputs.InputCode.UIValidate) as GameInputButton).GetState().up)
-                { 
+                {
                     if (skipVotes.Contains(currentMgr))
                     skipVotes.Remove(currentMgr);
                 }
@@ -99,7 +99,7 @@ namespace Wonkerz {
             rootNode.forceQuit();
 
             Access.Player().inputMgr.Detach(this as IControllable);
-        
+
             LevelEntryUI leui = Access.LevelEntryUI();
             if (!!leui)
             {
@@ -113,7 +113,7 @@ namespace Wonkerz {
 
             if (triggerOnlyOnce)
             Destroy(this as CinematicTrigger);
-        
+
             if (!!skipUIInst)
             Destroy(skipUIInst.gameObject);
 
@@ -122,10 +122,10 @@ namespace Wonkerz {
                 if (!!playerUIHandle)
                 playerUIHandle.SetActive(true);
             }
-        
+
             cinematicDone = true;
 
-            Access.GameProgressSaveManager().notifyUniqueEventDone(uniqueEventID);
+            Access.managers.gameProgressSaveMgr.notifyUniqueEventDone(uniqueEventID);
         }
 
         public void StartCinematic()
@@ -136,7 +136,7 @@ namespace Wonkerz {
             // already triggered at some point in the game
             if (uniqueEventID != UniqueEvents.UEVENTS.NONE)
             {
-                if (Access.GameProgressSaveManager().IsUniqueEventDone(uniqueEventID))
+                if (Access.managers.gameProgressSaveMgr.IsUniqueEventDone(uniqueEventID))
                 {
                     triggered = true;
                     return;
@@ -145,7 +145,7 @@ namespace Wonkerz {
 
 
             triggered = true;
-        
+
             if (freezePlayer)
             {
                 Access.Player().Freeze();
@@ -159,7 +159,7 @@ namespace Wonkerz {
             }
 
             Access.Player().inputMgr.Attach(this as IControllable);
-        
+
             if (!!cam)
             {
                 cam.gameObject.SetActive(true);
@@ -210,7 +210,7 @@ namespace Wonkerz {
                     return;
                 }
 
-                if (Access.SceneLoader().activeSceneIsReady)
+                if (Access.managers.sceneMgr.activeSceneIsReady)
                 StartCinematic();
                 return;
             }

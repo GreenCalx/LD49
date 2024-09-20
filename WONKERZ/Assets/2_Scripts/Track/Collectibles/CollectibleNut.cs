@@ -64,7 +64,7 @@ namespace Wonkerz {
                 ///
                 transform.position = (startUp) ? maxPos : minPos;
 
-                Access.CollectiblesManager().subscribe(this);
+                Access.managers.collectiblesMgr.subscribe(this);
             }
         }
 
@@ -92,7 +92,7 @@ namespace Wonkerz {
 
             float theta = Random.Range(0, 360f);
 
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
             float x_pos = cm.nutSpreadDistanceOnDamage * Mathf.Cos(theta);
             float z_pos = cm.nutSpreadDistanceOnDamage * Mathf.Sin(theta);
 
@@ -160,7 +160,7 @@ namespace Wonkerz {
 
             Schnibble.Utils.SpawnAudioSource(onCollectSound, transform);
             // Effect on collect
-            if (Access.CollectiblesManager().collectMod == CollectiblesManager.COLLECT_MOD.HELL)
+            if (Access.managers.collectiblesMgr.collectMod == CollectiblesManager.COLLECT_MOD.HELL)
             {
                 if (!!onCollectPSRef_Hell)
                 {
@@ -181,7 +181,7 @@ namespace Wonkerz {
                 }
             }
 
-            Access.CollectiblesManager().applyCollectEffect(this);
+            Access.managers.collectiblesMgr.applyCollectEffect(this);
             collected = true;
             Destroy(gameObject);
         }

@@ -85,7 +85,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     {
         this.Log("OnRoomClientStop");
 
-        Access.GameSettings().isOnline = false;
+        Access.managers.gameSettings.isOnline = false;
     }
 
     public override void OnRoomStartHost()
@@ -118,7 +118,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             subsceneLoaded = false;
             // Start loading the additive subscene
-            yield return Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams {
+            yield return Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams {
                 sceneLoadingMode = LoadSceneMode.Additive
             });
 
@@ -136,7 +136,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             subsceneLoaded = false;
 
-            yield return Access.SceneLoader().unloadScene(sceneName, new SceneLoader.UnloadParams { });
+            yield return Access.managers.sceneMgr.unloadScene(sceneName, new SceneLoader.UnloadParams { });
             yield return Resources.UnloadUnusedAssets();
 
             subsceneLoaded = true;
@@ -161,7 +161,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 if (NetworkServer.active) {
                     //host mode
                     // change scene.
-                    Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams
+                    Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams
                     {
                         useTransitionOut = true,
                         onSceneLoadStart = delegate (AsyncOperation op) { loadingSceneAsync = op; },
@@ -243,7 +243,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
         if (mode == NetworkManagerMode.Host) {
             // change scene because OnClientChangeScene will check if we are a server and consider that the server did the change.
-            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.LoadParams
+            Access.managers.sceneMgr.loadScene(newSceneName, new SceneLoader.LoadParams
             {
                 useTransitionOut              = true,
                 useLoadingScene               = true,
@@ -256,7 +256,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         {
             // if we are not host we load the scene as fast as passible without the bells and wistles
             // note that in our game we dont have server only builds for now (Sept. 2024)
-            Access.SceneLoader().loadScene(newSceneName, new SceneLoader.LoadParams {
+            Access.managers.sceneMgr.loadScene(newSceneName, new SceneLoader.LoadParams {
                 onSceneLoadStart = delegate (AsyncOperation op) { loadingSceneAsync = op; },
             });
         }
@@ -274,7 +274,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         startPositionIndex = 0;
         startPositions.Clear();
     }
-    
+
     // Override because we dont want the behaviour on base that a client can connect only if we are in the room scene,
     // epecially because Mirror checks it as active scene and it might not be the case. We need another logic for this check.
     // We might want to allow client to connect while the game is running for some reason.
@@ -321,7 +321,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public void ServerSceneOperation(string sceneName, SceneOperation operation, bool sendSceneMessageToClient = true) {
         switch (operation) {
             case SceneOperation.LoadAdditive:{
-                Access.SceneLoader().loadScene(sceneName, new SceneLoader.LoadParams{
+                Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams{
                     useTransitionOut = true,
                     useTransitionIn  = true,
                     sceneLoadingMode = LoadSceneMode.Additive,
@@ -345,7 +345,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
             } break;
             case SceneOperation.UnloadAdditive:{
-                Access.SceneLoader().unloadScene(sceneName, new SceneLoader.UnloadParams{
+                Access.managers.sceneMgr.unloadScene(sceneName, new SceneLoader.UnloadParams{
                     onSceneUnloadStart = delegate (AsyncOperation op) { subsceneUnloaded = false; },
                     onSceneUnloaded    = delegate (AsyncOperation op) { subsceneUnloaded = true ; },
                 });
@@ -378,7 +378,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     {
         this.Log("OnRoomServerStop");
 
-        Access.GameSettings().isOnline = false;
+        Access.managers.gameSettings.isOnline = false;
 
         OnRoomStopServerCB?.Invoke();
     }
@@ -417,7 +417,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 scene.name == offlineScene  || scene.path == offlineScene  ||
                 scene.name == onlineScene   || scene.path == onlineScene)
             {
-                Access.SceneLoader().unloadScene(scene.name, new SceneLoader.UnloadParams { });
+                Access.managers.sceneMgr.unloadScene(scene.name, new SceneLoader.UnloadParams { });
             }
         }
     }

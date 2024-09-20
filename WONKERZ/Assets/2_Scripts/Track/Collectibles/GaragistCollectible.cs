@@ -6,7 +6,7 @@ namespace Wonkerz {
     
         protected override void OnCollect()
         {
-            Access.CollectiblesManager().applyCollectEffect(this);
+            Access.managers.collectiblesMgr.applyCollectEffect(this);
         }
     }
 }

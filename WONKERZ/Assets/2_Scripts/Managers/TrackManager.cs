@@ -22,7 +22,7 @@ namespace Wonkerz
 
         public override void OnLoad(GameObject gameObject)
         {
-            TrackManager tm = Access.TrackManager();
+            TrackManager tm = Access.managers.trackMgr;
             if (!!tm)
             {
                 // 

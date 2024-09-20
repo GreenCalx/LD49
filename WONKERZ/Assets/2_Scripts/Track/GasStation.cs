@@ -65,7 +65,7 @@ namespace Wonkerz {
                 nutConversionElapsed += Time.deltaTime;
                 if (nutConversionElapsed > nutConversionInterval)
                 {
-                    bool convertSuccess = Access.CollectiblesManager().tryConvertNutToTurbo();
+                    bool convertSuccess = Access.managers.collectiblesMgr.tryConvertNutToTurbo();
                     nutConversionElapsed = 0f;
                     if (convertSuccess)
                     {
@@ -113,7 +113,7 @@ namespace Wonkerz {
         void OnDestroy()
         {
             try{
-                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
                 #pragma warning disable CS0168
             } catch (NullReferenceException e) {
                 this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
@@ -144,7 +144,7 @@ namespace Wonkerz {
             {
                 //UICheckpoint uicp = Access.UICheckpoint();
 
-                //Access.PlayerInputsManager().player1.Attach(this as IControllable);
+                //Access.managers.playerInputsMgr.player1.Attach(this as IControllable);
                 Access.CheckPointManager().playerInGasStation = true;
                 askCoinz.gameObject.SetActive(true);
                 askCoinz.animate = true;
@@ -155,7 +155,7 @@ namespace Wonkerz {
         {
             if (Utils.isPlayer(iCollider.gameObject))
             {
-                //Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                //Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
                 Access.CheckPointManager().playerInGasStation = false;
 
                 if (IsPumpingGas)

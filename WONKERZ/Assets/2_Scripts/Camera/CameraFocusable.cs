@@ -60,7 +60,7 @@ namespace Wonkerz
             if (forceFocus && !isFocus)
             {
                 OnPlayerFocus();
-                PlayerCamera pCam = Access.CameraManager().active_camera.GetComponent<PlayerCamera>();
+                PlayerCamera pCam = Access.managers.cameraMgr.active_camera.GetComponent<PlayerCamera>();
                 pCam?.SetSecondaryFocus(this, true);
             }
         }

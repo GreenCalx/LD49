@@ -67,7 +67,7 @@ namespace Wonkerz
             }
 
             // Reset track infinite collectibles
-            Access.CollectiblesManager().resetInfCollectibles();
+            Access.managers.collectiblesMgr.resetInfCollectibles();
 
             PC.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
@@ -128,7 +128,7 @@ namespace Wonkerz
                 PC = Access.Player();
                 if (!is_rdy_to_launch)
                 {
-                    is_rdy_to_launch = Access.TrackManager().trackIsReady; // TODO  wait for scenemanager to tell its ok
+                    is_rdy_to_launch = Access.managers.trackMgr.trackIsReady; // TODO  wait for scenemanager to tell its ok
                     PC.Freeze();
                 }
                 else

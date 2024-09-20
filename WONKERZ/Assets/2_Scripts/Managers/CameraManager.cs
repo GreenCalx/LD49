@@ -76,7 +76,7 @@ namespace Wonkerz
 
         public static CameraManager Instance
         {
-            get { return inst ?? (inst = Access.CameraManager()); }
+            get { return inst ?? (inst = Access.managers.cameraMgr); }
             private set { inst = value; }
         }
 
@@ -86,7 +86,7 @@ namespace Wonkerz
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
-            Access.PlayerInputsManager().player1.Attach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Attach(this as IControllable);
 
             //changeCamera(GameCamera.CAM_TYPE.INIT, false);
         }
@@ -107,7 +107,7 @@ namespace Wonkerz
 
         void OnDestroy()
         {
-            Access.PlayerInputsManager().player1.Detach(this as IControllable);
+            Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
         }
 
         // Switch cameras between HUB cameras
@@ -428,7 +428,7 @@ namespace Wonkerz
             PhysicsMaterialManager PMM = Access.PhysicsMaterialManager();
             if (!!PMM          ) PMM.SetCamera(active_camera.cam);
 
-            //if (sceneTransition) Access.SceneLoader().asyncTransitionLock = false;
+            //if (sceneTransition) Access.managers.sceneMgr.asyncTransitionLock = false;
 
             // Debug Cam switches below
             this.Log("CamSwitch : " + new_cam_name + " FROM " + prev_cam_name);

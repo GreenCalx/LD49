@@ -44,7 +44,7 @@ namespace Wonkerz {
             }
             playerTransform = OnlineGameManager.singleton.localPlayer.self_PlayerController.GetTransform();
 
-            CM = Access.CameraManager();
+            CM = Access.managers.cameraMgr;
             initScale = transform.localScale;
             initPosition = transform.position;
 
@@ -60,7 +60,7 @@ namespace Wonkerz {
 
             playerTransform = OnlineGameManager.singleton.localPlayer.self_PlayerController.GetTransform();
 
-            CM = Access.CameraManager();
+            CM = Access.managers.cameraMgr;
             initScale = transform.localScale;
             initPosition = transform.position;
             usable = true;
@@ -78,7 +78,7 @@ namespace Wonkerz {
             if (faceCamera)
             {
                 if (CM==null)
-                { CM = Access.CameraManager(); }
+                { CM = Access.managers.cameraMgr; }
                 else if (!!CM.active_camera)
                 { transform.LookAt(CM.active_camera.transform); }
             }

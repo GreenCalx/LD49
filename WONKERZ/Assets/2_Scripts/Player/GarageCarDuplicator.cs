@@ -7,12 +7,12 @@ namespace Wonkerz {
     {
         void Start()
         {
-            Access.PlayerCosmeticsManager().addPlayerToCustomize(gameObject);
+            Access.managers.playerCosmeticsMgr.addPlayerToCustomize(gameObject);
         }
 
         void OnDestroy()
         {
-            Access.PlayerCosmeticsManager().removePlayerToCustomize(gameObject);
+            Access.managers.playerCosmeticsMgr.removePlayerToCustomize(gameObject);
         }
     }
 }

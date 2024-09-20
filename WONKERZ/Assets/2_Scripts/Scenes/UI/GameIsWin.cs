@@ -28,7 +28,7 @@ namespace Wonkerz {
         {
             start_time = Time.time;
 
-            TrackManager tm = Access.TrackManager();
+            TrackManager tm = Access.managers.trackMgr;
 
             difficulty_txt.SetText( tm.track_score.selected_diff.ToString() );
 
@@ -60,7 +60,7 @@ namespace Wonkerz {
             double time_offset = Time.time - start_time;
             if (key_pressed && (time_offset >= CLICK_TIME))
             {
-                Access.SceneLoader().loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
+                Access.managers.sceneMgr.loadScene(Constants.SN_HUB, new SceneLoader.LoadParams
                 {
                     useTransitionIn = true,
                     useTransitionOut = true,
@@ -71,8 +71,8 @@ namespace Wonkerz {
 
         public void publishTime()
         {
-            double racetime     = Access.TrackManager().getRaceTime();
-            double pb           = Access.TrackManager().getRacePB();
+            double racetime     = Access.managers.trackMgr.getRaceTime();
+            double pb           = Access.managers.trackMgr.getRacePB();
             int racetime_val_min = (int)(racetime / 60);
             int racetime_val_sec = (int)(racetime % 60);
 
@@ -85,7 +85,7 @@ namespace Wonkerz {
                 {
                     new_record.gameObject.SetActive(true);
                 }
-                Access.TrackManager().saveRacePB();
+                Access.managers.trackMgr.saveRacePB();
             }
             if (!!pb_txt)
             {
@@ -97,8 +97,8 @@ namespace Wonkerz {
 
         public void publishScore()
         {
-            int trickscore = Access.TrackManager().getTrickScore();
-            int highscore = Access.TrackManager().getRaceHighScore();
+            int trickscore = Access.managers.trackMgr.getTrickScore();
+            int highscore = Access.managers.trackMgr.getRaceHighScore();
 
             trackscore_txt.SetText(trickscore.ToString());
             if ( trickscore > highscore )
@@ -108,7 +108,7 @@ namespace Wonkerz {
                 {
                     new_highscore.gameObject.SetActive(true);
                 }
-                Access.TrackManager().saveRaceHighScore();
+                Access.managers.trackMgr.saveRaceHighScore();
             }
             highscore_txt.SetText(highscore.ToString());
         }

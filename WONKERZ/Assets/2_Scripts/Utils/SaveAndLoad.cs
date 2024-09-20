@@ -30,7 +30,7 @@ namespace Wonkerz
 
         private static void updateFileName(ref string iFileName)
         {
-            string path = Access.GameProgressSaveManager().profileDataFilePath;
+            string path = Access.managers.gameProgressSaveMgr.profileDataFilePath;
             fileName = Path.Combine(path, iFileName);
         }
 

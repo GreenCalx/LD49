@@ -38,7 +38,7 @@ namespace Wonkerz
             if (isOpened)
                 return;
 
-            if (Access.CollectiblesManager().getCollectedTickets() >= goldenTicketNeeded)
+            if (Access.managers.collectiblesMgr.getCollectedTickets() >= goldenTicketNeeded)
             {
                 StartCoroutine(openGate(gateOpenTime));
                 isOpened = true;

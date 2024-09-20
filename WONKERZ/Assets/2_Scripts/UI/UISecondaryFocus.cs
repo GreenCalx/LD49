@@ -30,7 +30,7 @@ namespace Wonkerz {
         public void trackObjectPosition(Transform iWorldTransform)
         {
             trackedObject = iWorldTransform;
-            cam = Access.CameraManager().active_camera.cam;
+            cam = Access.managers.cameraMgr.active_camera.cam;
             img = GetComponent<Image>();
         }
 

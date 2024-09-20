@@ -68,7 +68,7 @@ namespace Wonkerz {
         public void SetAsCamFocus()
         {
             try {
-                FollowObjectCamera foc = (FollowObjectCamera)Access.CameraManager().active_camera;
+                FollowObjectCamera foc = (FollowObjectCamera)Access.managers.cameraMgr.active_camera;
                 if (!!foc)
                 {
                     prevCamFocus = foc.focus;
@@ -86,7 +86,7 @@ namespace Wonkerz {
         public void DismissFromCam()
         {
             try {
-                FollowObjectCamera foc = (FollowObjectCamera) Access.CameraManager().active_camera;
+                FollowObjectCamera foc = (FollowObjectCamera) Access.managers.cameraMgr.active_camera;
                 if (!!foc)
                 {
                     if (prevCamFocus!=null)

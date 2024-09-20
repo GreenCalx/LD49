@@ -15,7 +15,7 @@ public class UITitleScreen : UIPanelTabbed
 
     protected override void OnEnable()
     {
-        inputMgr = Access.PlayerInputsManager().player1;
+        inputMgr = Access.managers.playerInputsMgr.player1;
 
         base.OnEnable();
 
@@ -54,7 +54,7 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchOnline() {
         // check if we are using a profile.
-        var gameSaveManager = Access.GameProgressSaveManager();
+        var gameSaveManager = Access.managers.gameProgressSaveMgr;
         // just to be sure
         gameSaveManager.onProfileLoaded -= launchOnline;
         gameSaveManager.onProfileLoaded -= launchLocal;
@@ -66,13 +66,15 @@ public class UITitleScreen : UIPanelTabbed
             return;
         }
 
+        StopInputs();
+
         // TODO: do not remove player but switch between local, online, etc...
         // There should probably be no player at all on the titleScreen anyway.
         PlayerController pc = Access.Player();
         if (!!pc)
         {
             Destroy(pc.gameObject);
-            var mainCam = Access.GetMgr<CameraManager>().active_camera.cam;
+            var mainCam = Access.managers.cameraMgr.active_camera.cam;
             if (mainCam != null)
             {
                 AudioListener al = null;
@@ -89,8 +91,8 @@ public class UITitleScreen : UIPanelTabbed
             }
         }
 
-        Access.GameSettings().isLocal = false;
-        Access.SceneLoader().loadScene("OfflineRoom", new SceneLoader.LoadParams{
+        Access.managers.gameSettings.isLocal = false;
+        Access.managers.sceneMgr.loadScene("OfflineRoom", new SceneLoader.LoadParams{
             useLoadingScene = true,
             useTransitionIn = true,
             useTransitionOut = true,
@@ -99,7 +101,7 @@ public class UITitleScreen : UIPanelTabbed
 
     public void launchLocal() {
         // check if we are using a profile.
-        var gameSaveManager = Access.GameProgressSaveManager();
+        var gameSaveManager = Access.managers.gameProgressSaveMgr;
         // just to be sure...
         gameSaveManager.onProfileLoaded -= launchLocal;
         gameSaveManager.onProfileLoaded -= launchOnline;
@@ -111,11 +113,13 @@ public class UITitleScreen : UIPanelTabbed
             return;
         }
 
+        StopInputs();
+
         PlayerController pc = Access.Player();
         if (!!pc)
         {
             Destroy(pc.gameObject);
-            var mainCam = Access.GetMgr<CameraManager>().active_camera.cam;
+            var mainCam = Access.managers.cameraMgr.active_camera.cam;
             if (mainCam != null)
             {
                 AudioListener al = null;
@@ -132,9 +136,9 @@ public class UITitleScreen : UIPanelTabbed
             }
         }
 
-        Access.GameSettings().isLocal = true;
+        Access.managers.gameSettings.isLocal = true;
 
-        Access.SceneLoader().loadScene("OfflineRoom", new SceneLoader.LoadParams{
+        Access.managers.sceneMgr.loadScene("OfflineRoom", new SceneLoader.LoadParams{
             useLoadingScene = true,
             useTransitionIn = true,
             useTransitionOut = true,

@@ -38,7 +38,7 @@ namespace Wonkerz {
         void OnDestroy()
         {
             try{
-                Access.PlayerInputsManager().player1.Detach(this as IControllable);
+                Access.managers.playerInputsMgr.player1.Detach(this as IControllable);
                 #pragma warning disable CS0168
             } catch (NullReferenceException e) {
                 this.Log(gameObject.name + " OnDestroy : NULL ref on detachable");
@@ -56,7 +56,7 @@ namespace Wonkerz {
 
                 UIHandle.SetActive(true);
                 panel.inputMgr = Access.Player().inputMgr;
-                //panel.inputMgr = Access.PlayerInputsManager().all;
+                //panel.inputMgr = Access.managers.playerInputsMgr.all;
                 panel.onActivate.Invoke();
                 panel.activate();
             }
@@ -89,7 +89,7 @@ namespace Wonkerz {
                     sceneToLoad = Constants.SN_TITLE;
                     break;
             }
-            Access.SceneLoader().loadScene(sceneToLoad, new SceneLoader.LoadParams
+            Access.managers.sceneMgr.loadScene(sceneToLoad, new SceneLoader.LoadParams
             {
                 useTransitionIn = true,
                 useTransitionOut = true,
@@ -99,9 +99,9 @@ namespace Wonkerz {
 
         public void OnCameraToggleChange(bool value)
         {
-            //Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
+            //Access.managers.cameraMgr.changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
             // Disable auto rot of manual camera
-            ManualCamera mc = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+            ManualCamera mc = Access.managers.cameraMgr.active_camera.GetComponent<ManualCamera>();
             if (!!mc)
             {
                 mc.autoAlign = value;
@@ -110,8 +110,8 @@ namespace Wonkerz {
 
         public void GetCameraToggleValue(UICheckbox.UICheckboxValue value)
         {
-            value.value = Access.CameraManager().active_camera ?
-                (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.ORBIT) :
+            value.value = Access.managers.cameraMgr.active_camera ?
+                (Access.managers.cameraMgr.active_camera.camType == GameCamera.CAM_TYPE.ORBIT) :
                 false
             ;
         }
@@ -119,7 +119,7 @@ namespace Wonkerz {
         public void updateTrackDetails()
         {
             // update collectibles
-            CollectiblesManager cm = Access.CollectiblesManager();
+            CollectiblesManager cm = Access.managers.collectiblesMgr;
 
             //collected wonkerz
             if (!!wonkerzBar)

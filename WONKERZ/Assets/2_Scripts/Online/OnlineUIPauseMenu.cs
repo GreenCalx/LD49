@@ -32,9 +32,10 @@ public class OnlineUIPauseMenu : UIControllableElement
     public UIOnlinePlayerInfoLine UILobbyPlayerPrefab;
     public Transform UILobbyPlayerInfoHandle;
 
-    private PlayerController attachedPlayer;
+    public PlayerController attachedPlayer;
     private List<UIOnlinePlayerInfoLine> playerInfoLines = new List<UIOnlinePlayerInfoLine>();
 
+    // Should be init or select.
     override protected void OnEnable()
     {
         if (attachedPlayer == null) {
@@ -122,8 +123,8 @@ public class OnlineUIPauseMenu : UIControllableElement
             }
         }
 
-        Access.SceneLoader().ResetDontDestroyOnLoad();
-        Access.SceneLoader().loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
+        Access.managers.sceneMgr.ResetDontDestroyOnLoad();
+        Access.managers.sceneMgr.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
             useTransitionOut = true,
             useTransitionIn  = true,
             sceneLoadingMode = LoadSceneMode.Single,
@@ -132,9 +133,9 @@ public class OnlineUIPauseMenu : UIControllableElement
 
     public void OnCameraToggleChange(bool value)
     {
-        //Access.CameraManager().changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
+        //Access.managers.cameraMgr.changeCamera(value ? GameCamera.CAM_TYPE.ORBIT : GameCamera.CAM_TYPE.OLD_TRACK);
         // Disable auto rot of manual camera
-        ManualCamera mc = Access.CameraManager().active_camera.GetComponent<ManualCamera>();
+        ManualCamera mc = Access.managers.cameraMgr.active_camera.GetComponent<ManualCamera>();
         if (!!mc)
         {
             mc.autoAlign = value;
@@ -143,8 +144,8 @@ public class OnlineUIPauseMenu : UIControllableElement
 
     public void GetCameraToggleValue(UICheckbox.UICheckboxValue value)
     {
-        value.value = Access.CameraManager().active_camera ?
-            (Access.CameraManager().active_camera.camType == GameCamera.CAM_TYPE.ORBIT) :
+        value.value = Access.managers.cameraMgr.active_camera ?
+            (Access.managers.cameraMgr.active_camera.camType == GameCamera.CAM_TYPE.ORBIT) :
             false
             ;
     }
@@ -152,7 +153,7 @@ public class OnlineUIPauseMenu : UIControllableElement
     public void updateTrackDetails()
     {
         // update collectibles
-        CollectiblesManager cm = Access.CollectiblesManager();
+        CollectiblesManager cm = Access.managers.collectiblesMgr;
 
         //collected wonkerz
         // if (!!wonkerzBar)

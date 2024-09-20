@@ -63,8 +63,8 @@ namespace Wonkerz
         public void displayCP(CheckPoint iCP)
         {
             idOfLastCPTriggered.text = iCP.id.ToString();
-            int racetime_val_min = (int)(Access.TrackManager().track_score.track_time / 60);
-            int racetime_val_sec = (int)(Access.TrackManager().track_score.track_time % 60);
+            int racetime_val_min = (int)(Access.managers.trackMgr.track_score.track_time / 60);
+            int racetime_val_sec = (int)(Access.managers.trackMgr.track_score.track_time % 60);
             cp_name_textval.SetText(iCP.checkpoint_name);
             cp_time_textval.SetText(racetime_val_min.ToString() + " m " + racetime_val_sec.ToString() + " s");
             enable();
