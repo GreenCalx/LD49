@@ -414,6 +414,7 @@ namespace Wonkerz
             return false;
         }
 
+        // TODO: implementation for anything not a car...
         public float GetGroundAerialLatency()
         {
             return (car.car as WkzCar).wkzDef.groundAerialSwitchLatency;
@@ -440,6 +441,16 @@ namespace Wonkerz
             return (car.car as WkzCar).speedEffect.particles;
         }
 
+        public float GetSpeedEffectRatio(float currentSpeedInKmH) {
+            var speedEffect = (car.car as WkzCar).speedEffect;
+            if (speedEffect.maxSpeedInKmH == 0.0f) {
+                this.LogError("Speed effect : max speed is 0, this cannot be.");
+                return 0;
+            }
+
+            return Mathf.Lerp(0, 1, (Mathf.Abs(currentSpeedInKmH) - speedEffect.thresholdSpeedInKmH) / speedEffect.maxSpeedInKmH);
+        }
+
         public float GetJumpLatency() {
             return (car.car as WkzCar).wkzDef.jumpDef.latency;
         }
@@ -452,14 +463,16 @@ namespace Wonkerz
             return (car.car as WkzCar).wkzDef.jumpDef.stiffnessMul;
         }
 
-
         public void ApplySpeedEffect()
         {
+            if (!IsCar()) {
+                this.LogWarn("Speed effect: Not implemented for anything not a car.");
+                return;
+            }
+
             // Apply camera effect.
             // Will change FoV, distance, etc.
-
-            // TODO: makethis work
-            var effectRatio = 0.0f;
+            var effectRatio = GetSpeedEffectRatio((float)car.car.GetCurrentSpeedInKmH());
 
             CameraManager CamMgr = Access.managers.cameraMgr;
             if (CamMgr?.active_camera is PlayerCamera)
@@ -773,6 +786,7 @@ namespace Wonkerz
                                 {
                                     UpdateJump(Time.deltaTime);
                                     UpdateWeight(Time.deltaTime);
+                                    ApplySpeedEffect();
                                 }
                                 break;
                         }
