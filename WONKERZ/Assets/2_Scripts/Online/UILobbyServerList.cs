@@ -10,11 +10,13 @@ using System.Net.Sockets;
 
 public class UILobbyServerList : UIPanelTabbedScrollable
 {
-    // Externals 
+    // Externals
 
     public VerticalLayoutGroup layout;
 
     public UILobbyServerTab lobbyTabObject;
+
+    public UILabel emptyLabel;
 
     public UIOnline online { get; private set; }
 
@@ -111,12 +113,19 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
         public override void Do()
         {
-            foreach (var lobby in lobbies)
+            if (lobbies.Count == 0) {
+                ui.emptyLabel.Show();
+            } else
             {
-                ui.CreateLobbyTab(lobby);
-            }
+                ui.emptyLabel.Hide();
 
-            ui.SelectTab(0);
+                foreach (var lobby in lobbies)
+                {
+                    ui.CreateLobbyTab(lobby);
+                }
+
+                ui.SelectTab(0);
+            }
 
             OnCmdSuccess?.Invoke();
         }

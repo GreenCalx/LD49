@@ -41,7 +41,7 @@ public class UIConnectionStateText
     }
 };
 
-public class UILobbyServerTab : UITextTab 
+public class UILobbyServerTab : UITextTab
 {
     public Lobby lobby;
 
@@ -78,7 +78,7 @@ public class UILobbyServerTab : UITextTab
 
         lobbyName.text.text        = lobby.name;
         lobbyHostName.text.text    = lobby.hostName;
-        lobbyPlayerCount.text.text = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 1) + " / " + lobby.maxPlayerCount;
+        lobbyPlayerCount.text.text = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 0) + " / " + lobby.maxPlayerCount;
     }
 
     float connectionTimer        = 0.0f;
