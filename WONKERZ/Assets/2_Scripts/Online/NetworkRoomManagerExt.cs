@@ -35,6 +35,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     // TODO: replace actions by only one action with operationtype and data?
     // Following are callbocks into function as we are not really overriding the behaviour
     // of those function directly in this object but more reacting to it from an external view.
+    public Action                         OnRoomClientConnectedCB;
+    public Action                         OnRoomClientDisconnectedCB;
     public Action                         OnRoomStartHostCB;
     public Action                         OnRoomClientEnterCB;
     public Action                         OnRoomClientExitCB;
@@ -72,7 +74,14 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnRoomClientDisconnect()
     {
         this.Log("OnRoomClientDisconnect.");
-        OnRoomStopClientCB?.Invoke();
+
+        OnRoomClientDisconnectedCB?.Invoke();
+    }
+
+    public override void OnRoomClientConnect() {
+        this.Log("OnRoomClientConnect.");
+
+        OnRoomClientConnectedCB?.Invoke();
     }
 
     public override void OnRoomStartClient()
@@ -86,6 +95,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         this.Log("OnRoomClientStop");
 
         Access.managers.gameSettings.isOnline = false;
+
+        OnRoomStopClientCB?.Invoke();
     }
 
     public override void OnRoomStartHost()
@@ -280,6 +291,8 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     // We might want to allow client to connect while the game is running for some reason.
     public override void OnServerConnect(NetworkConnectionToClient conn) {
         this.Log("OnServerConnect.");
+
+        OnRoomServerConnect(conn);
     }
 
     // Called when player has loaded a ServerScene, which by default is replacing the roomPlayer with a gamePlayer.

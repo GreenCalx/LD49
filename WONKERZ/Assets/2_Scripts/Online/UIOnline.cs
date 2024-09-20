@@ -621,14 +621,10 @@ public class UIOnline : UIPanel
 
     void OnRoomClientEnter() {
         this.Log("OnRoomClientEnter");
-
-        if (uiRoom.isActivated) uiRoom.UpdatePlayerSlots(roomServer.roomSlots);
     }
 
     void OnRoomClientExit() {
         this.Log("OnRoomClientExit");
-
-        if (uiRoom.isActivated) uiRoom.UpdatePlayerSlots(roomServer.roomSlots);
     }
 
     void OnRoomStartClient() {

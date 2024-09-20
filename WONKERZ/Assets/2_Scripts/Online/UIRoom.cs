@@ -79,7 +79,10 @@ public class UIRoom : UIPanelTabbed
 
         uiOnline.roomServer.OnRoomServerPlayersReadyCB += OnAllPlayersReady;
         uiOnline.roomServer.OnRoomClientSceneChangedCB += OnGameLoaded;
-        uiOnline.roomServer.OnShowPreGameCountdown += OnShowPreGameCountdown;
+        uiOnline.roomServer.OnShowPreGameCountdown     += OnShowPreGameCountdown;
+        // use client enter/exit because they are called AFTER roomSlots has been updated.
+        uiOnline.roomServer.OnRoomClientEnterCB += delegate () {UpdatePlayerSlots(uiOnline.roomServer.roomSlots); };
+        uiOnline.roomServer.OnRoomClientExitCB += delegate () {UpdatePlayerSlots(uiOnline.roomServer.roomSlots); };
 
         readyUpHint.Hide();
         countdownHint.Hide();
@@ -96,6 +99,9 @@ public class UIRoom : UIPanelTabbed
             if (uiOnline.roomServer) {
                 uiOnline.roomServer.OnRoomServerPlayersReadyCB -= OnAllPlayersReady;
                 uiOnline.roomServer.OnRoomClientSceneChangedCB -= OnGameLoaded;
+                uiOnline.roomServer.OnShowPreGameCountdown     -= OnShowPreGameCountdown;
+                uiOnline.roomServer.OnRoomClientEnterCB -= delegate () {UpdatePlayerSlots(uiOnline.roomServer.roomSlots); };
+                uiOnline.roomServer.OnRoomClientExitCB -= delegate () {UpdatePlayerSlots(uiOnline.roomServer.roomSlots); };
             }
         }
 
@@ -241,6 +247,7 @@ public class UIRoom : UIPanelTabbed
 
     public void UpdatePlayerSlots(List<NetworkRoomPlayer> roomSlots)
     {
+        this.Log("UpdatePlayerSlots : " + roomSlots.Count);
         // TODO: Update already existing slots instead of creating again all slots.
 
         // Clean-up
