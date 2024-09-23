@@ -13,21 +13,73 @@ using Mirror;
 // which is server only
 public class UIOnlineRaceTrial : NetworkBehaviour
 {
-    [Header("Manual refs")]
+
+    [Header("Manual self refs")]
     public TextMeshProUGUI raceTimeValue;
     public TextMeshProUGUI nLapsValue;
     public TextMeshProUGUI clientLapsValue;
+    public TextMeshProUGUI positionTextNumber;
+    public TextMeshProUGUI positionTextSuffix;
 
-    // [Header("Auto Refs")]
-    // public OnlineRaceTrialManager ORTM;
+    [Header("Internals")]
+    public bool initDone = false;
 
-    // void Update()
+    void Start()
+    {
+        StartCoroutine(initCo());
+    }
+
+    public IEnumerator initCo()
+    {
+        initDone =false;
+
+        while (OnlineGameManager.singleton==null)
+        { yield return null; }
+
+        while (OnlineGameManager.singleton.localPlayer==null)
+        { yield return null; }
+
+        initDone = true;
+    }
+
+     [TargetRpc]
+     public void RpcLocalPlayerUpdatePosition(int iPosition)
+     {
+        UpdateLocalPlayerPosition(iPosition);
+     }
+
+    public void UpdateLocalPlayerPosition(int iPosition)
+    {
+        positionTextNumber.text = iPosition.ToString();
+        if (iPosition==1)
+            positionTextSuffix.text = "st";
+        else if (iPosition==2)
+            positionTextSuffix.text = "nd";
+        else if (iPosition==3)
+            positionTextSuffix.text = "rd";
+        else
+            positionTextSuffix.text = "th";
+    }
+    // [ClientRpc]
+    // public void RpcRefreshPositions(Dictionary<OnlinePlayerController, float> iOrderedPlayers)
     // {
-    //     if (!!ORTM)
+    //     RefreshPositions(iOrderedPlayers);
+    // }
+
+    // public void RefreshPositions(Dictionary<OnlinePlayerController, float> iOrderedPlayers)
+    // {
+    //     if (!initDone)
+    //         return;
+    //     // dic should be ordered by score before entering this
+    //     int index = 0;
+    //     foreach(OnlinePlayerController opc in iOrderedPlayers.Keys)
     //     {
-    //         if (ORTM.dicPlayerTrialFinishPositions.ContainsKey(OnlineGameManager.Get().localPlayer))
-    //             return;
-    //         updateRaceTime();
+    //         if (index>=playerPositionLineInsts.Count)
+    //             continue;
+    //         OnlineUIPlayerRacePositionLine infoLine = playerPositionLineInsts[index];
+    //         infoLine.SetPlayerName(opc.onlinePlayerName);
+    //         infoLine.SetPlayerPosition(index+1);
+    //         index++;
     //     }
     // }
     void updateRaceTime(string iRaceTimeAsStr)

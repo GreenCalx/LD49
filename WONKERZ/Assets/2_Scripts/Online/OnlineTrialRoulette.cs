@@ -23,6 +23,15 @@ public class OnlineTrialRoulette : NetworkBehaviour
 
     public void init(List<string> iTrials)
     {
+        RpcInitRouletteLabels(iTrials);
+        // Place in middle of cam viewport
+        RpcRelocateRoulette();
+        roulette_rb.maxAngularVelocity = 60f;
+    }
+
+    [ClientRpc]
+    public void RpcInitRouletteLabels(List<string> iTrials)
+    {
         int n_trials = iTrials.Count;
         if (n_trials < 1)
         {
@@ -43,8 +52,11 @@ public class OnlineTrialRoulette : NetworkBehaviour
             }
             trialLabelHandles[i].text = iTrials[i];
         }
+    }
 
-        // Place in middle of cam viewport
+    [ClientRpc]
+    public void RpcRelocateRoulette()
+    {
         CameraManager CM = Access.managers.cameraMgr;
         Camera cam = CM.active_camera.cam;
         
@@ -55,8 +67,7 @@ public class OnlineTrialRoulette : NetworkBehaviour
         transform.localPosition += new Vector3(0f, 0f, fwd_offset);
 
         transform.localRotation = Quaternion.identity;
-        roulette_rb.maxAngularVelocity = 60f;
-    }    
+    }
 
     // Call me within FixedUpdate or im FUCKED UP
     public void Spin()

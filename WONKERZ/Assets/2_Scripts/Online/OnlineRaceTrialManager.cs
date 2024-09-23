@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     public OnlineRaceCheckPoint RootCP;
     public readonly SyncDictionary<OnlinePlayerController, int> dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
     public readonly SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint> dicPlayersToCP = new SyncDictionary<OnlinePlayerController, OnlineRaceCheckPoint>();
+    //public SyncDictionary<OnlinePlayerController, float> dicPlayersToRacePosScore = new SyncDictionary<OnlinePlayerController, float>();
     public LinkedList<OnlineRaceCheckPoint> checkpoints = new LinkedList<OnlineRaceCheckPoint>();
 
     void Start()
@@ -30,6 +32,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
         {
             trialTime += Time.deltaTime;
             uiORT.RpcUpdateRaceTime(GetTrialTime());
+            RefreshPlayersRacePosition();
         }
     }
 
@@ -52,6 +55,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
         {
             dicPlayersToLaps.Add(opc, 1);
             dicPlayersToCP.Add(opc, RootCP);
+            //dicPlayersToRacePosScore.Add(opc,0f);
 
             if (opc.isClientOnly)
                 uiORT.RpcUpdateLap(1);
@@ -61,6 +65,68 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     
         uiORT.RpcUpdateNLapsValue(n_laps);
         uiORT.RpcUpdateRaceTime(GetTrialTime());
+
+        RefreshPlayersRacePosition();
+    }
+
+    [Server]
+    public void RefreshPlayersRacePosition()
+    {
+        List<OnlinePlayerController> rankedPlayers = new List<OnlinePlayerController>();
+
+        for (int i=0; i < OnlineGameManager.singleton.uniquePlayers.Count; i++)
+        {
+            OnlinePlayerController polledOPC = OnlineGameManager.singleton.uniquePlayers[i];
+            if (i==0)
+            {   
+                rankedPlayers.Add(polledOPC);
+                continue;
+            }
+
+            float polledOPCScore = GetScore(polledOPC);
+            for (int j=0; j < rankedPlayers.Count; j++)
+            { 
+                if (GetScore(rankedPlayers[j]) < polledOPCScore)
+                {
+                    rankedPlayers.Insert(j, polledOPC);
+                    break;
+                }
+            }
+            if (!rankedPlayers.Contains(polledOPC))
+            {
+                rankedPlayers.Add(polledOPC); // is in last position
+            }
+        }
+
+        foreach (OnlinePlayerController opc in rankedPlayers)
+        {
+            if (opc.isClientOnly)
+            {
+                uiORT.RpcLocalPlayerUpdatePosition(rankedPlayers.IndexOf(opc)+1);
+            } else {
+                uiORT.UpdateLocalPlayerPosition(rankedPlayers.IndexOf(opc)+1);
+            }
+        }
+    }
+
+    [Server]
+    public float GetScore(OnlinePlayerController iOPC)
+    {
+        return dicPlayersToLaps[iOPC] + (0.1f * dicPlayersToCP[iOPC].id) + (0.01f * DistToNextCP(iOPC));
+    }
+
+    [Server]
+    public float DistToNextCP(OnlinePlayerController iOPC)
+    {
+        Vector3 pPos = iOPC.self_PlayerController.GetTransform().transform.position;
+        Vector3 nextCPPos = Vector3.zero;
+        if (dicPlayersToCP[iOPC].IsPredecessorOf(RootCP) )
+        {
+            nextCPPos = RootCP.transform.position;
+        } else {
+            nextCPPos = dicPlayersToCP[iOPC].GetFirstSuccessor().transform.position;
+        }
+        return Vector3.Distance(pPos, nextCPPos);
     }
 
     [Server]

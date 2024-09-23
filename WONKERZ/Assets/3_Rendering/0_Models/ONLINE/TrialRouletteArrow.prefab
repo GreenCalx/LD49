@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 6302514834022435966}
   - component: {fileID: 6774030045705933706}
   - component: {fileID: 1893325650515018895}
-  m_Layer: 0
+  - component: {fileID: 3570551850429648784}
+  m_Layer: 24
   m_Name: TrialRouletteArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +119,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5753305071783037312}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
@@ -126,6 +127,42 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 62
   m_CollisionDetection: 0
+--- !u!59 &3570551850429648784
+HingeJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5753305071783037312}
+  m_ConnectedBody: {fileID: 0}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 0, y: 0, z: 1}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: -2.821, y: 0, z: 1.555}
+  m_UseSpring: 0
+  m_Spring:
+    spring: 0
+    damper: 0
+    targetPosition: 0
+  m_UseMotor: 0
+  m_Motor:
+    targetVelocity: 0
+    force: 0
+    freeSpin: 0
+  m_UseLimits: 1
+  m_Limits:
+    min: -80
+    max: 80
+    bounciness: 0
+    bounceMinVelocity: 0.2
+    contactDistance: 0
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1001 &387874352544310664
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -181,15 +218,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrialRouletteArrow
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
+      propertyPath: m_Layer
+      value: 24
+      objectReference: {fileID: 0}
     - target: {fileID: 4160989523243175156, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
       propertyPath: m_Convex
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5406213823081588464, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
+      propertyPath: m_Layer
+      value: 24
       objectReference: {fileID: 0}
     - target: {fileID: 8798106151280641155, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: dee7c4ca6f5baf940a7e2502483b40e4, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4160989523243175156, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 253f8df3a7fd69940b83d8b746479618, type: 3}
 --- !u!4 &209620613384241763 stripped
 Transform:
