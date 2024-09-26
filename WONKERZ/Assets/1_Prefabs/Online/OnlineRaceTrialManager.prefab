@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 101480364226920324}
   - component: {fileID: 101480364226920346}
   - component: {fileID: 101480364226920325}
+  - component: {fileID: 3615440462414813225}
   m_Layer: 0
   m_Name: OnlineRaceTrialManager
   m_TagString: Untagged
@@ -48,12 +49,17 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  startPositions:
-  - {fileID: 0}
-  - {fileID: 0}
   onlineStartLine: {fileID: 0}
+  portals: {fileID: 0}
+  skybox: {fileID: 0}
+  sun: {fileID: 0}
   trialIsOver: 0
-  raceTime: 0
+  trialTime: 0
+  trialLaunched: 0
+  uiORT: {fileID: 0}
+  n_laps: 3
+  CheckpointsHandle: {fileID: 0}
+  RootCP: {fileID: 0}
 --- !u!114 &101480364226920325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -71,3 +77,17 @@ MonoBehaviour:
   serverOnly: 0
   visibility: 0
   hasSpawned: 0
+--- !u!114 &3615440462414813225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101480364226920326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dadd7d8c269429b498851515ec3b9bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ORTM: {fileID: 101480364226920346}
+  AutoSetNextCheckpoints: 0

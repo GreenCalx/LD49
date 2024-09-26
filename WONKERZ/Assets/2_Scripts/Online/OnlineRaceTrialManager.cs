@@ -33,7 +33,9 @@ public class OnlineRaceTrialManager : OnlineTrialManager
             trialTime += Time.deltaTime;
             uiORT.RpcUpdateRaceTime(GetTrialTime());
             RefreshPlayersRacePosition();
-        }
+       }
+
+
     }
 
     IEnumerator Init()

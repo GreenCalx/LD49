@@ -13,7 +13,7 @@ public class OnlineRaceCheckPoint : NetworkBehaviour
     [Header("Manual Refs")]
     public int id = 0; // lap done
     public List<OnlineRaceCheckPoint> prev_CPs;
-    public List<OnlineRaceCheckPoint> next_CPs;
+    public List<OnlineRaceCheckPoint> next_CPs = new List<OnlineRaceCheckPoint>();
 
     // Start is called before the first frame update
     void Start()
