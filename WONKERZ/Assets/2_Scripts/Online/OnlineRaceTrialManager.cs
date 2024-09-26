@@ -152,9 +152,15 @@ public class OnlineRaceTrialManager : OnlineTrialManager
                 } else {
 
                     if (iOPC.isClientOnly)
-                    { uiORT.RpcUpdateLap(dicPlayersToLaps[iOPC]); }
+                    { 
+                        uiORT.RpcPlayLapAnim();
+                        uiORT.RpcUpdateLap(dicPlayersToLaps[iOPC]); 
+                    }
                     else
-                    { uiORT.updateLap(dicPlayersToLaps[iOPC]); }
+                    { 
+                        uiORT.PlayLapAnim();
+                        uiORT.updateLap(dicPlayersToLaps[iOPC]); 
+                    }
                 }
             }
             return;

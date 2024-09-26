@@ -20,6 +20,7 @@ public class UIOnlineRaceTrial : NetworkBehaviour
     public TextMeshProUGUI clientLapsValue;
     public TextMeshProUGUI positionTextNumber;
     public TextMeshProUGUI positionTextSuffix;
+    public ParticleSystem LapPassedPS;
 
     [Header("Internals")]
     public bool initDone = false;
@@ -101,6 +102,17 @@ public class UIOnlineRaceTrial : NetworkBehaviour
     public void RpcUpdateLap(int iCurrentLap)
     {
         updateLap(iCurrentLap);
+    }
+
+    public void PlayLapAnim()
+    {
+        LapPassedPS.Play();
+    }
+
+    [TargetRpc]
+    public void RpcPlayLapAnim()
+    {
+        PlayLapAnim();
     }
 
     public void updateNLapsValue(int iNLaps)

@@ -22,8 +22,6 @@ public class OnlineRaceHelper : MonoBehaviour
             AutoSetNextCheckpointsFromRoot();
             AutoSetNextCheckpoints = false;
         }
-
-        Debug.Log("Its time: " + Time.time);
     }
 
     private void AutoSetNextCheckpointsFromRoot()
