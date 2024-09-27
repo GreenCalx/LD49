@@ -12,8 +12,7 @@ public class OnlineTrialManager : NetworkBehaviour
     public OnlineStartLine onlineStartLine;
     public OnlineStartDispatcher portals;
     [Header("Graphx")]
-    public Material skybox;
-    public Light sun;
+    public OnlineRenderingUpdater RenderingUpdater;
 
     [Header("Internals")]
     public readonly SyncDictionary<OnlinePlayerController, int> dicPlayerTrialFinishPositions = new SyncDictionary<OnlinePlayerController, int>();
@@ -42,7 +41,14 @@ public class OnlineTrialManager : NetworkBehaviour
         yield return StartCoroutine(WaitForDependencies());
         OnlineGameManager.singleton.trialManager = this;
         trialLaunched = false;
-        // UpdateRenderSettings();
+
+        if (RenderingUpdater!=null)
+        {
+            RenderingUpdater.UpdateRenderSettings();
+            if (isServer)
+                RenderingUpdater.RpcUpdateRenderSettings();
+        }
+
     }
 
     // Update is called once per frame
@@ -56,18 +62,6 @@ public class OnlineTrialManager : NetworkBehaviour
 
     // Note :
     // If still needed with new online scene workflow , move to OGM
-    // protected void UpdateRenderSettings()
-    // {
-    //     RenderSettings.skybox = skybox;
-    //     RenderSettings.sun = sun;
-    // }
-
-    // [ClientRPC]
-    // protected void RpcUpdateRenderSettings()
-    // {
-    //     UpdateRenderSettings();
-    // }
-
     [Server]
     protected void DispatchPlayersToPortals()
     {

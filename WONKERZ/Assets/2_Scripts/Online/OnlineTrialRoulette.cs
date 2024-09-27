@@ -80,32 +80,32 @@ public class OnlineTrialRoulette : NetworkBehaviour
     {
         roulette_rb.angularVelocity = Vector3.zero;
         roulette_rb.isKinematic = true;
-
-        StartCoroutine(SnapAngleCo());
-    }
-
-    IEnumerator SnapAngleCo()
-    {
-        HasSnapped = false;
-        Quaternion initRot = transform.rotation;
-
-        Vector3 angles = roulette_rb.transform.rotation.eulerAngles;
-        float snapAngle = angles.x + (angles.x % 45f);
-        Quaternion targetRot = Quaternion.Euler(new Vector3(snapAngle, angles.y, angles.z));
-
-        float timeCount = 0f;
-        while (Quaternion.Angle(transform.rotation, targetRot) > 0f)
-        {
-            transform.rotation = Quaternion.Lerp(initRot, targetRot, timeCount * snapAngleSpeed );
-            timeCount += Time.deltaTime;
-            yield return null;
-        }
         HasSnapped = true;
+        //StartCoroutine(SnapAngleCo());
     }
+
+    // IEnumerator SnapAngleCo()
+    // {
+    //     HasSnapped = false;
+    //     Quaternion initRot = transform.rotation;
+
+    //     Vector3 angles = roulette_rb.transform.rotation.eulerAngles;
+    //     float snapAngle = angles.x + (angles.x % 45f);
+    //     Quaternion targetRot = Quaternion.Euler(new Vector3(snapAngle, angles.y, angles.z));
+
+    //     float timeCount = 0f;
+    //     while (Quaternion.Angle(transform.rotation, targetRot) > 0f)
+    //     {
+    //         transform.rotation = Quaternion.Lerp(initRot, targetRot, timeCount * snapAngleSpeed );
+    //         timeCount += Time.deltaTime;
+    //         yield return null;
+    //     }
+    //     HasSnapped = true;
+    // }
 
     public bool IsSpinning()
     {
-        return roulette_rb.angularVelocity.magnitude > 0.1f;
+        return roulette_rb.angularVelocity.magnitude > 0.05f;
     }
 
     public string RetrieveSelectedTrial()
@@ -114,11 +114,25 @@ public class OnlineTrialRoulette : NetworkBehaviour
         int selectedFace = (int)Mathf.Floor(simpAngle / 45f);
         TextMeshProUGUI selectedTxt = trialLabelHandles[selectedFace];
 
+        ShowSelectedTrial(selectedFace);
+        if (isServer)
+            RpcShowSelectedTrial(selectedFace);
+
+        return selectedTxt.text;
+    }
+
+    [ClientRpc]
+    public void RpcShowSelectedTrial(int iSelectedFace)
+    {
+        ShowSelectedTrial(iSelectedFace);
+    }
+
+    public void ShowSelectedTrial(int iSelectedFace)
+    {
+        TextMeshProUGUI selectedTxt = trialLabelHandles[iSelectedFace];
         selectedTxt.overrideColorTags = true;
         selectedTxt.color = Color.yellow;
         selectedTxt.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
-
-        return selectedTxt.text;
     }
 
 }

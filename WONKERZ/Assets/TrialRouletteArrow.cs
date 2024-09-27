@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class TrialRouletteArrow : MonoBehaviour
 {
-    public Rigidbody rb;
-
-    void OnTriggerEnter(Collider iCollider)
+    public void GetPointedTrial()
     {
-        rb.AddForce(Vector3.up * 10f, ForceMode.Impulse);
+
+    }
+
+    void Update()
+    {
+        Debug.DrawRay(transform.position, transform.forward * 20f, Color.red );
     }
 }
