@@ -110,6 +110,9 @@ public class OnlineTrialRoulette : NetworkBehaviour
 
     public string RetrieveSelectedTrial()
     {
+        // Vector3 camFwd = CameraManager.Instance.active_camera.transform.forward;
+        // float relativeAngleToCam = roulette_rb.transform.rotation.eulerAngles.x - Vector3.Angle(transform.forward, camFwd);
+        //float simpAngle = relativeAngleToCam % 360f;
         float simpAngle = roulette_rb.transform.rotation.eulerAngles.x % 360f;
         int selectedFace = (int)Mathf.Floor(simpAngle / 45f);
         TextMeshProUGUI selectedTxt = trialLabelHandles[selectedFace];
