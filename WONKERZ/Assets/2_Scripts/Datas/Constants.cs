@@ -1,6 +1,6 @@
 using System;
 
-public struct Constants
+public static class Constants
 {
     public const int MajorVersion = 0;
     public const int MinorVersion = 2;

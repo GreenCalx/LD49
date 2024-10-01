@@ -10,9 +10,9 @@ namespace Wonkerz
             inputMgr = Access.managers.playerInputsMgr.player1;
         }
 
-        override public void deactivate()
+        override public void Deactivate()
         {
-            base.deactivate();
+            base.Deactivate();
             garageEntry.closeGarage();
         }
 

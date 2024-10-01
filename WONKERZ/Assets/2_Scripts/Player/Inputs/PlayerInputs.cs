@@ -74,6 +74,10 @@ public class PlayerInputs
         UIValidate,
         UICancel,
         UIStart,
+        UIKeyboardSpace,
+        UIKeyboardBackspace,
+        UIKeyboardShift,
+        UIKeyboardCaps,
         // test
         Grapin,
         Count,
@@ -112,15 +116,15 @@ public class PlayerInputs
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.DpadV), new Controller.InputCode(Controller.JoystickAxisCode.DpadVNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.MouseCode.Cursor), new Controller.InputCode(Controller.MouseCode.Cursor)),
                 defaultAxisSettings));
-        
-        controller.AddInput((int)InputCode.CameraFocus, 
+
+        controller.AddInput((int)InputCode.CameraFocus,
             new GameInputButton("CameraFocus", "Camera focus on nearest focusable object", new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.A)));
-        
+
         controller.AddInput((int)InputCode.CameraReset,
             new GameInputButton("CameraReset", "Reset camera behind player", new Controller.InputCode(Controller.JoystickButtonsCode.RS), new Controller.InputCode(KeyCode.Tab)));
 
         controller.AddInput((int)InputCode.CameraFocusChange,
-            new GameInputAxis("CameraFocusChange","Change the current camera focus",                 
+            new GameInputAxis("CameraFocusChange","Change the current camera focus",
                 new GameInputAxis.Axis(new Controller.InputCode(Controller.JoystickAxisCode.DpadH), new Controller.InputCode(Controller.JoystickAxisCode.DpadHNeg)),
                 new GameInputAxis.Axis(new Controller.InputCode(KeyCode.O), new Controller.InputCode(KeyCode.L)),
                 defaultAxisSettings));
@@ -207,6 +211,23 @@ public class PlayerInputs
         controller.AddInput((int)InputCode.UIRight,
             new GameInputButtonFromAxis("UIRight", "Menus right",
                 new Controller.InputCode(Controller.JoystickAxisCode.LeftH), new Controller.InputCode(KeyCode.D)));
+
+        // cannat be changed by the player.
+        controller.AddInput((int)InputCode.UIKeyboardSpace,
+            new GameInputButton("UIKeyboardSpace", "UIKeyboardSpace",
+                new Controller.InputCode(Controller.JoystickButtonsCode.Y), new Controller.InputCode(KeyCode.Space)));
+
+        controller.AddInput((int)InputCode.UIKeyboardBackspace,
+            new GameInputButton("UIKeyboardBackspace", "UIKeyboardBackspace",
+                new Controller.InputCode(Controller.JoystickButtonsCode.X), new Controller.InputCode(KeyCode.Backspace)));
+
+        controller.AddInput((int)InputCode.UIKeyboardCaps,
+            new GameInputButton("UIKeyboardCaps", "UIKeyboardCaps",
+                new Controller.InputCode(Controller.JoystickButtonsCode.LS), new Controller.InputCode(KeyCode.CapsLock)));
+
+        controller.AddInput((int)InputCode.UIKeyboardShift,
+            new GameInputButtonFromAxis("UIKeyboardShift", "UIKeyboardShift",
+                new Controller.InputCode(Controller.JoystickAxisCode.LT), new Controller.InputCode(KeyCode.LeftShift)));
 
 
         controller.AddInput((int)InputCode.UICancel,

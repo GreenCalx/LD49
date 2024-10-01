@@ -25,9 +25,9 @@ namespace Wonkerz {
         [HideInInspector]
         public int x, y;
 
-        override public void select()
+        override public void Select()
         {
-            base.select();
+            base.Select();
             BountyArray.AbstractBounty bounty;
             if (bountyArray.getBountyAt(x, y, out bounty))
             {
@@ -45,21 +45,7 @@ namespace Wonkerz {
             }
             // Update tooltip_bountyDesc
         }
-    
-        override public void deselect()
-        {
-            base.deselect();
-        }
 
-        override public void activate()
-        {
-            base.activate();
-        }
-
-        override public void deactivate()
-        {
-            base.deactivate();
-        }
 
         public void updateColor()
         {

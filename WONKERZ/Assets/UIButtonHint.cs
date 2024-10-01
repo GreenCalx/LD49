@@ -18,7 +18,7 @@ public class UIButtonHint : UIElement
     RawImage image;
 
     public void SetButton(string button, string text) {
-        label.text.text = text;
+        label.content = text;
         var controller = Access.managers.playerInputsMgr.player1.controllers[0].controller;
         // for now only Xbox
         // NOTE toffe: holy shiet this is a bad design gad damn what the fuck wan I thinking lord save us.

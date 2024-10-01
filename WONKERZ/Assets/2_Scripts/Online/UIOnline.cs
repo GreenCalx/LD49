@@ -116,6 +116,7 @@ public class UIOnline : UIPanel
     public UIRoom              uiRoom;
     public UILobbyServerList   uiServerList;
     public UIButtonHint        uiCancelButtonHint;
+    public UIElement uiBackground;
 
     public void SetState(States toState)
     {
@@ -155,6 +156,7 @@ public class UIOnline : UIPanel
 
             case States.MainMenu:
                 {
+                    uiBackground.Show();
                     uiRoom            .Hide();
                     uiRoomCreationMenu.Hide();
 
@@ -181,21 +183,21 @@ public class UIOnline : UIPanel
                     // - all inputs are released.
                     if (uiMainMenu) {
                         uiMainMenu.Hide();
-                        uiMainMenu.deactivate();
-                        uiMainMenu.deinit();
+                        uiMainMenu.Deactivate();
+                        uiMainMenu.Deinit();
                     }
 
                     if (uiRoom)
                     {
                         uiRoom.Hide();
-                        uiRoom.deactivate();
-                        uiRoom.deinit();
+                        uiRoom.Deactivate();
+                        uiRoom.Deinit();
                     }
 
                     if (uiRoomCreationMenu) {
                         uiRoomCreationMenu.Hide();
-                        uiRoomCreationMenu.deactivate();
-                        uiRoomCreationMenu.deinit();
+                        uiRoomCreationMenu.Deactivate();
+                        uiRoomCreationMenu.Deinit();
                     }
 
                     if (stateMessageText) {
@@ -205,6 +207,10 @@ public class UIOnline : UIPanel
 
                     if (uiCancelButtonHint) {
                         uiCancelButtonHint.Hide();
+                    }
+
+                    if (uiBackground != null) {
+                        uiBackground.Hide();
                     }
                 }break;
             case States.Exit:
@@ -218,7 +224,7 @@ public class UIOnline : UIPanel
                         {
                             if (uiCancelButtonHint) uiCancelButtonHint.Hide();
 
-                            deactivate();
+                            Deactivate();
                             // Remove room if need be
                             if (client != null) client.Close();
                             sceneLoader.ResetDontDestroyOnLoad();
@@ -333,9 +339,9 @@ public class UIOnline : UIPanel
         }
     }
 
-    public override void cancel()
+    public override void Cancel()
     {
-        base.cancel();
+        base.Cancel();
 
         Hide();
     }
@@ -350,8 +356,8 @@ public class UIOnline : UIPanel
         {
             maxPlayerCount = 4,
             //cf :hastName: SchLobbyServer
-            hostName       = Access.managers.gameProgressSaveMgr.activeProfile,
-            name = uiRoomCreationMenu.GetRoomName(),
+            hostName = Access.managers.gameProgressSaveMgr.activeProfile,
+            name     = uiRoomCreationMenu.GetRoomName(),
         });
     }
 
@@ -399,9 +405,9 @@ public class UIOnline : UIPanel
 
     public void OpenLobbyServerList(UISelectableElement activator) {
         uiServerList.activator = activator;
-        uiServerList.Show();
 
-        uiMainMenu.Hide();
+        uiServerList.Show();
+        uiServerList.Activate();
     }
 
     public void ConnectToRoom(IPEndPoint roomEP, int roomHostID) {
@@ -435,30 +441,47 @@ public class UIOnline : UIPanel
         }
     }
 
-    override public void init()
+    override public void Init()
     {
+        // IMPORTANT: must be done before calling anything on lobby server
+        // or else we will never have any answers.
+        RegisterLobbyServerCallbacks();
+        RegisterRoomServerCallbacks();
+
         // Init childrens.
-        uiServerList.init();
-        uiMainMenu.GetComponent<UISelectableElement>().init();
-        uiRoom.init();
-        uiRoomCreationMenu.GetComponent<UISelectableElement>().init();
+        uiServerList.Init();
+        uiMainMenu.GetComponent<UISelectableElement>().Init();
+        uiRoom.Init();
+        uiRoomCreationMenu.GetComponent<UISelectableElement>().Init();
     }
 
-    override public void deinit()
+    override public void Deinit()
     {
-        uiServerList.deinit();
-        uiMainMenu.deinit();
-        uiRoom.deinit();
-        uiRoomCreationMenu.deinit();
+        uiServerList.Deinit();
+        uiMainMenu.Deinit();
+        uiRoom.Deinit();
+        uiRoomCreationMenu.Deinit();
+
+        RemoveLobbyServerCallbacks();
 
         StopLocalServer();
+
+        RemoveRoomServerCallbacks();
     }
 
-    override public void activate()
-    {
-        base.activate();
+    override protected void OnEnable() {
+        Show();
+        Activate();
+    }
 
-        init();
+    override protected void OnDisable() {
+        Hide();
+        Deactivate();
+    }
+
+    override public void Activate()
+    {
+        base.Activate();
         // On activation we try to connect
         // Will call back OnConnected, or OnError
         if (Access.managers.gameSettings.isLocal)
@@ -471,9 +494,9 @@ public class UIOnline : UIPanel
         StartCoroutine(CoroTryConnect(SchLobbyClient.defaultRemoteEP, 5, 0.5f));
     }
 
-    override public void deactivate()
+    override public void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
 
         RemoveLobbyServerCallbacks();
         RemoveRoomServerCallbacks();
@@ -663,11 +686,6 @@ public class UIOnline : UIPanel
         inputRight    = PlayerInputs.InputCode.UIRight.ToString();
 
         client.roomManager = roomServer;
-
-        // IMPORTANT: must be done before calling anything on lobby server
-        // or else we will never have any answers.
-        RegisterLobbyServerCallbacks();
-        RegisterRoomServerCallbacks();
     }
 
     IEnumerator CoroTryConnect(IPEndPoint serverEP, int loopCount, float loopWait)
@@ -692,11 +710,9 @@ public class UIOnline : UIPanel
     {
         base.OnDestroy();
 
-        RemoveLobbyServerCallbacks();
-
         StopLocalServer();
 
-        deactivate();
+        Deactivate();
     }
 
     override protected void Update()

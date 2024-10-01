@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Play only once on awake.
-public class AudioTitleScreen : MonoBehaviour
+public class AudioPlayOnlyOnce : MonoBehaviour
 {
     static bool played = false;
     void Awake() {

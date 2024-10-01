@@ -121,7 +121,7 @@ public class OnlineGameManager : NetworkBehaviour
                 // sounds like we might want to listen to such a change.
                 if (UIPauseMenu)
                 {
-                    UIPauseMenu.attachedPlayer = _localPlayer.self_PlayerController;
+                    UIPauseMenu.inputMgr = _localPlayer.self_PlayerController.inputMgr;
                 }
             }
         }
@@ -516,7 +516,7 @@ public class OnlineGameManager : NetworkBehaviour
         this.Log("RpcAllPlayersLockAndLoaded.");
 
         UIPlayer.Show();
-        UIPauseMenu.Show();
+        UIPauseMenu.Init();
     }
 
     [ClientRpc]

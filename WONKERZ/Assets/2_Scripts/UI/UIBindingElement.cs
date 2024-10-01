@@ -7,28 +7,28 @@ using Schnibble;
 using Schnibble.UI;
 using Schnibble.Managers;
 
-public class UIBindingElement : UISelectableElement
+public class UIBindingElement : UITextTab
 {
-    public new GameObject name;
-    public GameObject binding;
+    public UILabel    bindingLabel;
+    public RawImage   bindingImage;
 
     public PlayerInputs.InputCode inputKey;
 
-    public override void init() {}
-    public override void deinit() {}
-
     public void SetBinding(Controller.InputCode c){
 
-        (Parent as UIBindings).SetBinding(c, inputKey);
+        (parent as UIBindings).SetBinding(c, inputKey);
 
-        GetComponentInChildren<RawImage>().texture = Controller.XboxController.GetCodeDefaultTexture(c);
-
-        if (binding) {
-            binding.GetComponent<TMP_Text>().text = Controller.XboxController.GetCodeName(c);
-        }
+        bindingImage.texture = Controller.XboxController.GetCodeDefaultTexture(c);
+        bindingLabel.content = Controller.XboxController.GetCodeName(c);
     }
 
-    public void SetAsParent(){
-        (Parent as UIBindings).waitingForInput.SetParent(this);
+    public override void Activate() {
+        var uiBindings =(parent as UIBindings);
+        if (uiBindings == null) {
+            this.LogError("Parent should be UIBindings but is not.");
+            return;
+        }
+        uiBindings.waitingForInput.parent = this;
+        uiBindings.waitingForInput.Show();
     }
 }

@@ -48,9 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72d7395f4f78a344cb2150ed973ba1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -90,13 +96,16 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 0
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 0
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  index: 0
   background: {fileID: 1725610306595067098}
   onClickPanel: {fileID: 7330963544678076547}
   tabLayout: {fileID: 6370648415967916384}
@@ -255,10 +264,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 0}
-  text: {fileID: 1725610306180908713}
+  parent: {fileID: 2201518206906574859}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 1725610306180908713}
   references:
     version: 2
     RefIds:
@@ -489,9 +504,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 2201518206906574859}
+  parent: {fileID: 2201518206906574859}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -519,24 +540,21 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
-  selector_latch: 0.2
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   inputCancel: UICancel
   onCancel:
     m_PersistentCalls:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 0
   cancelDeactivatePanel: 1
-  inputUp: UIUp
-  inputDown: UIDown
-  inputLeft: UILeft
-  inputRight: UIRight
   tabs: []
   navigationMode: 1
   references:
@@ -596,9 +614,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 8257266978968967256}
+  parent: {fileID: 8257266978968967256}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -614,13 +638,16 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 0
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 0
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  index: 0
   label: {fileID: 7451090740157640700}
   references:
     version: 2
@@ -639,10 +666,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 2532917481773482600}
-  text: {fileID: 8425381133754155759}
+  parent: {fileID: 8257266978968967256}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 8425381133754155759}
   references:
     version: 2
     RefIds:
@@ -790,9 +823,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 2201518206906574859}
+  parent: {fileID: 2201518206906574859}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -820,24 +859,21 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
-  selector_latch: 0.2
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   inputCancel: UICancel
   onCancel:
     m_PersistentCalls:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 0
   cancelDeactivatePanel: 1
-  inputUp: UIUp
-  inputDown: UIDown
-  inputLeft: UILeft
-  inputRight: UIRight
   tabs:
   - {fileID: 2532917481773482600}
   navigationMode: 0
@@ -863,7 +899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1054558489956137978
 RectTransform:
   m_ObjectHideFlags: 0

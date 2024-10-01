@@ -55,7 +55,7 @@ namespace Wonkerz {
                 Access.managers.sceneMgr.unlockScene();
                 onDeactivate.Invoke();
 
-                deactivate();
+                Deactivate();
                 Destroy(gameObject);
             }
 
@@ -88,9 +88,9 @@ namespace Wonkerz {
             }
         }
 
-        override public void activate()
+        override public void Activate()
         {
-            base.activate();
+            base.Activate();
         }
     }
 }

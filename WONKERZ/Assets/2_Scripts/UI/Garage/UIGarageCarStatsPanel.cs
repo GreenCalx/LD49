@@ -24,7 +24,7 @@ namespace Wonkerz {
         public void selectTorque()
         {
             // update displayed curve
-            PlayerController player = (Parent as UIGarage).getGarageEntry().player;
+            PlayerController player = (parent as UIGarage).getGarageEntry().player;
 
             //graphPanel.graphRenderer.view.SetCurve(player.car_new.car.engine.torqueCurve);
 
@@ -34,7 +34,7 @@ namespace Wonkerz {
         public void selectWeigth()
         {
             // update displayed curve
-            PlayerController player = (Parent as UIGarage).getGarageEntry().player;
+            PlayerController player = (parent as UIGarage).getGarageEntry().player;
             //graphPanel.graphRenderer.view.SetCurve(cc.WEIGHT);
 
             selectCurve();
@@ -56,7 +56,7 @@ namespace Wonkerz {
         public void updatePlayerTorqueCurve()
         {
             #if false
-            PlayerController player = (Parent as UIGarage).getGarageEntry().player;
+            PlayerController player = (parent as UIGarage).getGarageEntry().player;
             for (int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i)
             {
                 var v = graphPanel.graphRenderer.view.points[i];
@@ -72,7 +72,7 @@ namespace Wonkerz {
         public void updatePlayerWeightCurve()
         {
             #if false
-            CarController cc = (Parent as UIGarage).getGarageEntry().playerCC;
+            CarController cc = (parent as UIGarage).getGarageEntry().playerCC;
 
             for(int i = 0; i < graphPanel.graphRenderer.view.points.Length; ++i) {
                 var v = graphPanel.graphRenderer.view.points[i];

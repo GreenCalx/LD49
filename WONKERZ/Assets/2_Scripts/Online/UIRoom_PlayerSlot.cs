@@ -38,16 +38,16 @@ public class UIRoom_PlayerSlot : UITab
         }
     }
 
-    public override void init()
+    public override void Init()
     {
-        base.init();
+        base.Init();
 
         hostCrown.Hide();
     }
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        base.Activate();
 
         if (roomPlayer.isLocalPlayer) {
             this.Log("Not implemented for local player, could be used for cosmetics, achievements, etc...");
@@ -61,18 +61,18 @@ public class UIRoom_PlayerSlot : UITab
             onClickPanel.tabs.Clear();
 
             var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            inviteTab.Parent = this;
-            inviteTab.label.text.text = "Invite player";
+            inviteTab.parent = this;
+            inviteTab.label.content = "Invite player";
             inviteTab.onActivate.AddListener(InvitePlayer);
             onClickPanel.tabs.Add(inviteTab);
 
             var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            removeSlot.Parent = this;
-            removeSlot.label.text.text = "Remove slot";
+            removeSlot.parent = this;
+            removeSlot.label.content = "Remove slot";
             removeSlot.onActivate.AddListener(RemovePlayer);
             onClickPanel.tabs.Add(removeSlot);
 
-            onClickPanel.init();
+            onClickPanel.Init();
             onClickPanel.Show();
         } else {
             this.Log("Not implemented for Client only. Could be used for profile display, etc...");
@@ -102,7 +102,7 @@ public class UIRoom_PlayerSlot : UITab
             }
 
             if (roomPlayer.isLocalPlayer) {
-                (Parent as UIRoom).OnLocalPlayerReadyStateChanged(roomPlayer.readyToBegin);
+                (parent as UIRoom).OnLocalPlayerReadyStateChanged(roomPlayer.readyToBegin);
             }
         }
 
@@ -120,20 +120,20 @@ public class UIRoom_PlayerSlot : UITab
         }
 
         public void SetPlayerName(string playerName) {
-            this.playerName.text.text = playerName;
+            this.playerName.content = playerName;
         }
 
         public void SetReadyState(bool readyState) {
-            this.readyState.text.text = readyState ? "Lock and loaded!" : "Wait for me!";
+            this.readyState.content = readyState ? "Lock and loaded!" : "Wait for me!";
         }
 
         public void SetLatency(int latency) {
-            this.latency.text.text = latency.ToString() + " ms";
+            this.latency.content = latency.ToString() + " ms";
         }
 
-        public void RemovePlayer() {
-            roomPlayer.GetComponent<NetworkIdentity>().connectionToServer.Disconnect();
-        }
+    public void RemovePlayer() {
+        roomPlayer.GetComponent<NetworkIdentity>().connectionToServer.Disconnect();
+    }
 
     void InvitePlayer() {
         // show panel NotImplementedYet

@@ -8,33 +8,35 @@ using Schnibble.UI;
 
 public class UIVideoPanel : UIPanelTabbed
 {
-    public TMP_Text currentResolution;
-    public TMP_Text currentScreenMode;
+    public UILabel currentResolution;
+    public UILabel currentScreenMode;
+
+    // TODO: move this dircetly inside the resulution panel
     public UIPanelTabbed resolutionPanel;
-    public UIPanelTabbed screenModePanel;
-    public GameObject resolutionPanelElem;
-    public GameObject screenModePanelElem;
+    public UITextTab resolutionPanelElem;
+
+    public UISlider targetFPSSlider;
+    public UITab    targetFPSTab;
 
     public void UpdateCurrentResolutionText(){
-        currentResolution.text = Screen.currentResolution.width + " x " + Screen.currentResolution.height + " @" + Screen.currentResolution.refreshRate;
+        currentResolution.content = Screen.currentResolution.width + " x " + Screen.currentResolution.height + " @" + Screen.currentResolution.refreshRate;
     }
 
     public void UpdateCurrentScreenModeText(){
-        currentScreenMode.text = Screen.fullScreen ? "Fullscreen" : "Windowed";
+        currentScreenMode.content = Screen.fullScreen ? "Fullscreen" : "Windowed";
     }
 
     public void InitResolutionPanel(){
         var res = Screen.resolutions;
         foreach(var r in res){
-            var go = Instantiate(resolutionPanelElem, resolutionPanel.transform);
+            var tab = Instantiate(resolutionPanelElem, resolutionPanel.transform);
 
-            go.GetComponent<TMP_Text>().text = r.width + " x " + r.height + " @" + r.refreshRate;
-            var tab = go.GetComponent<UITab>();
-            tab.Parent = resolutionPanel;
-            tab.init();
+            tab.parent = resolutionPanel;
+            tab.label.content = r.width + " x " + r.height + " @" + r.refreshRate;
+            tab.index = resolutionPanel.tabs.Count;
 
+            tab.Init();
 
-            go.GetComponent<UIResolutionPanelElem>().idx = resolutionPanel.tabs.Count;
             resolutionPanel.tabs.Add(tab);
         }
     }
@@ -44,11 +46,13 @@ public class UIVideoPanel : UIPanelTabbed
         Screen.SetResolution( res.width, res.height, FullScreenMode.ExclusiveFullScreen);
         UpdateCurrentScreenModeText();
     }
+
     public void SetWindowed(){
         var res = Screen.currentResolution;
         Screen.SetResolution( res.width, res.height, FullScreenMode.Windowed);
         UpdateCurrentScreenModeText();
     }
+
     public void SetBorderless(){
         var res = Screen.currentResolution;
         Screen.SetResolution( res.width, res.height, FullScreenMode.FullScreenWindow);
@@ -63,31 +67,48 @@ public class UIVideoPanel : UIPanelTabbed
         if(value) {
             QualitySettings.vSyncCount = 1;
             Application.targetFrameRate = Screen.currentResolution.refreshRate;
+
+            // remove target fps tab
+            tabs.Remove(targetFPSTab);
+            targetFPSTab.Hide();
         }
         else {
             //default
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = -1;
+
+            if (!tabs.Contains(targetFPSTab)) {
+                tabs.Add(targetFPSTab);
+            }
+
+            targetFPSTab.Show();
         }
     }
 
-    public void OnTargetFPSChanged(string value){
-        if (System.Int32.TryParse(value, out var number)){
-            Application.targetFrameRate = number;
-            this.Log(number.ToString());
-        }
+    public override void Init() {
+        base.Init();
+
+        targetFPSSlider.Show();
     }
 
-    public override void activate(){
-        this.gameObject.SetActive(true);
-        base.activate();
+    public override void Activate(){
+        base.Activate();
+
+        targetFPSSlider.value = Application.targetFrameRate;
+        targetFPSSlider.onValueChange.AddListener(() => Application.targetFrameRate = (int)targetFPSSlider.value );
+        targetFPSSlider.ValueChanged();
+
         UpdateCurrentResolutionText();
         UpdateCurrentScreenModeText();
         InitResolutionPanel();
+
+        OnVSyncValueChanged(QualitySettings.vSyncCount != 0);
     }
 
-    public override void deactivate(){
-        base.deactivate();
-        this.gameObject.SetActive(false);
+    public override void Deactivate() {
+        base.Deactivate();
+
+        targetFPSSlider.onValueChange.RemoveAllListeners();
+        targetFPSSlider.Hide();
     }
 }

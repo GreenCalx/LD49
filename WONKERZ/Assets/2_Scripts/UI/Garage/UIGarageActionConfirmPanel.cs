@@ -23,15 +23,15 @@ public class UIGarageActionConfirmPanel : UIGaragePanel
         actionTextField.text = iStr;
     }
 
-    public override void activate()
+    public override void Activate()
     {
         gameObject.SetActive(true);
-        base.activate();
+        base.Activate();
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
         gameObject.SetActive(false);
     }
 }

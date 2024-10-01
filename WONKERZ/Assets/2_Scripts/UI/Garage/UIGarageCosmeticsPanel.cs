@@ -128,7 +128,7 @@ namespace Wonkerz {
             UIGaragePickableColor uigpc = go.GetComponent<UIGaragePickableColor>();
             Image ui_img = go.GetComponent<Image>();
 
-            uigpc.Parent = iNavParent;
+            uigpc.parent = iNavParent;
             uigpc.useParentInputs = true;
             uigpc.parts_to_colorize = iParts;
             uigpc.material = iCosmetic.material;
@@ -205,7 +205,7 @@ namespace Wonkerz {
             UIGaragePickableSkin uigps = go.GetComponent<UIGaragePickableSkin>();
             Image ui_img = go.GetComponent<Image>();
 
-            uigps.Parent = navparent;
+            uigps.parent = navparent;
             uigps.useParentInputs = true;
             uigps.carPart = iCosmetic.carPart;
             uigps.skinName = iCosmetic.name;
@@ -239,7 +239,7 @@ namespace Wonkerz {
             UIGaragePickableDecal uigpd = go.GetComponent<UIGaragePickableDecal>();
             Image ui_img = go.GetComponent<Image>();
 
-            uigpd.Parent = navparent;
+            uigpd.parent = navparent;
             uigpd.useParentInputs= true;
             uigpd.carPart = iCosmetic.carPart;
             uigpd.skinName = iCosmetic.name;

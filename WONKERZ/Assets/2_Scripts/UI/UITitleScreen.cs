@@ -9,8 +9,7 @@ using UnityEngine.SceneManagement;
 
 public class UITitleScreen : UIPanelTabbed
 {
-    public UIPanelTabbed confirmExitPanel;
-    public UIPanelTabbed nameEntryPanel;
+    public UIPanelTabbed  nameEntryPanel;
     public UIProfileCards profilePanel;
 
     protected override void OnEnable()
@@ -25,14 +24,8 @@ public class UITitleScreen : UIPanelTabbed
             SceneManager.MoveGameObjectToScene(NetworkRoomManagerExt.singleton.gameObject.transform.root.gameObject, SceneManager.GetActiveScene());
             GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
         }
-    }
 
-    public override void cancel()
-    {
-        base.cancel();
-
-        //open confirm panel.
-        confirmExitPanel.activate();
+        Show();
     }
 
     public void launchNewGame()
@@ -148,5 +141,10 @@ public class UITitleScreen : UIPanelTabbed
     public void launchDemo()
     {
         this.LogError("Not implemented");
+    }
+
+    public override void Cancel() {
+        base.Cancel();
+        defaultCancelPanel.reason.content = "You are about to exit,";
     }
 }

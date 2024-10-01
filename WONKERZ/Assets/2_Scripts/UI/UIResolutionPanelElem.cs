@@ -3,10 +3,9 @@ using Schnibble.UI;
 
 public class UIResolutionPanelElem : UITextTab
 {
-    public int idx;
     public void ApplyResolution()
     {
-        var res = Screen.resolutions[idx];
+        var res = Screen.resolutions[index];
         Screen.SetResolution(res.width, res.height, Screen.fullScreen);
     }
 }

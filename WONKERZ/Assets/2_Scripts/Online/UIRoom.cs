@@ -66,15 +66,15 @@ public class UIRoom : UIPanelTabbed
         }
     }
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        base.Activate();
 
         uiPlayerSlots = new List<UIRoom_PlayerSlot>(roomPlayerCount);
 
         if (uiOnline == null)
         {
-            uiOnline = (Parent as UIOnline);
+            uiOnline = (parent as UIOnline);
         }
 
         uiOnline.roomServer.OnRoomServerPlayersReadyCB += OnAllPlayersReady;
@@ -91,9 +91,9 @@ public class UIRoom : UIPanelTabbed
         UpdatePlayerSlots(uiOnline.roomServer.roomSlots);
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
 
         if (uiOnline) {
             if (uiOnline.roomServer) {
@@ -112,8 +112,20 @@ public class UIRoom : UIPanelTabbed
         tabs.Clear();
     }
 
-    public override void cancel()
-    {
+    protected override void CancelAfterConfirmation() {
+        if (NetworkServer.activeHost)
+        {
+            uiOnline.roomServer.StopHost();
+        }
+        else if (NetworkClient.isConnected)
+        {
+            uiOnline.roomServer.StopClient();
+        }
+
+        base.CancelAfterConfirmation();
+    }
+
+    public override void Cancel() {
         // if player is ready, we don't cancel the panel,
         // we set state to Not ready.
         if (localPlayerSlot && localPlayerSlot.roomPlayer.readyToBegin)
@@ -122,16 +134,7 @@ public class UIRoom : UIPanelTabbed
         }
         else
         {
-            base.cancel();
-
-            if (NetworkServer.activeHost)
-            {
-                uiOnline.roomServer.StopHost();
-            }
-            else if (NetworkClient.isConnected)
-            {
-                uiOnline.roomServer.StopClient();
-            }
+            base.Cancel();
         }
     }
 
@@ -141,6 +144,7 @@ public class UIRoom : UIPanelTabbed
         // Deactivate UX.
         if (NetworkClient.active && Mirror.Utils.IsSceneActive(uiOnline.roomServer.GameplayScene))
         {
+            Deactivate();
             uiOnline.SetState(UIOnline.States.Deactivated);
         }
     }
@@ -170,6 +174,7 @@ public class UIRoom : UIPanelTabbed
             }
             else
             {
+                // time is timeout in seconds in case the clinet/server connection is fucked.
                 StartCoroutine(CountdownBeforeStart_Client(5 * 3));
             }
         }
@@ -188,7 +193,7 @@ public class UIRoom : UIPanelTabbed
         while (ogm.preGameCountdownTime > 0.0f) {
             ogm.preGameCountdownTime -= Time.deltaTime;
 
-            countdownHint.text.text = ((int)(ogm.preGameCountdownTime)).ToString();
+            countdownHint.content = ((int)(ogm.preGameCountdownTime)).ToString();
 
             if (!uiOnline.roomServer.allPlayersReady) {
                 ogm.showPreGameCountdown = false;
@@ -230,13 +235,15 @@ public class UIRoom : UIPanelTabbed
                 break;
             }
 
-            countdownHint.text.text = ((int)(ogm.preGameCountdownTime)).ToString();
+            countdownHint.content = ((int)(ogm.preGameCountdownTime)).ToString();
 
             yield return null;
         }
 
         countdownHint.Hide();
         fadingPanel  .Hide();
+
+        uiOnline.SetState(UIOnline.States.Deactivated);
 
         if (hasError) {
             this.LogError("Timeout on countdown.");
@@ -308,15 +315,15 @@ public class UIRoom : UIPanelTabbed
             }
         }
 
-        GetTab(CurrentTab()).select();
+        GetTab(CurrentTab()).Select();
     }
 
     public UIRoom_EmptySlot AddEmpty(int idx) {
         var result = Instantiate(UIEmptyPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_EmptySlot>();
-        result.Parent = this;
+        result.parent = this;
 
-        result.init();
-        result.deselect();
+        result.Init();
+        result.Deselect();
         result.Show();
         // Get current window size.
         // TODO: move this to cache
@@ -342,9 +349,9 @@ public class UIRoom : UIPanelTabbed
         //var playerSlot = UIRoom_PlayerSlot.Create(this.gameObject, data.backgroundColor, data.name, data.readyState);
         var slot = GameObject.Instantiate(UIPlayerSlot_prefab, this.gameObject.transform).GetComponent<UIRoom_PlayerSlot>();
 
-        slot.Parent = this;
-        slot.init();
-        slot.deselect();
+        slot.parent = this;
+        slot.Init();
+        slot.Deselect();
 
         slot.AttachRoomPlayer(data.player);
 
@@ -379,8 +386,8 @@ public class UIRoom : UIPanelTabbed
         {
             if (!newState)
             {
-                readyUpHint.text.text = startHint +
-                                        // TODO: make this more robust in InputManager.
+                readyUpHint.content = startHint +
+                                      // TODO: make this more robust in InputManager.
                                         inputMgr.controllers[0].controller.Get(readyUpButton).name +
                                     readyUpHintEnd;
                 readyUpHint.Show();

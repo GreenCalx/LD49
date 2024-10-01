@@ -30,7 +30,7 @@ namespace Wonkerz {
 
             if (!!confirmPanel)
             {
-                confirmPanel.Parent = this;
+                confirmPanel.parent = this;
                 confirmPanel.setTextBoxField("SAVE ?");
                 confirmPanel.setConfirmAction(() => SaveAndLoad.save(profile_name));
                 confirmPanel.onActivate?.Invoke();
@@ -40,7 +40,7 @@ namespace Wonkerz {
 
         public void fillProfileFromPlayerCC()
         {
-            PlayerController player = (Parent as UIGarage).getGarageEntry().player;
+            PlayerController player = (parent as UIGarage).getGarageEntry().player;
             // TORQUE
             //profile.TORQUE_CURVE = new List<Keyframe>(cc.torqueCurve.keys);
             // WEIGHT
@@ -62,7 +62,7 @@ namespace Wonkerz {
             SaveAndLoad.datas.Add(profile);
             if (!!confirmPanel)
             {
-                confirmPanel.Parent = this;
+                confirmPanel.parent = this;
                 confirmPanel.setTextBoxField("LOAD ?");
                 confirmPanel.setConfirmAction(() => updatePlayerFromProfile(profile_name));
                 confirmPanel.onActivate?.Invoke();
@@ -73,7 +73,7 @@ namespace Wonkerz {
         {
             SaveAndLoad.loadGarageProfile(profile_name, profile);
 
-            PlayerController cc = (Parent as UIGarage).getGarageEntry().player;
+            PlayerController cc = (parent as UIGarage).getGarageEntry().player;
             // TORQUE
             //cc.torqueCurve = new AnimationCurve(profile.TORQUE_CURVE.ToArray());
             // WEIGHT

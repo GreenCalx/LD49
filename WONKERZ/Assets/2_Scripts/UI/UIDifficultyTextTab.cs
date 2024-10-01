@@ -11,19 +11,19 @@ namespace Wonkerz {
     {
         public DIFFICULTIES difficulty;
 
-        override public void select()
+        override public void Select()
         {
-            UIDifficultyChoice p = Parent as UIDifficultyChoice;
+            UIDifficultyChoice p = parent as UIDifficultyChoice;
             p.chosen_difficulty = difficulty;
-            base.select();
+            base.Select();
         }
 
-        override public void activate()
+        override public void Activate()
         {
-            base.activate();
+            base.Activate();
 
             this.Log("Difficulty selected : " + difficulty);
-            UIDifficultyChoice p = Parent as UIDifficultyChoice;
+            UIDifficultyChoice p = parent as UIDifficultyChoice;
             p.chosen_difficulty = difficulty;
             p.choice_made = true;
         }

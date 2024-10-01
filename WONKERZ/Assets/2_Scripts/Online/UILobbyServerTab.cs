@@ -68,17 +68,17 @@ public class UILobbyServerTab : UITextTab
         }
     }
 
-    override public void init() {
-        base.init();
+    override public void Init() {
+        base.Init();
 
-        serverList = Parent as UILobbyServerList;
+        serverList = parent as UILobbyServerList;
         if (serverList == null) {
             this.LogError("Please connect a Parent of type UILobbyServerList to UILobbyServerTab.");
         }
 
-        lobbyName.text.text        = lobby.name;
-        lobbyHostName.text.text    = lobby.hostName;
-        lobbyPlayerCount.text.text = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 0) + " / " + lobby.maxPlayerCount;
+        lobbyName.content = lobby.name;
+        lobbyHostName.content = lobby.hostName;
+        lobbyPlayerCount.content = (lobby.roomPlayers != null ? lobby.roomPlayers.Count : 0) + " / " + lobby.maxPlayerCount;
     }
 
     float connectionTimer        = 0.0f;
@@ -131,8 +131,8 @@ public class UILobbyServerTab : UITextTab
         serverList.online.client.OnStartNATPunch -= OnNATPunch;
     }
 
-    public override void activate() {
-        base.activate();
+    public override void Activate() {
+        base.Activate();
 
         RegisterCallbacks();
         // Try to join lobby => start UX "Connecting..."
@@ -141,9 +141,9 @@ public class UILobbyServerTab : UITextTab
         serverList.online.client.JoinLobby(lobby.roomID);
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
 
         RemoveCallbacks();
     }
@@ -154,13 +154,13 @@ public class UILobbyServerTab : UITextTab
     IEnumerator Coro_OnClientConnected() {
         yield return StartCoroutine(WaitTimerLatency());
 
-        serverList.deactivate();
+        serverList.Deactivate();
         serverList.online.SetState(UIOnline.States.InRoom);
     }
 
     public void OnClientError(TransportError error, string reason) {
         this.Log("OnClientError.");
-        serverList.online.activate();
+        serverList.online.Activate();
 
         RemoveCallbacks();
     }

@@ -14,7 +14,7 @@ public class UIBindings : UIPanelTabbedScrollable
     public GameObject childPrefab;
     public GameObject titlePrefab;
 
-    public UICheckbox toggle;
+    public UITextTab toggle;
 
     public UIWaitInputsPanel waitingForInput;
 
@@ -35,7 +35,6 @@ public class UIBindings : UIPanelTabbedScrollable
         v.value = InputSettings.InverseCameraMappingY;
     }
 
-
     private void AddTitle(string title)
     {
         var titleGO = Instantiate(titlePrefab, layout.transform);
@@ -45,48 +44,51 @@ public class UIBindings : UIPanelTabbedScrollable
     private void AddInput(PlayerInputs.InputCode code)
     {
         GameInput input = inputMgr.controllers[0].controller.Get((int)code);
-
+        if (input == null) {
+            this.LogError("Trying to add input " + code.ToString() + "but it is null.");
+            return;
+        }
 
         var child = Instantiate(childPrefab, layout.transform);
         var comp = child.GetComponent<UIBindingElement>();
 
         comp.inputKey = code;
-
-        comp.name.GetComponent<TMP_Text>().text = input.description;
+        comp.label.content = input.description;
 
         var inputButton = input as GameInputButton;
         if (inputButton != null)
         {
-            comp.binding.GetComponent<TMP_Text>().text = Controller.XboxController.GetCodeName(inputButton.codePrimary);
-            comp.GetComponentInChildren<RawImage>().texture = Controller.XboxController.GetCodeDefaultTexture(inputButton.codePrimary);
+            comp.bindingLabel.content = Controller.XboxController.GetCodeName(inputButton.codePrimary);
+            comp.bindingImage.texture = Controller.XboxController.GetCodeDefaultTexture(inputButton.codePrimary);
         }
 
         var inputAxis = input as GameInputAxis;
         if (inputAxis != null)
         {
-            comp.binding.GetComponent<TMP_Text>().text = Controller.XboxController.GetCodeName(inputAxis.inputPrimary.positive);
-            comp.GetComponentInChildren<RawImage>().texture = Controller.XboxController.GetCodeDefaultTexture(inputAxis.inputPrimary.positive);
+            comp.bindingLabel.content = Controller.XboxController.GetCodeName(inputAxis.inputPrimary.positive);
+            comp.bindingImage.texture = Controller.XboxController.GetCodeDefaultTexture(inputAxis.inputPrimary.positive);
         }
 
-        comp.Parent = this;
+        comp.parent = this;
+        comp.Init();
 
-        var tab = comp.name.GetComponent<UITab>();
-        tab.Parent = this;
-        tab.init();
+        comp.Show();
 
-        this.tabs.Add(tab);
+        this.tabs.Add(comp);
     }
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        Init();
 
         Create();
+
+        base.Activate();
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
 
         CleanUp();
     }
@@ -99,17 +101,25 @@ public class UIBindings : UIPanelTabbedScrollable
 
         AddTitle("Camera");
 
-        var go = Instantiate(toggle, layout.transform);
-        go.onValueChange.AddListener(SetCameraMappingXValue);
-        go.getValueFunc.AddListener(GetCameraMappingXValue);
-        go.gameObject.SetActive(true);
-        this.tabs.Add(go);
+        var tab = Instantiate(toggle, layout.transform);
+        var checkbox = tab.GetComponentInChildren<UICheckbox>();
 
-        go = Instantiate(toggle, layout.transform);
-        go.onValueChange.AddListener(SetCameraMappingYValue);
-        go.getValueFunc.AddListener(GetCameraMappingYValue);
-        go.gameObject.SetActive(true);
-        this.tabs.Add(go);
+        checkbox.onValueChange.AddListener(SetCameraMappingXValue);
+        checkbox.getValueFunc.AddListener(GetCameraMappingXValue);
+
+        tab.label.content = "Inverse Camera X Rotation";
+        tab.Show();
+        this.tabs.Add(tab);
+
+        tab = Instantiate(toggle, layout.transform);
+        checkbox = tab.GetComponentInChildren<UICheckbox>();
+
+        checkbox.onValueChange.AddListener(SetCameraMappingYValue);
+        checkbox.getValueFunc.AddListener(GetCameraMappingYValue);
+
+        tab.label.content = "Inverse Camera Y Rotation";
+        tab.Show();
+        this.tabs.Add(tab);
 
         AddInput(PlayerInputs.InputCode.CameraX);
         AddInput(PlayerInputs.InputCode.CameraY);
@@ -131,7 +141,6 @@ public class UIBindings : UIPanelTabbedScrollable
         AddInput(PlayerInputs.InputCode.Jump);
         AddInput(PlayerInputs.InputCode.Turbo);
 
-
         AddInput(PlayerInputs.InputCode.WeightX);
         AddInput(PlayerInputs.InputCode.WeightY);
 
@@ -144,7 +153,6 @@ public class UIBindings : UIPanelTabbedScrollable
         AddInput(PlayerInputs.InputCode.UICancel);
         AddInput(PlayerInputs.InputCode.UIValidate);
         AddInput(PlayerInputs.InputCode.UIStart);
-
     }
 
     public void CleanUp() {
@@ -157,14 +165,20 @@ public class UIBindings : UIPanelTabbedScrollable
 
     public void SetBinding(Controller.InputCode code, PlayerInputs.InputCode key)
     {
-
         var currentData = inputMgr.controllers[0].controller.Get((int)key);
 
         var inputButton = currentData as GameInputButton;
         if (inputButton != null)
         {
             // can only be mapped to buttons
-            inputMgr.controllers[0].controller.ChangeInput((int)key, new GameInputButton(inputButton.name, inputButton.description, code, inputButton.codeSecondary));
+
+            // we have to check if the current input we are trying to use is a button or an axis
+            if (code.isAxis) {
+                inputMgr.controllers[0].controller.ChangeInput((int)key, new GameInputButtonFromAxis(inputButton.name, inputButton.description, code, inputButton.codeSecondary));
+            } else {
+                inputMgr.controllers[0].controller.ChangeInput((int)key, new GameInputButton(inputButton.name, inputButton.description, code, inputButton.codeSecondary));
+            }
+
         }
 
         var inputAxis = currentData as GameInputAxis;

@@ -6,9 +6,9 @@ using Schnibble.UI;
 namespace Wonkerz {
     public class UISaveLoadTab : UITextTab
     {
-        public override void activate()
+        public override void Activate()
         {
-            base.activate();
+            base.Activate();
         }
 
         public void save()

@@ -20,15 +20,17 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
     public UIOnline online { get; private set; }
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        base.Activate();
 
-        if (Parent == null) {
+        StartInputs();
+
+        if (parent == null) {
             this.LogError("Please connect a parent to the UILobbyServerList.");
             return;
         }
-        online = Parent as UIOnline;
+        online = parent as UIOnline;
         if (online == null) {
             this.LogError("Please connect a parent of type UIOnline to the UILobbyServerList.");
             return;
@@ -39,20 +41,19 @@ public class UILobbyServerList : UIPanelTabbedScrollable
         UpdateList();
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
+        base.Deactivate();
+
+        StopInputs();
 
         if (online.client != null) {
             online.client.OnLobbyListRefreshed -= OnLobbyListReady;
         }
 
         if (activator) {
-            activator.gameObject.SetActive(true);
+            activator.Show();
         }
-
-        // Carefull: SetActive will call OnDisable whict will call deactivate, cousing StackOverflowError.
-        this.gameObject.SetActive(false);
     }
 
     // Interenals
@@ -81,9 +82,9 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
     void CreateLobbyTab(Lobby lobby) {
         var lobbyTab = Instantiate(lobbyTabObject, layout.transform);
-        lobbyTab.Parent = this;
+        lobbyTab.parent = this;
         lobbyTab.lobby = lobby;
-        lobbyTab.init();
+        lobbyTab.Init();
 
         tabs.Add(lobbyTab);
     }

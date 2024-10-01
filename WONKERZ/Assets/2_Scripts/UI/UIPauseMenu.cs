@@ -58,7 +58,7 @@ namespace Wonkerz {
                 panel.inputMgr = Access.Player().inputMgr;
                 //panel.inputMgr = Access.managers.playerInputsMgr.all;
                 panel.onActivate.Invoke();
-                panel.activate();
+                panel.Activate();
             }
         }
 

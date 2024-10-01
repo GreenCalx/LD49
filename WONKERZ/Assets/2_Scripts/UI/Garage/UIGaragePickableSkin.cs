@@ -27,23 +27,23 @@ namespace Wonkerz {
             self_skinIdLbl.text = iVal.ToString();
         }
 
-        override public void activate()
+        override public void Activate()
         {
-            base.activate();
+            base.Activate();
 
             Access.managers.playerCosmeticsMgr.customize(skinID, carPart);
 
         }
 
-        override public void select()
+        override public void Select()
         {
-            base.select();
+            base.Select();
             transform.localScale = new Vector3(1.2f, 1.2f, 1.2f );
         }
 
-        override public void deselect()
+        override public void Deselect()
         {
-            base.deselect();
+            base.Deselect();
             transform.localScale = new Vector3(1f, 1f, 1f );
         }
     }

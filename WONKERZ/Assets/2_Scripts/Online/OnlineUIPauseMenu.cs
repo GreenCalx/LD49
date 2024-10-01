@@ -1,26 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-
-using TMPro;
 using Mirror;
-
 using Schnibble;
-using Schnibble.UI;
 using Schnibble.Managers;
-
+using Schnibble.UI;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using Wonkerz;
 
 // TODO : Induces input buffering (ex start jump, pause, spam jump, unpause => boom rocket jump)
 // THUS !! Player must be frozen and most likely any kind of User inputs beside this pause menu.
 public class OnlineUIPauseMenu : UIControllableElement
 {
-    public GameObject UIHandle;
     public UIControllableElement panel;
     public UIControllableElement debugPanel;
     public UITab goToRoomTab;
@@ -32,77 +22,100 @@ public class OnlineUIPauseMenu : UIControllableElement
     public UIOnlinePlayerInfoLine UILobbyPlayerPrefab;
     public Transform UILobbyPlayerInfoHandle;
 
-    public PlayerController attachedPlayer;
     private List<UIOnlinePlayerInfoLine> playerInfoLines = new List<UIOnlinePlayerInfoLine>();
 
     // Consider that it does not changed during the lifetime of this gameObject.
     NetworkRoomManagerExt room;
 
     // Should be init or select.
-    override public void init()
+    override public void Init()
     {
-        if (attachedPlayer == null) {
-            attachedPlayer = Access.Player();
-            if (attachedPlayer == null) {
-                this.LogError("No player has been attached.");
+        if (inputMgr == null)
+        {
+            var attachedPlayer = Access.Player();
+            if (attachedPlayer == null)
+            {
+                this.LogError("No player can be found.");
                 return;
+            }
+
+            if (attachedPlayer.inputMgr != null)
+            {
+                inputMgr = attachedPlayer.inputMgr;
             }
         }
 
-        attachedPlayer.inputMgr.Attach(this);
+        StartInputs();
 
-        if (NetworkClient.activeHost) {
+        if (NetworkClient.activeHost)
+        {
             var tabs = (panel as UIPanelTabbed).tabs;
-            if (!tabs.Contains(goToRoomTab)) {
+            if (!tabs.Contains(goToRoomTab))
+            {
                 tabs.Add(goToRoomTab);
-                goToRoomTab.init();
-                goToRoomTab.gameObject.SetActive(true);
+                goToRoomTab.Init();
+                goToRoomTab.Show();
             }
         }
 
         room = NetworkRoomManagerExt.singleton;
+
+        base.Init();
     }
 
-    override protected void Update() {
-        if (isActivated) {
+    override public void Deinit()
+    {
+        StopInputs();
+        base.Deinit();
+    }
+
+    override protected void Update()
+    {
+        if (isActivated)
+        {
             updateLobbyInfo();
         }
     }
 
-    override public void deinit() {
-        attachedPlayer.inputMgr.Detach(this);
+    override public void Hide()
+    {
+        // hide does not Deinit.
+        hidden = true;
+        this.gameObject.SetActive(false);
+
+        onHidden?.Invoke();
     }
 
-    override protected void ProcessInputs(InputManager currentMgr, GameController Entry)
+    override protected void OnEnable()
     {
-        if (!room.onlineGameManager.gameLaunched)
+        Show();
+    }
+
+    override protected void OnDisable()
+    {
+        Hide();
+    }
+
+    override protected void ProcessInputs(InputManager currentMgr, GameController entry)
+    {
+        if (!room || !room.onlineGameManager || !room.onlineGameManager.gameLaunched)
         {
             return;
         }
 
-        if ((Entry.Get((int)PlayerInputs.InputCode.UIStart) as GameInputButton).GetState().down)
+        if (entry.GetButtonState((int)PlayerInputs.InputCode.UIStart).down)
         {
             updateTrackDetails();
             updateLobbyInfo();
-            // NOTE: need to set input manager before calling SetActive as it will activate the UX.
-            panel.inputMgr = attachedPlayer.inputMgr;
-            //panel.init(); => not needed for now.
-            UIHandle.SetActive(true);
+
+            Show();
         }
     }
 
-    public void pauseGame(bool isPaused)
+    public void GoBackToRoom()
     {
-        #if false
-        if (isPaused)
-        attachedPlayer.Freeze();
-        else
-        attachedPlayer.UnFreeze();
-        #endif
-    }
-
-    public void GoBackToRoom() {
-        if (room != null) {
+        if (room != null)
+        {
             if (NetworkClient.activeHost)
             {
                 room.ServerChangeScene(room.RoomScene);
@@ -134,9 +147,10 @@ public class OnlineUIPauseMenu : UIControllableElement
         }
 
         Access.managers.sceneMgr.ResetDontDestroyOnLoad();
-        Access.managers.sceneMgr.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
+        Access.managers.sceneMgr.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
+        {
             useTransitionOut = true,
-            useTransitionIn  = true,
+            useTransitionIn = true,
             sceneLoadingMode = LoadSceneMode.Single,
         });
     }
@@ -176,8 +190,9 @@ public class OnlineUIPauseMenu : UIControllableElement
         updateLobbyInfo();
     }
 
-    void createInfoLines() {
-        foreach(UIOnlinePlayerInfoLine oldline in playerInfoLines)
+    void createInfoLines()
+    {
+        foreach (UIOnlinePlayerInfoLine oldline in playerInfoLines)
         {
             Destroy(oldline.gameObject);
         }
@@ -195,11 +210,12 @@ public class OnlineUIPauseMenu : UIControllableElement
         // Consider that for now there is no change in player count and index
         // during the game.
         // TODO: subscribe to room changes to reflect the changes.
-        if (playerInfoLines.Count != room.roomSlots.Count) {
+        if (playerInfoLines.Count != room.roomSlots.Count)
+        {
             createInfoLines();
         }
 
-        foreach(var infoLine in playerInfoLines) infoLine.Refresh();
+        foreach (var infoLine in playerInfoLines) infoLine.Refresh();
     }
 
     public void displayDebugPanel()

@@ -20,30 +20,30 @@ public class UIGaragePanel : UIPanelTabbed, IUIGarageElement
         };
     }
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        base.Activate();
 
         inputHelper.refreshHelper(this);
     }
 
-    public override void deactivate()
+    public override void Deactivate()
     {
-        base.deactivate();
-        if (Parent!=null)
-        inputHelper.refreshHelper((Parent as UIGaragePanel));
+        base.Deactivate();
+        if (parent!=null)
+        inputHelper.refreshHelper((parent as UIGaragePanel));
     }
 
-    public override void select()
+    public override void Select()
     {
         gameObject.SetActive(true);
-        base.select();
+        base.Select();
         animateIn();
     }
 
-    public override void deselect()
+    public override void Deselect()
     {
-        base.deselect();
+        base.Deselect();
         animateOut();
         gameObject.SetActive(false);
     }

@@ -328,10 +328,10 @@ namespace Wonkerz
                     if (uictt == null)
                     { this.Log("Image tab not found for bounty matrix."); break; }
 
-                    uictt.Parent = parentUI;
+                    uictt.parent = parentUI;
                     //uictt.copyColorFromParent = true;
                     uictt.useParentInputs = true;
-                    uictt.init();
+                    uictt.Init();
 
                     uictt.x = i;
                     uictt.y = j;

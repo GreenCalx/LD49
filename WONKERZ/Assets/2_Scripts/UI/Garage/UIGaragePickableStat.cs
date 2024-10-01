@@ -7,9 +7,9 @@ public class UIGaragePickableStat : UITextTab
     public string XLabel;
     public string YLabel;
 
-    override public void select()
+    override public void Select()
     {
-        base.select();
+        base.Select();
         // update background if it exists
         Image bg = GetComponentInChildren<Image>();
         if (!!bg)
@@ -17,9 +17,9 @@ public class UIGaragePickableStat : UITextTab
 
     }
 
-    override public void deselect()
+    override public void Deselect()
     {
-        base.deselect();
+        base.Deselect();
         // update background if it exists
         Image bg = GetComponentInChildren<Image>();
         if (!!bg)

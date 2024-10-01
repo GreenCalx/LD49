@@ -9,9 +9,9 @@ namespace Wonkerz {
         public List<COLORIZABLE_CAR_PARTS> parts_to_colorize;
         public Material material;
 
-        override public void activate()
+        override public void Activate()
         {
-            base.activate();
+            base.Activate();
 
             foreach(COLORIZABLE_CAR_PARTS ccp in parts_to_colorize)
             {
@@ -19,15 +19,15 @@ namespace Wonkerz {
             }
         }
 
-        override public void select()
+        override public void Select()
         {
-            base.select();
+            base.Select();
             transform.localScale = new Vector3(1.2f, 1.2f, 1.2f );
         }
 
-        override public void deselect()
+        override public void Deselect()
         {
-            base.deselect();
+            base.Deselect();
             transform.localScale = new Vector3(1f, 1f, 1f );
         }
     }

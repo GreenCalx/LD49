@@ -20,9 +20,9 @@ public class UIRoom_EmptySlot : UITab
 
     public UITextTab defaultTextTab;
 
-    public override void activate()
+    public override void Activate()
     {
-        base.activate();
+        base.Activate();
 
         // if (isServver)
         if (NetworkRoomManagerExt.singleton.mode == NetworkManagerMode.Host) {
@@ -31,18 +31,18 @@ public class UIRoom_EmptySlot : UITab
             onClickPanel.tabs.Clear();
 
             var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            inviteTab.Parent = this;
-            inviteTab.label.text.text = "Invite player";
+            inviteTab.parent = this;
+            inviteTab.label.content = "Invite player";
             inviteTab.onActivate.AddListener(InvitePlayer);
             onClickPanel.tabs.Add(inviteTab);
 
             var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            removeSlot.Parent = this;
-            removeSlot.label.text.text = "Remove slot";
+            removeSlot.parent = this;
+            removeSlot.label.content = "Remove slot";
             removeSlot.onActivate.AddListener(RemoveSlot);
             onClickPanel.tabs.Add(removeSlot);
 
-            onClickPanel.init();
+            onClickPanel.Init();
             onClickPanel.Show();
         }
     }

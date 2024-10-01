@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 using static UnityEngine.Debug;
+using UnityEngine.SceneManagement;
+using UnityEngine.Events;
+
 using Schnibble;
 using Schnibble.UI;
-using System;
-using UnityEngine.SceneManagement;
+
 
 
 namespace Wonkerz {
@@ -14,75 +18,46 @@ namespace Wonkerz {
     {
         public enum FD_MODE {READ, WRITE};
         public FD_MODE mode;
-        public List<UIProfileCardPanel> profileCards;
-        public string newProfileName = "NewPlayer";
-        public UIPanel createProfilePanel;
 
-        public void updateNewProfileName(string iS)
+        public UIInputField createProfilePanel;
+
+        override public void Init()
         {
-            newProfileName = iS;
-        }
-
-        override public void init()
-        {
-            base.init();
-
-            profileCards = new List<UIProfileCardPanel>(tabs.Count);
-            foreach(UITab t in tabs)
-            {
-                UIProfileCardPanel uipcp = (UIProfileCardPanel) t;
-                if (uipcp==null)
-                {
-                    this.LogError("A card profile doesn't carry UIProfileCardPanel : " + t.gameObject.name);
-                    continue;
-                }
-                profileCards.Add(uipcp);
-            }
+            base.Init();
 
             List<string> profiles = Access.managers.gameProgressSaveMgr.GetAvailableProfileNames();
-            for (int i=0; i < profiles.Count; i++)
+            for(int i=0; i < tabs.Count; ++i)
             {
-                if (i >= profileCards.Count)
-                break;
-                profileCards[i].profileName.text = profiles[i];
+                if (i >= profiles.Count || string.IsNullOrEmpty(profiles[i])) {
+                    (tabs[i] as UITextTab).label.content = "Empty";
+                } else {
+                    (tabs[i] as UITextTab).label.content = profiles[i];
+                }
             }
         }
 
-        public void OnEndEditNewName() {
-            UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
-            if (uipcp==null)
-            {
-                this.LogError("Selected Card is not activable");
-                return;
-            }
-            string selected_profile_name = uipcp.profileName.text;
+        public void OnEndEditNewName(string oldName) {
+            (tabs[selected] as UITextTab).label.content = createProfilePanel.text.content;
+            // TODO: validate inputs.
+            string newProfileName = createProfilePanel.text.content;
 
-            OverWriteProfile(selected_profile_name, newProfileName);
-            uipcp.profileName.text = newProfileName;
+            OverWriteProfile(oldName, newProfileName);
         }
 
         public void activateSelectedCard()
         {
-            UIProfileCardPanel uipcp = (UIProfileCardPanel) tabs[selected];
-            if (uipcp==null)
-            {
-                this.LogError("Selected Card is not activable");
-                return;
-            }
-            string selected_profile_name = uipcp.profileName.text;
-            if (string.IsNullOrEmpty(selected_profile_name) || selected_profile_name.ToLower() == "empty") {
+            string selectedProfileName = (tabs[selected] as UITextTab).label.content;
+            if (string.IsNullOrEmpty(selectedProfileName) || selectedProfileName.ToLower() == "empty" || mode == FD_MODE.WRITE) {
                 this.Log("Empty profile selected : launch creation panel.");
+                createProfilePanel.onInputModified = new UnityEvent();
+                createProfilePanel.onInputModified.AddListener(() => OnEndEditNewName(selectedProfileName));
+                createProfilePanel.placeholderText = "Enter your name here...";
                 createProfilePanel.Show();
+                createProfilePanel.Activate();
                 return;
             }
 
-            if (mode==FD_MODE.WRITE)
-            {
-                OverWriteProfile(selected_profile_name, newProfileName);
-            } else {
-                LoadProfile(selected_profile_name);
-            }
-
+            LoadProfile(selectedProfileName);
         }
 
         public void LoadProfile(string iProfileName)
@@ -90,8 +65,7 @@ namespace Wonkerz {
             // selected profile
 
             GameProgressSaveManager GPSM = Access.managers.gameProgressSaveMgr;
-            GPSM.activeProfile = iProfileName;
-            GPSM.Load();
+            GPSM.SwitchActiveProfile(iProfileName);
 
             // :NoOnline:
             // NOTE: toffa: this is not used for online mode anymore.
@@ -122,17 +96,9 @@ namespace Wonkerz {
         public void OverWriteProfile(string iOldProfileName, string iNewProfileName)
         {
             // selected profile
-
             GameProgressSaveManager GPSM = Access.managers.gameProgressSaveMgr;
-
-            // Erase fill if exists
-            GPSM.DeleteProfileIfExists(iOldProfileName);
-
-            // Create new profile
-            GPSM.activeProfile = iNewProfileName;
-            GPSM.CreateActiveProfile();
-            GPSM.updateFilePath();
-            GPSM.ResetAndSave();
+            GPSM.OverwriteProfile   (iOldProfileName, iNewProfileName);
+            GPSM.SwitchActiveProfile(iNewProfileName);
 
             // cf :NoOnline:
             #if false

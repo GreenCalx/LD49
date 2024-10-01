@@ -20,24 +20,23 @@ namespace Wonkerz
             inputMgr = Access.managers.playerInputsMgr.player1;
 
             bountyMatrix = Access.managers.bountyArray;
-            activate();
+            Activate();
         }
 
         // Update is called once per frame
 
-        override public void activate()
+        override public void Activate()
         {
             bountyMatrix = Access.managers.bountyArray;
             bountyMatrix.initUI(this, tooltip_bountyDesc, tooltip_bountyName, tooltip_bountyReward);
-            base.activate();
+            base.Activate();
         }
 
-        override public void deactivate()
+        override public void Deactivate()
         {
-
             bountyMatrix.hide(this);
             transform.parent.gameObject.SetActive(false);
-            base.deactivate();
+            base.Deactivate();
         }
     }
 }

@@ -29,9 +29,6 @@ public class GameProgressSaveManager : MonoBehaviour
     private readonly string fp_suffix = "GameProgressData.json";
 
     private GameProgressData gameProgressData;
-    private bool errorAtLoad = false;
-
-    public string profileDataFilePath;
 
     public Action onProfileLoaded;
 
@@ -39,7 +36,6 @@ public class GameProgressSaveManager : MonoBehaviour
     {
         Save();
     }
-
 
     public void init()
     {
@@ -50,64 +46,23 @@ public class GameProgressSaveManager : MonoBehaviour
             Directory.CreateDirectory(fp_prefix);
         }
 
-        activeProfile = PlayerPrefs.GetString("lastActiveProfile");
-
-        updateFilePath();
-        Load();
-    }
-
-    public void updateFilePath()
-    {
-        profileDataFilePath = Path.Combine(fp_prefix, activeProfile);
-    }
-
-    public void Load()
-    {
-        updateFilePath();
-        string saveProgPath = Path.Combine(profileDataFilePath, fp_suffix);
-        try
-        {
-            using (StreamReader reader = new StreamReader(saveProgPath))
-            {
-                string dataToLoad = reader.ReadToEnd();
-                gameProgressData = JsonUtility.FromJson<GameProgressData>(dataToLoad);
-                onProfileLoaded?.Invoke();
-            }
-        } catch (IOException e)
-        {
-            // no file found, try to create a new one then call again the Load(). If it fails twice we give up.
-            if (errorAtLoad)
-            {
-                this.LogError(e.ToString());
-                this.LogError("Failed to locate/load fail for profile "+ activeProfile);
-                return;
-            }
-
-            Save(); // will create a file
-            errorAtLoad = true;
-            Load();
-        }
-
+        SwitchActiveProfile(PlayerPrefs.GetString("lastActiveProfile"));
     }
 
     public void Save()
     {
-        updateFilePath();
-        string saveProgPath = Path.Combine(profileDataFilePath, fp_suffix);
-        using (StreamWriter writer = new StreamWriter(saveProgPath))
-        {
-            string dataToWrite = JsonUtility.ToJson(gameProgressData);
-            writer.Write(dataToWrite);
-        }
-
-        PlayerPrefs.SetString("lastActiveProfile", activeProfile);
+        if (HasActiveProfile()) SaveProfile(activeProfile);
     }
 
-    public void ResetAndSave()
+    public void Load()
     {
-        gameProgressData.uniqueEventsDone.Clear();
-        Save();
+        if (HasActiveProfile()) LoadProfile(activeProfile);
     }
+
+    public void ResetAndSave() {
+        ResetAndSave(activeProfile);
+    }
+
 
     public GameProgressData GetGameProgressData()
     {
@@ -120,10 +75,12 @@ public class GameProgressSaveManager : MonoBehaviour
         gameProgressData.uniqueEventsDone = new List<UniqueEvents.UEVENTS>();
     }
 
+    #region  Events API
+
     public bool IsUniqueEventDone(UniqueEvents.UEVENTS iEventID)
     {
-        if (iEventID==UniqueEvents.UEVENTS.NONE)
-        return true;
+        if (iEventID==UniqueEvents.UEVENTS.NONE) return true;
+
         return gameProgressData.uniqueEventsDone.Contains(iEventID);
     }
 
@@ -142,50 +99,128 @@ public class GameProgressSaveManager : MonoBehaviour
             Save();
         }
     }
+    #endregion
+
+    #region  Profile API
+
+    public string GetProfilePath(string profileName)
+    {
+        return Path.Combine(fp_prefix, profileName);
+    }
+
+    public string GetActiveProfilePath() => GetProfilePath(activeProfile);
+
+    public void LoadProfile(string profileName)
+    {
+        string profilePath = Path.Combine(GetProfilePath(profileName), fp_suffix);
+        try
+        {
+            using (StreamReader reader = new StreamReader(profilePath))
+            {
+                string dataToLoad = reader.ReadToEnd();
+                gameProgressData = JsonUtility.FromJson<GameProgressData>(dataToLoad);
+                onProfileLoaded?.Invoke();
+            }
+        } catch (IOException e)
+        {
+            this.LogError(e.ToString());
+            this.LogError("Failed to locate/load fail for profile "+ activeProfile);
+            return;
+
+            // Do not try to save then load : whats the point?
+            // if the profile is already the active one but not save yet, it is in loaded state
+            // if the profile does not exists we dont want to pollute the user disk with data that we
+            //    dont know if it will be used or not.
+        }
+    }
+
+    public void SaveProfile(string profileName)
+    {
+        string profilePath = Path.Combine(GetProfilePath(profileName), fp_suffix);
+        using (StreamWriter writer = new StreamWriter(profilePath))
+        {
+            string dataToWrite = JsonUtility.ToJson(gameProgressData);
+            writer.Write(dataToWrite);
+        }
+    }
+
+    public void ResetAndSave(string profileName)
+    {
+        LoadProfile(profileName);
+
+        gameProgressData.uniqueEventsDone.Clear();
+
+        SaveProfile(profileName);
+
+        LoadProfile(activeProfile);
+    }
 
     public List<string> GetAvailableProfileNames()
     {
-        List<string> retval = new List<string>();
+        string[]     dirs   = Directory.GetDirectories(fp_prefix, "*", SearchOption.TopDirectoryOnly);
+        List<string> retval = new List<string>(dirs.Length);
 
-        string[] dirs = Directory.GetDirectories(fp_prefix, "*", SearchOption.TopDirectoryOnly);
         foreach (string dir in dirs) {
-            string p_name = dir.Replace(fp_prefix, "");
-            p_name = p_name.Replace(fp_suffix, "");
-            this.Log(p_name);
-            retval.Add(p_name);
+            string profileName = dir.Replace(fp_prefix, "").Replace(fp_suffix, "");
+            retval.Add(profileName);
         }
+
         return retval;
     }
 
     public void DeleteProfileIfExists(string iProfileName)
     {
         string path = fp_prefix + "/" + iProfileName;
-        if (!Directory.Exists(path))
-        return;
+        if (!Directory.Exists(path)) return;
 
-        System.IO.DirectoryInfo di = new DirectoryInfo(path);
-        foreach (FileInfo file in di.GetFiles())
-        {
-            file.Delete();
-        }
-        foreach (DirectoryInfo dir in di.GetDirectories())
-        {
-            dir.Delete(true);
-        }
+        System.IO.Directory.Delete(path, true);
 
-        Directory.Delete(path);
+        // System.IO.DirectoryInfo di = new DirectoryInfo(path);
+        // foreach (FileInfo file in di.GetFiles())
+        // {
+        //     file.Delete();
+        // }
+        // foreach (DirectoryInfo dir in di.GetDirectories())
+        // {
+        //     dir.Delete(true);
+        // }
+
+        // Directory.Delete(path);
     }
 
-    public void CreateActiveProfile()
-    {
-        string dir_path = fp_prefix + activeProfile;
-        if (!Directory.Exists(dir_path))
+    public void CreateProfile(string profileName) {
+        string profilePath = fp_prefix + profileName;
+        if (!Directory.Exists(profilePath))
         {
-            Directory.CreateDirectory(dir_path);
+            Directory.CreateDirectory(profilePath);
+        } else {
+            this.LogError("Profile with the name" + profileName + " already exists!");
+        }
+    }
+
+    public void OverwriteProfile(string oldName, string newName) {
+        // Erase fill if exists
+        if (!string.IsNullOrEmpty(oldName)) DeleteProfileIfExists(oldName);
+        if (!string.IsNullOrEmpty(newName)) CreateProfile        (newName);
+    }
+
+    public void SwitchActiveProfile(string profileName) {
+        if (activeProfile == profileName) {
+            this.LogWarn("profile " + profileName + " is already the active one.");
+            return;
+        }
+
+        //NOTE: do not check for null or empty string => it might be what the user really wants to do!
+        activeProfile = profileName;
+        // but now check for it as the empty profile does not exists as a directory
+        if (HasActiveProfile()) {
+            ResetAndSave(activeProfile);
         }
     }
 
     public bool HasActiveProfile() {
         return !string.IsNullOrEmpty(activeProfile);
     }
+
+    #endregion
 }

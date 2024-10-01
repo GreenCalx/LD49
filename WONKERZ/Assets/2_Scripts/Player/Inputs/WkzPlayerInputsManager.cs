@@ -49,10 +49,14 @@ namespace Wonkerz
                 all.controllers[0] = player1.controllers[0];
                 all.controllers[1] = player2.controllers[0];
             }
+
+            Load();
         }
 
         public override void Save()
         {
+            this.Log("Save inputs.");
+
             WonkAllPlayersSaveData data;
             data.playerData = new WonkInputsSaveData[2];
 
@@ -69,6 +73,9 @@ namespace Wonkerz
                 data.playerData[1].inverseCameraMappingX = InputSettings.InverseCameraMappingX;
                 data.playerData[1].inverseCameraMappingY = InputSettings.InverseCameraMappingY;
             }
+
+            var json = JsonUtility.ToJson(data);
+            SetSaveFileContent(json);
         }
 
         public override void Load()

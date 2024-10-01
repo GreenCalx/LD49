@@ -14,10 +14,10 @@ public class UIGaragePickableProfile : UITextTab
         // ATM it crashes on the wheels serialization (obviously)
 
         // if ((Entry[(int) PlayerInputs.InputCode.UIValidate] as GameInputButton).GetState().down)
-        // (Parent as UIGarageProfilePanel).save(profile_name);
+        // (parent as UIGarageProfilePanel).save(profile_name);
 
         // if ((Entry[(int) PlayerInputs.InputCode.CameraFocus] as GameInputButton).GetState().down)
-        // (Parent as UIGarageProfilePanel).load(profile_name);
+        // (parent as UIGarageProfilePanel).load(profile_name);
     }
 
 }

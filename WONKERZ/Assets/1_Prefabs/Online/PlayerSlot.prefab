@@ -45,9 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
+  parent: {fileID: 9084995194103221770}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -75,24 +81,21 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 0
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
-  selector_latch: 0.2
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   inputCancel: UICancel
   onCancel:
     m_PersistentCalls:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 0
   cancelDeactivatePanel: 1
-  inputUp: UIUp
-  inputDown: UIDown
-  inputLeft: UILeft
-  inputRight: UIRight
   tabs: []
   navigationMode: 1
   references:
@@ -151,9 +154,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47a9e68e36ddcc24d99a97b365caf4ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -193,13 +202,16 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 0
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 0
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  index: 0
   background: {fileID: 1725610306595067098}
   latency: {fileID: 1725610306380872426}
   playerName: {fileID: 1725610306380872428}
@@ -364,10 +376,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
-  text: {fileID: 1725610305410634232}
+  parent: {fileID: 9084995194103221770}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 1725610305410634232}
   references:
     version: 2
     RefIds:
@@ -521,10 +539,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
-  text: {fileID: 1725610306180908713}
+  parent: {fileID: 9084995194103221770}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 1725610306180908713}
   references:
     version: 2
     RefIds:
@@ -680,10 +704,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
-  text: {fileID: 1725610306385276106}
+  parent: {fileID: 9084995194103221770}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 1725610306385276106}
   references:
     version: 2
     RefIds:
@@ -811,9 +841,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d425941d1f7b124ba06762c288ff526, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
+  parent: {fileID: 2480304892870906366}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -841,24 +877,21 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 0
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
-  selector_latch: 0.2
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   inputCancel: UICancel
   onCancel:
     m_PersistentCalls:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 0
   cancelDeactivatePanel: 1
-  inputUp: UIUp
-  inputDown: UIDown
-  inputLeft: UILeft
-  inputRight: UIRight
   tabs:
   - {fileID: 4994751184921842427}
   navigationMode: 0
@@ -1022,9 +1055,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 2480304892870906366}
+  parent: {fileID: 2480304892870906366}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -1040,13 +1079,16 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 1
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
+  index: 0
   label: {fileID: 727461594209734629}
   references:
     version: 2
@@ -1065,10 +1107,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 4994751184921842427}
-  text: {fileID: 2992808904171128420}
+  parent: {fileID: 2480304892870906366}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  textComponent: {fileID: 2992808904171128420}
   references:
     version: 2
     RefIds:
@@ -1260,9 +1308,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c57313ae9fafa24b88761fdbb8fff47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
+  _Theme:
     rid: -2
-  Parent: {fileID: 9084995194103221770}
+  parent: {fileID: 9084995194103221770}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   references:
     version: 2
     RefIds:
@@ -1285,7 +1339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1054558489956137978
 RectTransform:
   m_ObjectHideFlags: 0
