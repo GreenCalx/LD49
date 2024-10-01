@@ -73,7 +73,7 @@ public class OnlineTrialRoulette : NetworkBehaviour
     public void Spin()
     {
         roulette_rb.isKinematic = false; 
-        roulette_rb.AddRelativeTorque( roulette_rb.transform.right * spinForce, ForceMode.Impulse);
+        roulette_rb.AddRelativeTorque( roulette_rb.transform.right * spinForce * Random.Range(0.75f,1.25f), ForceMode.Impulse);
     }
 
     public void StopSpin()

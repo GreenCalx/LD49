@@ -13,7 +13,7 @@ namespace Wonkerz
         [Header("# WonkerDecal")]
         public DecalRenderer decalRenderer;
         private CameraManager CM;
-
+        public bool AnimationTimeToOne = false;
         public Color jumpColor;
         public Color latencyColor;
         public Color maxColor;
@@ -23,6 +23,9 @@ namespace Wonkerz
         {
             CM = Access.managers.cameraMgr;
             CM.onCameraChanged += UpdateCamera;
+            
+            if (AnimationTimeToOne)
+                SetAnimationTime(1f);
 
             if (decalRenderer.cam == null)
             {
