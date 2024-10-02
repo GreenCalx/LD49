@@ -358,6 +358,8 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     IEnumerator Countdown()
     {
+        UIWaitForPlayers.Hide();
+        
         countdownElapsed = settings.countdownDuration;
         //FreezeAllPlayers(true);
         RpcLaunchOnlineStartLine();
@@ -592,6 +594,8 @@ public class OnlineGameManager : NetworkBehaviour
 
         UIPlayer.showTrackTime = iState;
     }
+
+
 
     #endregion
 }
