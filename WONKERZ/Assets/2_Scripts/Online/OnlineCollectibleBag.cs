@@ -61,8 +61,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public int torqueForces;
     [SyncVar]
     public int weights;
-    [SyncVar]
-    public bool HasAPowerEquipped; 
+    
 
     // Start is called before the first frame update
     void Start()
@@ -77,7 +76,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         turns = 0;
         torqueForces = 0;
         weights = 0;
-        HasAPowerEquipped = false;
+        
 
         StartCoroutine(Init());
     }
@@ -218,7 +217,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public void CollectPower(OnlineCollectible iCollectiblePower)
     {
         // TODO : Replace power management ?
-        HasAPowerEquipped = true;
+        
         if ( isServer && !owner.isLocalPlayer)
         {
             RpcCollectPower(iCollectiblePower);

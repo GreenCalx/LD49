@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Wonkerz;
+using Mirror;
+
 public class Canon : MonoBehaviour
 {
     [Header("Optional")]
@@ -17,7 +20,6 @@ public class Canon : MonoBehaviour
 
     public GameObject Fire()
     {
-
         GameObject projectile_Inst = Instantiate(projectile_Ref);
         projectile_Inst.transform.position = spawnPoint.position;
         projectile_Inst.transform.parent = null;
@@ -28,8 +30,9 @@ public class Canon : MonoBehaviour
             Vector3 f_dir = aimPoint.position - spawnPoint.position;
             projectile_rb.AddForce( f_dir * throwForce, ForceMode.VelocityChange);
         }
-
-        Destroy(projectile_Inst, projectileDuration);
+        if (!Access.managers.gameSettings.isOnline)
+            Destroy(projectile_Inst, projectileDuration);
         return projectile_Inst;
     }
+
 }

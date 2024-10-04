@@ -397,7 +397,19 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         // Post Game
+        FreezeAllPlayers(true);
+
+        RpcShowItsTrialTime(true);
         RpcShowUITrackTime(false);
+
+        
+
+        yield return new WaitForSeconds(2f);
+
+
+        FreezeAllPlayers(false);
+        UnequipAllPowers();
+        RpcShowItsTrialTime(false);
 
         gameLaunched = false;
         yield return LoadTrialScene();
@@ -491,6 +503,15 @@ public class OnlineGameManager : NetworkBehaviour
     {
         foreach (var opc in uniquePlayers) if (!opc.isLoaded) return false;
         return true;
+    }
+
+    [Server]
+    public void UnequipAllPowers()
+    {
+        foreach (var opc in uniquePlayers)
+        {
+            opc.self_PlayerController.self_PowerController.UnequipPower();
+        }
     }
 
     #endregion
@@ -595,7 +616,14 @@ public class OnlineGameManager : NetworkBehaviour
         UIPlayer.showTrackTime = iState;
     }
 
-
+    [ClientRpc]
+    public void RpcShowItsTrialTime(bool iState)
+    {
+        if (iState)
+            UIPlayer.ItsTrialTimeHandle.Show();
+        else
+            UIPlayer.ItsTrialTimeHandle.Hide();
+    }
 
     #endregion
 }

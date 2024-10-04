@@ -27,8 +27,13 @@ public class OnlineTrackEventManager : NetworkBehaviour
         int selected = UnityEngine.Random.Range(0,n_eventTypes);
 
         activeEvent = GetEvent(selected);
+        if (activeEvent.duration > OnlineGameManager.singleton.gameTime)
+        {
+            //this.Log("Not enough time to launch a new event.");
+            return;
+        }
+        
         RpcRefreshUI(activeEvent);
-
         activeEvent.EffectOn();
         trackEventCo = StartCoroutine(WaitForEventIsOver());
     }

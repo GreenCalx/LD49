@@ -117,7 +117,7 @@ public class OnlineCollectible : NetworkBehaviour
             }
 
 
-            if (locPlayer.bag.HasAPowerEquipped && IsPowerCollectible())
+            if (locPlayer.self_PlayerController.self_PowerController.HasAPowerEquipped && IsPowerCollectible())
                 return; // player already has a power we don't collect
 
             if (iCollider.transform.IsChildOf(locPlayer.transform))

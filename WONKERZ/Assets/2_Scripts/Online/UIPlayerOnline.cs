@@ -26,6 +26,7 @@ public class UIPlayerOnline : UIElement
     public Transform        TrackEventOnFXHandle;
     public Transform        TrackEventOffFXHandle;
     public TextMeshProUGUI  TrackEventNameTxt;
+    public UIElement ItsTrialTimeHandle;
     [Header("oldies")]
     public Image            cpImageFilled;
     public TextMeshProUGUI  nAvailablePanels;

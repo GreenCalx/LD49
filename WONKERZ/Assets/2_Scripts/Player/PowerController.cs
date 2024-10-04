@@ -18,6 +18,7 @@ namespace Wonkerz
         public GameObject PalletRef;
 
         [Header("Powers")]
+        public bool HasAPowerEquipped; 
         public List<ICarPower> powers;
         public ICarPower currentPower;
         public ICarPower nextPower;
@@ -39,6 +40,7 @@ namespace Wonkerz
         void Start()
         {
             currentPower = powers[0];
+            HasAPowerEquipped = false;
         }
 
         // Update is called once per frame
@@ -93,13 +95,16 @@ namespace Wonkerz
             {
                 case ONLINE_COLLECTIBLES.KLANCE_POWER:
                     setNextPower(2);
+
                     break;
                 case ONLINE_COLLECTIBLES.PLAUNCHER:
                     setNextPower(3);
+
                     break;
                 default:
                     break;
             }
+            HasAPowerEquipped = true;
             tryTriggerPower();
 
             refreshUI();
@@ -111,7 +116,7 @@ namespace Wonkerz
             {
                 currentPower.onDisableEffect();
                 currentPower = null;
-
+                HasAPowerEquipped = false;
                 refreshUI();
             }
         }

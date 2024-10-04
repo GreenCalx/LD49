@@ -1,6 +1,7 @@
 using UnityEngine;
 using Schnibble;
 using Schnibble.Managers;
+using Mirror;
 
 namespace Wonkerz
 {
@@ -8,7 +9,7 @@ namespace Wonkerz
     public interface ICarPower
     {
         public string name { get; set; }
-
+        public bool isOnline { get; set; }
         // called in update
         public void onRefresh();
 
@@ -29,9 +30,11 @@ namespace Wonkerz
     public class NeutralCarPower : ICarPower
     {
         public string name { get; set; }
+        public bool isOnline { get; set; }
         public NeutralCarPower()
         {
             name = "NeutralPower";
+            isOnline = Access.managers.gameSettings.isOnline;
         }
         public void onEnableEffect()
         {
@@ -66,11 +69,12 @@ namespace Wonkerz
         public GameObject turboParticlesInst;
 
         public string name { get; set; }
-
+        public bool isOnline { get; set; }
         public TurboCarPower(GameObject iTurboParticles)
         {
             name = "TurboPower";
             turboParticlesRef = iTurboParticles;
+            isOnline = Access.managers.gameSettings.isOnline;
         }
         public void onEnableEffect()
         {
@@ -122,10 +126,12 @@ namespace Wonkerz
         public float duration = 0.5f;
         private float elapsed = 0f;
         public string name { get; set; }
+        public bool isOnline { get; set; }
         public SpinCarPower(GameObject iSpinPowerObject_Ref)
         {
             name = "SpinPower";
             SpinPowerObject_Ref = iSpinPowerObject_Ref;
+            isOnline = Access.managers.gameSettings.isOnline;
         }
         public void onEnableEffect()
         {
@@ -170,11 +176,12 @@ namespace Wonkerz
         private Transform attachPoint;
 
         public string name { get; set; }
-
+        public bool isOnline { get; set; }
         public KnightLanceCarPower(GameObject iKLance_Ref)
         {
             name = "Knight Lance";
             KnightLanceObject_Ref = iKLance_Ref;
+            isOnline = Access.managers.gameSettings.isOnline;
         }
 
         public void onEnableEffect()
@@ -187,6 +194,10 @@ namespace Wonkerz
             {
                 KnightLanceObject_Inst = GameObject.Instantiate(KnightLanceObject_Ref, attachPoint);
                 KnightLanceObject_Inst.SetActive(true);
+                if (isOnline)
+                {
+                    NetworkServer.Spawn(KnightLanceObject_Inst);
+                }
             }
         }
 
@@ -202,7 +213,10 @@ namespace Wonkerz
         public void onDisableEffect()
         {
             // DESPAWN spin hurtbox mesh SpinPowerObject
-            GameObject.Destroy(KnightLanceObject_Inst);
+            if (isOnline)
+                NetworkServer.Destroy(KnightLanceObject_Inst);
+            else
+                GameObject.Destroy(KnightLanceObject_Inst);
         }
         public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
         {
@@ -225,7 +239,6 @@ namespace Wonkerz
         private GameObject PalletLauncher_Inst;
         private GameObject Pallet_Ref;
         private GameObject Pallet_Inst;
-
         private Canon Canon_Handle;
 
         private Transform attachPoint;
@@ -238,6 +251,7 @@ namespace Wonkerz
         private float elapsedTime;
 
         public string name { get; set; }
+        public bool isOnline { get; set; }
 
         public PalletLauncherCarPower(GameObject iPLauncher_Ref, GameObject iPalletRef)
         {
@@ -249,6 +263,7 @@ namespace Wonkerz
             Pallet_Ref = iPalletRef;
 
             elapsedTime = 0f;
+            isOnline = Access.managers.gameSettings.isOnline;
         }
 
         public void onEnableEffect()
@@ -261,8 +276,17 @@ namespace Wonkerz
             {
                 PalletLauncher_Inst = GameObject.Instantiate(PalletLauncher_Ref, attachPoint);
                 PalletLauncher_Inst.SetActive(true);
+                if (isOnline)
+                {
+                    NetworkServer.Spawn(PalletLauncher_Inst);
+                }
 
                 Pallet_Inst = GameObject.Instantiate(Pallet_Ref);
+                if (isOnline)
+                {
+                    NetworkServer.Spawn(Pallet_Inst);
+                }
+
                 Pallet_Inst.transform.parent = palletLoadingPoint;
                 Pallet_Inst.transform.localPosition = Vector3.zero;
                 Pallet_Inst.transform.rotation = Quaternion.identity;
@@ -273,7 +297,6 @@ namespace Wonkerz
                 palletLoadingPoint = Canon_Handle.loadingPoint;
                 palletLaunchingPoint = Canon_Handle.spawnPoint;
             }
-            
         }
 
         public void onActivation()
@@ -285,8 +308,15 @@ namespace Wonkerz
                 return;
             }
 
-            Canon_Handle.Fire();
-            
+            GameObject projectile = Canon_Handle.Fire();
+            if (isOnline)
+                NetworkServer.Spawn(projectile);
+            OnlineProjectile as_projectile = projectile.GetComponent<OnlineProjectile>();
+            if (!!as_projectile)
+            {
+                as_projectile.lifeTime = Canon_Handle.projectileDuration;
+            }
+
             elapsedTime = 0f;
             canonArmed  = false;
             palletRdyToLaunch = false;
@@ -311,7 +341,10 @@ namespace Wonkerz
         public void onDisableEffect()
         {
             // DESPAWN spin hurtbox mesh SpinPowerObject
-            GameObject.Destroy(PalletLauncher_Inst);
+            if (isOnline)
+                NetworkServer.Destroy(PalletLauncher_Inst);
+            else
+                GameObject.Destroy(PalletLauncher_Inst);
         }
         public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
         {
