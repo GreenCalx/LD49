@@ -136,8 +136,20 @@ public class GameProgressSaveManager : MonoBehaviour
 
     public void SaveProfile(string profileName)
     {
-        string profilePath = Path.Combine(GetProfilePath(profileName), fp_suffix);
-        using (StreamWriter writer = new StreamWriter(profilePath))
+        string profileDirPath  = GetProfilePath(profileName);
+        // make sure profile path exists,
+        // because it can happen that we are called to save but we did not
+        // create the profile yet.
+        if (!Directory.Exists(profileDirPath)) {
+            Directory.CreateDirectory(profileDirPath);
+        }
+        string profileFilePath = Path.Combine(profileDirPath, fp_suffix);
+        // same thing for the file, could not existis.
+        if (!File.Exists(profileFilePath)) {
+            File.Create(profileFilePath);
+        }
+
+        using (StreamWriter writer = new StreamWriter(profileFilePath))
         {
             string dataToWrite = JsonUtility.ToJson(gameProgressData);
             writer.Write(dataToWrite);
