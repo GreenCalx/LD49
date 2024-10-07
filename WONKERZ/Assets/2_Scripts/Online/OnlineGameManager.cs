@@ -164,6 +164,9 @@ public class OnlineGameManager : NetworkBehaviour
         // NOTE: why do we need this bool?
         Access.managers.gameSettings.isOnline = true;
 
+        // HACK: should probably not be here...
+        Access.managers.fpsLimiter.LimitFPS(false);
+
         yield return StartCoroutine(WaitForAllClientToSpawn    ());
         yield return StartCoroutine(WaitForAllPlayersToBeLoaded());
         RpcAllPlayersLoaded();
@@ -359,7 +362,7 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator Countdown()
     {
         UIWaitForPlayers.Hide();
-        
+
         countdownElapsed = settings.countdownDuration;
         //FreezeAllPlayers(true);
         RpcLaunchOnlineStartLine();
@@ -402,7 +405,7 @@ public class OnlineGameManager : NetworkBehaviour
         RpcShowItsTrialTime(true);
         RpcShowUITrackTime(false);
 
-        
+
 
         yield return new WaitForSeconds(2f);
 

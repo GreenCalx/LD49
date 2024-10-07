@@ -26,6 +26,8 @@ public class UITitleScreen : UIPanelTabbed
         }
 
         Show();
+
+        Access.managers.fpsLimiter.LimitFPS(true);
     }
 
     public void launchNewGame()

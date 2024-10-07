@@ -21,6 +21,29 @@ namespace Wonkerz
         public GameProgressSaveManager gameProgressSaveMgr;
         public AudioListenerManager    audioListenerMgr;
         public PlayerCosmeticsManager  playerCosmeticsMgr;
+        public FPSLimiter              fpsLimiter;
+
+        void LoadPlayerPrefs() {
+            string targetFPSStr   = "targetFPS";
+            string vsyncStr       = "vsync";
+
+
+            int targetFPS = PlayerPrefs.GetInt(targetFPSStr);
+            int vsync     = PlayerPrefs.GetInt(vsyncStr);
+
+            Application.targetFrameRate = targetFPS;
+            QualitySettings.vSyncCount  = vsync;
+        }
+
+        void OnDestroy(){
+            if (!PlayerPrefs.HasKey("targetFPS")){
+                PlayerPrefs.SetInt("targetFPS", Screen.currentResolution.refreshRate);
+            }
+
+            PlayerPrefs.SetInt("vsync", QualitySettings.vSyncCount);
+
+            PlayerPrefs.Save();
+        }
 
         void Awake() {
             this.Log("Awake.");
@@ -65,6 +88,8 @@ namespace Wonkerz
             if (trackMgr ==null) trackMgr = GetComponent<TrackManager>();
 
             if (bountyArray ==null) bountyArray = GetComponent<BountyArray>();
+
+            if (fpsLimiter == null) fpsLimiter = GetComponent<FPSLimiter>();
 
             this.Log("init done.");
         }

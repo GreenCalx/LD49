@@ -83,6 +83,8 @@ public class UIVideoPanel : UIPanelTabbed
 
             targetFPSTab.Show();
         }
+
+        PlayerPrefs.SetInt("vsync", QualitySettings.vSyncCount);
     }
 
     public override void Init() {
@@ -94,8 +96,8 @@ public class UIVideoPanel : UIPanelTabbed
     public override void Activate(){
         base.Activate();
 
-        targetFPSSlider.value = Application.targetFrameRate;
-        targetFPSSlider.onValueChange.AddListener(() => Application.targetFrameRate = (int)targetFPSSlider.value );
+        targetFPSSlider.value = PlayerPrefs.GetInt("targetFPS");
+        targetFPSSlider.onValueChange.AddListener(() => PlayerPrefs.SetInt("targetFPS", (int)targetFPSSlider.value));
         targetFPSSlider.ValueChanged();
 
         UpdateCurrentResolutionText();
