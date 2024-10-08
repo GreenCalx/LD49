@@ -29,8 +29,7 @@ namespace Wonkerz
         {
             powers = new List<ICarPower>()
             {
-                new NeutralCarPower(),
-                new SpinCarPower(SpinPowerObject_Ref),
+                null,
                 new KnightLanceCarPower(KnightLanceObject_Ref),
                 new PalletLauncherCarPower(PalletLauncherObject_Ref, PalletRef)
             };
@@ -55,6 +54,7 @@ namespace Wonkerz
                 tryTriggerPower();
             }
             currentPower.onRefresh();
+            refreshUI();
         }
 
         public bool isInNeutralPowerMode()
@@ -94,11 +94,11 @@ namespace Wonkerz
             switch (iCollectiblePower.collectibleType)
             {
                 case ONLINE_COLLECTIBLES.KLANCE_POWER:
-                    setNextPower(2);
+                    setNextPower(1);
 
                     break;
                 case ONLINE_COLLECTIBLES.PLAUNCHER:
-                    setNextPower(3);
+                    setNextPower(2);
 
                     break;
                 default:
@@ -107,7 +107,7 @@ namespace Wonkerz
             HasAPowerEquipped = true;
             tryTriggerPower();
 
-            refreshUI();
+            togglePowerUI();
         }
 
         public void UnequipPower()
@@ -117,7 +117,7 @@ namespace Wonkerz
                 currentPower.onDisableEffect();
                 currentPower = null;
                 HasAPowerEquipped = false;
-                refreshUI();
+                togglePowerUI();
             }
         }
 
@@ -131,16 +131,28 @@ namespace Wonkerz
 
         public void refreshUI()
         {
+            if (currentPower==null)
+                return;
+            
+            var ui = OnlineGameManager.singleton.UIPlayer;
+            var ratio = Mathf.Clamp01(currentPower.elapsed_cooldown / currentPower.cooldown);
+            ui.powerCooldownBar.fillAmount = ratio;
+        }
+
+        public void togglePowerUI()
+        {
             var ui = OnlineGameManager.singleton.UIPlayer;
             if (currentPower == null)
             {
-                ui.equippedPower.text = "--";
+                ui.equippedPowerHandle.gameObject.SetActive(false);
                 ui.DitchPowerHintHandle.gameObject.SetActive(false);
             }
                 
             else {
-                ui.equippedPower.text = currentPower.name;
+                ui.equippedPowerHandle.gameObject.SetActive(true);
                 ui.DitchPowerHintHandle.gameObject.SetActive(true);
+
+                //ui.equippedPowerThumbnailImage = ...
             }
                 
         }

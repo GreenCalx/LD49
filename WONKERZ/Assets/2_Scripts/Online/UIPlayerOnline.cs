@@ -20,8 +20,13 @@ public class UIPlayerOnline : UIElement
     public TMPro.TextMeshProUGUI    speedText;
     public Image                    speedBar;
     public TextMeshProUGUI          lifePool;
-    public TextMeshProUGUI          equippedPower;
+    //public TextMeshProUGUI          equippedPower;
+    [Header("Powers")]
+    public Transform equippedPowerHandle;
+    public Image equippedPowerThumbnailImage;
+    public Image powerCooldownBar;
     public Transform        DitchPowerHintHandle;
+    [Header("TrackEvents")]
     public Transform        TrackEventHandle;
     public Transform        TrackEventOnFXHandle;
     public Transform        TrackEventOffFXHandle;

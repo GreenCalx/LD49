@@ -10,6 +10,8 @@ namespace Wonkerz
     {
         public string name { get; set; }
         public bool isOnline { get; set; }
+        public  float cooldown {get; set;}
+        public  float elapsed_cooldown {get; set;}
         // called in update
         public void onRefresh();
 
@@ -27,47 +29,13 @@ namespace Wonkerz
         public void onDisableEffect();
     }
 
-    public class NeutralCarPower : ICarPower
-    {
-        public string name { get; set; }
-        public bool isOnline { get; set; }
-        public NeutralCarPower()
-        {
-            name = "NeutralPower";
-            isOnline = Access.managers.gameSettings.isOnline;
-        }
-        public void onEnableEffect()
-        {
-            //Access.Player().SetMode(CarController.CarMode.NONE);
-        }
-
-        public void onActivation()
-        {
-
-        }
-        public void onRefresh()
-        {
-            // no power : nothing to do here 
-        }
-        public void onDisableEffect()
-        {
-
-        }
-        public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
-        {
-
-        }
-        public bool turnOffTriggers()
-        {
-            return false;
-        }
-    }
-
+    // TODO : Broken ATM old logic
     public class TurboCarPower : ICarPower
     {
         public GameObject turboParticlesRef;
         public GameObject turboParticlesInst;
-
+        public  float cooldown {get; set;}
+        public  float elapsed_cooldown {get; set;}
         public string name { get; set; }
         public bool isOnline { get; set; }
         public TurboCarPower(GameObject iTurboParticles)
@@ -118,13 +86,15 @@ namespace Wonkerz
         }
     }
 
+    // TODO : broken ATM old logic
     public class SpinCarPower : ICarPower
     {
         public GameObject SpinPowerObject_Ref;
         private GameObject SpinPowerObject_Inst;
-
+        public  float cooldown {get; set;}
+        public  float elapsed_cooldown {get; set;}
         public float duration = 0.5f;
-        private float elapsed = 0f;
+        private float elapsed_effect = 0f;
         public string name { get; set; }
         public bool isOnline { get; set; }
         public SpinCarPower(GameObject iSpinPowerObject_Ref)
@@ -143,13 +113,19 @@ namespace Wonkerz
         {
             SpinPowerObject_Inst = GameObject.Instantiate(SpinPowerObject_Ref, Access.Player().GetTransform());
             SpinPowerObject_Inst.SetActive(true);
-            elapsed = 0f;
+            elapsed_effect = 0f;
         }
 
         public void onRefresh()
         {
-            elapsed += Time.deltaTime;
-            if (elapsed > duration)
+            if (elapsed_cooldown < cooldown)
+            {
+                elapsed_cooldown += Time.deltaTime;
+                return;
+            }
+
+            elapsed_effect += Time.deltaTime;
+            if (elapsed_effect > duration)
             {
                 onDisableEffect();
             }
@@ -172,6 +148,8 @@ namespace Wonkerz
     public class KnightLanceCarPower : ICarPower
     {
         public OnlinePlayerController owner;
+        public  float cooldown {get; set;}
+        public  float elapsed_cooldown {get; set;}
         public GameObject KnightLanceObject_Ref;
         private GameObject KnightLanceObject_Inst;
         private Transform attachPoint;
@@ -183,6 +161,9 @@ namespace Wonkerz
             name = "Knight Lance";
             KnightLanceObject_Ref = iKLance_Ref;
             isOnline = Access.managers.gameSettings.isOnline;
+
+            cooldown = 3f;
+            elapsed_cooldown = 0f;
         }
 
         public void onEnableEffect()
@@ -204,12 +185,17 @@ namespace Wonkerz
 
         public void onActivation()
         {
-            
+            elapsed_cooldown = 0f;
         }
 
         public void onRefresh()
         {
             KnightLanceObject_Inst.transform.localPosition = Vector3.zero;
+            if (elapsed_cooldown < cooldown)
+            {
+                elapsed_cooldown += Time.deltaTime;
+                return;
+            }
         }
         public void onDisableEffect()
         {
@@ -234,7 +220,8 @@ namespace Wonkerz
     public class PalletLauncherCarPower : ICarPower
     {
         // TODO : Make me tweakable from outside this place
-        public const float cooldown = 1f;
+        public  float cooldown {get; set;}
+        public  float elapsed_cooldown {get; set;}
         public OnlinePlayerController owner;
 
         public GameObject PalletLauncher_Ref;
@@ -250,8 +237,6 @@ namespace Wonkerz
         private bool palletRdyToLaunch = false;
         private bool canonArmed = false;
 
-        private float elapsedTime;
-
         public string name { get; set; }
         public bool isOnline { get; set; }
 
@@ -264,7 +249,8 @@ namespace Wonkerz
             PalletLauncher_Ref = iPLauncher_Ref;
             Pallet_Ref = iPalletRef;
 
-            elapsedTime = 0f;
+            cooldown = 1f;
+            elapsed_cooldown = 0f;
             isOnline = Access.managers.gameSettings.isOnline;
         }
 
@@ -324,7 +310,7 @@ namespace Wonkerz
                 as_damager.filteredOutDamageables.Add(owner.self_oDamageable);
             }
 
-            elapsedTime = 0f;
+            elapsed_cooldown = 0f;
             canonArmed  = false;
             palletRdyToLaunch = false;
         }
@@ -335,9 +321,9 @@ namespace Wonkerz
 
             if (!palletRdyToLaunch)
             {
-                if (elapsedTime < cooldown)
+                if (elapsed_cooldown < cooldown)
                 {
-                    elapsedTime += Time.deltaTime;
+                    elapsed_cooldown += Time.deltaTime;
                     return;
                 }
                 Pallet_Inst.SetActive(true);
