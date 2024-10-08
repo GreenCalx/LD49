@@ -153,8 +153,6 @@ public class OnlinePlayerController : NetworkBehaviour
             return;
         }
 
-        self_oDamageable = null;
-
         // Safely get the current player's rigidbody as a Car.
         // It might be null, for instance if the state is not yet a rigidbody compliant state.
         if (self_PlayerController == null)

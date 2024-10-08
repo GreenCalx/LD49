@@ -28,6 +28,7 @@ public class Canon : MonoBehaviour
         if (!!projectile_rb)
         {
             Vector3 f_dir = aimPoint.position - spawnPoint.position;
+            projectile_Inst.transform.LookAt(f_dir);
             projectile_rb.AddForce( f_dir * throwForce, ForceMode.VelocityChange);
         }
         if (!Access.managers.gameSettings.isOnline)

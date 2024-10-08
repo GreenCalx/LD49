@@ -37,6 +37,11 @@ public class OnlineDamageSnapshot
     }
 }
 
+[System.Serializable]
+public class DamageEvent : UnityEvent<int>
+{
+}
+
 public class OnlineDamager : NetworkBehaviour
 {
     public GameObject owner;
@@ -50,12 +55,15 @@ public class OnlineDamager : NetworkBehaviour
     public bool FromTriggers = false;
     public bool FromParticles = false;
     public bool FirstContactOnly = true;
+    [Header("Filters")]
+    public List<OnlineDamageable> filteredOutDamageables = new List<OnlineDamageable>();
 
     [Header("Tweaks")]
     public int damage = 99;
     [Range(-500,500)]
     public int optional_repulsion_force = 0;
-    public List<UnityEvent<int>> OnDoDamageCallbacks;
+    public List<DamageEvent> OnDoDamageCallbacks;
+    public List<UnityEvent> OnDoDamageVoidCallbacks;
     private readonly float delayBetweenDamages = 0.2f;
     private float elapsedTimeSinceLastDamage = 0f;
     
@@ -122,14 +130,17 @@ public class OnlineDamager : NetworkBehaviour
             oDamageable = iDamageTarget.GetComponentInParent<OnlineDamageable>();
             if (oDamageable==null)
                 return false; 
+            if (filteredOutDamageables.Contains(oDamageable))
+                return false;
         }
 
-
+        OnlineDamageSnapshot snapshot = MakeSnapshot();
+        bool did_damage = false;
         if (DoDamageToPlayers)
         {
             if (Wonkerz.Utils.isPlayer(oDamageable.owner))
             {
-                oDamageable.TryTakeDamage(MakeSnapshot());
+                did_damage = oDamageable.TryTakeDamage(snapshot);
             }
         }
 
@@ -138,7 +149,7 @@ public class OnlineDamager : NetworkBehaviour
             OnlineBreakableObject obo = oDamageable.owner.GetComponent<OnlineBreakableObject>();
             if (!!obo)
             {
-                oDamageable.TryTakeDamage(MakeSnapshot());
+                did_damage = oDamageable.TryTakeDamage(snapshot);
             }
         }
 
@@ -146,11 +157,15 @@ public class OnlineDamager : NetworkBehaviour
         {
             if (!!oDamageable.owner.GetComponent<WkzEnemy>())
             {
-                oDamageable.TryTakeDamage(MakeSnapshot());
+                did_damage = oDamageable.TryTakeDamage(snapshot);
             }
         }
+        
+        if (!did_damage)
+        { return false;}
 
-
+        OnDoDamageVoidCallbacks.ForEach(e => e.Invoke());
+        OnDoDamageCallbacks.ForEach(e => e.Invoke(snapshot.damage));
         elapsedTimeSinceLastDamage = 0f;
         return true;
     }

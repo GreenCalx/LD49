@@ -171,6 +171,7 @@ namespace Wonkerz
 
     public class KnightLanceCarPower : ICarPower
     {
+        public OnlinePlayerController owner;
         public GameObject KnightLanceObject_Ref;
         private GameObject KnightLanceObject_Inst;
         private Transform attachPoint;
@@ -186,8 +187,8 @@ namespace Wonkerz
 
         public void onEnableEffect()
         {
-            PlayerController PC = Access.Player();
-            WeightIndicator WI = PC.GetComponentInChildren<WeightIndicator>();
+            owner = owner = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
+            WeightIndicator WI = owner.GetComponentInChildren<WeightIndicator>();
             attachPoint = WI.transform;
 
             if (!!WI)
@@ -234,6 +235,7 @@ namespace Wonkerz
     {
         // TODO : Make me tweakable from outside this place
         public const float cooldown = 1f;
+        public OnlinePlayerController owner;
 
         public GameObject PalletLauncher_Ref;
         private GameObject PalletLauncher_Inst;
@@ -268,8 +270,8 @@ namespace Wonkerz
 
         public void onEnableEffect()
         {
-            PlayerController PC = Access.Player();
-            WeightIndicator WI = PC.GetComponentInChildren<WeightIndicator>();
+            owner = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
+            WeightIndicator WI = owner.GetComponentInChildren<WeightIndicator>();
             attachPoint = WI.transform;
 
             if (!!WI)
@@ -315,6 +317,11 @@ namespace Wonkerz
             if (!!as_projectile)
             {
                 as_projectile.lifeTime = Canon_Handle.projectileDuration;
+            }
+            OnlineDamager as_damager = projectile.GetComponent<OnlineDamager>();
+            if (!!as_damager)
+            {
+                as_damager.filteredOutDamageables.Add(owner.self_oDamageable);
             }
 
             elapsedTime = 0f;
