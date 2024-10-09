@@ -14,5 +14,7 @@ public class PlayerPowerElement : ScriptableObject
     public Sprite powerImage;
     public GameObject prefabToAttachOnPlayer;
     public float cooldown;
+    [SerializeReference, SubclassPicker]
+    public ICarPower carPower;
 
 }

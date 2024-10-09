@@ -5,31 +5,6 @@ using Mirror;
 
 namespace Wonkerz
 {
-
-    // TODO : It really sucks to need this
-    // Either give up on interfaces, either find a way to serialize it
-    // and link it in PlayerPowerElement
-    public static class CarPowerFactory
-    {
-        public static ICarPower Build(PlayerPowerElement iPowerDef)
-        {
-            ICarPower retval = null;
-            switch (iPowerDef.relatedCollectible)
-            {
-                case ONLINE_COLLECTIBLES.KLANCE_POWER:
-                    retval = new KnightLanceCarPower(iPowerDef);
-                    break;
-                case ONLINE_COLLECTIBLES.PLAUNCHER:
-                    retval = new PalletLauncherCarPower(iPowerDef);
-                    break;
-                default:
-                    UnityEngine.Debug.LogError("BuildCarPower : Power not defined in power factory");
-                    break;
-            }
-            return retval;
-        }
-    }
-
     public interface ICarPower
     {
         public PlayerPowerElement fullPowerDef {get; set;}
@@ -37,6 +12,9 @@ namespace Wonkerz
         public bool isOnline { get; set; }
         public  float cooldown {get; set;}
         public  float elapsed_cooldown {get; set;}
+
+        // build itself from playerpowerelement explicitely
+        public void init(PlayerPowerElement iPowerElement);
         // called in update
         public void onRefresh();
 
@@ -64,10 +42,18 @@ namespace Wonkerz
         public  float elapsed_cooldown {get; set;}
         public string name { get; set; }
         public bool isOnline { get; set; }
-        public TurboCarPower(GameObject iTurboParticles)
+        public TurboCarPower()
         {
-            name = "TurboPower";
-            turboParticlesRef = iTurboParticles;
+
+        }
+
+        public void init(PlayerPowerElement iPowerDef)
+        {
+            name = iPowerDef.name;
+            cooldown = iPowerDef.cooldown;
+            fullPowerDef = iPowerDef;
+            
+            turboParticlesRef = iPowerDef.prefabToAttachOnPlayer;
             isOnline = Access.managers.gameSettings.isOnline;
         }
         public void onEnableEffect()
@@ -112,66 +98,6 @@ namespace Wonkerz
         }
     }
 
-    // TODO : broken ATM old logic
-    public class SpinCarPower : ICarPower
-    {
-        public GameObject SpinPowerObject_Ref;
-        private GameObject SpinPowerObject_Inst;
-        public PlayerPowerElement fullPowerDef {get; set;}
-        public  float cooldown {get; set;}
-        public  float elapsed_cooldown {get; set;}
-        public float duration = 0.5f;
-        private float elapsed_effect = 0f;
-        public string name { get; set; }
-        public bool isOnline { get; set; }
-        public SpinCarPower(GameObject iSpinPowerObject_Ref)
-        {
-            name = "SpinPower";
-            SpinPowerObject_Ref = iSpinPowerObject_Ref;
-            isOnline = Access.managers.gameSettings.isOnline;
-        }
-        public void onEnableEffect()
-        {
-            // SPAWN spin hurtbox mesh SpinPowerObject
-
-        }
-
-        public void onActivation()
-        {
-            SpinPowerObject_Inst = GameObject.Instantiate(SpinPowerObject_Ref, Access.Player().GetTransform());
-            SpinPowerObject_Inst.SetActive(true);
-            elapsed_effect = 0f;
-        }
-
-        public void onRefresh()
-        {
-            if (elapsed_cooldown < cooldown)
-            {
-                elapsed_cooldown += Time.deltaTime;
-                return;
-            }
-
-            elapsed_effect += Time.deltaTime;
-            if (elapsed_effect > duration)
-            {
-                onDisableEffect();
-            }
-        }
-        public void onDisableEffect()
-        {
-            // DESPAWN spin hurtbox mesh SpinPowerObject
-            GameObject.Destroy(SpinPowerObject_Inst.gameObject);
-        }
-        public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
-        {
-            this.Log("Spin Power Input effects");
-        }
-        public bool turnOffTriggers()
-        {
-            return false;
-        }
-    }
-
     [System.Serializable]
     public class KnightLanceCarPower : ICarPower
     {
@@ -185,7 +111,14 @@ namespace Wonkerz
 
         public string name { get; set; }
         public bool isOnline { get; set; }
+
+        public KnightLanceCarPower() {}
         public KnightLanceCarPower(PlayerPowerElement iPowerDef)
+        {
+            init(iPowerDef);
+        }
+
+        public void init(PlayerPowerElement iPowerDef)
         {
             fullPowerDef = iPowerDef;
             name = iPowerDef.name;
@@ -270,7 +203,13 @@ namespace Wonkerz
         public string name { get; set; }
         public bool isOnline { get; set; }
 
+        public PalletLauncherCarPower() {}
         public PalletLauncherCarPower(PlayerPowerElement iPowerDef)
+        {
+            init(iPowerDef);
+        }
+
+        public void init(PlayerPowerElement iPowerDef)
         {
             fullPowerDef = iPowerDef;
             name = iPowerDef.name;

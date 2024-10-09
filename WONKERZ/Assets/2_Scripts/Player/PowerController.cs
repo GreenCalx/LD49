@@ -58,7 +58,9 @@ namespace Wonkerz
         public void EquipCollectiblePower(OnlineCollectible iCollectiblePower)
         {
             PlayerPowerElement ppe = powerCollection.GetPowerFromCollectible(iCollectiblePower.collectibleType);
-            nextPower = CarPowerFactory.Build(ppe);
+            //nextPower = CarPowerFactory.Build(ppe);
+            ppe.carPower.init(ppe);
+            nextPower = ppe.carPower;
 
             HasAPowerEquipped = true;
             tryTriggerPower();
