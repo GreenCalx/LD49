@@ -470,13 +470,15 @@ public class UIOnline : UIPanel
     }
 
     override protected void OnEnable() {
-        Show();
+        Init();
         Activate();
+        Show();
     }
 
     override protected void OnDisable() {
         Hide();
         Deactivate();
+        Deinit();
     }
 
     override public void Activate()

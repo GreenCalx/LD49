@@ -33,12 +33,14 @@ public class UIRoom_EmptySlot : UITab
             var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
             inviteTab.parent = this;
             inviteTab.label.content = "Invite player";
+            inviteTab.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
             inviteTab.onActivate.AddListener(InvitePlayer);
             onClickPanel.tabs.Add(inviteTab);
 
             var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
             removeSlot.parent = this;
             removeSlot.label.content = "Remove slot";
+            removeSlot.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
             removeSlot.onActivate.AddListener(RemoveSlot);
             onClickPanel.tabs.Add(removeSlot);
 
@@ -49,6 +51,7 @@ public class UIRoom_EmptySlot : UITab
 
     void InvitePlayer() {
         // show panel NotImplementedYet
+        invitePlayerPanel.Init();
         invitePlayerPanel.Show();
     }
 

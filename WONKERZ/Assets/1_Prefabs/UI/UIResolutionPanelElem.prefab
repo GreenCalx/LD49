@@ -51,8 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18b3bc7e981c1f143a4a465ef1e19aab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Theme:
-    rid: -2
+  _Theme: {fileID: 0}
   parent: {fileID: 0}
   onVisible:
     m_PersistentCalls:
@@ -62,34 +61,10 @@ MonoBehaviour:
       m_Calls: []
   onSelect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6243578037018661089}
-        m_TargetAssemblyTypeName: Schnibble.UI.UIElement, SchUX
-        m_MethodName: Show
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onDeselect:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6243578037018661089}
-        m_TargetAssemblyTypeName: Schnibble.UI.UIElement, SchUX
-        m_MethodName: Hide
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -120,13 +95,12 @@ MonoBehaviour:
   inputDown: UIDown
   inputLeft: UILeft
   inputRight: UIRight
-  index: 0
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 535267659247019182}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
   label: {fileID: 745040315282769805}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+  index: 0
 --- !u!1 &4185388337751133685
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,8 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Theme:
-    rid: -2
+  _Theme: {fileID: 0}
   parent: {fileID: 4044547041662956355}
   onVisible:
     m_PersistentCalls:
@@ -188,11 +161,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   textComponent: {fileID: 2422006146769916089}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!222 &7556353827017613847
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -308,7 +276,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6131745224228430266
 RectTransform:
   m_ObjectHideFlags: 0
@@ -341,8 +309,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c57313ae9fafa24b88761fdbb8fff47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _Theme:
-    rid: -2
+  _Theme: {fileID: 0}
   parent: {fileID: 0}
   onVisible:
     m_PersistentCalls:
@@ -350,11 +317,6 @@ MonoBehaviour:
   onHidden:
     m_PersistentCalls:
       m_Calls: []
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!222 &6258970094028030378
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -379,7 +341,7 @@ MonoBehaviour:
   m_Color: {r: 1, g: 0.67137337, b: 0, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 0
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

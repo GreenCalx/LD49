@@ -61,12 +61,16 @@ public class OnlineUIPauseMenu : UIControllableElement
         room = NetworkRoomManagerExt.singleton;
 
         base.Init();
+
+        panel.Init();
     }
 
     override public void Deinit()
     {
         StopInputs();
         base.Deinit();
+
+        panel.Deinit();
     }
 
     override protected void Update()
@@ -88,12 +92,14 @@ public class OnlineUIPauseMenu : UIControllableElement
 
     override protected void OnEnable()
     {
+        Init();
         Show();
     }
 
     override protected void OnDisable()
     {
         Hide();
+        Deinit();
     }
 
     override protected void ProcessInputs(InputManager currentMgr, GameController entry)

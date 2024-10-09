@@ -25,6 +25,8 @@ public class UITitleScreen : UIPanelTabbed
             GameObject.Destroy(NetworkRoomManagerExt.singleton.gameObject);
         }
 
+        Init();
+        Activate();
         Show();
 
         Access.managers.fpsLimiter.LimitFPS(true);

@@ -25,5 +25,5 @@ public class FPSLimiter : MonoBehaviour
         }
 
         limitFPS = limit;
-}
+    }
 }

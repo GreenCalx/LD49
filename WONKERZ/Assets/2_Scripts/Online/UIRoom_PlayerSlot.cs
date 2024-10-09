@@ -63,12 +63,14 @@ public class UIRoom_PlayerSlot : UITab
             var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
             inviteTab.parent = this;
             inviteTab.label.content = "Invite player";
+            inviteTab.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
             inviteTab.onActivate.AddListener(InvitePlayer);
             onClickPanel.tabs.Add(inviteTab);
 
             var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
             removeSlot.parent = this;
             removeSlot.label.content = "Remove slot";
+            removeSlot.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
             removeSlot.onActivate.AddListener(RemovePlayer);
             onClickPanel.tabs.Add(removeSlot);
 
@@ -87,7 +89,8 @@ public class UIRoom_PlayerSlot : UITab
         public void UpdateView() {
             if (roomPlayer == null) return;
             // pull player infos.
-            SetBackgroundColor(roomPlayer.infos.backgroundColor);
+            if (!isSelected) SetBackgroundColor(roomPlayer.infos.backgroundColor);
+
             SetPlayerName(roomPlayer.infos.playerName);
             SetLatency((int)(roomPlayer.infos.rtt * 1000));
             // pull player states.
@@ -137,6 +140,7 @@ public class UIRoom_PlayerSlot : UITab
 
     void InvitePlayer() {
         // show panel NotImplementedYet
+        invitePlayerPanel.Init();
         invitePlayerPanel.Show();
     }
 }

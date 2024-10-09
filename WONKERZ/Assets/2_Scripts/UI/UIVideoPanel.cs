@@ -66,7 +66,7 @@ public class UIVideoPanel : UIPanelTabbed
     public void OnVSyncValueChanged(bool value){
         if(value) {
             QualitySettings.vSyncCount = 1;
-            Application.targetFrameRate = Screen.currentResolution.refreshRate;
+            //Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
             // remove target fps tab
             tabs.Remove(targetFPSTab);
@@ -75,7 +75,7 @@ public class UIVideoPanel : UIPanelTabbed
         else {
             //default
             QualitySettings.vSyncCount = 0;
-            Application.targetFrameRate = -1;
+            //Application.targetFrameRate = -1;
 
             if (!tabs.Contains(targetFPSTab)) {
                 tabs.Add(targetFPSTab);
