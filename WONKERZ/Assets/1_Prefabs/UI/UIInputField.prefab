@@ -148,15 +148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
-    rid: -2
-  Parent: {fileID: 3732406044321347816}
+  _Theme: {fileID: 0}
+  parent: {fileID: 3732406044321347816}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   textComponent: {fileID: 3732406044266166613}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!1 &3732406044321347817
 GameObject:
   m_ObjectHideFlags: 0
@@ -209,9 +209,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17fad8af21f619b47927a782c7826f8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
-    rid: -2
-  Parent: {fileID: 0}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -227,13 +232,15 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 1
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 1
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   background: {fileID: 3732406045529363730}
   cursor: {fileID: 8193342059579935499}
   cursorBlinkRate: 0.1
@@ -244,11 +251,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   placeholderText: Enter text here...
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!222 &3732406044321347811
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -306,9 +308,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ebb5d11b5321374da6aa9bf69aa246e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
-    rid: -2
-  Parent: {fileID: 3732406044321347816}
+  _Theme: {fileID: 11400000, guid: 006752e33459d8a449fe03e91d92cee2, type: 2}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls: []
@@ -324,35 +331,29 @@ MonoBehaviour:
   activator: {fileID: 0}
   isSelected: 0
   isActivated: 0
-  isOnEnableCallingActivate: 1
-  isOnDisableCallingDeactivate: 1
   useParentInputManager: 1
-  inputMgr: {fileID: 0}
   isTakingInputPrecedence: 0
   useParentInputs: 1
+  inputMgr: {fileID: 0}
   inputActivate: UIActivate
-  selector_latch: 0.2
+  inputUp: UIUp
+  inputDown: UIDown
+  inputLeft: UILeft
+  inputRight: UIRight
   inputCancel: UICancel
   onCancel:
     m_PersistentCalls:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 1
   cancelDeactivatePanel: 1
-  inputUp: UIUp
-  inputDown: UIDown
-  inputLeft: UILeft
-  inputRight: UIRight
-  keySize: 50
+  rowSize: 0
+  colSize: 0
   spaceKey: UIKeyboardSpace
   backspaceKey: UIKeyboardBackspace
   shiftKey: UIKeyboardShift
   capsKey: UIKeyboardCaps
+  tabKey: UIKeyboardTab
   mode: 0
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!1 &3732406044905244995
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,15 +502,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38da0abcf40b36a4dbd5d6aafd03119e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
-    rid: -2
-  Parent: {fileID: 3732406044321347816}
+  _Theme: {fileID: 0}
+  parent: {fileID: 3732406044321347816}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   textComponent: {fileID: 3732406044905244993}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!1 &3732406045529363731
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,11 +679,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c57313ae9fafa24b88761fdbb8fff47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _uiTheme:
-    rid: -2
-  Parent: {fileID: 0}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
