@@ -6,8 +6,33 @@ using Mirror;
 namespace Wonkerz
 {
 
+    // TODO : It really sucks to need this
+    // Either give up on interfaces, either find a way to serialize it
+    // and link it in PlayerPowerElement
+    public static class CarPowerFactory
+    {
+        public static ICarPower Build(PlayerPowerElement iPowerDef)
+        {
+            ICarPower retval = null;
+            switch (iPowerDef.relatedCollectible)
+            {
+                case ONLINE_COLLECTIBLES.KLANCE_POWER:
+                    retval = new KnightLanceCarPower(iPowerDef);
+                    break;
+                case ONLINE_COLLECTIBLES.PLAUNCHER:
+                    retval = new PalletLauncherCarPower(iPowerDef);
+                    break;
+                default:
+                    UnityEngine.Debug.LogError("BuildCarPower : Power not defined in power factory");
+                    break;
+            }
+            return retval;
+        }
+    }
+
     public interface ICarPower
     {
+        public PlayerPowerElement fullPowerDef {get; set;}
         public string name { get; set; }
         public bool isOnline { get; set; }
         public  float cooldown {get; set;}
@@ -34,6 +59,7 @@ namespace Wonkerz
     {
         public GameObject turboParticlesRef;
         public GameObject turboParticlesInst;
+        public PlayerPowerElement fullPowerDef {get; set;}
         public  float cooldown {get; set;}
         public  float elapsed_cooldown {get; set;}
         public string name { get; set; }
@@ -91,6 +117,7 @@ namespace Wonkerz
     {
         public GameObject SpinPowerObject_Ref;
         private GameObject SpinPowerObject_Inst;
+        public PlayerPowerElement fullPowerDef {get; set;}
         public  float cooldown {get; set;}
         public  float elapsed_cooldown {get; set;}
         public float duration = 0.5f;
@@ -145,9 +172,11 @@ namespace Wonkerz
         }
     }
 
+    [System.Serializable]
     public class KnightLanceCarPower : ICarPower
     {
         public OnlinePlayerController owner;
+        public PlayerPowerElement fullPowerDef {get; set;}
         public  float cooldown {get; set;}
         public  float elapsed_cooldown {get; set;}
         public GameObject KnightLanceObject_Ref;
@@ -156,13 +185,14 @@ namespace Wonkerz
 
         public string name { get; set; }
         public bool isOnline { get; set; }
-        public KnightLanceCarPower(GameObject iKLance_Ref)
+        public KnightLanceCarPower(PlayerPowerElement iPowerDef)
         {
-            name = "Knight Lance";
-            KnightLanceObject_Ref = iKLance_Ref;
-            isOnline = Access.managers.gameSettings.isOnline;
+            fullPowerDef = iPowerDef;
+            name = iPowerDef.name;
+            KnightLanceObject_Ref = iPowerDef.prefabToAttachOnPlayer;
+            cooldown = iPowerDef.cooldown;
 
-            cooldown = 3f;
+            isOnline = Access.managers.gameSettings.isOnline;
             elapsed_cooldown = 0f;
         }
 
@@ -216,18 +246,18 @@ namespace Wonkerz
             return false;
         }
     }
-
+    [System.Serializable]
     public class PalletLauncherCarPower : ICarPower
     {
-        // TODO : Make me tweakable from outside this place
+        public PlayerPowerElement fullPowerDef {get; set;}
         public  float cooldown {get; set;}
         public  float elapsed_cooldown {get; set;}
         public OnlinePlayerController owner;
 
         public GameObject PalletLauncher_Ref;
         private GameObject PalletLauncher_Inst;
-        private GameObject Pallet_Ref;
-        private GameObject Pallet_Inst;
+
+
         private Canon Canon_Handle;
 
         private Transform attachPoint;
@@ -240,16 +270,16 @@ namespace Wonkerz
         public string name { get; set; }
         public bool isOnline { get; set; }
 
-        public PalletLauncherCarPower(GameObject iPLauncher_Ref, GameObject iPalletRef)
+        public PalletLauncherCarPower(PlayerPowerElement iPowerDef)
         {
-            name = "Pallet Launcher";
+            fullPowerDef = iPowerDef;
+            name = iPowerDef.name;
+            PalletLauncher_Ref = iPowerDef.prefabToAttachOnPlayer;
+            cooldown = iPowerDef.cooldown;
+
+            
             canonArmed = false;
             palletRdyToLaunch = true;
-
-            PalletLauncher_Ref = iPLauncher_Ref;
-            Pallet_Ref = iPalletRef;
-
-            cooldown = 1f;
             elapsed_cooldown = 0f;
             isOnline = Access.managers.gameSettings.isOnline;
         }
@@ -268,16 +298,6 @@ namespace Wonkerz
                 {
                     NetworkServer.Spawn(PalletLauncher_Inst);
                 }
-
-                Pallet_Inst = GameObject.Instantiate(Pallet_Ref);
-                if (isOnline)
-                {
-                    NetworkServer.Spawn(Pallet_Inst);
-                }
-
-                Pallet_Inst.transform.parent = palletLoadingPoint;
-                Pallet_Inst.transform.localPosition = Vector3.zero;
-                Pallet_Inst.transform.rotation = Quaternion.identity;
 
                 palletRdyToLaunch = true;
 
@@ -326,7 +346,7 @@ namespace Wonkerz
                     elapsed_cooldown += Time.deltaTime;
                     return;
                 }
-                Pallet_Inst.SetActive(true);
+
                 palletRdyToLaunch = true;
             }
 
@@ -348,7 +368,7 @@ namespace Wonkerz
             if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).down)
             {
                 // Load
-                Pallet_Inst.SetActive(false);
+                
                 canonArmed = true;
             }
             if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).up)

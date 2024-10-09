@@ -18,27 +18,16 @@ namespace Wonkerz
         public GameObject PalletRef;
 
         [Header("Powers")]
-        public bool HasAPowerEquipped; 
+        public bool HasAPowerEquipped;
+        public PowerCollection powerCollection;
         public List<ICarPower> powers;
         public ICarPower currentPower;
         public ICarPower nextPower;
 
-        // Private cache
-
-        void Awake()
-        {
-            powers = new List<ICarPower>()
-            {
-                null,
-                new KnightLanceCarPower(KnightLanceObject_Ref),
-                new PalletLauncherCarPower(PalletLauncherObject_Ref, PalletRef)
-            };
-        }
-
-        // Start is called before the first frame update
         void Start()
         {
-            currentPower = powers[0];
+            // currentPower = powers[0];
+            currentPower = null;
             HasAPowerEquipped = false;
         }
 
@@ -57,11 +46,6 @@ namespace Wonkerz
             refreshUI();
         }
 
-        public bool isInNeutralPowerMode()
-        {
-            return (currentPower != powers[0]); // neutral power
-        }
-
         public void tryTriggerPower()
         {
             if (nextPower != null)
@@ -77,33 +61,11 @@ namespace Wonkerz
             nextPower = null; // reset next power
         }
 
-        public void setNextPower(int iPowerIndex)
-        {
-            if ((iPowerIndex < 0) || (iPowerIndex >= powers.Count))
-            { nextPower = null; return; }
-
-            ICarPower carpower = powers[iPowerIndex];
-            if (carpower == null)
-            { nextPower = null; return; }
-
-            nextPower = carpower;
-        }
-
         public void EquipCollectiblePower(OnlineCollectible iCollectiblePower)
         {
-            switch (iCollectiblePower.collectibleType)
-            {
-                case ONLINE_COLLECTIBLES.KLANCE_POWER:
-                    setNextPower(1);
+            PlayerPowerElement ppe = powerCollection.GetPowerFromCollectible(iCollectiblePower.collectibleType);
+            nextPower = CarPowerFactory.Build(ppe);
 
-                    break;
-                case ONLINE_COLLECTIBLES.PLAUNCHER:
-                    setNextPower(2);
-
-                    break;
-                default:
-                    break;
-            }
             HasAPowerEquipped = true;
             tryTriggerPower();
 
@@ -152,7 +114,7 @@ namespace Wonkerz
                 ui.equippedPowerHandle.gameObject.SetActive(true);
                 ui.DitchPowerHintHandle.gameObject.SetActive(true);
 
-                //ui.equippedPowerThumbnailImage = ...
+                ui.equippedPowerThumbnailImage.sprite = currentPower.fullPowerDef.powerImage;
             }
                 
         }
