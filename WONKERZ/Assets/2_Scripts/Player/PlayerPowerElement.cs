@@ -5,9 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using Wonkerz;
 using Schnibble;
-/**
-*   Cosmetic element
-*/
+
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/PlayerPowerElement", order = 5)]
 public class PlayerPowerElement : ScriptableObject
 {
