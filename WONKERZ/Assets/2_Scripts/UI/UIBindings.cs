@@ -108,6 +108,7 @@ public class UIBindings : UIPanelTabbedScrollable
         checkbox.getValueFunc.AddListener(GetCameraMappingXValue);
 
         tab.label.content = "Inverse Camera X Rotation";
+        tab.Init();
         tab.Show();
         this.tabs.Add(tab);
 
@@ -118,6 +119,7 @@ public class UIBindings : UIPanelTabbedScrollable
         checkbox.getValueFunc.AddListener(GetCameraMappingYValue);
 
         tab.label.content = "Inverse Camera Y Rotation";
+        tab.Init();
         tab.Show();
         this.tabs.Add(tab);
 

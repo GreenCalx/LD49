@@ -29,6 +29,7 @@ public class UIBindingElement : UITextTab
             return;
         }
         uiBindings.waitingForInput.parent = this;
+        uiBindings.waitingForInput.Init();
         uiBindings.waitingForInput.Show();
     }
 }

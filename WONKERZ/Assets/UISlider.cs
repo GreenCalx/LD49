@@ -107,6 +107,7 @@ public class UISlider : UIPanel
     }
 
     override public void Activate() {
+        Init();
         StartInputs();
         base.Activate();
 
@@ -120,5 +121,6 @@ public class UISlider : UIPanel
         base.Deactivate();
         StopInputs();
         cursor.gameObject.SetActive(false);
+        Deinit();
     }
 }

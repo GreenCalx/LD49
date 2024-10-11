@@ -27,7 +27,7 @@ public class UIWaitInputsPanel : UIPanel
 
     override public void Hide() {
         base.Hide();
-        Deactivate();
+        //Deactivate();
     }
 
     override public void Activate() {
