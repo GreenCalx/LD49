@@ -58,7 +58,7 @@ namespace Wonkerz
         public void EquipCollectiblePower(OnlineCollectible iCollectiblePower)
         {
             PlayerPowerElement ppe = powerCollection.GetPowerFromCollectible(iCollectiblePower.collectibleType);
-            //nextPower = CarPowerFactory.Build(ppe);
+
             ppe.carPower.init(ppe);
             nextPower = ppe.carPower;
 
@@ -86,7 +86,7 @@ namespace Wonkerz
                     ps_inst.transform.parent = WI.transform;
                     ps_inst.transform.localPosition = Vector3.zero;
                     ParticleSystem as_ps = ps_inst.GetComponent<ParticleSystem>();
-                    Destroy(ps_inst, as_ps.main.duration + 0.2f);
+                    Destroy(ps_inst, as_ps.main.duration);
                 }
             }
         }
@@ -105,8 +105,7 @@ namespace Wonkerz
                 return;
             
             var ui = OnlineGameManager.singleton.UIPlayer;
-            var ratio = Mathf.Clamp01(currentPower.elapsed_cooldown / currentPower.cooldown);
-            ui.powerCooldownBar.fillAmount = ratio;
+            ui.updateCarPowerUI(currentPower);
         }
 
         public void togglePowerUI()

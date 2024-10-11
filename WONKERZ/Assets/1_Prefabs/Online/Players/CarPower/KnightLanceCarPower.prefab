@@ -61,7 +61,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  owner: {fileID: 0}
+  owner: {fileID: 5546326682357359979}
   DoDamageToPlayers: 1
   DoDamageToObjects: 1
   DoDamageToEnemies: 1
@@ -69,9 +69,11 @@ MonoBehaviour:
   FromTriggers: 0
   FromParticles: 0
   FirstContactOnly: 1
+  filteredOutDamageables: []
   damage: 120
   optional_repulsion_force: 2
   OnDoDamageCallbacks: []
+  OnDoDamageVoidCallbacks: []
 --- !u!1 &5546326682357359979
 GameObject:
   m_ObjectHideFlags: 0
@@ -85,6 +87,7 @@ GameObject:
   - component: {fileID: 2664711144099527803}
   - component: {fileID: 7867688133116996909}
   - component: {fileID: 785636021209265154}
+  - component: {fileID: 3799535492937567767}
   m_Layer: 17
   m_Name: KnightLanceCarPower
   m_TagString: Untagged
@@ -158,10 +161,10 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5546326682357359979}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 500
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 48
@@ -217,6 +220,22 @@ MonoBehaviour:
   rotationSensitivity: 0.01
   positionPrecision: 0.01
   scalePrecision: 0.01
+--- !u!114 &3799535492937567767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546326682357359979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 756694fa40c2f8c4c9a62cfe3592d81d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  selfAttackModelFx: {fileID: 6412044537244717860}
 --- !u!1001 &4078977964303089814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -268,6 +287,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3026397602844125307, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3026397602844125307, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 5e5b73724d0485844a0c3e1d18d243e4, type: 2}
+    - target: {fileID: -2276753984404712526, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
       propertyPath: m_Name
       value: KnightLance
@@ -306,3 +337,8 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -5921162173961854995, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+--- !u!1 &6412044537244717860 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2276753984404712526, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+  m_PrefabInstance: {fileID: 4078977964303089814}
+  m_PrefabAsset: {fileID: 0}

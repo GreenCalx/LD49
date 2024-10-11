@@ -26,6 +26,9 @@ public class UIPlayerOnline : UIElement
     public Image equippedPowerThumbnailImage;
     public Image powerCooldownBar;
     public Transform        DitchPowerHintHandle;
+    public Color weaponInCooldownColor = Color.green;
+    public Color weaponArmedColor = Color.red;
+    public Color weaponInRecoveryColor = Color.yellow;
     [Header("TrackEvents")]
     public Transform        TrackEventHandle;
     public Transform        TrackEventOnFXHandle;
@@ -202,9 +205,25 @@ public class UIPlayerOnline : UIElement
     {
         cpImageFilled.fillAmount = iVal;
     }
-    public void updatePanelOnRespawn()
+    public void updateCarPowerUI(ICarPower iPower)
     {
+        if (iPower.isArmed)
+            powerCooldownBar.color = weaponArmedColor;
+        else if (iPower.isRecovering)
+            powerCooldownBar.color = weaponInRecoveryColor;
+        else
+            powerCooldownBar.color = weaponInCooldownColor;
 
+        if (iPower.isRecovering)
+        {
+            var ratio = Mathf.Clamp01( iPower.elapsed_recovery_cooldown / iPower.recovery_cooldown);
+            powerCooldownBar.fillAmount = 1f - ratio;
+        } else
+        {
+            // in cooldown
+            var ratio = Mathf.Clamp01(iPower.elapsed_cooldown / iPower.cooldown);
+            powerCooldownBar.fillAmount = ratio;
+        }
     }
 
     IEnumerator RotateUINut(float iAnimDuration, bool RotateCW)

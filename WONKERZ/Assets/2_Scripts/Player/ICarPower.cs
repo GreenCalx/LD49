@@ -1,4 +1,8 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Schnibble;
 using Schnibble.Managers;
 using Mirror;
@@ -7,11 +11,18 @@ namespace Wonkerz
 {
     public interface ICarPower
     {
-        public PlayerPowerElement fullPowerDef {get; set;}
+        // Itf attributes
         public string name { get; set; }
-        public bool isOnline { get; set; }
         public  float cooldown {get; set;}
+        public float recovery_cooldown  {get; set;}
+        public int baseDamage {get; set;}
+        public OnlinePlayerController owner {get; set;}
+        public PlayerPowerElement fullPowerDef {get; set;}
+        public bool isOnline { get; set; }
         public  float elapsed_cooldown {get; set;}
+        public float elapsed_recovery_cooldown {get; set;}
+        public bool isArmed {get; set;}
+        public bool isRecovering {get; set;}
 
         // build itself from playerpowerelement explicitely
         public void init(PlayerPowerElement iPowerElement);
@@ -35,13 +46,22 @@ namespace Wonkerz
     // TODO : Broken ATM old logic
     public class TurboCarPower : ICarPower
     {
+        // Itf attributes
+        public string name { get; set; }
+        public  float cooldown {get; set;}
+        public float recovery_cooldown  {get; set;}
+        public int baseDamage {get; set;}
+        public OnlinePlayerController owner {get; set;}
+        public PlayerPowerElement fullPowerDef {get; set;}
+        public bool isOnline { get; set; }
+        public  float elapsed_cooldown {get; set;}
+        public float elapsed_recovery_cooldown {get; set;}
+        public bool isArmed {get; set;}
+        public bool isRecovering {get; set;}
+
+        // Power local
         public GameObject turboParticlesRef;
         public GameObject turboParticlesInst;
-        public PlayerPowerElement fullPowerDef {get; set;}
-        public  float cooldown {get; set;}
-        public  float elapsed_cooldown {get; set;}
-        public string name { get; set; }
-        public bool isOnline { get; set; }
         public TurboCarPower()
         {
 
@@ -101,16 +121,31 @@ namespace Wonkerz
     [System.Serializable]
     public class KnightLanceCarPower : ICarPower
     {
-        public OnlinePlayerController owner;
-        public PlayerPowerElement fullPowerDef {get; set;}
+        // Itf attributes
+        public string name { get; set; }
         public  float cooldown {get; set;}
+        public float recovery_cooldown  {get; set;}
+        public int baseDamage {get; set;}
+        public OnlinePlayerController owner {get; set;}
+        public PlayerPowerElement fullPowerDef {get; set;}
+        public bool isOnline { get; set; }
         public  float elapsed_cooldown {get; set;}
+        public float elapsed_recovery_cooldown {get; set;}
+        public bool isArmed {get; set;}
+        public bool isRecovering {get; set;}
+        
+        //  Power Local
+        public float thrustTime = 1f;
+        public float thrustRotSpeed = 25f;
+        public float preThrustZOffset = -1f;
+        public float thrustZOffset = 5f;
+        public float damageMulOnThrust = 1.5f;
         public GameObject KnightLanceObject_Ref;
         private GameObject KnightLanceObject_Inst;
         private Transform attachPoint;
-
-        public string name { get; set; }
-        public bool isOnline { get; set; }
+        private bool thrusting = false;
+        private OnlineWeapon selfOnlineWeapon;
+        private OnlineDamager selfDamager;
 
         public KnightLanceCarPower() {}
         public KnightLanceCarPower(PlayerPowerElement iPowerDef)
@@ -124,9 +159,16 @@ namespace Wonkerz
             name = iPowerDef.name;
             KnightLanceObject_Ref = iPowerDef.prefabToAttachOnPlayer;
             cooldown = iPowerDef.cooldown;
+            baseDamage = iPowerDef.baseDamage;
+            recovery_cooldown = iPowerDef.recovery;
 
             isOnline = Access.managers.gameSettings.isOnline;
             elapsed_cooldown = 0f;
+            elapsed_recovery_cooldown = 0f;
+            isRecovering = false;
+            isArmed = false;
+
+            thrusting = false;
         }
 
         public void onEnableEffect()
@@ -142,18 +184,57 @@ namespace Wonkerz
                 if (isOnline)
                 {
                     NetworkServer.Spawn(KnightLanceObject_Inst);
+                    selfDamager = KnightLanceObject_Inst.GetComponentInChildren<OnlineDamager>();
+                    selfDamager.damage = baseDamage;
                 }
+                
             }
         }
 
         public void onActivation()
         {
-            elapsed_cooldown = 0f;
+            isArmed = false;    
+            selfOnlineWeapon = KnightLanceObject_Inst.GetComponent<OnlineWeapon>();
+            if (selfOnlineWeapon!=null)
+            {
+                UnityEvent cbAfterThrust = new UnityEvent();
+                cbAfterThrust.AddListener(OnWeaponFinish);
+                selfDamager.damage = (int)Mathf.Ceil(baseDamage * damageMulOnThrust);
+                selfOnlineWeapon.Thrust(thrustTime, thrustRotSpeed, thrustZOffset, cbAfterThrust);
+                thrusting = true;
+
+                elapsed_cooldown = 0f;
+                elapsed_recovery_cooldown = 0f;
+                isRecovering = recovery_cooldown > 0f;
+            }
+            else
+                this.LogError("ICarPower: Online Weapon Missing on KnightLance.");
         }
+
+        public void OnWeaponFinish()
+        {
+            selfDamager.damage = baseDamage;
+            thrusting = false;
+        }
+
 
         public void onRefresh()
         {
-            KnightLanceObject_Inst.transform.localPosition = Vector3.zero;
+            if (isRecovering)
+            {
+                elapsed_recovery_cooldown += Time.deltaTime;
+                isRecovering = elapsed_recovery_cooldown < recovery_cooldown;
+                return;
+            }
+
+            if (thrusting)
+                return;
+
+            if (isArmed)
+                KnightLanceObject_Inst.transform.localPosition = new Vector3(0f,0f, preThrustZOffset);
+            else
+                KnightLanceObject_Inst.transform.localPosition = Vector3.zero;
+
             if (elapsed_cooldown < cooldown)
             {
                 elapsed_cooldown += Time.deltaTime;
@@ -171,6 +252,18 @@ namespace Wonkerz
         public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
         {
             this.Log(name + " Input effects");
+            if (thrusting)
+                return;
+            if (elapsed_cooldown < cooldown)
+                return;
+            if (isRecovering)
+                return;
+            if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).down)
+            {
+                isArmed = true;
+            }
+            if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).up)
+                onActivation();
         }
         public bool turnOffTriggers()
         {
@@ -182,26 +275,27 @@ namespace Wonkerz
     [System.Serializable]
     public class PalletLauncherCarPower : ICarPower
     {
-        public PlayerPowerElement fullPowerDef {get; set;}
+        // Itf attributes
+        public string name { get; set; }
         public  float cooldown {get; set;}
+        public float recovery_cooldown  {get; set;}
+        public int baseDamage {get; set;}
+        public OnlinePlayerController owner {get; set;}
+        public PlayerPowerElement fullPowerDef {get; set;}
+        public bool isOnline { get; set; }
         public  float elapsed_cooldown {get; set;}
-        public OnlinePlayerController owner;
+        public float elapsed_recovery_cooldown {get; set;}
+        public bool isRecovering {get; set;}
+        public bool isArmed {get; set;}
 
+        // Power local
         public GameObject PalletLauncher_Ref;
         private GameObject PalletLauncher_Inst;
-
-
         private Canon Canon_Handle;
-
         private Transform attachPoint;
         private Transform palletLoadingPoint;
         private Transform palletLaunchingPoint;
 
-        private bool palletRdyToLaunch = false;
-        private bool canonArmed = false;
-
-        public string name { get; set; }
-        public bool isOnline { get; set; }
 
         public PalletLauncherCarPower() {}
         public PalletLauncherCarPower(PlayerPowerElement iPowerDef)
@@ -215,12 +309,13 @@ namespace Wonkerz
             name = iPowerDef.name;
             PalletLauncher_Ref = iPowerDef.prefabToAttachOnPlayer;
             cooldown = iPowerDef.cooldown;
-
+            baseDamage = iPowerDef.baseDamage;
+            recovery_cooldown = iPowerDef.recovery;
             
-            canonArmed = false;
-            palletRdyToLaunch = true;
             elapsed_cooldown = 0f;
+            elapsed_recovery_cooldown = 0f;
             isOnline = Access.managers.gameSettings.isOnline;
+            isArmed = false;
         }
 
         public void onEnableEffect()
@@ -237,8 +332,6 @@ namespace Wonkerz
                 {
                     NetworkServer.Spawn(PalletLauncher_Inst);
                 }
-
-                palletRdyToLaunch = true;
 
                 Canon_Handle = PalletLauncher_Inst.GetComponent<Canon>();
                 palletLoadingPoint = Canon_Handle.loadingPoint;
@@ -267,26 +360,29 @@ namespace Wonkerz
             if (!!as_damager)
             {
                 as_damager.filteredOutDamageables.Add(owner.self_oDamageable);
+                as_damager.damage = baseDamage;
             }
 
             elapsed_cooldown = 0f;
-            canonArmed  = false;
-            palletRdyToLaunch = false;
+            isArmed  = false;
+
+            isRecovering = recovery_cooldown > 0f;
         }
 
         public void onRefresh()
         {
             PalletLauncher_Inst.transform.localPosition = Vector3.zero;
-
-            if (!palletRdyToLaunch)
+            if (isRecovering)
             {
-                if (elapsed_cooldown < cooldown)
-                {
-                    elapsed_cooldown += Time.deltaTime;
-                    return;
-                }
+                elapsed_recovery_cooldown += Time.deltaTime;
+                isRecovering = elapsed_recovery_cooldown < recovery_cooldown;
+                return;
+            }
 
-                palletRdyToLaunch = true;
+            if (elapsed_cooldown < cooldown)
+            {
+                elapsed_cooldown += Time.deltaTime;
+                return;
             }
 
         }
@@ -301,19 +397,19 @@ namespace Wonkerz
         public void applyEffectInInputs(GameController iEntry, PlayerController iCC)
         {
             //this.Log(name + " Input effects");
-            if (!palletRdyToLaunch)
+            if (elapsed_cooldown < cooldown)
+                return;
+            if (isRecovering)
                 return;
 
             if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).down)
             {
-                // Load
-                
-                canonArmed = true;
+                isArmed = true;
             }
             if (iEntry.GetButtonState((int)PlayerInputs.InputCode.TriggerPower).up)
             {
                 // launch if loaded
-                if (canonArmed)
+                if (isArmed)
                 {
                     onActivation();
                 }

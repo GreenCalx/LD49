@@ -16,7 +16,9 @@ MonoBehaviour:
   relatedCollectible: 8
   powerImage: {fileID: 21300000, guid: 4fe2b04a677dab248ac48bdb116ee486, type: 3}
   prefabToAttachOnPlayer: {fileID: 5546326682357359979, guid: 27e87f84d04a05e499caee8071601801, type: 3}
-  cooldown: 4
+  cooldown: 3
+  recovery: 1
+  baseDamage: 120
   carPower:
     rid: 4775377129461252096
   references:
@@ -25,5 +27,9 @@ MonoBehaviour:
     - rid: 4775377129461252096
       type: {class: KnightLanceCarPower, ns: Wonkerz, asm: WkzCore}
       data:
-        owner: {fileID: 0}
+        thrustTime: 1
+        thrustRotSpeed: 600
+        preThrustZOffset: -1
+        thrustZOffset: 5
+        damageMulOnThrust: 1.5
         KnightLanceObject_Ref: {fileID: 5546326682357359979, guid: 27e87f84d04a05e499caee8071601801, type: 3}
