@@ -406,8 +406,8 @@ public class UIOnline : UIPanel
     public void OpenLobbyServerList(UISelectableElement activator) {
         uiServerList.activator = activator;
 
+        // uiServerList Shaw will init+activate.
         uiServerList.Show();
-        uiServerList.Activate();
     }
 
     public void ConnectToRoom(IPEndPoint roomEP, int roomHostID) {
@@ -449,7 +449,8 @@ public class UIOnline : UIPanel
         RegisterRoomServerCallbacks();
 
         // Init childrens.
-        uiServerList.Init();
+        // NOTE: do not init uiServerList, will be init at Show.
+        //uiServerList.Init();
         uiMainMenu.GetComponent<UISelectableElement>().Init();
         uiRoom.Init();
         uiRoomCreationMenu.GetComponent<UISelectableElement>().Init();

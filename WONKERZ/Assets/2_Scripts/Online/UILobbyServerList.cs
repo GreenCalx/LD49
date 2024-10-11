@@ -20,11 +20,8 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
     public UIOnline online { get; private set; }
 
-    public override void Activate()
-    {
-        base.Activate();
-
-        StartInputs();
+    public override void Init() {
+        base.Init();
 
         if (parent == null) {
             this.LogError("Please connect a parent to the UILobbyServerList.");
@@ -36,9 +33,29 @@ public class UILobbyServerList : UIPanelTabbedScrollable
             return;
         }
 
+        // just in case...
+        online.client.OnLobbyListRefreshed -= OnLobbyListReady;
         online.client.OnLobbyListRefreshed += OnLobbyListReady;
 
         UpdateList();
+    }
+
+    public override void Deinit() {
+        base.Deinit();
+
+        if (online.client != null) {
+            online.client.OnLobbyListRefreshed -= OnLobbyListReady;
+        }
+    }
+
+    public override void Activate()
+    {
+        Init();
+
+        base.Activate();
+
+        StartInputs();
+
     }
 
     public override void Deactivate()
@@ -47,13 +64,11 @@ public class UILobbyServerList : UIPanelTabbedScrollable
 
         StopInputs();
 
-        if (online.client != null) {
-            online.client.OnLobbyListRefreshed -= OnLobbyListReady;
-        }
-
         if (activator) {
             activator.Show();
         }
+
+        Deinit();
     }
 
     // Interenals
