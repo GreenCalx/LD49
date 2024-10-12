@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7563414410805250264}
   - component: {fileID: 8056602721038663125}
   - component: {fileID: 8395775042946097431}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: WindPS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4824,7 +4824,7 @@ GameObject:
   - component: {fileID: 8732472609559728422}
   - component: {fileID: 3607745911116965295}
   - component: {fileID: 6647488923181219204}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: WindEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4896,6 +4896,9 @@ MonoBehaviour:
   callbackOnPlayerExitRange:
     m_PersistentCalls:
       m_Calls: []
+  activateRangeDecal: 0
+  decalObject: {fileID: 0}
+  decalSize: {x: 1, y: 1, z: 1}
 --- !u!1 &6686131237201918231
 GameObject:
   m_ObjectHideFlags: 0
@@ -4907,7 +4910,7 @@ GameObject:
   - component: {fileID: 3670448390847950402}
   - component: {fileID: 5005886093810346968}
   - component: {fileID: 3791204749761417147}
-  m_Layer: 0
+  m_Layer: 23
   m_Name: Ventilateur
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4989,6 +4992,7 @@ MonoBehaviour:
   WindPS_Ref: {fileID: 8056602721038663125}
   WindCollider: {fileID: 3794495968690018076}
   FanAnimator: {fileID: 481999875149351151}
+  distanceFalloff: 0.8
   force: 100
 --- !u!1001 &5277970124829600965
 PrefabInstance:
@@ -5041,9 +5045,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6149493799349427345, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
+      propertyPath: m_Layer
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: -3246118904856114568, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
+      propertyPath: m_Layer
+      value: 23
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
       propertyPath: m_Name
       value: Ventilateur
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
+      propertyPath: m_Layer
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 3772159648273359573, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
+      propertyPath: m_Layer
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 4423376395486474989, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
+      propertyPath: m_Layer
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 6008397055647994003, guid: aa0f406f59624c841a7935f642f13a81, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

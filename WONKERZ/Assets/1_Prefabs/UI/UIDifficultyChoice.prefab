@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 380063068}
   - component: {fileID: 380063070}
   - component: {fileID: 380063069}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: CPHintTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 786098824}
   - component: {fileID: 786098826}
   - component: {fileID: 786098825}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: CPImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 1427622719}
   - component: {fileID: 1427622721}
   - component: {fileID: 1427622720}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: PanelHintTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -356,7 +356,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1640629396}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: DifficultyHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -396,7 +396,7 @@ GameObject:
   - component: {fileID: 1686473309}
   - component: {fileID: 1686473311}
   - component: {fileID: 1686473310}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: PanelImg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,7 +475,7 @@ GameObject:
   - component: {fileID: 94868834549978647}
   - component: {fileID: 3848890880397493437}
   - component: {fileID: 6899551092416706454}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: IRONMAN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,7 +568,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c96638fec0bb3146843d1155dbcecad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 147667789327729875}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -596,7 +603,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -624,7 +630,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -640,24 +645,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  isActivated: 0
-  toActivate: {fileID: 0}
-  text: {fileID: 2854734259739252061}
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 0}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
+  label: {fileID: 0}
+  index: 0
   difficulty: 4
 --- !u!1 &501971125255640825
 GameObject:
@@ -672,7 +680,7 @@ GameObject:
   - component: {fileID: 6449767727155284332}
   - component: {fileID: 4059049779188518563}
   - component: {fileID: 8029087653660190783}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: HARD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -765,7 +773,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c96638fec0bb3146843d1155dbcecad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 147667789327729875}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -793,7 +808,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -821,7 +835,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -837,24 +850,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  isActivated: 0
-  toActivate: {fileID: 0}
-  text: {fileID: 4187445587788642108}
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 0}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
+  label: {fileID: 0}
+  index: 0
   difficulty: 3
 --- !u!1 &874990501806211938
 GameObject:
@@ -867,7 +883,7 @@ GameObject:
   - component: {fileID: 7422574986782025889}
   - component: {fileID: 8037919170705442473}
   - component: {fileID: 2913448510082956600}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1004,7 +1020,7 @@ GameObject:
   - component: {fileID: 645232857097480790}
   - component: {fileID: 8766472275580016036}
   - component: {fileID: 3113312618480267985}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: CHECKLIST
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1097,7 +1113,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15c9243b05fa5ae458fccac5233b7ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 147667789327729875}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -1125,7 +1148,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -1153,7 +1175,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -1181,7 +1202,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -1198,19 +1218,23 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  isActivated: 0
-  toActivate: {fileID: 2346547869291388273}
-  text: {fileID: 8858659109201274579}
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 0}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
+  label: {fileID: 0}
+  index: 0
 --- !u!1 &2565101399230914307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,7 +1246,7 @@ GameObject:
   - component: {fileID: 1081152199044242137}
   - component: {fileID: 1101416428546293386}
   - component: {fileID: 8858659109201274579}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1359,7 +1383,7 @@ GameObject:
   - component: {fileID: 490038419936656350}
   - component: {fileID: 302445374390077773}
   - component: {fileID: 3135173526203919900}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: BackGround
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1435,7 +1459,7 @@ GameObject:
   - component: {fileID: 5312655299483840023}
   - component: {fileID: 3387988963187865581}
   - component: {fileID: 889224044745079862}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: DifficultyMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1511,7 +1535,7 @@ GameObject:
   - component: {fileID: 5324839607637933358}
   - component: {fileID: 654341412081948951}
   - component: {fileID: 4187445587788642108}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1646,7 +1670,7 @@ GameObject:
   - component: {fileID: 7984140091179974217}
   - component: {fileID: 1957031927906997843}
   - component: {fileID: 1242954133}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: TrackName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1781,7 +1805,7 @@ GameObject:
   - component: {fileID: 6358989276851456853}
   - component: {fileID: 5881774815973555465}
   - component: {fileID: 7304160307390816843}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: TrackNameBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1858,7 +1882,7 @@ GameObject:
   - component: {fileID: 2669914185079864782}
   - component: {fileID: 2275273828176940531}
   - component: {fileID: 2990208572872231542}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Hint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1993,7 +2017,7 @@ GameObject:
   - component: {fileID: 1691322886981334755}
   - component: {fileID: 6297346780662137419}
   - component: {fileID: 621462839}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: DIFFICULTY_LBL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2126,7 +2150,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7110271092485302275}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: VerticalTabPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2169,7 +2193,7 @@ GameObject:
   - component: {fileID: 3709859906050240876}
   - component: {fileID: 8515272606514627353}
   - component: {fileID: 147667789327729875}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: UIDifficultyChoice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2273,7 +2297,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27172e68aba062348b5be8d6452a557a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -2289,7 +2320,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  selected_color: {r: 1, g: 0.97799426, b: 0.5235849, a: 1}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -2305,7 +2335,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0.5188679, g: 0.51152545, b: 0.51152545, a: 1}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -2321,13 +2350,15 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 1, g: 0.78130513, b: 0.495283, a: 1}
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  copyColorFromParent: 0
-  copyInputsFromParent: 0
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: UIValidate
   inputUp: UIUp
@@ -2335,10 +2366,11 @@ MonoBehaviour:
   inputLeft: UIRight
   inputRight: UILeft
   inputCancel: UICancel
-  inheritsInputMgr: 0
-  selector_latch: 0.2
+  onCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  useDefaultCancelPanelConfirmation: 1
   cancelDeactivatePanel: 1
-  inputMgrIsUnique: 1
   tabs:
   - {fileID: 5435074498396041918}
   - {fileID: 1838476549263366375}
@@ -2363,7 +2395,7 @@ GameObject:
   - component: {fileID: 3242653468070385538}
   - component: {fileID: 3260921700564954729}
   - component: {fileID: 6837776050243505999}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: DIFFICULTY
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2440,7 +2472,7 @@ GameObject:
   - component: {fileID: 8976836471581227307}
   - component: {fileID: 8622855267238560329}
   - component: {fileID: 6637275464716598167}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2575,7 +2607,7 @@ GameObject:
   - component: {fileID: 1528962601760196534}
   - component: {fileID: 8945064802757670797}
   - component: {fileID: 2854734259739252061}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2714,7 +2746,7 @@ GameObject:
   - component: {fileID: 1136087675265771896}
   - component: {fileID: 7942802523756782430}
   - component: {fileID: 1838476549263366375}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: MEDIUM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2807,7 +2839,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c96638fec0bb3146843d1155dbcecad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 147667789327729875}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -2835,7 +2874,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -2863,7 +2901,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -2879,24 +2916,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  isActivated: 0
-  toActivate: {fileID: 0}
-  text: {fileID: 6637275464716598167}
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 0}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
+  label: {fileID: 0}
+  index: 0
   difficulty: 2
 --- !u!1 &8941087585040472326
 GameObject:
@@ -2911,7 +2951,7 @@ GameObject:
   - component: {fileID: 8336072411400205812}
   - component: {fileID: 6355249970246612036}
   - component: {fileID: 5435074498396041918}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: EASY
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3004,7 +3044,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c96638fec0bb3146843d1155dbcecad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 147667789327729875}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -3044,7 +3091,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -3072,7 +3118,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -3088,24 +3133,27 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls: []
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: 
   inputUp: 
   inputDown: 
   inputLeft: 
   inputRight: 
-  inputCancel: 
-  inheritsInputMgr: 1
-  isActivated: 0
-  toActivate: {fileID: 0}
-  text: {fileID: 2913448510082956600}
+  behaviour: {fileID: 0}
+  coloredBehaviourTarget: {fileID: 0}
+  texturedBehaviourTarget: {fileID: 0}
+  animatedBehaviourTarget: {fileID: 0}
+  label: {fileID: 0}
+  index: 0
   difficulty: 1
 --- !u!1001 &758025237857175023
 PrefabInstance:
@@ -3222,6 +3270,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 671512805774203680, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 905014984651239239, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1948063651204336894, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3245,6 +3301,14 @@ PrefabInstance:
     - target: {fileID: 1948063651204336894, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2047686494000365881, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2093755280402226545, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2538703753450844258, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchorMax.y
@@ -3338,14 +3402,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4152091712454446346, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4737656741546435941, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_Name
       value: UIBountyChecklist
       objectReference: {fileID: 0}
     - target: {fileID: 4737656741546435941, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4737656741546435941, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4996524385968949818, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5739300535161430866, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3370,6 +3446,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5950403259726961844, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954121698937216244, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5991920060254548132, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6064608793353880566, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6329224895616411627, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3417,6 +3509,10 @@ PrefabInstance:
     - target: {fileID: 6493942762990645694, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6606366361428438386, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6679718340192762396, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
       propertyPath: m_PresetInfoIsWorld
@@ -3470,6 +3566,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8185184019370111871, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
 --- !u!224 &696302375263372380 stripped
@@ -3477,17 +3577,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 228778280215871923, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
   m_PrefabInstance: {fileID: 758025237857175023}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2346547869291388273 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3032496134184638622, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}
-  m_PrefabInstance: {fileID: 758025237857175023}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60c6db6e3c5ac804f8a23a1c592ef5ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &5420788332258795658 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4737656741546435941, guid: c350202589428374f8cd7a1f63c1e3b3, type: 3}

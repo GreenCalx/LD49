@@ -72,8 +72,7 @@ public static class Constants
     public const string RES_DIALOGBANK = "NPCDialogs";
 
     // -- Layers --
-    public const string LYR_UIMESH = "UIMesh";
-    public const string LYR_NOPLAYERCOL = "No Player Collision";
-    public const string LYR_CAMFOCUSABLE = "CameraFocusables";
+    public const string LYR_NOPLAYERCOL = "Actor/NoPlayerCollision";
+    public const string LYR_CAMFOCUSABLE = "NoCollision/CameraFocusables";
 
 }

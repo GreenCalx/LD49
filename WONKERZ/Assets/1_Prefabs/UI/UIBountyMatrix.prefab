@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2741476095486780235}
   - component: {fileID: 977552169037719291}
   - component: {fileID: 3166164605994681937}
-  m_Layer: 7
+  m_Layer: 5
   m_Name: UIBountyMatrix
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +139,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60c6db6e3c5ac804f8a23a1c592ef5ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Parent: {fileID: 0}
+  _Theme: {fileID: 0}
+  parent: {fileID: 0}
+  onVisible:
+    m_PersistentCalls:
+      m_Calls: []
+  onHidden:
+    m_PersistentCalls:
+      m_Calls: []
   onSelect:
     m_PersistentCalls:
       m_Calls:
@@ -155,7 +162,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  selected_color: {r: 0, g: 0, b: 0, a: 0}
   onDeselect:
     m_PersistentCalls:
       m_Calls:
@@ -171,7 +177,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  deselected_color: {r: 0, g: 0, b: 0, a: 0}
   onActivate:
     m_PersistentCalls:
       m_Calls:
@@ -187,7 +192,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  activated_color: {r: 0, g: 0, b: 0, a: 0}
   onDeactivate:
     m_PersistentCalls:
       m_Calls:
@@ -216,8 +220,11 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   activator: {fileID: 0}
-  copyColorFromParent: 1
-  copyInputsFromParent: 1
+  isSelected: 0
+  isActivated: 0
+  useParentInputManager: 1
+  isTakingInputPrecedence: 0
+  useParentInputs: 1
   inputMgr: {fileID: 0}
   inputActivate: Jump
   inputUp: 
@@ -225,10 +232,11 @@ MonoBehaviour:
   inputLeft: 
   inputRight: 
   inputCancel: Cancel
-  inheritsInputMgr: 0
-  selector_latch: 0.2
+  onCancel:
+    m_PersistentCalls:
+      m_Calls: []
+  useDefaultCancelPanelConfirmation: 1
   cancelDeactivatePanel: 1
-  inputMgrIsUnique: 1
   tabs: []
   navigationMode: 2
   tooltip_bountyDesc: {fileID: 0}

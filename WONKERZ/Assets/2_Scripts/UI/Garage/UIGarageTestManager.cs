@@ -90,7 +90,6 @@ public class UIGarageTestManager : MonoBehaviour
             rb2d.velocity = Vector3.zero;
             rb2d.angularVelocity = Vector3.zero;
         }
-        //updateLayers(testCC, getLayerIndex(Constants.LYR_UIMESH));
 
         IM.DeActivate();
         if (testMode == MODE.RECORD)
