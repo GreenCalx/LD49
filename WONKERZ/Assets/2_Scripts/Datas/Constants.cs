@@ -58,8 +58,8 @@ public static class Constants
     public const string GO_PLAYERUI = "PlayerUI";
     public const string GO_UIONPLAYER = "OnlinePlayerUI";
     public const string GO_PHYSXMATMGR = "PhysicsMaterialManager";
-    public const string GO_OFFGAMEMGR = "OfflineGameManager";
     public const string GO_ONGAMEMGR = "OnlineGameManager";
+    public const string GO_OCGLOBAL = "OpenCourse_Global";
 
     // -- UI Panels --
     public const string UI_FINISH_SCOREVAL = "TimeTxtVal";

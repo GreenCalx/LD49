@@ -46,6 +46,7 @@ public class OnlineRaceHelper : MonoBehaviour
                 prev_orcp.next_CPs.Add(orcp);
             }
         }
+        EditorUtility.SetDirty(ORTM);
     }
     #endif
 }

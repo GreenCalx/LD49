@@ -31,8 +31,8 @@ namespace Wonkerz {
             private GameObject GO_UIGARAGE;
             private GameObject GO_UIPLAYER;
             private GameObject GO_PHYSXMATMGR;
-            private GameObject GO_OFFGAMEMGR;
             private GameObject GO_UIONPLAYER;
+            private GameObject GO_OCGLOBAL;
             /* IF WE WANT TO ECO GetComponent<> call..
             public InputManager         IM;
             public ResolutionManager    RM;
@@ -89,13 +89,12 @@ namespace Wonkerz {
                 {
                     handler = checkCacheObject(iHolder, ref GO_PHYSXMATMGR);
                 }
-                else if (iHolder == Constants.GO_OFFGAMEMGR)
-                {
-                    handler = checkCacheObject(iHolder, ref GO_OFFGAMEMGR);
-                }
                 else if (iHolder == Constants.GO_UIONPLAYER)
                 {
                     handler = checkCacheObject(iHolder, ref GO_UIONPLAYER);
+                } else if (iHolder == Constants.GO_OCGLOBAL)
+                {
+                    handler = checkCacheObject(iHolder, ref GO_OCGLOBAL);
                 }
 
                 else
@@ -119,8 +118,8 @@ namespace Wonkerz {
                 GO_SOUNDMANAGER = null;
                 GO_UIPLAYER = null;
                 GO_PHYSXMATMGR = null;
-                GO_OFFGAMEMGR = null;
                 GO_UIONPLAYER = null;
+                GO_OCGLOBAL = null;
             }
         }
 
@@ -140,6 +139,7 @@ namespace Wonkerz {
             if (typeof(T) == typeof(PhysicsMaterialManager)) return cache.getObject<T>(Constants.GO_PHYSXMATMGR , false);
             if (typeof(T) == typeof(UIGarage))               return cache.getObject<T>(Constants.GO_UIGARAGE    , false);
             if (typeof(T) == typeof(SoundManagerLoop))       return cache.getObject<T>(Constants.GO_SOUNDMANAGER, false);
+            if (typeof(T) == typeof(OpenCourseMutator))      return cache.getObject<T>(Constants.GO_OCGLOBAL    , false);
             SchLog.LogError("[Access] Trying to get unknown object : maybe you meant to use GetMgr?");
             return default(T);
         }
@@ -160,6 +160,7 @@ namespace Wonkerz {
         public static PlayerController        Player                 () {return Get   <PlayerController       >();}
         public static SoundManagerLoop        SoundManager           () {return Get   <SoundManagerLoop       >();}
         public static PhysicsMaterialManager  PhysicsMaterialManager () {return Get   <PhysicsMaterialManager >();}
+        public static OpenCourseMutator  OCMutator           ()         {return Get   <OpenCourseMutator>();}
         //public static GameSettings            GameSettings           () {return GetMgr<GameSettings           >();}
         //public static PlayerInputsManager     PlayerInputsManager    () {return GetMgr<PlayerInputsManager    >();}
         //public static CameraManager           CameraManager          () {return GetMgr<CameraManager          >();}
@@ -182,5 +183,6 @@ namespace Wonkerz {
         public static UIWonkerzBar       UIWonkerzBar        () {return GetUI      <UIWonkerzBar      >();}
         public static UICheckpoint       UICheckpoint        () {return GetUI      <UICheckpoint      >();}
         public static UITrackEvent       UITrackEvent        () {return GetUI      <UITrackEvent      >();}
+        
     }
 }

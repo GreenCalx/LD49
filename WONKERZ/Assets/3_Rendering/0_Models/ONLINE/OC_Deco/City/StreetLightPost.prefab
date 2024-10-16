@@ -25,9 +25,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5355989592319944043}
   m_LocalRotation: {x: -0, y: -0.38268343, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: -0.09, y: 0.242, z: -0.98}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.0091, y: 2.1033, z: -0.2521}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 8864438420783943120}
   m_RootOrder: 1
@@ -43,9 +43,9 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 0.97209835, g: 0.9811321, b: 0.7728729, a: 1}
+  m_Color: {r: 0.9777501, g: 1, b: 0.41037738, a: 1}
   m_Intensity: 1.2
-  m_Range: 100
+  m_Range: 150
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -83,7 +83,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 4
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -104,6 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8864438420783943120}
   - component: {fileID: 7173934777340994083}
+  - component: {fileID: 973170320505650028}
   m_Layer: 21
   m_Name: StreetLightPost
   m_TagString: Untagged
@@ -169,6 +170,19 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
+--- !u!114 &973170320505650028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5810481032427545283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 753d0d23d991eb449ad1f45ddfae0714, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  h_selfLight: {fileID: 6929641591692785923}
 --- !u!1001 &7999631218976835591
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -259,6 +273,10 @@ PrefabInstance:
     - target: {fileID: 1364076815127437966, guid: 6f3010df2816dec47b6b795357f884f4, type: 3}
       propertyPath: m_Layer
       value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1364076815127437966, guid: 6f3010df2816dec47b6b795357f884f4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1364076815127437966, guid: 6f3010df2816dec47b6b795357f884f4, type: 3}
       propertyPath: m_StaticEditorFlags

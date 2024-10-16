@@ -9,7 +9,8 @@ using Mirror;
 public enum TRACKEVENTS
 {
     LOWGRAVITY = 0,
-    HIGHTIDE = 1
+    HIGHTIDE = 1,
+    NIGHTTIME = 2
 }
 
 /////////////////////
@@ -78,6 +79,37 @@ public class HighTideTrackEvent : OnlineTrackEvent
 
     public override void EffectOff()
     {
+        DestroySelf();
+    }
+}
+
+public class NightTimeTrackEvent : OnlineTrackEvent
+{
+
+    public NightTimeTrackEvent()
+    {
+        trackEventType = TRACKEVENTS.NIGHTTIME;
+        name = "Night Time";
+        duration = 50f;
+    }
+    public override void EffectOn()
+    {
+        OpenCourseMutator ocm = Access.OCMutator();
+        if (ocm==null)
+            return;
+        ocm.NightTime();
+    }
+
+    public override void EffectOff()
+    {
+        OpenCourseMutator ocm = Access.OCMutator();
+        if (ocm==null)
+        {
+            DestroySelf();
+            return;
+        }
+            
+        ocm.DayTime();
         DestroySelf();
     }
 }

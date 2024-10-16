@@ -35,6 +35,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         
         RpcRefreshUI(activeEvent);
         activeEvent.EffectOn();
+        
         trackEventCo = StartCoroutine(WaitForEventIsOver());
     }
 
