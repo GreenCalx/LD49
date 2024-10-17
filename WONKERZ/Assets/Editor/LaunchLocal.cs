@@ -5,6 +5,8 @@ using UnityEditor.SceneManagement;
 
 using UnityEngine;
 
+using Schnibble;
+
 namespace Wonkerz
 {
     [Serializable]
@@ -17,9 +19,10 @@ namespace Wonkerz
         [SerializeField]
         string serverExePath = "/Build/Win64/Online/Server/SchLobbyServer.exe";
         [SerializeField]
-        string playModeSceneName = "";
+        string playModeSceneName     = "";
         [SerializeField]
         GameSettings.AutoStartMode externalStartMode;
+
 
         [MenuItem("Tools/OnlineTest")]
         private static void Init()
@@ -28,12 +31,10 @@ namespace Wonkerz
             window.Show();
         }
 
-        bool toggleGameParams = false;
-        bool toggleEditorParams = false;
+        bool toggleGameParams     = false;
+        bool toggleEditorParams   = false;
         bool toggleExternalParams = false;
         void OnGUI() {
-            EditorGUI.BeginChangeCheck();
-
             toggleGameParams = EditorGUILayout.BeginFoldoutHeaderGroup(toggleGameParams, "Server game params");
             if (toggleGameParams) {
                 data.byPassCourse     = EditorGUILayout.Toggle   ("Bypass course"     , data.byPassCourse    );
@@ -46,14 +47,27 @@ namespace Wonkerz
             toggleEditorParams = EditorGUILayout.BeginFoldoutHeaderGroup(toggleEditorParams, "Editor params");
             if (toggleEditorParams) {
                 data.autoStartMode    = (GameSettings.AutoStartMode)EditorGUILayout.EnumPopup("AutoStartMode:", data.autoStartMode);
-                playModeSceneName     = EditorGUILayout.TextField("Play mode scene:"  , playModeSceneName    );
+                EditorGUILayout.LabelField("Play mode scene:"  , playModeSceneName);
                 if (GUILayout.Button("Choose scene...")) {
                     playModeSceneName = EditorUtility.OpenFilePanel("Choose scene", "Assets", "unity");
                     playModeSceneName = System.IO.Path.GetRelativePath(System.IO.Path.GetDirectoryName(Application.dataPath), playModeSceneName);
+                    playModeSceneName = playModeSceneName.Replace(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
                 }
-                if (GUILayout.Button("Set start scene")) {
-                    SetStartScene();
+
+                if (AssetDatabase.GetAssetOrScenePath(EditorSceneManager.playModeStartScene) != playModeSceneName) {
+                    if (GUILayout.Button("Set start scene")) {
+                        SetStartScene();
+                    }
                 }
+
+                if (EditorSceneManager.playModeStartScene == null) {
+                    EditorGUILayout.LabelField("/!\\ No start scene is set! /!\\");
+                } else {
+                    if (GUILayout.Button("Remove start scene")) {
+                        RemoveStartScene();
+                    }
+                }
+
             }
             EditorGUILayout.EndFoldoutHeaderGroup();
 
@@ -82,14 +96,14 @@ namespace Wonkerz
             if (GUILayout.Button("Launch headless server")) {
                 LaunchServer();
             }
-
-            if (EditorGUI.EndChangeCheck()) {
-                EditorUtility.SetDirty(this);
-            }
         }
 
         void SetStartScene() {
             EditorSceneManager.playModeStartScene = (SceneAsset)AssetDatabase.LoadAssetAtPath<SceneAsset>(playModeSceneName);
+        }
+
+        void RemoveStartScene() {
+            EditorSceneManager.playModeStartScene = null;
         }
 
         void Update() {
