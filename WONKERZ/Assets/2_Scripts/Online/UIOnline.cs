@@ -14,12 +14,16 @@ using Schnibble;
 
 // TODO: move outside this file.
 // probably into Utils?
-public abstract class MainThreadCommand
+public class MainThreadCommand
 {
     protected Action OnCmdSuccess;
     protected Action OnCmdError  ;
-    public virtual void Do() { }
-    public virtual void Undo() { }
+
+    public MainThreadCommand() {}
+    public MainThreadCommand(Action ex) {OnCmdSuccess = ex;}
+
+    public virtual void Do() { OnCmdSuccess?.Invoke(); }
+    public virtual void Undo() {}
 };
 
 public class UIOnline : UIPanel

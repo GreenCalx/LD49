@@ -1,19 +1,44 @@
 using UnityEngine;
 using Schnibble;
 
-public class GameSettings : MonoBehaviour
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+namespace  Wonkerz
 {
-    public bool   isLocal           = false;
-    public bool   isOnline          = false;
-    public string OnlinePlayerAlias = "Player";
+    public class GameSettings : MonoBehaviour
+    {
+        public bool   isLocal           = false;
+        public bool   isOnline          = false;
+        public string OnlinePlayerAlias = "Player";
 
-    public UIThemeSO defaultUITheme;
-    public Schnibble.UI.UICancelPanel defaultCancelPanel;
+        [System.Serializable]
+        public struct OnlineTestMenuInspectorData
+        {
+            public bool byPassCourse;
+            public bool byPassTrial;
+            public bool byPassTrialWheel;
+            public string trialName;
+            public AutoStartMode autoStartMode;
+        };
+        [SerializeField]
+        public static OnlineTestMenuInspectorData testMenuData;
 
-    public void init() {
-        this.Log("init.");
+        public enum AutoStartMode {
+            None,
+            SoloHost,
+            Host,
+            Client,
+        };
 
-        Schnibble.UI.UITheme.defaultUITheme = defaultUITheme.theme;
-        Schnibble.UI.UIPanel.defaultCancelPanel = defaultCancelPanel;
+        public UIThemeSO defaultUITheme;
+        public Schnibble.UI.UICancelPanel defaultCancelPanel;
+
+        public void init() {
+            this.Log("init.");
+            Schnibble.UI.UITheme.defaultUITheme = defaultUITheme.theme;
+            Schnibble.UI.UIPanel.defaultCancelPanel = defaultCancelPanel;
+        }
     }
 }

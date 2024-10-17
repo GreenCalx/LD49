@@ -187,15 +187,33 @@ public class OnlineGameManager : NetworkBehaviour
         }
         RpcAllPlayersLockAndLoaded();
 
-        yield return StartCoroutine(SpinTrialRoulette());
+        if (!Wonkerz.GameSettings.testMenuData.byPassTrialWheel)
+        {
+            yield return StartCoroutine(SpinTrialRoulette());
+        } else {
+            if (!string.IsNullOrEmpty(Wonkerz.GameSettings.testMenuData.trialName)) {
+                settings.selectedTrial = Wonkerz.GameSettings.testMenuData.trialName;
+            }
+        }
+
         yield return StartCoroutine(StartGame());
+
+
+        if (Wonkerz.GameSettings.testMenuData.byPassCourse) {
+            gameTime = 0.0f;
+        }
         yield return StartCoroutine(GameLoop());
+
         yield return StartCoroutine(WaitTrialSessions());
 
         RpcAllPlayersLockAndLoaded();
 
         yield return StartCoroutine(Countdown());
-        yield return StartCoroutine(TrialLoop());
+
+        if (!Wonkerz.GameSettings.testMenuData.byPassTrial) {
+            yield return StartCoroutine(TrialLoop());
+        }
+
         yield return StartCoroutine(PostGame());
     }
 
