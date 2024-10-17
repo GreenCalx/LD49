@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6234082327601329765}
   - component: {fileID: 4061365810883703747}
-  - component: {fileID: 4254911692471783482}
-  m_Layer: 26
+  m_Layer: 9
   m_Name: Damager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,34 +45,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4254911692471783482
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2932781935497070507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  owner: {fileID: 5546326682357359979}
-  DoDamageToPlayers: 1
-  DoDamageToObjects: 1
-  DoDamageToEnemies: 1
-  FromCollision: 1
-  FromTriggers: 0
-  FromParticles: 0
-  FirstContactOnly: 1
-  filteredOutDamageables: []
-  damage: 120
-  optional_repulsion_force: 2
-  OnDoDamageCallbacks: []
-  OnDoDamageVoidCallbacks: []
 --- !u!1 &5546326682357359979
 GameObject:
   m_ObjectHideFlags: 0
@@ -88,7 +59,8 @@ GameObject:
   - component: {fileID: 7867688133116996909}
   - component: {fileID: 785636021209265154}
   - component: {fileID: 3799535492937567767}
-  m_Layer: 17
+  - component: {fileID: 9001494171538636120}
+  m_Layer: 9
   m_Name: KnightLanceCarPower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -236,6 +208,34 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   selfAttackModelFx: {fileID: 6412044537244717860}
+--- !u!114 &9001494171538636120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546326682357359979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 794cadf434052044d84aaae05f05c5cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  owner: {fileID: 0}
+  DoDamageToPlayers: 1
+  DoDamageToObjects: 1
+  DoDamageToEnemies: 1
+  FromCollision: 1
+  FromTriggers: 0
+  FromParticles: 0
+  FirstContactOnly: 1
+  filteredOutDamageables: []
+  damage: 99
+  optional_repulsion_force: 0
+  OnDoDamageCallbacks: []
+  OnDoDamageVoidCallbacks: []
 --- !u!1001 &4078977964303089814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -296,6 +296,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2100000, guid: 5e5b73724d0485844a0c3e1d18d243e4, type: 2}
     - target: {fileID: -2276753984404712526, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -2276753984404712526, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -305,11 +309,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
       propertyPath: m_Layer
-      value: 19
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 7554812406717396447, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}
       propertyPath: m_Layer
-      value: 19
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7efe5fef86d40ea469656cb0f7ef53f1, type: 3}

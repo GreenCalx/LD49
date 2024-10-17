@@ -114,8 +114,8 @@ public class OnlineCollectible : NetworkBehaviour
             OnlinePlayerController locPlayer = AC.attachedOnlinePlayer;
             if (locPlayer == null) {
                 this.LogError("locPlayer is null.");
+                return;
             }
-
 
             if (locPlayer.self_PlayerController.self_PowerController.HasAPowerEquipped && IsPowerCollectible())
                 return; // player already has a power we don't collect

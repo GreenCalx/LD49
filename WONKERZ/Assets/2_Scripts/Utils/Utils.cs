@@ -59,5 +59,18 @@ namespace Wonkerz {
         {
             return a * (1f - f) + (b * f);
         }
+
+        public static void IgnoreAllPlayerColliders(Collider iTarget, Transform iPlayer)
+        {
+            foreach(Transform child in iPlayer)
+            {
+                Collider c = child.gameObject.GetComponent<Collider>();
+                if (c==null)
+                    continue;
+                if (c==iTarget)
+                    continue;
+                UnityEngine.Physics.IgnoreCollision(iTarget, c);
+            }
+        }
     }
 }

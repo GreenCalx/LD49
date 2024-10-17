@@ -180,14 +180,20 @@ namespace Wonkerz
             if (!!WI)
             {
                 KnightLanceObject_Inst = GameObject.Instantiate(KnightLanceObject_Ref, attachPoint);
-                KnightLanceObject_Inst.SetActive(true);
+                foreach(Transform child in KnightLanceObject_Inst.transform)
+                {
+                    Collider c = child.GetComponent<Collider>();
+                    if (!!c)
+                        Utils.IgnoreAllPlayerColliders(c, owner.transform);
+                }
                 if (isOnline)
                 {
                     NetworkServer.Spawn(KnightLanceObject_Inst);
                     selfDamager = KnightLanceObject_Inst.GetComponentInChildren<OnlineDamager>();
                     selfDamager.damage = baseDamage;
+
                 }
-                
+                KnightLanceObject_Inst.SetActive(true);
             }
         }
 
@@ -200,6 +206,7 @@ namespace Wonkerz
                 UnityEvent cbAfterThrust = new UnityEvent();
                 cbAfterThrust.AddListener(OnWeaponFinish);
                 selfDamager.damage = (int)Mathf.Ceil(baseDamage * damageMulOnThrust);
+                selfDamager.filteredOutDamageables.Add(owner.self_oDamageable);
                 selfOnlineWeapon.Thrust(thrustTime, thrustRotSpeed, thrustZOffset, cbAfterThrust);
                 thrusting = true;
 
@@ -327,15 +334,21 @@ namespace Wonkerz
             if (!!WI)
             {
                 PalletLauncher_Inst = GameObject.Instantiate(PalletLauncher_Ref, attachPoint);
-                PalletLauncher_Inst.SetActive(true);
+                
+                foreach(Transform child in PalletLauncher_Inst.transform)
+                {
+                    Collider c = child.GetComponent<Collider>();
+                    if (!!c)
+                        Utils.IgnoreAllPlayerColliders(c, owner.transform);
+                }
                 if (isOnline)
                 {
                     NetworkServer.Spawn(PalletLauncher_Inst);
                 }
-
                 Canon_Handle = PalletLauncher_Inst.GetComponent<Canon>();
                 palletLoadingPoint = Canon_Handle.loadingPoint;
                 palletLaunchingPoint = Canon_Handle.spawnPoint;
+                PalletLauncher_Inst.SetActive(true);
             }
         }
 

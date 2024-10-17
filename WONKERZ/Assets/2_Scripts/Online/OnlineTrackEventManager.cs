@@ -35,7 +35,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         
         RpcRefreshUI(activeEvent);
         activeEvent.EffectOn();
-        
+
         trackEventCo = StartCoroutine(WaitForEventIsOver());
     }
 
@@ -65,6 +65,9 @@ public class OnlineTrackEventManager : NetworkBehaviour
                 break;
             case (int)TRACKEVENTS.HIGHTIDE:
                 ev = new HighTideTrackEvent();
+                break;
+            case (int)TRACKEVENTS.NIGHTTIME:
+                ev = new NightTimeTrackEvent();
                 break;
             default:
                 break;
