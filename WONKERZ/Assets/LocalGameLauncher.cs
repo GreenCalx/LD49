@@ -48,33 +48,33 @@ public class LocalGameLauncher : MonoBehaviour
                                 useTransitionOut = false,
                                 onSceneLoaded = delegate(AsyncOperation op) {
                                     var uiOnline = GameObject.Find("UIOnline").GetComponent<UIOnline>();
+
+                                    uiOnline.Deinit();
                                     uiOnline.Deactivate();
+                                    uiOnline.Init();
 
-                                    uiOnline.client.OnRoomCreated += delegate(SchLobbyClient.RoomCreatedData data) {
-                                        pendingCommands.Enqueue(new MainThreadCommand(
-                                            delegate() {
-                                                uiOnline.roomServer.networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
-                                                var port = (ushort)UnityEngine.Random.Range(10000, 65000);
-                                                // use port 0 to use any available port from the OS.
-                                                (uiOnline.roomServer.transport as PortTransport).Port = port;
-
-                                                uiOnline.roomServer.OnRoomClientEnterCB += delegate() {
-                                                    uiOnline.roomServer.roomSlots[0].CmdChangeReadyState(true);
-                                                    uiOnline.roomServer.StartGameScene();
-                                                };
-
-                                                uiOnline.roomServer.StartHost();
-                                            })
-                                        );
+                                    uiOnline.roomServer.OnRoomClientEnterCB += delegate() {
+                                        uiOnline.roomServer.roomSlots[0].CmdChangeReadyState(true);
+                                        uiOnline.roomServer.StartGameScene();
                                     };
 
-                                    uiOnline.client.CreateLobby(new Lobby
-                                    {
-                                        maxPlayerCount = 4,
-                                        //cf :hastName: SchLobbyServer
-                                        hostName = Access.managers.gameProgressSaveMgr.activeProfile,
-                                        name     = "generic debug name",
-                                    });
+                                    uiOnline.client.OnConnected += delegate (int clientID) {
+                                        pendingCommands.Enqueue(new MainThreadCommand( delegate() {
+
+                                            uiOnline.SetState(UIOnline.States.CreatingRoom);
+
+                                            uiOnline.client.CreateLobby(new Lobby
+                                            {
+                                                maxPlayerCount = 4,
+                                                //cf :hastName: SchLobbyServer
+                                                hostName = Access.managers.gameProgressSaveMgr.activeProfile,
+                                                name     = "generic debug name",
+                                            });
+                                        }));
+                                    };
+
+                                    uiOnline.Activate();
+                                    uiOnline.SetState(UIOnline.States.Deactivated);
                                 },
                             });
                         } break;
@@ -89,33 +89,30 @@ public class LocalGameLauncher : MonoBehaviour
                                 useTransitionOut = false,
                                 onSceneLoaded = delegate(AsyncOperation op) {
                                     var uiOnline = GameObject.Find("UIOnline").GetComponent<UIOnline>();
+
+                                    uiOnline.Deinit();
                                     uiOnline.Deactivate();
 
-                                    uiOnline.client.OnRoomCreated += delegate(SchLobbyClient.RoomCreatedData data) {
-                                        pendingCommands.Enqueue(new MainThreadCommand(
-                                            delegate() {
-                                                uiOnline.roomServer.networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
-                                                var port = (ushort)UnityEngine.Random.Range(10000, 65000);
-                                                // use port 0 to use any available port from the OS.
-                                                (uiOnline.roomServer.transport as PortTransport).Port = port;
+                                    uiOnline.Init();
 
-                                                uiOnline.roomServer.OnRoomClientEnterCB += delegate() {
-                                                    uiOnline.Init();
-                                                    uiOnline.SetState(UIOnline.States.InRoom);
-                                                };
-                                                uiOnline.roomServer.StartHost();
-                                            }
-                                        ));
+                                    uiOnline.client.OnConnected += delegate (int clientID) {
+                                        pendingCommands.Enqueue(new MainThreadCommand(delegate() {
+
+                                            uiOnline.SetState(UIOnline.States.CreatingRoom);
+
+                                            uiOnline.client.CreateLobby(new Lobby
+                                            {
+                                                maxPlayerCount = 4,
+                                                //cf :hastName: SchLobbyServer
+                                                hostName = "Host", // easier to debug.
+                                                name     = "Generic debug name",
+                                            });
+                                        }));
                                     };
 
-                                    uiOnline.client.CreateLobby(new Lobby
-                                    {
-                                        maxPlayerCount = 4,
-                                        //cf :hastName: SchLobbyServer
-                                        hostName = Access.managers.gameProgressSaveMgr.activeProfile,
-                                        name     = "generic debug name",
-                                    });
-                                },
+                                    uiOnline.Activate();
+                                    uiOnline.SetState(UIOnline.States.Deactivated);
+                                }
                             });
                         } break;
 
@@ -129,21 +126,31 @@ public class LocalGameLauncher : MonoBehaviour
                                 useTransitionOut = false,
                                 onSceneLoaded = delegate(AsyncOperation op) {
                                     var uiOnline = GameObject.Find("UIOnline").GetComponent<UIOnline>();
+                                    // start again the local server from scratch.
                                     uiOnline.Deactivate();
-
-                                    uiOnline.roomServer.OnRoomStartClientCB += delegate() {
-                                        uiOnline.Init();
-                                        uiOnline.SetState(UIOnline.States.InRoom);
-                                    };
-
-                                    uiOnline.client.OnStartNATPunch += delegate(IPEndPoint toNATPunch) {
+                                    uiOnline.Deinit();
+                                    uiOnline.Init();
+                                    uiOnline.client.OnConnected += delegate (int clientID) {
                                         pendingCommands.Enqueue(new MainThreadCommand(
                                             delegate() {
-                                                uiOnline.ConnectToRoom(toNATPunch, 0);
-                                            }));
+                                                uiOnline.roomServer.OnRoomStartClientCB += delegate() {
+                                                    uiOnline.Init();
+                                                    uiOnline.SetState(UIOnline.States.InRoom);
+                                                };
+
+                                                uiOnline.client.OnStartNATPunch += delegate(IPEndPoint toNATPunch) {
+                                                    pendingCommands.Enqueue(new MainThreadCommand(
+                                                        delegate() {
+                                                            uiOnline.ConnectToRoom(toNATPunch, 0);
+                                                        }));
+                                                };
+
+                                                uiOnline.client.JoinLobby(0);
+                                            }
+                                        ));
                                     };
 
-                                    uiOnline.client.JoinLobby(0);
+                                    uiOnline.Activate();
                                 },
                             });
                         } break;
