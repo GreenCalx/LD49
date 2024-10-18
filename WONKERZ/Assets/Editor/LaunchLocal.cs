@@ -130,7 +130,7 @@ namespace Wonkerz
 
             var byPassCourse = data.byPassCourse      ? "-byPassCourse" : "";
             var byPassTrial  = data.byPassTrial       ? "-byPassTrial" : "";
-            var byPassTrialWheel  = data.byPassTrialWheel  ? "-byPassWheel" : "";
+            var byPassTrialWheel  = data.byPassTrialWheel  ? "-byPassTrialWheel" : "";
             var trialName    = !string.IsNullOrEmpty(data.trialName) ? "-trialName " + data.trialName : "";
 
             var arguments    = debugModeStr + " " + byPassCourse + " " + byPassTrial + " " + trialName;
