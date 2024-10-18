@@ -326,7 +326,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
         // copy data that we need during the game.
         OPC.onlinePlayerName = nrp.name;
-        if (nrp.isServer) {
+        if (nrp.isServer && nrp.isLocalPlayer) {
             OPC.gameObject.name = Constants.GO_PLAYER;
         } else {
             // easier to debug if the gameObject has the name of the player.
