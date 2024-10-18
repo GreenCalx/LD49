@@ -23,7 +23,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
             trackEventCo = null;
         }
 
-        int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length;
+        int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length-1;
         int selected = UnityEngine.Random.Range(0,n_eventTypes);
 
         activeEvent = GetEvent(selected);
@@ -32,7 +32,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
             //this.Log("Not enough time to launch a new event.");
             return;
         }
-        
+
         RpcRefreshUI(activeEvent);
         activeEvent.EffectOn();
 
@@ -95,7 +95,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
             // hide
             pui.TrackEventOffFXHandle.gameObject.SetActive(true);
             pui.TrackEventNameTxt.text = "";
-        
+
             pui.TrackEventOnFXHandle.gameObject.SetActive(false);
             StartCoroutine(DelayedUIShow(pui, false));
         }
@@ -105,7 +105,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
     {
         float delay = 0.5f;
         float elapsed = 0f;
-        while (elapsed < delay) 
+        while (elapsed < delay)
         { elapsed+=Time.deltaTime; yield return null; }
 
         pui.TrackEventHandle.gameObject.SetActive(iState);
