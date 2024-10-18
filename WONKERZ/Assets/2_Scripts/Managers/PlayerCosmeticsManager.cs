@@ -14,7 +14,7 @@ namespace Wonkerz {
     {
         public CosmeticCollection defaultCarCollection;
         public CosmeticCollection cosmeticCollection;
-    
+
         // [Serializable]
         // public struct SkinDesc
         // {
@@ -82,7 +82,7 @@ namespace Wonkerz {
                 if (!availableCosmetics.Contains(iCosmeticElementIDs[i]))
                 availableCosmetics.Add( iCosmeticElementIDs[i] );
             }
-        
+
         }
 
         public void addPlayerToCustomize(GameObject iGO)
@@ -102,7 +102,9 @@ namespace Wonkerz {
         public void resetPlayersToCustomize()
         {
             players.Clear();
-            players.Add(Access.Player().gameObject); 
+            if (Access.Player()) {
+                players.Add(Access.Player().gameObject);
+            }
         }
 
         public CarColorizable getCustomizationOfPart(COLORIZABLE_CAR_PARTS iPart)
@@ -115,7 +117,7 @@ namespace Wonkerz {
                 MeshFilter rend = pRends[i];
                 CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
                 if (!!cc_color && cc_color.part == iPart)
-                { 
+                {
                     retval = cc_color;
                     break;
                 }
@@ -145,8 +147,8 @@ namespace Wonkerz {
                     MeshRenderer rend = pRends[i];
                     CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
                     if (!!cc_color && cc_color.part == iPart)
-                    { 
-                        rend.material = iMat; 
+                    {
+                        rend.material = iMat;
                         //cc_color.materialName = iMatName;
                     }
                 }
@@ -155,7 +157,7 @@ namespace Wonkerz {
 
         public void customize( int iSkinID, COLORIZABLE_CAR_PARTS iPart)
         {
-        
+
 
             CosmeticElement skin = (iSkinID < 0) ? getDefaultCosmetic(iPart) : getCosmeticFromID(iSkinID);
 
@@ -173,13 +175,13 @@ namespace Wonkerz {
                     MeshFilter rend = pRends[i];
                     CarColorizable cc_color = rend.gameObject.GetComponent<CarColorizable>();
                     if (!!cc_color && (iPart == cc_color.part))
-                    { 
+                    {
                         rend.sharedMesh = mesh;
                         cc_color.partSkinID = skin.skinID;
                         //break; // can be multiple occurences like wheels
                     }
                 }
-            }     
+            }
         }
 
         public void changeDecal(int iSkinID, COLORIZABLE_CAR_PARTS iPart)
@@ -188,10 +190,10 @@ namespace Wonkerz {
 
             if (skin.cosmeticType != CosmeticType.DECAL)
             return;
-        
+
             if (skin.decal==null)
             return;
-        
+
             WonkerDecal new_decal = Instantiate(skin.decal).GetComponent<WonkerDecal>();
 
             foreach (GameObject p in players)
@@ -209,7 +211,7 @@ namespace Wonkerz {
 
             }
 
-        
+
         }
 
     }}

@@ -68,6 +68,8 @@ public class UIRoom : UIPanelTabbed
 
     public override void Activate()
     {
+        Init();
+
         base.Activate();
 
         uiPlayerSlots = new List<UIRoom_PlayerSlot>(roomPlayerCount);

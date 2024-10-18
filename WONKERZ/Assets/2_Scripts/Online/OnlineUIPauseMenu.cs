@@ -203,7 +203,8 @@ public class OnlineUIPauseMenu : UIControllableElement
             Destroy(oldline.gameObject);
         }
         playerInfoLines = new List<UIOnlinePlayerInfoLine>(room.roomSlots.Count);
-        foreach (OnlinePlayerController opc in room.onlineGameManager.uniquePlayers)
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach (var opc in uniquePlayers)
         {
             UIOnlinePlayerInfoLine infoLine = Instantiate(UILobbyPlayerPrefab, UILobbyPlayerInfoHandle).GetComponent<UIOnlinePlayerInfoLine>();
             infoLine.player = opc;

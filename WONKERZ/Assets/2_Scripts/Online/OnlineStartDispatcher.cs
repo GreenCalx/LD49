@@ -27,7 +27,7 @@ public class OnlineStartDispatcher : NetworkBehaviour
         StartCoroutine(DispatchPlayersCo());
     }
 
-    IEnumerator WaitForDependencies() { 
+    IEnumerator WaitForDependencies() {
         while (NetworkRoomManagerExt.singleton                                         == null)  {yield return null;}
         while (NetworkRoomManagerExt.singleton.onlineGameManager                       == null)  {yield return null;}
         while (NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersLoaded() == false) {yield return null;}
@@ -42,7 +42,8 @@ public class OnlineStartDispatcher : NetworkBehaviour
         startPositions.CopyTo(unusedSPs);
 
         // assign player <> startposition
-        foreach ( OnlinePlayerController opc in NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers)
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach ( var opc in uniquePlayers)
         {
             foreach(OnlineStartPortal sp in startPositions)
             {

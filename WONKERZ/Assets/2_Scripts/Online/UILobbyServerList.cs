@@ -43,7 +43,7 @@ public class UILobbyServerList : UIPanelTabbedScrollable
     public override void Deinit() {
         base.Deinit();
 
-        if (online.client != null) {
+        if (online != null && online.client != null) {
             online.client.OnLobbyListRefreshed -= OnLobbyListReady;
         }
     }

@@ -1,13 +1,9 @@
+using Mirror;
+using Schnibble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using UnityEngine;
-
-using Mirror;
-
-using Schnibble;
-
 using Wonkerz;
 
 
@@ -38,10 +34,10 @@ public class OnlinePlayerController : NetworkBehaviour
     // When the server sets it, the client listen for the change and react to it.
     [SyncVar]
     bool _isReady = false;
-    public bool isReady   { get => _isReady  ; private set { _isReady   = value; onAnyChange?.Invoke(); } }
+    public bool isReady { get => _isReady; private set { _isReady = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isLoaded = false;
-    public bool isLoaded  { get => _isLoaded ; private set { _isLoaded  = value; onAnyChange?.Invoke(); } }
+    public bool isLoaded { get => _isLoaded; private set { _isLoaded = value; onAnyChange?.Invoke(); } }
     [SyncVar]
     bool _isSpawned = false;
     public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke(); } }
@@ -298,6 +294,8 @@ public class OnlinePlayerController : NetworkBehaviour
     {
         this.Log("OnStartServer");
 
+        isSpawned = false;
+
         if (omegas == null)
         {
             this.LogError("omegas list is null.");
@@ -322,7 +320,7 @@ public class OnlinePlayerController : NetworkBehaviour
     void OnStartServerInit()
     {
         // TODO: remove anything linked to input poll, rendering, etc...
-        self_PlayerController.OnStateChange        += OnStateChange;
+        self_PlayerController.OnStateChange += OnStateChange;
         self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
     }
 
@@ -351,6 +349,24 @@ public class OnlinePlayerController : NetworkBehaviour
         isReady = state;
     }
 
+    // TODO: very bad to use string,
+    // but for now should not be a problem, might have some hiccups at scene
+    // loading which should be fine.
+    [Command]
+    public void CmdClientLoadedScene(string sceneName) {
+        this.Log("Client has finished loading scene:" + sceneName);
+
+        var ogm = OnlineGameManager.singleton;
+        if (!ogm.playerLoadedScenes.ContainsKey(this)) {
+            ogm.playerLoadedScenes.Add(this, new List<string>());
+        }
+
+        var list = ogm.playerLoadedScenes[this];
+        if (!list.Contains(sceneName)) {
+            list.Add(sceneName);
+        }
+    }
+
     [Command]
     public void CmdModifyReadyState(bool state)
     {
@@ -369,8 +385,6 @@ public class OnlinePlayerController : NetworkBehaviour
         if (state)
         {
             this.Log("Server received client spawned.");
-
-            OnlineGameManager.singleton.AddPlayer(this);
 
             self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.Car);
 
@@ -448,22 +462,31 @@ public class OnlinePlayerController : NetworkBehaviour
     Client
     ------------------------------------ */
 
+    private void OnEnable()
+    {
+        this.LogError("Enable");
+    }
+
+    private void OnDisable()
+    {
+        this.LogError("Disable");
+    }
+
     IEnumerator WaitForDependencies()
     {
         this.Log("Start OnlinePlayerController wait for dependencies.");
-
         // Wait for OnlineGameManager to setup.
-        while (NetworkRoomManagerExt.singleton == null) { yield return null; }
-        while (NetworkRoomManagerExt.singleton.onlineGameManager == null) { yield return null; }
-
+        while (OnlineGameManager.singleton == null) yield return null;
         while (Access.managers.cameraMgr == null) { yield return null; }
-
         this.Log("End OnlinePlayerController wait for dependencies.");
     }
 
     public override void OnStartClient()
     {
         this.Log("OnStartClient");
+
+        var manager = NetworkRoomManagerExt.singleton;
+
         // OnStartuserver will setup the OnlineStub if need be, so we init here
         // only if we are client only, and not the local player.
         if (!isServer && !isLocalPlayer)
@@ -496,6 +519,9 @@ public class OnlinePlayerController : NetworkBehaviour
         this.Log("OnStartLocalPlayer");
 
         if (!isServer) omegas.Callback += OnUpdateOmegas;
+
+        var manager = NetworkRoomManagerExt.singleton;
+        manager.OnSceneLoadedCB += CmdClientLoadedScene;
 
         StartCoroutine(InitLocalPlayer());
     }

@@ -13,7 +13,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     [Header("Race Trial Specs")]
     public int n_laps = 3;
     public Transform CheckpointsHandle;
-    
+
     [Header("Race Trial Internals")]
     public OnlineRaceCheckPoint RootCP;
     public readonly SyncDictionary<OnlinePlayerController, int> dicPlayersToLaps = new SyncDictionary<OnlinePlayerController, int>();
@@ -53,7 +53,8 @@ public class OnlineRaceTrialManager : OnlineTrialManager
 
         // init players
         // retrieved from OGM.uniquePlayers
-        foreach (OnlinePlayerController opc in OnlineGameManager.singleton.uniquePlayers)
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach (var opc in uniquePlayers)
         {
             dicPlayersToLaps.Add(opc, 1);
             dicPlayersToCP.Add(opc, RootCP);
@@ -64,7 +65,7 @@ public class OnlineRaceTrialManager : OnlineTrialManager
             else
                 uiORT.updateLap(1);
         }
-    
+
         uiORT.RpcUpdateNLapsValue(n_laps);
         uiORT.RpcUpdateRaceTime(GetTrialTime());
 
@@ -76,18 +77,12 @@ public class OnlineRaceTrialManager : OnlineTrialManager
     {
         List<OnlinePlayerController> rankedPlayers = new List<OnlinePlayerController>();
 
-        for (int i=0; i < OnlineGameManager.singleton.uniquePlayers.Count; i++)
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach (var polledOPC in uniquePlayers)
         {
-            OnlinePlayerController polledOPC = OnlineGameManager.singleton.uniquePlayers[i];
-            if (i==0)
-            {   
-                rankedPlayers.Add(polledOPC);
-                continue;
-            }
-
             float polledOPCScore = GetScore(polledOPC);
             for (int j=0; j < rankedPlayers.Count; j++)
-            { 
+            {
                 if (GetScore(rankedPlayers[j]) < polledOPCScore)
                 {
                     rankedPlayers.Insert(j, polledOPC);
@@ -145,21 +140,21 @@ public class OnlineRaceTrialManager : OnlineTrialManager
             {
                 // lap over !
                 dicPlayersToLaps[iOPC]++;
-            
+
                 if (dicPlayersToLaps[iOPC] > n_laps)
                 {
                     NotifyPlayerHasFinished(iOPC);
                 } else {
 
                     if (iOPC.isClientOnly)
-                    { 
+                    {
                         uiORT.RpcPlayLapAnim();
-                        uiORT.RpcUpdateLap(dicPlayersToLaps[iOPC]); 
+                        uiORT.RpcUpdateLap(dicPlayersToLaps[iOPC]);
                     }
                     else
-                    { 
+                    {
                         uiORT.PlayLapAnim();
-                        uiORT.updateLap(dicPlayersToLaps[iOPC]); 
+                        uiORT.updateLap(dicPlayersToLaps[iOPC]);
                     }
                 }
             }

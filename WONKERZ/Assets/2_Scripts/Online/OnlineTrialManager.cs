@@ -31,7 +31,7 @@ public class OnlineTrialManager : NetworkBehaviour
         StartCoroutine(GenericTrialInit());
     }
 
-    IEnumerator WaitForDependencies() 
+    IEnumerator WaitForDependencies()
     {
         while (OnlineGameManager.singleton             == null) {yield return null;}
     }
@@ -87,14 +87,14 @@ public class OnlineTrialManager : NetworkBehaviour
         }
         localPC.self_PlayerController.Freeze();
     }
-    
+
     [Command]
     public void CmdNotifyPlayerHasFinished(OnlinePlayerController iOPC)
     {
         NotifyPlayerHasFinished(iOPC);
-        
+
     }
-    
+
     [ServerCallback]
     public void NotifyPlayerHasFinished(OnlinePlayerController iOPC)
     {
@@ -122,7 +122,8 @@ public class OnlineTrialManager : NetworkBehaviour
     [ServerCallback]
     public bool AllPlayersFinished()
     {
-        return (dicPlayerTrialFinishPositions.Count == NetworkRoomManagerExt.singleton.onlineGameManager.uniquePlayers.Count);
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        return (dicPlayerTrialFinishPositions.Count == uniquePlayers.Count);
     }
 
     public string GetTrialTime()

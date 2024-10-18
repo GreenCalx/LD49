@@ -79,7 +79,8 @@ public class OnlineUIPostGame : UIControllableElement
     public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
     {
         int lowest_rank = 1;
-        foreach(OnlinePlayerController opc in iOGM.uniquePlayers)
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach(OnlinePlayerController opc in uniquePlayers)
         {
             GameObject newLine = Instantiate(prefab_UIPostGameLine, postGameLines_Handle);
             UIOnlinePostGameLine newLine_asUI = newLine.GetComponent<UIOnlinePostGameLine>();

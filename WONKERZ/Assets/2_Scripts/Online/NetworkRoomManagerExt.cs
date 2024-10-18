@@ -19,9 +19,10 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 {
     public static new NetworkRoomManagerExt singleton => NetworkManager.singleton as NetworkRoomManagerExt;
     public static Action OnNetworkManagerChange;
-
     // every room player will have a corresponding OnlinePlayerController => we keep track of this.
     // TODO: should't it be part of eiter object as a ref?
+    // NOTE: Mirror will change the Player object associated with a connection when going from room to game
+    //       This is done when the scene is loaded on a client => it can be used to know if everybody has loaded at first scene load.
     public Dictionary<NetworkRoomPlayerExt, OnlinePlayerController> roomplayersToGameplayersDict = new Dictionary<NetworkRoomPlayerExt, OnlinePlayerController>();
     // The room manager is not a NetworkBehaviour itself,
     // therefor we need a way to have Sync datas in the game
@@ -30,6 +31,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public OnlineGameManager onlineGameManager;
     // TODO: more that one subscene.possibl?
     // Subscene is the additive scene, root scene is the OnlineGameRoom.
+    public string subsceneLoading = "";
     public bool subsceneLoaded   = false;
     public bool subsceneUnloaded = false;
     // TODO: replace actions by only one action with operationtype and data?
@@ -42,6 +44,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public Action                         OnRoomClientExitCB;
     public Action                         OnRoomStartClientCB;
     public Action                         OnRoomStopClientCB;
+    public Action<string>                 OnSceneLoadedCB;
     public Action                         OnRoomClientSceneChangedCB;
     public Action                         OnRoomServerPlayersReadyCB;
     public Action                         OnRoomStopServerCB;
@@ -124,20 +127,24 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     // shold be same cade for server / client
     IEnumerator LoadAdditive(string sceneName)
     {
-        // host client is on server...don't load the additive scene again
-        if (mode == NetworkManagerMode.ClientOnly)
-        {
-            subsceneLoaded = false;
-            // Start loading the additive subscene
-            yield return Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams {
-                sceneLoadingMode = LoadSceneMode.Additive
-            });
+        if (!(mode == NetworkManagerMode.ServerOnly || mode == NetworkManagerMode.Offline)) {
+            // keey track of which scene we are trying to load.
+            subsceneLoading = sceneName;
+            // host client is on server...don't load the additive scene again
+            if (mode == NetworkManagerMode.ClientOnly)
+            {
+                subsceneLoaded = false;
+                // Start loading the additive subscene
+                yield return Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams {
+                    sceneLoadingMode = LoadSceneMode.Additive
+                });
 
-            subsceneLoaded = true;
+                subsceneLoaded = true;
+            }
+            OnSceneLoadedCB?.Invoke(subsceneLoading);
+            // Reset these to false when ready to proceed
+            NetworkClient.isLoadingScene = false;
         }
-
-        // Reset these to false when ready to proceed
-        NetworkClient.isLoadingScene = false;
     }
 
     IEnumerator UnloadAdditive(string sceneName)
@@ -184,7 +191,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public override void OnRoomClientSceneChanged()
     {
-        this.Log("OnRoomClientSceneChanged.");
+        this.Log("OnRoomClientSceneChanged : " + subsceneLoading);
 
         OnRoomClientSceneChangedCB?.Invoke();
     }
@@ -192,6 +199,19 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     #endregion
 
     #region Server
+
+    public IEnumerator WaitForSceneToBeLoadedForAllPlayers() {
+        while (!IsSceneLoadedForAllPlayers()) {
+            yield return null;
+        }
+        yield break;
+    }
+
+    public bool IsSceneLoadedForAllPlayers() {
+        var roomPlayerCount  = roomSlots.Count;
+        var sceneLoadedCount = roomplayersToGameplayersDict.Count;
+        return roomPlayerCount == sceneLoadedCount;
+    }
 
     // override all the function, because base class is using directly SceneManager
     // and we want to use our own manager.
