@@ -23,7 +23,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
             trackEventCo = null;
         }
 
-        int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length-1;
+        int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length;
         int selected = UnityEngine.Random.Range(0,n_eventTypes);
 
         activeEvent = GetEvent(selected);
@@ -33,8 +33,9 @@ public class OnlineTrackEventManager : NetworkBehaviour
             return;
         }
 
+        RpcEventEffectOn();
         RpcRefreshUI(activeEvent);
-        activeEvent.EffectOn();
+//        activeEvent.EffectOn();
 
         trackEventCo = StartCoroutine(WaitForEventIsOver());
     }
@@ -49,9 +50,10 @@ public class OnlineTrackEventManager : NetworkBehaviour
             yield return null;
         }
 
-        activeEvent.EffectOff();
-        activeEvent = null;
-
+        //activeEvent.EffectOff();
+        RpcEventEffectOff();
+        
+        
         RpcRefreshUI(null);
     }
 
@@ -73,6 +75,19 @@ public class OnlineTrackEventManager : NetworkBehaviour
                 break;
         }
         return ev;
+    }
+
+    [ClientRpc]
+    private void RpcEventEffectOn()
+    {
+        activeEvent.EffectOn();
+    }
+
+    [ClientRpc]
+    private void RpcEventEffectOff()
+    {
+        activeEvent.EffectOff();
+        activeEvent = null;
     }
 
     [ClientRpc]

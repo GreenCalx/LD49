@@ -25,9 +25,15 @@ namespace Wonkerz{
         public Material nightTimeSkybox;
         public Color nightTimeFogColor;
         public List<TrackLight> trackLights;
-        [Header("Transform Handles")]
+        [Header("Tide Change")]
         public Transform h_seaTransform;
+        private Vector3 seaTransformBasePos;
+        private Coroutine tideChangeCo;
         
+        void Start()
+        {
+            seaTransformBasePos = h_seaTransform.localPosition;
+        }
 
         void Update()
         {
@@ -83,6 +89,45 @@ namespace Wonkerz{
             foreach(TrackLight l in trackLights)
             {
                 l.ToggleLight(iState);
+            }
+        }
+
+        public void RiseSeaLevel(bool iState, float iTime, float iYAmount)
+        {
+            if (tideChangeCo!=null)
+            {
+                StopCoroutine(tideChangeCo);
+                tideChangeCo = null;
+            }
+            if (iState)
+                tideChangeCo = StartCoroutine(RiseSea(iTime, iYAmount));
+            else
+                tideChangeCo = StartCoroutine(LowerSea(iTime));
+        }
+
+        IEnumerator RiseSea(float iTime, float iYAmount)
+        {
+            float elapsedTime = 0f;
+            Vector3 targetPos = h_seaTransform.localPosition;
+            targetPos.y += iYAmount;
+
+            while (elapsedTime <= iTime)
+            {
+                h_seaTransform.position  = Vector3.Lerp(seaTransformBasePos, targetPos, elapsedTime/iTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        IEnumerator LowerSea(float iTime)
+        {
+            float elapsedTime = 0f;
+            Vector3 risedPos = h_seaTransform.localPosition;
+            while (elapsedTime <= iTime)
+            {
+                h_seaTransform.position  = Vector3.Lerp(risedPos, seaTransformBasePos, elapsedTime/iTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
             }
         }
 

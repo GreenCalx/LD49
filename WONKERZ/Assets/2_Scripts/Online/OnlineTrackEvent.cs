@@ -41,7 +41,7 @@ public class GravityTrackEvent : OnlineTrackEvent
     {
         trackEventType = TRACKEVENTS.LOWGRAVITY;
         name = "Low Gravity !";
-        duration = 10f;
+        duration = 30f;
         initGravity = Physics.gravity;
     }
 
@@ -65,20 +65,28 @@ public class GravityTrackEvent : OnlineTrackEvent
 
 public class HighTideTrackEvent : OnlineTrackEvent
 {
-    private Vector3 initWaterPosition = Vector3.zero;
+    public float tideChangeTime = 10f;
+    public float tideChangeYAmount = 80f;
     public HighTideTrackEvent()
     {
         trackEventType = TRACKEVENTS.HIGHTIDE;
         name = "High Tide!";
-        duration = 10f;
+        duration = 50f;
     }
     public override void EffectOn()
     {
-
+        OpenCourseMutator ocm = Access.OCMutator();
+        if (ocm==null)
+            return;
+        ocm.RiseSeaLevel(true, tideChangeTime, tideChangeYAmount);
     }
 
     public override void EffectOff()
     {
+        OpenCourseMutator ocm = Access.OCMutator();
+        if (ocm==null)
+            return;
+        ocm.RiseSeaLevel(false, tideChangeTime, tideChangeYAmount);
         DestroySelf();
     }
 }
