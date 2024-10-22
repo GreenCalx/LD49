@@ -93,6 +93,7 @@ namespace Wonkerz
 
             List<CameraFocusable> focusables = new List<CameraFocusable>();
 
+            // find eligibles camfocusables
             int layerMask = (1 << LayerMask.NameToLayer(Constants.LYR_CAMFOCUSABLE));
             Collider[] sphereCastCols = UnityEngine.Physics.OverlapSphere( transform.position, breakFocusDistance, layerMask, QueryTriggerInteraction.Collide);
             for (int i=0;i<sphereCastCols.Length;i++)
@@ -107,15 +108,36 @@ namespace Wonkerz
                 return false;
             }
 
+            // remove camfocusables blocked by environment
+            int statEnvLayerMask = (1 << LayerMask.NameToLayer(Constants.LYR_STATICENV));
+            int dynEnvLayerMask = (1 << LayerMask.NameToLayer(Constants.LYR_DYNAMICENV));
+            int blockingLayerMask = statEnvLayerMask | dynEnvLayerMask;
+
+            List<CameraFocusable> unobstructedFocusables = new List<CameraFocusable>();
+            foreach(CameraFocusable f in focusables)
+            {
+                RaycastHit hit;
+                Vector3 rayDir = f.transform.position - transform.position;
+                if (UnityEngine.Physics.Raycast(transform.position, rayDir, out hit, Vector3.Distance(transform.position, f.transform.position), blockingLayerMask))
+                {
+                    //UnityEngine.Debug.DrawRay(transform.position, rayDir, Color.red, 5f);
+                    continue;
+                }
+                //UnityEngine.Debug.DrawRay(transform.position, rayDir, Color.green, 5f);
+                unobstructedFocusables.Add(f);
+            }
+
+
+            // select best camerafocusable
             CameraFocusable chosenOne = null;
 
-            focusables.Sort(CompareCamFocusByScore);
+            unobstructedFocusables.Sort(CompareCamFocusByScore);
 
             // fdebug
-            foreach(CameraFocusable f in focusables)
+            foreach(CameraFocusable f in unobstructedFocusables)
             { this.Log("CameraFocus " + f.transform.parent.name + " score " + GetCamFocusScore(f)); }
 
-            foreach(CameraFocusable f in focusables)
+            foreach(CameraFocusable f in unobstructedFocusables)
             {
                 if (CamFocusIsVisibleOnScreen(f))
                 {

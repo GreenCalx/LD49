@@ -74,5 +74,7 @@ public static class Constants
     // -- Layers --
     public const string LYR_NOPLAYERCOL = "Actor/NoPlayerCollision";
     public const string LYR_CAMFOCUSABLE = "NoCollision/CameraFocusables";
+    public const string LYR_STATICENV = "Env/StaticTerrain";
+    public const string LYR_DYNAMICENV = "Env/DynamicTerrain";
 
 }
