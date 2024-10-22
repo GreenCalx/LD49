@@ -173,7 +173,7 @@ namespace Wonkerz
 
         public void onEnableEffect()
         {
-            owner = owner = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
+            owner = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
             WeightIndicator WI = owner.GetComponentInChildren<WeightIndicator>();
             attachPoint = WI.transform;
 

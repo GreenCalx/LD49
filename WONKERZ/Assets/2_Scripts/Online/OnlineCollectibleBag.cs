@@ -104,7 +104,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         if (isServer)
         {
             //while (!NetworkRoomManagerExt.singleton.onlineGameManager.HasPlayerLoaded(owner))
-            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersReady())
+            while (!NetworkRoomManagerExt.singleton.onlineGameManager.AreAllPlayersLoaded())
             {
                 yield return null;
             }
@@ -156,6 +156,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     [Server]
     public void AsServerCollect(OnlineCollectible iCollectible)
     {
+        bool stats_collected = false;
         switch (iCollectible.collectibleType)
         {
             case ONLINE_COLLECTIBLES.NUTS:
@@ -164,26 +165,32 @@ public class OnlineCollectibleBag : NetworkBehaviour
             case ONLINE_COLLECTIBLES.ACCEL:
                 accels += iCollectible.value;
                 accels = Mathf.Clamp(accels, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.MAX_SPEED:
                 maxSpeeds += iCollectible.value;
                 maxSpeeds = Mathf.Clamp(maxSpeeds, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.SPRINGS:
                 springs += iCollectible.value;
                 springs = Mathf.Clamp(springs, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.TURN:
                 turns += iCollectible.value;
                 turns = Mathf.Clamp(turns, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.TORQUEFORCE:
                 torqueForces += iCollectible.value;
                 torqueForces = Mathf.Clamp(torqueForces, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.WEIGHT:
                 weights += iCollectible.value;
                 weights = Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
                 break;
             case ONLINE_COLLECTIBLES.KLANCE_POWER:
                 CollectPower(iCollectible);
@@ -194,6 +201,10 @@ public class OnlineCollectibleBag : NetworkBehaviour
             default:
                 break;
         }
+
+        if (!stats_collected)
+            return;
+
         if (isServer && isClient)
             UpdateCar();
         else
