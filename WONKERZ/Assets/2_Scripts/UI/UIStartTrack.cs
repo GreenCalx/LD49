@@ -44,11 +44,13 @@ public class UIStartTrack : MonoBehaviour
     {
         if (updateString)
         {
-            if (iCurrCountdownValue == 0.0f) countdown_txt.text = "GO!";
+            if (iCurrCountdownValue <= 0.0f) countdown_txt.text = "GO!";
             else                             countdown_txt.text = Mathf.CeilToInt(iCurrCountdownValue).ToString();
         }
 
         float normalizedTime = iCurrCountdownValue % 1.0f;
+        if (normalizedTime < 0f)
+            normalizedTime = 0f;
 
         countdown_txt.fontSize = initFontSize * fontSizeRatioOverTime.Evaluate(normalizedTime);
 

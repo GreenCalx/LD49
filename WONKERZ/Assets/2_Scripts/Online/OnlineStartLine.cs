@@ -49,6 +49,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     public OnlinePlayerController OPC;
 
     private UIStartTrack UIStartTrackInst = null;
+    private int lastTime = 0;
 
     public override void OnStartClient() {
         UIReadyUpHandle.SetActive(false);
@@ -99,33 +100,29 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         if (UIStartTrackInst==null)
         {
             UIStartTrackInst = Instantiate(UIStartTrackRef).GetComponent<UIStartTrack>();
-
-            StartCoroutine(countdownCo());
         }
+        lastTime = 0;
     }
 
-    IEnumerator countdownCo()
+    public void CountdownUpdate(float iElapsedTime)
     {
-        //OPC.self_PlayerController.Freeze();
-        var OGM = OnlineGameManager.singleton;
-        //Play sounds each seconds.
-        int lastTime = 0;
-        while (OGM.countdownElapsed > 0.0f)
+
+        // check if we pass a second, from 3 to 2 for instance.
+        int currentTime = (int)iElapsedTime;
+        bool passedASecond = lastTime != currentTime;
+        lastTime = currentTime;
+
+        if (passedASecond)
         {
-            // check if we pass a second, from 3 to 2 for instance.
-            int  currentTime   = (int)OGM.countdownElapsed;
-            bool passedASecond = lastTime != currentTime;
-            lastTime = currentTime;
-
-            if (passedASecond) {
-                audioSource.clip = countDownSFX0;
-                audioSource.Play(0);
-            }
-
-            UIStartTrackInst.updateDisplay(OGM.countdownElapsed, passedASecond);
-
-            yield return null;
+            audioSource.clip = countDownSFX0;
+            audioSource.Play(0);
         }
+
+        UIStartTrackInst.updateDisplay(iElapsedTime, passedASecond);
+
+        if (iElapsedTime > 0f)
+            return;
+
         // Play sound at the end.
         audioSource.clip = countDownSFX1;
         audioSource.Play(0);

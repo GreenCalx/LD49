@@ -315,7 +315,7 @@ public class OnlineGameManager : NetworkBehaviour
     [Server]
     IEnumerator StartGame()
     {
-        countdownElapsed = 0f;
+        countdownElapsed = settings.countdownDuration;
 
         UIPlayer.Show();
 
@@ -364,7 +364,7 @@ public class OnlineGameManager : NetworkBehaviour
             yield return null;
         }
 
-        countdownElapsed = 0f;
+        countdownElapsed = settings.countdownDuration;
     }
 
     IEnumerator TrialLoop()
@@ -418,9 +418,11 @@ public class OnlineGameManager : NetworkBehaviour
         while (countdownElapsed > 0.0f)
         {
             countdownElapsed -= Time.deltaTime;
+            RpcUpdateStartLineCountdown(countdownElapsed);
             yield return null;
         }
-
+        RpcUpdateStartLineCountdown(0f);
+        
         FreezeAllPlayers(false);
 
         gameTime = settings.gameDuration;
@@ -666,6 +668,17 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         startLine.LaunchCountdown();
+    }
+
+    [ClientRpc]
+    public void RpcUpdateStartLineCountdown(float iCooldownElapsed)
+    {
+        if (startLine == null)
+        {
+            this.LogError("Starting OnlineStartLine but startLine is null.");
+            return;
+        }
+        startLine.CountdownUpdate(iCooldownElapsed);
     }
 
     [ClientRpc]
