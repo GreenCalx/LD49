@@ -1,11 +1,19 @@
-using Mirror;
-using Schnibble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+using Mirror;
+
+using Schnibble;
+using Schnibble.Online;
+
 using Wonkerz;
+
 public enum ONLINE_GAME_STATE
 {
     NONE = 0,
@@ -29,11 +37,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     // those objcets are owner of syncvars linked to the game state we are currently in.
     public OnlineRoomData    onlineRoomData;
     public OnlineGameManager onlineGameManager;
-    // TODO: more that one subscene.possibl?
-    // Subscene is the additive scene, root scene is the OnlineGameRoom.
-    public string subsceneLoading = "";
-    public bool subsceneLoaded   = false;
-    public bool subsceneUnloaded = false;
     // TODO: replace actions by only one action with operationtype and data?
     // Following are callbocks into function as we are not really overriding the behaviour
     // of those function directly in this object but more reacting to it from an external view.
@@ -45,12 +48,132 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public Action                         OnRoomStartClientCB;
     public Action                         OnRoomStopClientCB;
     public Action<string>                 OnSceneLoadedCB;
+    public Action<string>                 OnSceneUnloadedCB;
     public Action                         OnRoomClientSceneChangedCB;
     public Action                         OnRoomServerPlayersReadyCB;
     public Action                         OnRoomStopServerCB;
     public Action<string>                 OnRoomServerSceneChangedCB;
     public Action<TransportError, string> OnClientErrorCB;
     public Action<bool>                   OnShowPreGameCountdown;
+
+    public Action OnEnterRoomScene;
+    public Action OnEnterGameScene;
+
+    public SchLobbyClient lobbyClient      = new SchLobbyClient();
+    public SchLobbyServer localLobbyServer = new SchLobbyServer();
+
+    public List<Lobby> lobbyList = new List<Lobby>();
+
+    public void OnLobbyList(SchLobbyClient.RoomListData data) {
+        lobbyList = data.lobbies;
+    }
+
+    public void ConnectToRoom(IPEndPoint roomEP, int roomHostID) {
+        // Setup client remotePoint as host.
+        var transportCustom = (transport as SchCustomRelayKcpTransport);
+        if (transportCustom == null) {
+            this.LogError("Should use PortTransport.");
+            return;
+        }
+        transportCustom.Port = (ushort)roomEP.Port;
+        networkAddress     =         roomEP.Address.ToString();
+
+        if (!NetworkClient.active) {
+            // need to startClient to get back localEndPoint.
+            // Mirror should send several messages to try to connect, almost like a NATPunch \o/
+            StartClient();
+            // now that client is started, send to server the port.
+            NetworkWriter writer = NetworkWriterPool.Get();
+
+            writer.WriteByte((byte)SchLobbyServer.OpCode.NATPunchIP);
+
+            SchLobbyServer.NATPunchIP data = new SchLobbyServer.NATPunchIP();
+            data.senderID = lobbyClient.id;
+            data.port     = transportCustom.GetClientLocalEndPoint().Port;
+            data.receiverID = roomHostID;
+
+            writer.Write(data);
+
+            lobbyClient.Send(writer);
+        }
+    }
+
+    public void SetupLocalSocket() {
+        try {
+            IPEndPoint serverEP = new IPEndPoint(IPAddress.Loopback, SchLobbyServer.defaultPort);
+            localLobbyServer.SetupSocket(serverEP);
+        } catch {
+            this.LogError("Fail to setup socket.");
+        }
+    }
+
+    public void JoinLobbyServer(int retryCount, float retryTime) {
+        StartCoroutine(TryConnect(retryCount, retryTime));
+    }
+
+    IEnumerator TryConnect(int retryCount, float retryTime) {
+        for (int i = 0; i < retryCount && !lobbyClient.IsConnected(); ++i)
+        {
+            JoinLobbyServer();
+            yield return new WaitForSeconds(retryTime);
+        }
+
+        yield return new WaitForSeconds(retryTime);
+
+        if (!lobbyClient.IsConnected())
+        {
+            lobbyClient.OnError?.Invoke(SchLobbyClient.ErrorCode.EKO, "Cannot connect to lobby server.");
+        }
+
+        yield break;
+    }
+
+
+    public void JoinLocalLobbyServer() {
+        lobbyClient.Connect(new IPEndPoint(IPAddress.Loopback, SchLobbyServer.defaultPort));
+    }
+
+    public void JoinLobbyServer() {
+        lobbyClient.Connect(SchLobbyClient.defaultRemoteEP);
+    }
+
+    public void CreateRoom(Lobby lobby) {
+        lobbyClient.OnRoomCreated += OnRoomCreated;
+        lobbyClient.CreateLobby(lobby);
+    }
+
+    // TODO: is queue thread safe? should be right?
+    void OnRoomCreated(SchLobbyClient.RoomCreatedData data)
+    {
+        this.Log("OnRoomCreated");
+        MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+            delegate() {
+                this.Log("CreateRoomCmd");
+                // start room as a server and client locally
+                networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
+                var port = (ushort)UnityEngine.Random.Range(10000, 65000);
+                (transport as PortTransport).Port = port;
+                // make sure that there is not a room already running somewhere...
+                if (NetworkServer.activeHost) StopHost();
+
+                StartHost();
+                // We now listen when the server wants our NATPunch data.
+                // It means a client tries to connect to the room.
+                lobbyClient.OnStartNATPunch = (transport as SchCustomRelayKcpTransport).OnNATPunch;
+            }));
+
+        lobbyClient.OnRoomCreated -= OnRoomCreated;
+    }
+
+    public void JoinLobby(int lobbyID) {
+        lobbyClient.OnStartNATPunch = delegate(IPEndPoint ep) {
+            MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(delegate() {
+                ConnectToRoom(ep, lobbyID);
+            }));
+        };
+
+        lobbyClient.JoinLobby(lobbyID);
+    }
 
     public override void Awake()
     {
@@ -59,8 +182,26 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         // Another solution would be for external objects to always check the singleton and never
         // have ref to it : kinda a pain.
         var oldSingleton = singleton;
+
         base.Awake();
-        if (singleton != oldSingleton) OnNetworkManagerChange?.Invoke();
+
+        if (singleton != oldSingleton) {
+            if (Access.managers.gameSettings.isLocal) {
+                SetupLocalSocket();
+                lobbyClient.SetupSocket(new IPEndPoint(IPAddress.Loopback, 0));
+                JoinLocalLobbyServer();
+            } else {
+                lobbyClient.SetupSocket();
+                JoinLobbyServer();
+            }
+
+            lobbyClient.roomManager = singleton;
+
+            lobbyClient.OnLobbyListRefreshed -= OnLobbyList;
+            lobbyClient.OnLobbyListRefreshed += OnLobbyList;
+
+            OnNetworkManagerChange?.Invoke();
+        }
     }
 
     #region Client
@@ -128,20 +269,15 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     IEnumerator LoadAdditive(string sceneName)
     {
         if (!(mode == NetworkManagerMode.ServerOnly || mode == NetworkManagerMode.Offline)) {
-            // keey track of which scene we are trying to load.
-            subsceneLoading = sceneName;
             // host client is on server...don't load the additive scene again
             if (mode == NetworkManagerMode.ClientOnly)
             {
-                subsceneLoaded = false;
                 // Start loading the additive subscene
                 yield return Access.managers.sceneMgr.loadScene(sceneName, new SceneLoader.LoadParams {
                     sceneLoadingMode = LoadSceneMode.Additive
                 });
-
-                subsceneLoaded = true;
             }
-            OnSceneLoadedCB?.Invoke(subsceneLoading);
+            OnSceneLoadedCB?.Invoke(sceneName);
             // Reset these to false when ready to proceed
             NetworkClient.isLoadingScene = false;
         }
@@ -152,18 +288,14 @@ public class NetworkRoomManagerExt : NetworkRoomManager
         // host client is on server...don't unload the additive scene here.
         if (mode == NetworkManagerMode.ClientOnly)
         {
-            subsceneLoaded = false;
-
             yield return Access.managers.sceneMgr.unloadScene(sceneName, new SceneLoader.UnloadParams { });
             yield return Resources.UnloadUnusedAssets();
-
-            subsceneLoaded = true;
         }
 
+        OnSceneUnloadedCB?.Invoke(sceneName);
         // Reset these to false when ready to proceed
         NetworkClient.isLoadingScene = false;
     }
-
 
     public override void OnClientChangeScene(string sceneName, SceneOperation sceneOperation, bool customHandling)
     {
@@ -191,7 +323,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
     public override void OnRoomClientSceneChanged()
     {
-        this.Log("OnRoomClientSceneChanged : " + subsceneLoading);
+        this.Log("OnRoomClientSceneChanged");
 
         OnRoomClientSceneChangedCB?.Invoke();
     }
@@ -342,21 +474,21 @@ public class NetworkRoomManagerExt : NetworkRoomManager
     public override void OnRoomServerSceneChanged(string sceneName)
     {
         this.Log("OnRoomServerSceneChanged");
-
+        if (sceneName == RoomScene) {
+            roomplayersToGameplayersDict.Clear();
+        }
         OnRoomServerSceneChangedCB?.Invoke(sceneName);
     }
 
     public void StartGameScene()
     {
         this.Log("StartGameScene.");
-
         ServerChangeScene(GameplayScene);
     }
 
     public bool AnySceneOperationOngoing()
     {
-        return !NetworkRoomManagerExt.singleton.subsceneLoaded ||
-               !NetworkRoomManagerExt.singleton.subsceneUnloaded;
+        return Access.managers.sceneMgr.hasPendingOperations;
     }
 
     // Additive scene loading/unloading
@@ -368,9 +500,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                     useTransitionOut = true,
                     useTransitionIn  = true,
                     sceneLoadingMode = LoadSceneMode.Additive,
-                    onSceneLoadStart = delegate (AsyncOperation op) { subsceneLoaded = false; },
                     onSceneLoaded    = delegate (AsyncOperation op) {
-                        subsceneLoaded = true ;
                         OnRoomServerSceneChangedCB?.Invoke(sceneName);
                     },
                 });
@@ -389,8 +519,6 @@ public class NetworkRoomManagerExt : NetworkRoomManager
             } break;
             case SceneOperation.UnloadAdditive:{
                 Access.managers.sceneMgr.unloadScene(sceneName, new SceneLoader.UnloadParams{
-                    onSceneUnloadStart = delegate (AsyncOperation op) { subsceneUnloaded = false; },
-                    onSceneUnloaded    = delegate (AsyncOperation op) { subsceneUnloaded = true ; },
                 });
 
                 if (NetworkServer.active && sendSceneMessageToClient)
@@ -447,20 +575,25 @@ public class NetworkRoomManagerExt : NetworkRoomManager
 
         base.OnDestroy();
 
-        // HACK: should be able to cleanup the online mess easily when qutting the game, this is
-        // only here because sometimes when we have failures it could be possible that loaded scene
-        // for online mode have not been properly unloaded.
-        // To better do this, either we have a function to keep track of what we've loaded or load all the time as Single,
-        // or we have in the SceneLoader a way to rewove all scene but the active one?
-        for (int i = 0; i < SceneManager.sceneCount; ++i)
-        {
-            var scene = SceneManager.GetSceneAt(i);
-            if (scene.name == RoomScene     || scene.path == RoomScene     ||
-                scene.name == GameplayScene || scene.path == GameplayScene ||
-                scene.name == offlineScene  || scene.path == offlineScene  ||
-                scene.name == onlineScene   || scene.path == onlineScene)
+        lobbyClient.Close();
+        localLobbyServer.Close();
+
+        if (singleton == this) {
+            // HACK: should be able to cleanup the online mess easily when qutting the game, this is
+            // only here because sometimes when we have failures it could be possible that loaded scene
+            // for online mode have not been properly unloaded.
+            // To better do this, either we have a function to keep track of what we've loaded or load all the time as Single,
+            // or we have in the SceneLoader a way to rewove all scene but the active one?
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
             {
-                Access.managers.sceneMgr.unloadScene(scene.name, new SceneLoader.UnloadParams { });
+                var scene = SceneManager.GetSceneAt(i);
+                if (scene.name == RoomScene     || scene.path == RoomScene     ||
+                    scene.name == GameplayScene || scene.path == GameplayScene ||
+                    scene.name == offlineScene  || scene.path == offlineScene  ||
+                    scene.name == onlineScene   || scene.path == onlineScene)
+                {
+                    Access.managers.sceneMgr.unloadScene(scene.name, new SceneLoader.UnloadParams { });
+                }
             }
         }
     }

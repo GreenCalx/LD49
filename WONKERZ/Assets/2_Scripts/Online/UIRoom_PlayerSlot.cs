@@ -12,76 +12,77 @@ using TMPro;
 using Schnibble;
 using Schnibble.UI;
 
-public class UIRoom_PlayerSlot : UITab
-{
-    public Image   background;
-    public UILabel latency;
-    public UILabel playerName;
-    public UILabel readyState;
-    public UIElement hostCrown;
-
-    // TODO: remove layour ref => should be part of the panel responsibily.
-    public UIPanelTabbed onClickPanel;
-    public VerticalLayoutGroup tabLayout;
-
-    public UIPanel       invitePlayerPanel;
-    public UITextTab     defaultTextTab;
-
-    public NetworkRoomPlayerExt roomPlayer {get; private set; }
-    public void AttachRoomPlayer(NetworkRoomPlayerExt player) {
-        if (roomPlayer != null && roomPlayer != player) {
-            roomPlayer.onAnyChange -= UpdateView;
-        }
-        roomPlayer = player;
-        if (roomPlayer != null) {
-            roomPlayer.onAnyChange += UpdateView;
-        }
-    }
-
-    public override void Init()
+namespace Wonkerz.UI {
+    public class UIRoom_PlayerSlot : UITab
     {
-        base.Init();
+        public Image   background;
+        public UILabel latency;
+        public UILabel playerName;
+        public UILabel readyState;
+        public UIElement hostCrown;
 
-        hostCrown.Hide();
-    }
+        // TODO: remove layour ref => should be part of the panel responsibily.
+        public UIPanelTabbed onClickPanel;
+        public VerticalLayoutGroup tabLayout;
 
-    public override void Activate()
-    {
-        base.Activate();
+        public UIPanel       invitePlayerPanel;
+        public UITextTab     defaultTextTab;
 
-        if (roomPlayer.isLocalPlayer) {
-            this.Log("Not implemented for local player, could be used for cosmetics, achievements, etc...");
-            return;
+        public NetworkRoomPlayerExt roomPlayer {get; private set; }
+        public void AttachRoomPlayer(NetworkRoomPlayerExt player) {
+            if (roomPlayer != null && roomPlayer != player) {
+                roomPlayer.onAnyChange -= UpdateView;
+            }
+            roomPlayer = player;
+            if (roomPlayer != null) {
+                roomPlayer.onAnyChange += UpdateView;
+            }
         }
 
-        if (NetworkRoomManagerExt.singleton.mode == NetworkManagerMode.Host)
+        public override void Init()
         {
-            // host can invite, remove, etc...
-            foreach (var t in onClickPanel.tabs) if (t != null) Destroy(t.gameObject);
-            onClickPanel.tabs.Clear();
+            base.Init();
 
-            var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            inviteTab.parent = this;
-            inviteTab.label.content = "Invite player";
-            inviteTab.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
-            inviteTab.onActivate.AddListener(InvitePlayer);
-            onClickPanel.tabs.Add(inviteTab);
-
-            var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
-            removeSlot.parent = this;
-            removeSlot.label.content = "Remove slot";
-            removeSlot.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
-            removeSlot.onActivate.AddListener(RemovePlayer);
-            onClickPanel.tabs.Add(removeSlot);
-
-            onClickPanel.Init();
-            onClickPanel.Show();
-        } else {
-            this.Log("Not implemented for Client only. Could be used for profile display, etc...");
+            hostCrown.Hide();
         }
-    }
 
-    override protected void OnDestroy() {
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (roomPlayer.isLocalPlayer) {
+                this.Log("Not implemented for local player, could be used for cosmetics, achievements, etc...");
+                return;
+            }
+
+            if (NetworkRoomManagerExt.singleton.mode == NetworkManagerMode.Host)
+            {
+                // host can invite, remove, etc...
+                foreach (var t in onClickPanel.tabs) if (t != null) Destroy(t.gameObject);
+                onClickPanel.tabs.Clear();
+
+                var inviteTab = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
+                inviteTab.parent = this;
+                inviteTab.label.content = "Invite player";
+                inviteTab.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
+                inviteTab.onActivate.AddListener(InvitePlayer);
+                onClickPanel.tabs.Add(inviteTab);
+
+                var removeSlot = (UITextTab)Instantiate(defaultTextTab, tabLayout.gameObject.transform);
+                removeSlot.parent = this;
+                removeSlot.label.content = "Remove slot";
+                removeSlot.GetComponent<RectTransform>().sizeDelta = new Vector2(0, 100);
+                removeSlot.onActivate.AddListener(RemovePlayer);
+                onClickPanel.tabs.Add(removeSlot);
+
+                onClickPanel.Init();
+                onClickPanel.Show();
+            } else {
+                this.Log("Not implemented for Client only. Could be used for profile display, etc...");
+            }
+        }
+
+        override protected void OnDestroy() {
             if(roomPlayer != null)
             roomPlayer.onAnyChange -= UpdateView;
         }
@@ -134,13 +135,14 @@ public class UIRoom_PlayerSlot : UITab
             this.latency.content = latency.ToString() + " ms";
         }
 
-    public void RemovePlayer() {
-        roomPlayer.GetComponent<NetworkIdentity>().connectionToServer.Disconnect();
-    }
+        public void RemovePlayer() {
+            roomPlayer.GetComponent<NetworkIdentity>().connectionToServer.Disconnect();
+        }
 
-    void InvitePlayer() {
-        // show panel NotImplementedYet
-        invitePlayerPanel.Init();
-        invitePlayerPanel.Show();
+        void InvitePlayer() {
+            // show panel NotImplementedYet
+            invitePlayerPanel.Init();
+            invitePlayerPanel.Show();
+        }
     }
 }

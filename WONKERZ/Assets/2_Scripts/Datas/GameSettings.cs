@@ -40,5 +40,20 @@ namespace  Wonkerz
             Schnibble.UI.UITheme.defaultUITheme = defaultUITheme.theme;
             Schnibble.UI.UIPanel.defaultCancelPanel = defaultCancelPanel;
         }
+
+        public void Update() {
+            while (MainThreadCommand.pendingCommands.Count != 0)
+            {
+                var cmd = MainThreadCommand.pendingCommands.Dequeue();
+                if (cmd == null)
+                {
+                    this.LogError("Command is null => very weird!");
+                }
+                else
+                {
+                    cmd.Do();
+                }
+            }
+        }
     }
 }

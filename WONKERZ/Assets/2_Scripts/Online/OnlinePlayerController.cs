@@ -42,6 +42,9 @@ public class OnlinePlayerController : NetworkBehaviour
     bool _isSpawned = false;
     public bool isSpawned { get => _isSpawned; private set { _isSpawned = value; onAnyChange?.Invoke(); } }
 
+    readonly SyncList<string> _loadedScenes = new SyncList<string>();
+    public SyncList<string> loadedScenes {get => _loadedScenes;}
+
     #region duplicate of PlayerController values for online
     // TODO: Remove this hack and do a proper online object.
     [SyncVar(hook = nameof(OnPlayerStateChanged))]
@@ -356,14 +359,20 @@ public class OnlinePlayerController : NetworkBehaviour
     public void CmdClientLoadedScene(string sceneName) {
         this.Log("Client has finished loading scene:" + sceneName);
 
-        var ogm = OnlineGameManager.singleton;
-        if (!ogm.playerLoadedScenes.ContainsKey(this)) {
-            ogm.playerLoadedScenes.Add(this, new List<string>());
+        if (!_loadedScenes.Contains(sceneName)) {
+            _loadedScenes.Add(sceneName);
         }
+    }
 
-        var list = ogm.playerLoadedScenes[this];
-        if (!list.Contains(sceneName)) {
-            list.Add(sceneName);
+    // TODO: very bad to use string,
+    // but for now should not be a problem, might have some hiccups at scene
+    // loading which should be fine.
+    [Command]
+    public void CmdClientUnloadedScene(string sceneName) {
+        this.Log("Client has finished unloading scene:" + sceneName);
+
+        if (_loadedScenes.Contains(sceneName)) {
+            _loadedScenes.Remove(sceneName);
         }
     }
 
@@ -514,21 +523,47 @@ public class OnlinePlayerController : NetworkBehaviour
         InitPlayerDamagers();
     }
 
+    void RegisterCallbacks() {
+        RemoveCallbacks();
+
+        var manager = NetworkRoomManagerExt.singleton;
+        manager.OnSceneLoadedCB   += CmdClientLoadedScene;
+        manager.OnSceneUnloadedCB += CmdClientUnloadedScene;
+
+        OnlineGameManager.singleton.onStateValue += OnGameManagerStateValue;
+    }
+
+    void RemoveCallbacks() {
+        var manager = NetworkRoomManagerExt.singleton;
+        manager.OnSceneLoadedCB   -= CmdClientLoadedScene;
+        manager.OnSceneUnloadedCB -= CmdClientUnloadedScene;
+
+        OnlineGameManager.singleton.onStateValue -= OnGameManagerStateValue;
+    }
+
     public override void OnStartLocalPlayer()
     {
         this.Log("OnStartLocalPlayer");
 
         if (!isServer) omegas.Callback += OnUpdateOmegas;
 
-        var manager = NetworkRoomManagerExt.singleton;
-        manager.OnSceneLoadedCB += CmdClientLoadedScene;
+        RegisterCallbacks();
 
         StartCoroutine(InitLocalPlayer());
+    }
+
+    [SyncVar]
+    OnlineGameManager.States _gameManagerState;
+    public OnlineGameManager.States gameManagerState {get;}
+    void OnGameManagerStateValue(OnlineGameManager.States state) {
+        _gameManagerState = state;
     }
 
     public override void OnStopLocalPlayer()
     {
         OnlineGameManager.singleton.localPlayer = null;
+
+        RemoveCallbacks();
 
         Destroy(gameObject);
     }
@@ -561,33 +596,7 @@ public class OnlinePlayerController : NetworkBehaviour
         Access.managers.gameSettings.isOnline = true;
 
         // We tell the server that we spawned, we are ready to communicate and init.
-        if (!isSpawned)
-            CmdModifySpawnedState(true);
-
-        // init damagers/damageables
-        while (self_PlayerController.GetRigidbody() == null)
-        {
-            yield return null;
-        }
-        while (self_PlayerController.car.GetCar() == null)
-        {
-            yield return null;
-        }
-    }
-
-    [TargetRpc]
-    public void RpcLoadSubScene()
-    {
-        StartCoroutine(WaitSubSceneToLoad());
-    }
-    IEnumerator WaitSubSceneToLoad()
-    {
-        while (!NetworkRoomManagerExt.singleton.subsceneLoaded)
-        {
-            yield return null;
-        }
-        //Access.managers.cameraMgr?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-        CmdModifyLoadedState(true);
+        if (!isSpawned) CmdModifySpawnedState(true);
     }
 
     [TargetRpc]
@@ -603,6 +612,8 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void OnPlayerStateChanged(PlayerController.PlayerStates oldState, PlayerController.PlayerStates newState)
     {
+        this.Log("OnPlayerStateChanged : " + newState.ToString());
+
         if (!isServer) self_PlayerController.TransitionFromTo(oldState, newState);
     }
 

@@ -14,8 +14,11 @@ using Schnibble;
 
 // TODO: move outside this file.
 // probably into Utils?
+// For now used as wrapper to a delegate to execute on main thread.
 public class MainThreadCommand
 {
+    public static Queue<MainThreadCommand> pendingCommands = new Queue<MainThreadCommand>();
+
     protected Action OnCmdSuccess;
     protected Action OnCmdError  ;
 
@@ -26,371 +29,152 @@ public class MainThreadCommand
     public virtual void Undo() {}
 };
 
-public class UIOnline : UIPanel
+namespace Wonkerz.UI
 {
-    public static UIOnline singleton;
-    // Externals
 
-    public class UIOnlineMainThreadCommand : MainThreadCommand
+
+    public class UIOnline : UIPanel
     {
-        protected UIOnline uiOnline;
-        public UIOnlineMainThreadCommand(UIOnline uiOnline)
+        public static UIOnline singleton;
+
+        // State machine
+        public enum States
         {
-            this.uiOnline = uiOnline;
+            ConnectingToLobbyServer,
+            ConnectingToRoom,
+            CreatingRoom,
+
+            MainMenu,
+            InRoom,
+
+            Deactivated,
+            Exit,
+
+            Count,
+        };
+
+        public static readonly string goBackHintStr = " BACK";
+
+        public NetworkRoomManagerExt roomServer;
+
+        public TextMeshProUGUI     stateMessageText;
+
+        public UISelectableElement uiMainMenu;
+        public UICreateRoomMenu    uiRoomCreationMenu;
+        public UIRoom              uiRoom;
+        public UILobbyServerList   uiServerList;
+        public UIButtonHint        uiCancelButtonHint;
+        public UIElement uiBackground;
+
+        override public void Hide() {
+            base.Hide();
+
+            uiMainMenu        .Hide();
+            uiRoomCreationMenu.Hide();
+            uiRoom            .Hide();
+            uiCancelButtonHint.Hide();
+            uiBackground      .Hide();
         }
-    };
 
-    // :Sync:
-    // IMPORTANT: Do not modify order of enums, unless you also
-    // modify the order in stateMessage variable!
-
-    // State machine
-    // :Sync:
-    public enum States
-    {
-        ConnectingToLobbyServer,
-        ConnectingToRoom,
-        CreatingRoom,
-
-        MainMenu,
-        InRoom,
-
-        Deactivated,
-        Exit,
-
-        Count,
-    };
-
-    // :Sync:
-    public enum Success
-    {
-        ConnectedToServer = States.Count,
-        ConnectedToRoom,
-        Count,
-    }
-
-    // :Sync:
-    public enum Errors
-    {
-        LobbyServerNotFound = Success.Count,
-        LobbyServerMaintenance,
-
-        RoomNotFound,
-        RoomCannotConnect,
-        IncorrectPassword,
-
-        Unknown,
-
-        Count,
-    };
-
-    // :Sync:
-    public string[] stateMessage = new string[] {
-        // States messages
-        "Connecting to server list...", // ConnectingToLobbyServer
-        "Connecting to room...", // ConnectingToRoom
-        "Creating room...", // CreatingRoom
-        "In main menu...", // MainMenu => not used
-        "In room", // InRoom => not used
-        "Deactivated", // Deactivated => not used
-        "Exit", // Exit => not used
-        // Success messages
-        "Connected to server list!", // ConnectedToServer
-        "Connected to room!", // ConnectedToRoom
-        // Error messages
-        "Cannot connect to server list, please try again later.", // LobbyServerNotFound
-       "Server in maintenance, please try again later.", // LobbyServerMaintenance
-        "Room does not exists, please refresh server list.", // RoomNotFound
-        "Cannot connect to room, please try again.", // RoomCannotConnect
-        "Password is incorrect! Please try again.", // IncorrectPassword
-        "Sorry, something went wrong! Please try again.", // Unknown
-    };
-
-    public static readonly string goBackHintStr = " BACK";
-
-    // client to access the lobby server, this server will send us our clientID, the room list, etc...
-    public SchLobbyClient client = new SchLobbyClient(0);
-
-    public NetworkRoomManagerExt roomServer;
-
-    public TextMeshProUGUI     stateMessageText;
-
-    public UISelectableElement uiMainMenu;
-    public UICreateRoomMenu    uiRoomCreationMenu;
-    public UIRoom              uiRoom;
-    public UILobbyServerList   uiServerList;
-    public UIButtonHint        uiCancelButtonHint;
-    public UIElement uiBackground;
-
-    public void SetState(States toState)
-    {
-        this.Log("SetState : " + toState.ToString());
-        switch (toState)
+        public void SetState(States toState)
         {
-            case States.ConnectingToLobbyServer:
-                {
-                    // hide menu until we are connected.
-                    uiMainMenu        .Hide();
-                    uiRoomCreationMenu.Hide();
-                    uiRoom            .Hide();
-                    uiCancelButtonHint.Hide();
-
-                    StartCoroutineWithBarrier(CoroShowStateMessageWithMinTime(stateMessage[(int)toState], 1.0f));
-                } break;
-
-            case States.ConnectingToRoom:
-                {
-                    uiMainMenu        .Hide();
-                    uiRoomCreationMenu.Hide();
-                    uiRoom            .Hide();
-                    uiCancelButtonHint.Hide();
-
-                    StartCoroutineWithBarrier(CoroShowStateMessageWithMinTime(stateMessage[(int)toState], 1.0f));
-                } break;
-
-            case States.CreatingRoom:
-                {
-                    uiMainMenu.Hide();
-                    uiRoom    .Hide();
-
-                    uiRoomCreationMenu.Show();
-                    uiCancelButtonHint.Show();
-                    uiCancelButtonHint.SetButton((uiRoomCreationMenu as UIPanel).inputCancel, goBackHintStr);
-                } break;
-
-            case States.MainMenu:
-                {
-                    uiBackground.Show();
-                    uiRoom            .Hide();
-                    uiRoomCreationMenu.Hide();
-
-                    uiMainMenu.Show();
-                    uiCancelButtonHint.Show();
-                    uiCancelButtonHint.SetButton((uiMainMenu as UIPanel).inputCancel, goBackHintStr);
-                } break;
-
-            case States.InRoom:
-                {
-                    uiRoomCreationMenu.Hide();
-                    uiMainMenu        .Hide();
-
-                    uiRoom.Show();
-                    uiCancelButtonHint.Show();
-                    uiCancelButtonHint.SetButton((uiRoom as UIPanel).inputCancel, goBackHintStr);
-                } break;
-            case States.Deactivated:
-                {
-                    // Deactivate all the UX
-                    // Make sure
-                    // - all transient objects are destroyed.
-                    // - all callbacks are removed.
-                    // - all inputs are released.
-                    if (uiMainMenu) {
-                        uiMainMenu.Hide();
-                        uiMainMenu.Deactivate();
-                        uiMainMenu.Deinit();
-                    }
-
-                    if (uiRoom)
+            this.Log("SetState : " + toState.ToString());
+            switch (toState)
+            {
+                case States.ConnectingToLobbyServer:
+                    case States.ConnectingToRoom:
+                    case States.Deactivated:
                     {
-                        uiRoom.Hide();
-                        uiRoom.Deactivate();
-                        uiRoom.Deinit();
-                    }
+                        Hide();
+                    } break;
 
-                    if (uiRoomCreationMenu) {
+                case States.CreatingRoom:
+                    {
+                        uiMainMenu.Hide();
+                        uiRoom    .Hide();
+
+                        uiRoomCreationMenu.Show();
+                        uiCancelButtonHint.Show();
+                        uiCancelButtonHint.SetButton((uiRoomCreationMenu as UIPanel).inputCancel, goBackHintStr);
+                    } break;
+
+                case States.MainMenu:
+                    {
+                        uiBackground.Show();
+                        uiRoom            .Hide();
                         uiRoomCreationMenu.Hide();
-                        uiRoomCreationMenu.Deactivate();
-                        uiRoomCreationMenu.Deinit();
-                    }
 
-                    if (stateMessageText) {
-                        stateMessageText.enabled = false;
-                        stateMessageText.gameObject.SetActive(false);
-                    }
+                        uiMainMenu.Show();
+                        uiCancelButtonHint.Show();
+                        uiCancelButtonHint.SetButton((uiMainMenu as UIPanel).inputCancel, goBackHintStr);
+                    } break;
 
-                    if (uiCancelButtonHint) {
-                        uiCancelButtonHint.Hide();
-                    }
+                case States.InRoom:
+                    {
+                        uiRoomCreationMenu.Hide();
+                        uiMainMenu        .Hide();
 
-                    if (uiBackground != null) {
-                        uiBackground.Hide();
-                    }
-                }break;
-            case States.Exit:
-                {
-                    // Carefull we need to move back the network manager to the active scene so that it is deleted when
-                    var sceneLoader = Access.managers.sceneMgr;
-                    sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
-                        useTransitionIn = true,
-                        useTransitionOut = true,
-                        onEndTransition = delegate
+                        uiRoom.Show();
+                        uiCancelButtonHint.Show();
+                        uiCancelButtonHint.SetButton((uiRoom as UIPanel).inputCancel, goBackHintStr);
+                    } break;
+                case States.Exit:
+                    {
+                        // Carefull we need to move back the network manager to the active scene so that it is deleted when
+                        var sceneLoader = Access.managers.sceneMgr;
+                        sceneLoader.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams{
+                            useTransitionIn = true,
+                            useTransitionOut = true,
+                            onEndTransition = delegate
                         {
                             if (uiCancelButtonHint) uiCancelButtonHint.Hide();
 
                             Deactivate();
-                            // Remove room if need be
-                            if (client != null) client.Close();
                             sceneLoader.ResetDontDestroyOnLoad();
                         }
-                    });
-        } break;
+                        });
+                    } break;
+            }
+            state = toState;
         }
-        state = toState;
-    }
 
-    // What happens in current state if an error occurs
-    public void StateError(int errorCode = 0)
-    {
-        this.Log("StateError");
-        switch (state)
-        {
-            case States.ConnectingToLobbyServer:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.LobbyServerNotFound];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.Exit)));
-                }
-                break;
-            case States.MainMenu:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.Unknown];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.Exit)));
-                }
-                break;
-            case States.CreatingRoom:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.Unknown];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.MainMenu)));
-                }
-                break;
-            case States.InRoom:
-                {
-                    if (NetworkServer.activeHost) {
-                        roomServer.StopHost();
-                    }
-
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.Unknown];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.CreatingRoom)));
-                }
-                break;
-            case States.ConnectingToRoom:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.Unknown];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.CreatingRoom)));
-                }break;
-            default:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Errors.Unknown];
-                } break;
+        void ShowInfoMessage(string message) {
+            stateMessageText.enabled = true;
+            stateMessageText.text    = message;
         }
-    }
 
-    // What happens in current state if a success occurs
-    public void StateSuccess(int successCode = 0)
-    {
-        switch (state)
-        {
-            case States.ConnectingToLobbyServer:
-                {
-                    // Show success message
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Success.ConnectedToServer];
-
-                    StartCoroutine(Schnibble.Utils.CoroutineChain(
-                        CoroWait(1.0f),
-                        CoroSetState(States.MainMenu)));
-                }
-                break;
-            case States.ConnectingToRoom:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Success.ConnectedToRoom];
-
-                    SetState(States.InRoom);
-                }
-                break;
-            case States.CreatingRoom:
-                {
-                    stateMessageText.enabled = true;
-                    stateMessageText.text = stateMessage[(int)Success.ConnectedToRoom];
-
-                    SetState(States.InRoom);
-                }break;
-            default:
-                {
-                } break;
+        void ShowErrorMessage(string message) {
+            stateMessageText.enabled = true;
+            stateMessageText.text    = message;
         }
-    }
 
-    public override void Cancel()
-    {
-        base.Cancel();
-
-        Hide();
-    }
-
-    public void Exit() {
-        SetState(States.Exit);
-    }
-
-    public void CreateRoom()
-    {
-        client.CreateLobby(new Lobby
+        public override void Cancel()
         {
-            maxPlayerCount = 4,
-            //cf :hastName: SchLobbyServer
-            hostName = Access.managers.gameProgressSaveMgr.activeProfile,
-            name     = uiRoomCreationMenu.GetRoomName(),
-        });
-    }
+            base.Cancel();
 
-    public void StartLocalServer()
-    {
-        this.Log("Start local server.");
+            SetState(States.Exit);
+        }
 
-        var serverAddress = "localhost";
+        public void CreateRoom()
+        {
+            NetworkRoomManagerExt.singleton.CreateRoom(new Lobby{
+                maxPlayerCount = 4,
+                //cf :hastName: SchLobbyServer
+                hostName = Access.managers.gameProgressSaveMgr.activeProfile,
+                name     = uiRoomCreationMenu.GetRoomName(),
+            });
+        }
 
-        localServer = new SchLobbyServer();
-        localServer.SetupSocket(new IPEndPoint(Schnibble.Online.Utils.GetAddress(serverAddress), SchLobbyServer.defaultPort));
-    }
+        public void StartLocalServer()
+        {
+            this.Log("Start local server.");
+            NetworkRoomManagerExt.singleton.SetupLocalSocket();
+        }
 
         public void JoinLocalServer()
         {
             this.Log("Join local server.");
-
-            IPEndPoint serverEP = new IPEndPoint(IPAddress.Loopback, SchLobbyServer.defaultPort);
-            client.Connect(serverEP);
-        }
-
-        public void StopLocalServer()
-        {
-            this.Log("Stop local server.");
-
-            if (localServer == null) return;
-
-            localServer.Close();
-            localServer = null;
+            NetworkRoomManagerExt.singleton.JoinLobbyServer();
         }
 
         public void OpenCreateRoomUI()
@@ -411,50 +195,16 @@ public class UIOnline : UIPanel
 
         public void OpenLobbyServerList(UISelectableElement activator) {
             uiServerList.activator = activator;
-
             // uiServerList Shaw will init+activate.
             uiServerList.Show();
         }
 
-        public void ConnectToRoom(IPEndPoint roomEP, int roomHostID) {
-            // Setup client remotePoint as host.
-            var transport = (roomServer.transport as SchCustomRelayKcpTransport);
-            if (transport == null) {
-                this.LogError("Should use CustomRelayKcpTransport.");
-                return;
-            }
-
-            transport .Port           = (ushort)roomEP.Port;
-            roomServer.networkAddress = roomEP.Address.ToString();
-
-            if (!NetworkClient.active) {
-                // need to startClient to get back localEndPoint.
-                // Mirror should send several messages to try to connect, almost like a NATPunch \o/
-                roomServer.StartClient();
-                // now that client is started, send to server the port.
-                NetworkWriter writer = NetworkWriterPool.Get();
-
-                writer.WriteByte((byte)SchLobbyServer.OpCode.NATPunchIP);
-
-                SchLobbyServer.NATPunchIP data = new SchLobbyServer.NATPunchIP();
-                data.senderID = client.id;
-                data.port     = transport.GetClientLocalEndPoint().Port;
-                data.receiverID = roomHostID;
-
-                writer.Write(data);
-
-                client.Send(writer);
-            }
-        }
-
         override public void Init()
         {
-            if (!client.IsSetup()) client.SetupClient(new IPEndPoint(IPAddress.Any, 0));
             // IMPORTANT: must be done before calling anything on lobby server
             // or else we will never have any answers.
             RegisterLobbyServerCallbacks();
             RegisterRoomServerCallbacks();
-
             // Init childrens.
             // NOTE: do not init uiServerList, will be init at Show.
             //uiServerList.Init();
@@ -466,182 +216,88 @@ public class UIOnline : UIPanel
         override public void Deinit()
         {
             // ux
-            uiServerList.Deinit();
-            uiMainMenu.Deinit();
-            uiRoom.Deinit();
+            uiServerList      .Deinit();
+            uiMainMenu        .Deinit();
+            uiRoom            .Deinit();
             uiRoomCreationMenu.Deinit();
+
+            if (stateMessageText) {
+                stateMessageText.enabled = false;
+                stateMessageText.gameObject.SetActive(false);
+            }
+
             // lobby server
-            client.Close();
             RemoveLobbyServerCallbacks();
-            StopLocalServer();
             // room server
             RemoveRoomServerCallbacks();
         }
 
         override protected void OnEnable() {
-            Init();
             Activate();
-            Show();
-        }
-
-        override protected void OnDisable() {
-            Hide();
-            Deactivate();
-            Deinit();
         }
 
         override public void Activate()
         {
             base.Activate();
-            // On activation we try to connect
-            // Will call back OnConnected, or OnError
-            if (Access.managers.gameSettings.isLocal)
-            {
-                StartLocalServer();
-                JoinLocalServer();
-                SetState(States.MainMenu);
-            }
-            else
-            StartCoroutine(CoroTryConnect(SchLobbyClient.defaultRemoteEP, 5, 0.5f));
+
+            Init();
+            Show();
+
+            OnSceneChanged();
         }
 
         override public void Deactivate()
         {
             base.Deactivate();
 
-            RemoveLobbyServerCallbacks();
-            RemoveRoomServerCallbacks();
-
-            SetState(States.Deactivated);
+            Hide();
+            Deinit();
         }
 
         // Internals
 
-
-        // only used in debug mode as a way to create a local lobby server.
-        SchLobbyServer localServer;
-
-        // Current state to know what to shaw/hide, also how to treat errors and success.
-        States state = States.ConnectingToLobbyServer;
-
-        IEnumerator CoroWaitForTimer(float timer) {
-            while(timer > 0.0f) yield return null;
-
-            yield break;
-        }
-
-        IEnumerator CoroShowStateMessageWithMinTime(string message, float minTime) {
-            stateMessageText.gameObject.SetActive(true);
-            stateMessageText.enabled = true;
-            stateMessageText.text = message;
-
-            yield return new WaitForSeconds(minTime);
-        }
-
-        IEnumerator CoroShowStateMessage(string message) {
-            stateMessageText.gameObject.SetActive(true);
-            stateMessageText.enabled = true;
-            stateMessageText.text = message;
-            yield break;
-        }
-
-        IEnumerator CoroSetState(States state) {
-            SetState(state);
-            yield break;
-        }
-
-        IEnumerator CoroWait(float seconds) {
-            yield return new WaitForSeconds(seconds);
-            yield break;
-        }
-
-        IEnumerator coroBarrier;
-        void StartCoroutineWithBarrier(IEnumerator routine) {
-            StartCoroutine(Schnibble.Utils.CoroutineChain(routine, CoroReleaseBarrier()));
-        }
-
-        IEnumerator CoroWaitForBarrier() {
-            while(coroBarrier != null) yield return null;
-            yield break;
-        }
-
-        IEnumerator CoroReleaseBarrier() {
-            coroBarrier = null;
-            yield break;
-        }
-
-        IEnumerator CoroWaitAndGoToState(float waitTime, States toState)
-        {
-            yield return new WaitForSeconds(waitTime);
-
-            SetState(toState);
-        }
-
-
-        // We connat do anything Unity related on another thread than the main thread.
-        // We therefor queue commands to execute on Update();
-        // TODO: thread safe queue.
-        Queue<MainThreadCommand> pendingCommands = new Queue<MainThreadCommand>();
+        States state = States.Deactivated;
 
         void RegisterLobbyServerCallbacks()
         {
-            if (client == null) return;
+            // Try to remove if already exists in InvocationList.
+            RemoveLobbyServerCallbacks();
 
-            client.OnConnected    += OnConnected;
-            client.OnDisconnected += OnDisconnected;
-            client.OnRoomCreated  += OnRoomCreated;
-            client.OnRoomRemoved  += OnRoomRemoved;
-            client.OnRoomJoined   += OnRoomJoined;
-            client.OnError        += OnLobbyClientError;
+            var lobbyClient = roomServer.lobbyClient;
+            if (lobbyClient != null) {
+                lobbyClient.OnConnected    += OnConnected;
+                lobbyClient.OnDisconnected += OnDisconnected;
+                lobbyClient.OnError        += OnLobbyClientError;
+            }
         }
 
         void RemoveLobbyServerCallbacks()
         {
-            if (client == null) return;
-
-            client.OnConnected    -= OnConnected;
-            client.OnDisconnected -= OnDisconnected;
-            client.OnRoomCreated  -= OnRoomCreated;
-            client.OnRoomRemoved  -= OnRoomRemoved;
-            client.OnRoomJoined   -= OnRoomJoined;
-            client.OnError        -= OnLobbyClientError;
+            var lobbyClient = roomServer.lobbyClient;
+            if (lobbyClient != null) {
+                lobbyClient.OnConnected    -= OnConnected;
+                lobbyClient.OnDisconnected -= OnDisconnected;
+                lobbyClient.OnError        -= OnLobbyClientError;
+            }
         }
 
         void RegisterRoomServerCallbacks() {
-            roomServer.OnRoomStartHostCB   += OnRoomHostCreated;
+            // Try to remove if already exists in InvocationList.
+            RemoveRoomServerCallbacks();
 
-            roomServer.OnRoomClientEnterCB += OnRoomClientEnter;
-            roomServer.OnRoomClientExitCB  += OnRoomClientExit;
+            roomServer.OnRoomStartHostCB          += OnRoomHostCreated;
+            roomServer.OnClientErrorCB            += OnRoomClientError;
+            roomServer.OnRoomServerSceneChangedCB += OnRoomSceneChanged;
+            roomServer.OnRoomClientSceneChangedCB += OnRoomClientSceneChanged;
 
-            roomServer.OnRoomStartClientCB += OnRoomStartClient;
-            roomServer.OnRoomStopClientCB  += OnRoomStopClient;
-
-            roomServer.OnRoomStopServerCB += OnRoomStopServer;
-
-            roomServer.OnRoomClientSceneChangedCB += OnRoomSceneChanged;
-
-            roomServer.OnClientErrorCB += OnRoomClientError;
-
-            // OnNetworkManagerChange is static.
-            // It means we could add ourselves again.
-            NetworkRoomManagerExt.OnNetworkManagerChange -= OnNetworkManagerChange;
             NetworkRoomManagerExt.OnNetworkManagerChange += OnNetworkManagerChange;
         }
 
         void RemoveRoomServerCallbacks() {
-            roomServer.OnRoomStartHostCB   -= OnRoomHostCreated;
-
-            roomServer.OnRoomClientEnterCB -= OnRoomClientEnter;
-            roomServer.OnRoomClientExitCB  -= OnRoomClientExit;
-
-            roomServer.OnRoomStartClientCB -= OnRoomStartClient;
-            roomServer.OnRoomStopClientCB  -= OnRoomStopClient;
-
-            roomServer.OnRoomStopServerCB -= OnRoomStopServer;
-
-            roomServer.OnRoomClientSceneChangedCB -= OnRoomSceneChanged;
-
-            roomServer.OnClientErrorCB -= OnRoomClientError;
+            roomServer.OnRoomStartHostCB          -= OnRoomHostCreated;
+            roomServer.OnClientErrorCB            -= OnRoomClientError;
+            roomServer.OnRoomServerSceneChangedCB -= OnRoomSceneChanged;
+            roomServer.OnRoomClientSceneChangedCB -= OnRoomClientSceneChanged;
 
             NetworkRoomManagerExt.OnNetworkManagerChange -= OnNetworkManagerChange;
         }
@@ -649,30 +305,27 @@ public class UIOnline : UIPanel
         void OnNetworkManagerChange() {
             this.Log("OnNetworkManagerChange");
             roomServer = NetworkRoomManagerExt.singleton;
-            client.roomManager = roomServer;
-            RegisterRoomServerCallbacks();
+
+            RegisterRoomServerCallbacks ();
+            RegisterLobbyServerCallbacks();
         }
 
-        void OnRoomClientEnter() {
-            this.Log("OnRoomClientEnter");
+        void OnSceneChanged() {
+            if      (Mirror.Utils.IsSceneActive(roomServer.RoomScene    )) {Show(); SetState(States.InRoom);}
+            else if (Mirror.Utils.IsSceneActive(roomServer.GameplayScene)) {Hide();}
+            else                                                           {Show(); SetState(States.MainMenu);}
         }
 
-        void OnRoomClientExit() {
-            this.Log("OnRoomClientExit");
+        void OnRoomSceneChanged(string sceneName) {
+            this.Log("OnRoomSceneChanged : " + sceneName);
+
+            OnSceneChanged();
         }
 
-        void OnRoomStartClient() {
-            this.Log("OnRoomStartClient");
-        }
+        void OnRoomClientSceneChanged() {
+            this.Log("OnRoomClientSceneChanged");
 
-        void OnRoomStopClient() {
-            this.Log("OnRoomStopClient");
-        }
-
-        void OnRoomStopServer() {
-            this.Log("OnRoomStopServer");
-
-            client.RemoveLobby();
+            OnSceneChanged();
         }
 
         override protected void Awake()
@@ -695,200 +348,76 @@ public class UIOnline : UIPanel
             inputUp       = PlayerInputs.InputCode.UIUp.ToString();
             inputLeft     = PlayerInputs.InputCode.UILeft.ToString();
             inputRight    = PlayerInputs.InputCode.UIRight.ToString();
-
-            client.roomManager = roomServer;
-        }
-
-        IEnumerator CoroTryConnect(IPEndPoint serverEP, int loopCount, float loopWait)
-        {
-            SetState(States.ConnectingToLobbyServer);
-
-            for (int i = 0; i < loopCount && !client.IsConnected(); ++i)
-            {
-                client.Connect(serverEP);
-                yield return new WaitForSeconds(loopWait);
-            }
-
-            yield return new WaitForSeconds(loopWait);
-
-            if (!client.IsConnected())
-            {
-                OnLobbyClientError(SchLobbyClient.ErrorCode.EKO);
-            }
         }
 
         override protected void OnDestroy()
         {
-            base.OnDestroy();
-
-            StopLocalServer();
-
-            Deactivate();
+            if (singleton == this) {
+                base.OnDestroy();
+                Deactivate();
+            }
         }
 
         override protected void Update()
         {
             base.Update();
-            while (pendingCommands.Count != 0)
-            {
-                var cmd = pendingCommands.Dequeue();
-                if (cmd == null)
-                {
-                    this.LogError("Command is null => very weird!");
-                }
-                else
-                {
-                    cmd.Do();
-                }
-            }
         }
 
         // Following finctions are called by UX, so on the main thread and are safe.
 
+        IEnumerator CoroutineWrapper(Action fun) {
+            fun.Invoke();
+            yield break;
+        }
 
         void OnRoomHostCreated()
         {
-            StateSuccess();
+            this.Log("Room host created");
+            SetState(States.InRoom);
         }
 
-        void OnRoomSceneChanged() {
-            this.Log("OnRoomSceneChanged");
+        void OnRoomClientError(TransportError error, string reason) {
+            this.LogError("Room error:" + reason);
+            StartCoroutine(Schnibble.Utils.CoroutineChain(
+                CoroutineWrapper(delegate() {ShowErrorMessage(reason);}),
+                Schnibble.Utils.CoroWait(3.0f),
+                CoroutineWrapper(delegate() {SetState(States.Exit);})));
         }
 
         // Following function can be called from threads.
         // Basically all Network callbacks.
         // Not thread safe
 
-
-        class CreateRoomCmd : UIOnlineMainThreadCommand
-        {
-            public CreateRoomCmd(UIOnline uiOnline) : base(uiOnline) { }
-            override public void Do()
-            {
-                this.Log("CreateRoomCmd");
-                // start room as a server and client locally
-                uiOnline.roomServer.networkAddress = Schnibble.Online.Utils.GetLocalIPAddress().ToString();
-                var port = (ushort)UnityEngine.Random.Range(10000, 65000);
-                // use port 0 to use any available port from the OS.
-                (uiOnline.roomServer.transport as PortTransport).Port = port;
-                //(uiOnline.roomServer.transport as PortTransport).Port = 0;
-
-                // make sure that there is not a room already running somewhere...
-                if (NetworkServer.active) {
-                    NetworkServer.Shutdown();
-                }
-                if (NetworkClient.active) {
-                    NetworkClient.Shutdown();
-                }
-
-                uiOnline.roomServer.StopHost();
-                uiOnline.roomServer.StartHost();
-
-                // We now listen when the server wants our NATPunch data.
-                // It means a client tries to connect to the room.
-                uiOnline.client.OnStartNATPunch += uiOnline.OnNATPunch;
-
-                OnCmdSuccess?.Invoke();
-            }
-        };
-        // TODO: is queue thread safe? should be right?
-        void OnRoomCreated(SchLobbyClient.RoomCreatedData data)
-        {
-            this.Log("OnRoomCreated");
-            pendingCommands.Enqueue(new CreateRoomCmd(this));
-        }
-
-        void OnRoomRemoved() {
-            this.Log("OnRoomRemoved");
-        }
-
-        void OnRoomJoined() {
-            this.Log("OnRoomJoined");
-        }
-
-        class OnNATPunchCmd : UIOnlineMainThreadCommand
-        {
-            IPEndPoint ep;
-            SchCustomRelayKcpTransport transport;
-
-            public OnNATPunchCmd(UIOnline uiOnline, SchCustomRelayKcpTransport transport, IPEndPoint ep) : base(uiOnline)
-            {
-                this.ep        = ep;
-                this.transport = transport;
-            }
-
-            override public void Do()
-            {
-                uiOnline.StartCoroutine(transport.TrySendNATPunch(ep));
-            }
-        };
-        // ask server to ping client.
-        void OnNATPunch(IPEndPoint ep)
-        {
-            pendingCommands.Enqueue(new OnNATPunchCmd(this, (roomServer.transport as SchCustomRelayKcpTransport), ep));
-        }
-
-        class OnConnectedCmd : UIOnlineMainThreadCommand
-        {
-            UIOnline.States state;
-            public OnConnectedCmd(UIOnline uiOnline, UIOnline.States state) : base(uiOnline)
-            {
-                this.state = state;
-            }
-
-            public override void Do() { uiOnline.StateSuccess(); }
-        };
-
         void OnConnected(int id)
         {
             this.Log("OnConnected");
-            pendingCommands.Enqueue(new OnConnectedCmd(this, state));
+            MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+                delegate() {
+                    SetState(States.MainMenu);
+                }
+            ));
         }
-
-        class OnDisconnectedCmd : UIOnlineMainThreadCommand
-        {
-            UIOnline.States state;
-            public OnDisconnectedCmd(UIOnline uiOnline, UIOnline.States state) : base(uiOnline)
-            {
-                this.state = state;
-            }
-
-            public override void Do() {
-                // TODO: what to do?
-            }
-        };
 
         void OnDisconnected()
         {
             this.Log("OnDisconnected");
-            pendingCommands.Enqueue(new OnDisconnectedCmd(this, state));
+            MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+                delegate() {
+                    SetState(States.Exit);
+                }
+            ));
         }
 
-        class OnLobbyClientErrorCmd : UIOnlineMainThreadCommand
+        void OnLobbyClientError(SchLobbyClient.ErrorCode errorCode, string reason)
         {
-            UIOnline.States      state;
-            SchLobbyClient.ErrorCode code;
-
-            public OnLobbyClientErrorCmd(UIOnline uiOnline, UIOnline.States currentState, SchLobbyClient.ErrorCode error) : base(uiOnline)
-            {
-                this.state = currentState;
-                this.code  = error;
-            }
-
-            public override void Do()
-            {
-                uiOnline.StateError((int)code);
-            }
-        };
-
-        void OnLobbyClientError(SchLobbyClient.ErrorCode errorCode)
-        {
-            this.LogError("Lobby error : " + errorCode);
-            pendingCommands.Enqueue(new OnLobbyClientErrorCmd(this, state, errorCode));
+            this.LogError("Lobby error : " + reason );
+            MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+                delegate() {
+                    ShowErrorMessage(reason);
+                }
+            ));
         }
 
-        void OnRoomClientError(TransportError error, string reason) {
-            this.LogError("Room error:" + reason);
-            Exit();
-        }
+    }
+
 }

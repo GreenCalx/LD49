@@ -130,9 +130,6 @@ public class OnlineGameManager : NetworkBehaviour
 
     public bool waitForPlayersToBeReady = false;
 
-    bool allPlayersSpawned = false;
-    bool allPlayersLoaded  = false;
-
     public Action               onCountdownStart;
     public Action<float, float> onCountdownValue;
     public Action               onCountdownEnd;
@@ -158,10 +155,39 @@ public class OnlineGameManager : NetworkBehaviour
     public OnlineTrialManager trialManager;
 
     public Action<bool> onShowUITrackTime;
-    // keey track of which players have loaded a desired scene.
-    public Dictionary<OnlinePlayerController, List<string>> playerLoadedScenes = new Dictionary<OnlinePlayerController, List<string>>();
 
     #region Server
+
+    public enum States {
+        Loading,
+        PreGame,
+        Countdown,
+        Game,
+        PreTrial,
+        Trial,
+        PostGame,
+    };
+    [SyncVar(hook=nameof(SyncState))]
+    States _state;
+    public States state {get;}
+    public Action<States> onStateValue;
+
+    void SyncState(States oldState, States newState) {
+        if (isServer) _state = newState;
+        onStateValue?.Invoke(state);
+    }
+
+    bool AreAllClientsState(States state) {
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        foreach (var opc in uniquePlayers)  if (opc.gameManagerState != state) return false;
+        return true;
+    }
+
+    IEnumerator WaitForAllClientsToSwitchState(States state) {
+        this.Log("WaitForAllClientsToSwitchState : " + state);
+        while (!AreAllClientsState(state)) yield return null;
+        this.Log("End WaitForAllClientsToSwitchState : " + state);
+    }
 
     public override void OnStartServer()
     {
@@ -181,6 +207,10 @@ public class OnlineGameManager : NetworkBehaviour
         // NOTE: This is only waiting for a SERVER scene change, loading
         // additive scene will not change this, cf WaitForSubSceneToBeLoadedForAllPlayers.
         yield return manager.WaitForSceneToBeLoadedForAllPlayers();
+
+        SyncState(state, States.Loading);
+        yield return WaitForAllClientsToSwitchState(state);
+
         // NOTE: why do we need this bool?
         Access.managers.gameSettings.isOnline = true;
         // HACK: should probably not be here...
@@ -191,6 +221,9 @@ public class OnlineGameManager : NetworkBehaviour
 
         RpcAllPlayersLoaded();
         FreezeAllPlayers(true);
+
+        SyncState(state, States.PreGame);
+        yield return WaitForAllClientsToSwitchState(state);
 
         // All players have been loaded inside the OnlineGameRoom,
         // now we load the track.
@@ -221,43 +254,82 @@ public class OnlineGameManager : NetworkBehaviour
             }
         }
 
+        SyncState(state, States.Countdown);
+        yield return WaitForAllClientsToSwitchState(state);
+
         yield return StartCoroutine(StartGame());
 
         if (Wonkerz.GameSettings.testMenuData.byPassCourse)
         {
             gameTime = 0.0f;
         }
+
+
+        SyncState(state, States.Game);
+        yield return WaitForAllClientsToSwitchState(state);
+
         yield return StartCoroutine(GameLoop());
+
+        SyncState(state, States.PreTrial);
+        yield return WaitForAllClientsToSwitchState(state);
 
         yield return StartCoroutine(WaitTrialSessions());
 
         RpcAllPlayersLockAndLoaded();
 
+        SyncState(state, States.Countdown);
+        yield return WaitForAllClientsToSwitchState(state);
+
         yield return StartCoroutine(Countdown());
 
         if (!Wonkerz.GameSettings.testMenuData.byPassTrial)
         {
+            SyncState(state, States.Trial);
+            yield return WaitForAllClientsToSwitchState(state);
+
             yield return StartCoroutine(TrialLoop());
         }
+
+        SyncState(state, States.PostGame);
+        yield return WaitForAllClientsToSwitchState(state);
 
         yield return StartCoroutine(PostGame());
     }
 
     [Server]
-    IEnumerator WaitForSubSceneToBeLoadedForAllPlayers(string sceneName) {
+    IEnumerator WaitForSubSceneToBeUnloadedForAllPlayers(string sceneName) {
         this.Log("WaitForSubSceneToBeLoadedForAllPlayers :" + sceneName);
-        var playersCount = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Keys.Count;
-        while(playerLoadedScenes.Keys.Count != playersCount) yield return null;
 
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
         var stop = false;
         while (!stop) {
             stop = true;
-            foreach (var v in playerLoadedScenes.Values)
+            foreach (var v in uniquePlayers)
             {
-                if (!v.Contains(sceneName)) stop = false;
+                if (v.loadedScenes.Contains(sceneName)) stop = false;
             }
             yield return null;
         }
+
+        this.Log("End WaitForSubSceneToBeUnloadedForAllPlayers :" + sceneName);
+        yield break;
+    }
+
+    [Server]
+    IEnumerator WaitForSubSceneToBeLoadedForAllPlayers(string sceneName) {
+        this.Log("WaitForSubSceneToBeLoadedForAllPlayers :" + sceneName);
+
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        var stop = false;
+        while (!stop) {
+            stop = true;
+            foreach (var v in uniquePlayers)
+            {
+                if (!v.loadedScenes.Contains(sceneName)) stop = false;
+            }
+            yield return null;
+        }
+
         this.Log("End WaitForSubSceneToBeLoadedForAllPlayers :" + sceneName);
         yield break;
     }
@@ -344,21 +416,10 @@ public class OnlineGameManager : NetworkBehaviour
     {
         AskPlayersToLoad();
 
-        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
-        foreach (OnlinePlayerController opc in uniquePlayers) { opc.RpcLoadSubScene(); }
-
         FreezeAllPlayers(true);
 
-        while (!openCourseUnLoaded)
-        {
-            openCourseUnLoaded = NetworkRoomManagerExt.singleton.subsceneUnloaded;
-            yield return null;
-        }
-        while (!trialLoaded)
-        {
-            trialLoaded = NetworkRoomManagerExt.singleton.subsceneLoaded;
-            yield return null;
-        }
+        yield return WaitForSubSceneToBeUnloadedForAllPlayers(Constants.SN_OPENCOURSE);
+        yield return WaitForSubSceneToBeLoadedForAllPlayers(settings.selectedTrial);
 
         while (!AreAllPlayersLoaded())
         {

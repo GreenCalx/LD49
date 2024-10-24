@@ -787,22 +787,6 @@ MonoBehaviour:
       m_Calls: []
   useDefaultCancelPanelConfirmation: 0
   cancelDeactivatePanel: 1
-  stateMessage:
-  - Connecting to server list...
-  - Connecting to room...
-  - Creating room...
-  - In main menu...
-  - In room
-  - Deactivated
-  - Exit
-  - Connected to server list!
-  - Connected to room!
-  - Cannot connect to server list, please try again later.
-  - Server in maintenance, please try again later.
-  - Room does not exists, please refresh server list.
-  - Cannot connect to room, please try again.
-  - Password is incorrect! Please try again.
-  - Sorry, something went wrong! Please try again.
   roomServer: {fileID: 0}
   stateMessageText: {fileID: 7287870410112928956}
   uiMainMenu: {fileID: 7287870409666559846}
@@ -1706,7 +1690,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7287870408437150577}
         m_TargetAssemblyTypeName: UIOnline, WkzCore
-        m_MethodName: Exit
+        m_MethodName: Cancel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

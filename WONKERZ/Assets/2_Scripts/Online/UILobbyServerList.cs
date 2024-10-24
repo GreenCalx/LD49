@@ -8,146 +8,121 @@ using Schnibble.Online;
 using System.Net;
 using System.Net.Sockets;
 
-public class UILobbyServerList : UIPanelTabbedScrollable
+namespace Wonkerz.UI
 {
-    // Externals
 
-    public VerticalLayoutGroup layout;
-
-    public UILobbyServerTab lobbyTabObject;
-
-    public UILabel emptyLabel;
-
-    public UIOnline online { get; private set; }
-
-    public override void Init() {
-        base.Init();
-
-        if (parent == null) {
-            this.LogError("Please connect a parent to the UILobbyServerList.");
-            return;
-        }
-        online = parent as UIOnline;
-        if (online == null) {
-            this.LogError("Please connect a parent of type UIOnline to the UILobbyServerList.");
-            return;
-        }
-
-        // just in case...
-        online.client.OnLobbyListRefreshed -= OnLobbyListReady;
-        online.client.OnLobbyListRefreshed += OnLobbyListReady;
-
-        UpdateList();
-    }
-
-    public override void Deinit() {
-        base.Deinit();
-
-        if (online != null && online.client != null) {
-            online.client.OnLobbyListRefreshed -= OnLobbyListReady;
-        }
-    }
-
-    public override void Activate()
+    public class UILobbyServerList : UIPanelTabbedScrollable
     {
-        Init();
+        // Externals
 
-        base.Activate();
+        public VerticalLayoutGroup layout;
 
-        StartInputs();
+        public UILobbyServerTab lobbyTabObject;
 
-    }
+        public UILabel emptyLabel;
 
-    public override void Deactivate()
-    {
-        base.Deactivate();
+        public UIOnline online { get; private set; }
 
-        StopInputs();
-
-        if (activator) {
-            activator.Show();
+        void RegisterLobbyCallbacks() {
+            RemoveLobbyCallbacks();
+            NetworkRoomManagerExt.singleton.lobbyClient.OnLobbyListRefreshed += OnLobbyListReady;
         }
 
-        Deinit();
-    }
+        void RemoveLobbyCallbacks() {
+            NetworkRoomManagerExt.singleton.lobbyClient.OnLobbyListRefreshed -= OnLobbyListReady;
+        }
 
-    // Interenals
+        public override void Init() {
+            base.Init();
 
-    Queue<MainThreadCommand> pendingCommands = new Queue<MainThreadCommand>();
-
-    protected override void Update()
-    {
-        base.Update();
-
-        while (pendingCommands.Count != 0)
-        {
-            var cmd = pendingCommands.Dequeue();
-            if (cmd == null)
-            {
-                this.LogError("Command is null => very weird!");
+            if (parent == null) {
+                this.LogError("Please connect a parent to the UILobbyServerList.");
+                return;
             }
-            else
-            {
-                cmd.Do();
-            }
-        }
-    }
-
-    // Called from UX: this is thread safe.
-
-    void CreateLobbyTab(Lobby lobby) {
-        var lobbyTab = Instantiate(lobbyTabObject, layout.transform);
-        lobbyTab.parent = this;
-        lobbyTab.lobby = lobby;
-        lobbyTab.Init();
-
-        tabs.Add(lobbyTab);
-    }
-
-    public void UpdateList()
-    {
-        // remove each tabs.
-        foreach (var t in tabs) {
-            GameObject.Destroy(t.gameObject);
-        }
-        tabs.Clear();
-        // ask server for lobby list.
-        online.client.GetLobbies();
-    }
-
-    // Need to be thread safe (cf UIOnline)
-
-    class DisplayRoomListCmd : MainThreadCommand
-    {
-        List<Lobby> lobbies;
-        UILobbyServerList ui;
-        public DisplayRoomListCmd(List<Lobby> lobbies, UILobbyServerList ui)
-        {
-            this.lobbies = lobbies;
-            this.ui = ui;
-        }
-
-        public override void Do()
-        {
-            if (lobbies.Count == 0) {
-                ui.emptyLabel.Show();
-            } else
-            {
-                ui.emptyLabel.Hide();
-
-                foreach (var lobby in lobbies)
-                {
-                    ui.CreateLobbyTab(lobby);
-                }
-
-                ui.SelectTab(0);
+            online = parent as UIOnline;
+            if (online == null) {
+                this.LogError("Please connect a parent of type UIOnline to the UILobbyServerList.");
+                return;
             }
 
-            OnCmdSuccess?.Invoke();
-        }
-    };
+            RegisterLobbyCallbacks();
 
-    void OnLobbyListReady(SchLobbyClient.RoomListData data) {
-        pendingCommands.Enqueue(new DisplayRoomListCmd(data.lobbies, this));
+            UpdateList();
+        }
+
+        public override void Deinit() {
+            base.Deinit();
+
+            RemoveLobbyCallbacks();
+        }
+
+        public override void Activate()
+        {
+            Init();
+
+            base.Activate();
+
+            StartInputs();
+
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
+
+            StopInputs();
+
+            if (activator) {
+                activator.Show();
+            }
+
+            Deinit();
+        }
+
+        // Interenals
+
+        // Called from UX: this is thread safe.
+
+        void CreateLobbyTab(Lobby lobby) {
+            var lobbyTab = Instantiate(lobbyTabObject, layout.transform);
+            lobbyTab.parent = this;
+            lobbyTab.lobby = lobby;
+            lobbyTab.Init();
+
+            tabs.Add(lobbyTab);
+        }
+
+        public void UpdateList()
+        {
+            // remove each tabs.
+            foreach (var t in tabs) {
+                GameObject.Destroy(t.gameObject);
+            }
+            tabs.Clear();
+
+            // ask server for lobby list.
+            NetworkRoomManagerExt.singleton.lobbyClient.GetLobbies();
+        }
+
+        // Need to be thread safe (cf UIOnline)
+        void OnLobbyListReady(SchLobbyClient.RoomListData data) {
+            MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+                delegate() {
+                    var lobbies = NetworkRoomManagerExt.singleton.lobbyList;
+                    if (lobbies.Count == 0) {
+                        emptyLabel.Show();
+                    } else
+                    {
+                        emptyLabel.Hide();
+
+                        foreach (var lobby in lobbies)
+                        {
+                            CreateLobbyTab(lobby);
+                        }
+
+                        SelectTab(0);
+                    }
+                }));
+        }
     }
 }
