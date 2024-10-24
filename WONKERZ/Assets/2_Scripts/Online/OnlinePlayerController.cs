@@ -518,10 +518,17 @@ public class OnlinePlayerController : NetworkBehaviour
             // We were asked to spawn BY the server.
         }
 
+        if (!isServer) {
+            // Deactivate also things that do not need to be updated locally.
+            var weightIndicators = self_PlayerController.transform.GetComponentsInChildren<WeightIndicator>(true);
+            foreach(var wi in weightIndicators) {
+                wi.enabled = false;
+            }
+        }
+
         // self_PlayerController might already have been set to car?
         InitPlayerDamageable();
         InitPlayerDamagers();
-
 
         OnPlayerStateChanged(playerState, playerState);
         OnPlayerVehicleStateChanged(playerVehicleState, playerVehicleState);
@@ -601,6 +608,8 @@ public class OnlinePlayerController : NetworkBehaviour
 
         OnPlayerStateChanged(playerState, playerState);
         OnPlayerVehicleStateChanged(playerVehicleState, playerVehicleState);
+
+
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned) CmdModifySpawnedState(true);
