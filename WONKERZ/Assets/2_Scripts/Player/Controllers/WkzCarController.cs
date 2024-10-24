@@ -1,6 +1,5 @@
 using Schnibble;
 using Schnibble.Managers;
-using UnityEngine;
 
 namespace Wonkerz
 {
@@ -9,15 +8,17 @@ namespace Wonkerz
         // TODO: create real online version
         // should be on anline object
         PlayerController.InputMode _inputMode = PlayerController.InputMode.Local;
-        public PlayerController.InputMode inputMode {
-get
+        public PlayerController.InputMode inputMode
+        {
+            get
             {
                 return _inputMode;
             }
             set
             {
                 _inputMode = value;
-                if (wkzCar != null) {
+                if (wkzCar != null)
+                {
                     wkzCar.onlineMode = (SchMotoredVehicle.OnlineMode)((int)_inputMode);
                 }
             }

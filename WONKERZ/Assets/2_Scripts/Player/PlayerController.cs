@@ -259,7 +259,9 @@ namespace Wonkerz
             // should be done only if possible.
             vehicleState = to;
 
-            if (from == to) return;
+            // NOTE: just in case we have changed mode, but not *really*
+            // we will check befaure activating the mode.
+            //if (from == to) return;
 
             switch (from)
             {
@@ -531,6 +533,7 @@ namespace Wonkerz
 
             TransitionFromTo(playerState, PlayerStates.Frozen);
 
+            InitAsOnlineStub();
         }
 
         // ----- Scene listeners
@@ -937,6 +940,15 @@ namespace Wonkerz
 
         public void ActivateMode(GameObject go, Rigidbody rb)
         {
+            if (go == null) {
+                this.LogWarn("ActivateMode : GameObject is null");
+                return;
+            }
+
+            if (go.activeInHierarchy) {
+                this.LogWarn("Mode already activated.");
+            }
+
             go.SetActive(true);
 
             var lastrb = current.rb;
@@ -951,9 +963,13 @@ namespace Wonkerz
                 Access.managers.audioListenerMgr.UnsetListener(lastrb.gameObject);
             }
 
-            Access.managers.cameraMgr?.OnTargetChange(GetTransform());
+            if (rb == null) {
+                this.LogWarn("ActivateMode : RB is null");
+                return;
+            }
 
-            Access.managers.audioListenerMgr.SetListener(rb.gameObject);
+            Access.managers.cameraMgr?.OnTargetChange(GetTransform());
+            Access.managers.audioListenerMgr?.SetListener(rb?.gameObject);
 
             this.Log("ActivateMode" + GetTransform().name);
         }

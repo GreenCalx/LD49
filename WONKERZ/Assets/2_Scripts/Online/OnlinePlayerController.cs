@@ -521,6 +521,10 @@ public class OnlinePlayerController : NetworkBehaviour
         // self_PlayerController might already have been set to car?
         InitPlayerDamageable();
         InitPlayerDamagers();
+
+
+        OnPlayerStateChanged(playerState, playerState);
+        OnPlayerVehicleStateChanged(playerVehicleState, playerVehicleState);
     }
 
     void RegisterCallbacks() {
@@ -594,6 +598,9 @@ public class OnlinePlayerController : NetworkBehaviour
         gameObject.name = Constants.GO_PLAYER;
         // What is the purpose of this boolean?
         Access.managers.gameSettings.isOnline = true;
+
+        OnPlayerStateChanged(playerState, playerState);
+        OnPlayerVehicleStateChanged(playerVehicleState, playerVehicleState);
 
         // We tell the server that we spawned, we are ready to communicate and init.
         if (!isSpawned) CmdModifySpawnedState(true);
