@@ -4,8 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using Schnibble;
+
 using Wonkerz;
 using Mirror;
+
+// NOTE:
+// For now we consider that we can have only one Event by EventType.
+// This assumption might not be true in the future.
+// Also client and server does not have the same event objects for now, only start/end is streamed by EventType.
 
 public class OnlineTrackEventManager : NetworkBehaviour
 {
@@ -24,7 +31,7 @@ public class OnlineTrackEventManager : NetworkBehaviour
         }
 
         int n_eventTypes = Enum.GetNames(typeof(TRACKEVENTS)).Length;
-        int selected = UnityEngine.Random.Range(0,n_eventTypes);
+        var selected = (TRACKEVENTS)UnityEngine.Random.Range(1,n_eventTypes);
 
         activeEvent = GetEvent(selected);
         if (activeEvent.duration > OnlineGameManager.singleton.gameTime)
@@ -33,9 +40,8 @@ public class OnlineTrackEventManager : NetworkBehaviour
             return;
         }
 
-        RpcEventEffectOn();
-        RpcRefreshUI(activeEvent);
-//        activeEvent.EffectOn();
+        RpcEventEffectOn(selected);
+        RpcRefreshUI    (selected);
 
         trackEventCo = StartCoroutine(WaitForEventIsOver());
     }
@@ -51,24 +57,25 @@ public class OnlineTrackEventManager : NetworkBehaviour
         }
 
         //activeEvent.EffectOff();
-        RpcEventEffectOff();
-        
-        
-        RpcRefreshUI(null);
+        RpcEventEffectOff(activeEvent.trackEventType);
+        RpcRefreshUI(TRACKEVENTS.None);
     }
 
-    public OnlineTrackEvent GetEvent(int iEventTypeIndex)
+    public OnlineTrackEvent GetEvent(TRACKEVENTS eventType)
     {
         OnlineTrackEvent ev = null;
-        switch(iEventTypeIndex)
+        switch(eventType)
         {
-            case (int)TRACKEVENTS.LOWGRAVITY:
+            case TRACKEVENTS.None:
+                ev = null;
+                break;
+            case TRACKEVENTS.LOWGRAVITY:
                 ev = new GravityTrackEvent();
                 break;
-            case (int)TRACKEVENTS.HIGHTIDE:
+            case TRACKEVENTS.HIGHTIDE:
                 ev = new HighTideTrackEvent();
                 break;
-            case (int)TRACKEVENTS.NIGHTTIME:
+            case TRACKEVENTS.NIGHTTIME:
                 ev = new NightTimeTrackEvent();
                 break;
             default:
@@ -78,25 +85,43 @@ public class OnlineTrackEventManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void RpcEventEffectOn()
+    private void RpcEventEffectOn(TRACKEVENTS eventType)
     {
-        activeEvent.EffectOn();
+        activeEvent = GetEvent(eventType);
+        if (activeEvent != null) activeEvent.EffectOn();
     }
 
     [ClientRpc]
-    private void RpcEventEffectOff()
+    private void RpcEventEffectOff(TRACKEVENTS eventType)
     {
-        activeEvent.EffectOff();
+        if (activeEvent == null) {
+            this.LogError("Received effect off but none is on.");
+            // For now we will still fire the eventType EventOff.
+            //return;
+        }
+
+        if (activeEvent != null && activeEvent.trackEventType != eventType) {
+            this.LogError("Trying to end effect that is not the current running one.");
+            // For now we still shutdown the current effect.Might not be a good idea.
+            activeEvent.EffectOff();
+            // For now we will still fire the eventType EventOff.
+            // return;
+        }
+
+        var eventObj = GetEvent(eventType);
+        if (eventObj != null) eventObj.EffectOff();
+
         activeEvent = null;
     }
 
     [ClientRpc]
-    private void RpcRefreshUI(OnlineTrackEvent iEvent)
+    private void RpcRefreshUI(TRACKEVENTS eventType)
     {
         var pui = OnlineGameManager.singleton.UIPlayer;
         if (pui==null)
         return;
 
+        var iEvent = GetEvent(eventType);
         if (iEvent!=null)
         {
             // show

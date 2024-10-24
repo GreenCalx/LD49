@@ -8,10 +8,14 @@ using Mirror;
 
 public enum TRACKEVENTS
 {
-    LOWGRAVITY = 0,
-    HIGHTIDE = 1,
-    NIGHTTIME = 2
+    None       = 0,
+    LOWGRAVITY ,
+    HIGHTIDE   ,
+    NIGHTTIME  ,
 }
+
+// TODO: Probably need to change events to NetworkBehaviour
+// this way each client could know the current event data (such as current time, etc...)
 
 /////////////////////
 /// Track Event Definition
@@ -20,7 +24,7 @@ public class OnlineTrackEvent
     public TRACKEVENTS trackEventType;
     public string name;
     public float duration;
-    
+
     public virtual void EffectOn() {}
     public virtual void EffectOff() {}
 
@@ -116,7 +120,7 @@ public class NightTimeTrackEvent : OnlineTrackEvent
             DestroySelf();
             return;
         }
-            
+
         ocm.DayTime();
         DestroySelf();
     }
