@@ -532,8 +532,6 @@ namespace Wonkerz
             }
 
             TransitionFromTo(playerState, PlayerStates.Frozen);
-
-            InitAsOnlineStub();
         }
 
         // ----- Scene listeners

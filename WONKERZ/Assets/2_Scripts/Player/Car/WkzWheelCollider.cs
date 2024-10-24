@@ -32,6 +32,7 @@ namespace Wonkerz
                 var car = chassis.GetCar() as WkzCar;
                 if (car != null && car.onlineMode == SchMotoredVehicle.OnlineMode.Online)
                 {
+                    ActivateRenderers();
                     return;
                 }
             }
