@@ -133,8 +133,17 @@ public class OnlineGameManager : NetworkBehaviour
     bool allPlayersSpawned = false;
     bool allPlayersLoaded  = false;
 
-    [SyncVar]
-    public float countdownElapsed = 0f;
+    public Action               onCountdownStart;
+    public Action<float, float> onCountdownValue;
+    public Action               onCountdownEnd;
+    [SyncVar(hook=nameof(SyncCountdownElapsed))]
+    float countdownElapsed      = 0f;
+
+    void SyncCountdownElapsed(float oldValue, float newValue) {
+        countdownElapsed = newValue;
+        onCountdownValue?.Invoke(oldValue, newValue);
+    }
+
     [SyncVar]
     public float gameTime;
     [SyncVar]
@@ -410,28 +419,25 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator Countdown()
     {
         UIWaitForPlayers.Hide();
-
-        countdownElapsed = settings.countdownDuration;
         //FreezeAllPlayers(true);
-        RpcLaunchOnlineStartLine();
-
+        RpcStartCountdown();
+        SyncCountdownElapsed(countdownElapsed, settings.countdownDuration);
         while (countdownElapsed > 0.0f)
         {
-            countdownElapsed -= Time.deltaTime;
-            RpcUpdateStartLineCountdown(countdownElapsed);
+            SyncCountdownElapsed(countdownElapsed, countdownElapsed - Time.deltaTime);
             yield return null;
         }
-        RpcUpdateStartLineCountdown(0f);
-        
-        FreezeAllPlayers(false);
-
-        gameTime = settings.gameDuration;
-        gameLaunched = true;
+        RpcEndCountdown();
     }
 
     [Server]
     IEnumerator GameLoop()
     {
+        FreezeAllPlayers(false);
+
+        gameTime = settings.gameDuration;
+        gameLaunched = true;
+
         RpcShowUITrackTime(true);
 
         trackEventManager.nextEventTime = gameTime - settings.trackEventTimeStep;
@@ -657,19 +663,20 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcLaunchOnlineStartLine()
+    public void RpcStartCountdown()
     {
-        this.Log("RpcLaunchOnlineStartLine.");
-
-        if (startLine == null)
-        {
-            this.LogError("Starting OnlineStartLine but startLine is null.");
-            return;
-        }
-
-        startLine.LaunchCountdown();
+        this.Log("RpcStartCountdown");
+        onCountdownStart?.Invoke();
     }
 
+    [ClientRpc]
+    public void RpcEndCountdown()
+    {
+        this.Log("RpcEndCountdown");
+        onCountdownEnd?.Invoke();
+    }
+
+    #if false
     [ClientRpc]
     public void RpcUpdateStartLineCountdown(float iCooldownElapsed)
     {
@@ -680,6 +687,7 @@ public class OnlineGameManager : NetworkBehaviour
         }
         startLine.CountdownUpdate(iCooldownElapsed);
     }
+    #endif
 
     [ClientRpc]
     public void RpcShowUITrackTime(bool iState)
@@ -693,9 +701,9 @@ public class OnlineGameManager : NetworkBehaviour
     public void RpcShowItsTrialTime(bool iState)
     {
         if (iState)
-            UIPlayer.ItsTrialTimeHandle.Show();
+        UIPlayer.ItsTrialTimeHandle.Show();
         else
-            UIPlayer.ItsTrialTimeHandle.Hide();
+        UIPlayer.ItsTrialTimeHandle.Hide();
     }
 
     #endregion

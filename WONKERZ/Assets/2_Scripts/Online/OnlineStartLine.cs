@@ -49,7 +49,6 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
     public OnlinePlayerController OPC;
 
     private UIStartTrack UIStartTrackInst = null;
-    private int lastTime = 0;
 
     public override void OnStartClient() {
         UIReadyUpHandle.SetActive(false);
@@ -77,6 +76,10 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
 
         var OGM = OnlineGameManager.singleton;
 
+        OGM.onCountdownStart += StartCountdownCB;
+        OGM.onCountdownValue += CountdownValueCB;
+        OGM.onCountdownEnd   += EndCountdownCB;
+
         OPC           = OGM.localPlayer;
         OGM.startLine = this;
 
@@ -90,39 +93,33 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         }
     }
 
-    public void LaunchCountdown()
-    {
+    void StartCountdownCB() {
         UIIsReadyHandle.SetActive(false);
 
-        if (OPC==null)
-        return;
+        if (OPC==null) {
+            this.LogError("OPC is null.");
+            return;
+        }
 
         if (UIStartTrackInst==null)
         {
             UIStartTrackInst = Instantiate(UIStartTrackRef).GetComponent<UIStartTrack>();
         }
-        lastTime = 0;
     }
 
-    public void CountdownUpdate(float iElapsedTime)
-    {
+    void CountdownValueCB(float oldValue, float newValue) {
+        if (UIStartTrackInst == null || newValue < 0.0f) return;
 
-        // check if we pass a second, from 3 to 2 for instance.
-        int currentTime = (int)iElapsedTime;
-        bool passedASecond = lastTime != currentTime;
-        lastTime = currentTime;
-
-        if (passedASecond)
-        {
+        bool passedASecond = (int)oldValue != (int)newValue;
+        if (passedASecond) {
             audioSource.clip = countDownSFX0;
             audioSource.Play(0);
         }
 
-        UIStartTrackInst.updateDisplay(iElapsedTime, passedASecond);
+        UIStartTrackInst.updateDisplay(newValue, passedASecond);
+    }
 
-        if (iElapsedTime > 0f)
-            return;
-
+    void EndCountdownCB() {
         // Play sound at the end.
         audioSource.clip = countDownSFX1;
         audioSource.Play(0);
@@ -183,6 +180,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         gameObject.SetActive(false);
     }
 
+    #if false
     public void launchCinematic()
     {
         StartCoroutine(playCinematic(this));
@@ -200,6 +198,7 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
         yield return new WaitForSeconds(0.2f);
         iSL.LaunchCountdown();
     }
+    #endif
 
     private void activateTricks()
     {
