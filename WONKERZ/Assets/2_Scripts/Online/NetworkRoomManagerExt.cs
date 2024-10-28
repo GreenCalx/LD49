@@ -159,7 +159,13 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 StartHost();
                 // We now listen when the server wants our NATPunch data.
                 // It means a client tries to connect to the room.
-                lobbyClient.OnStartNATPunch = (transport as SchCustomRelayKcpTransport).OnNATPunch;
+                lobbyClient.OnStartNATPunch = delegate(IPEndPoint ep) {
+                    MainThreadCommand.pendingCommands.Enqueue(new MainThreadCommand(
+                        delegate() {
+                            (transport as SchCustomRelayKcpTransport).OnNATPunch(ep);
+                        }
+                    ));
+                };
             }));
 
         lobbyClient.OnRoomCreated -= OnRoomCreated;
@@ -192,7 +198,7 @@ public class NetworkRoomManagerExt : NetworkRoomManager
                 JoinLocalLobbyServer();
             } else {
                 lobbyClient.SetupSocket();
-                JoinLobbyServer();
+                JoinLobbyServer(10, 0.1f);
             }
 
             lobbyClient.roomManager = singleton;
