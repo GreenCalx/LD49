@@ -2571,6 +2571,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalRenderer: {fileID: 8459533141396907344}
+  AnimationTimeToOne: 0
   jumpColor: {r: 0.9719, g: 1, b: 0, a: 1}
   latencyColor: {r: 1, g: 0, b: 0, a: 1}
   maxColor: {r: 0, g: 1, b: 0.028522491, a: 1}
@@ -3625,6 +3626,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2905789948242898898, guid: ba64133a7002def4b949681a94c156bc, type: 3}
   m_PrefabInstance: {fileID: 6846147996293791849}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &8597679395109547964 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2905789948242898901, guid: ba64133a7002def4b949681a94c156bc, type: 3}
+  m_PrefabInstance: {fileID: 6846147996293791849}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8621893522300955852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8597679395109547964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 867cd6ff6c1ae1d409fa70c07873a2d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 8597679395109547961}
+  car: {fileID: 6846147996257085820}
 --- !u!1001 &6846147997049534824
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4092,23 +4112,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6533765457183851966, guid: 8a4290878af2ca8488f448ad39b9df61, type: 3}
   m_PrefabInstance: {fileID: 6846147997617066500}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8459533140055293447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409544185031350202}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f857a1292da13048b69ca820402ff06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rb: {fileID: 201151978503510114}
-  indicator: {fileID: 409544185031350202}
-  offsetLocal: {x: 0, y: 0.8, z: 0}
-  useRotation: 1
-  useFixedPosition: 1
 --- !u!114 &3341456926600643686
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4144,6 +4147,23 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!114 &8459533140055293447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409544185031350202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f857a1292da13048b69ca820402ff06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 201151978503510114}
+  indicator: {fileID: 409544185031350202}
+  offsetLocal: {x: 0, y: 0.8, z: 0}
+  useRotation: 1
+  useFixedPosition: 1
 --- !u!1001 &6846147998153255273
 PrefabInstance:
   m_ObjectHideFlags: 0

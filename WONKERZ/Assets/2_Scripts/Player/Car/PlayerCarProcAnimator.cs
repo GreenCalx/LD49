@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Schnibble;
 using static Schnibble.Physics;
 
 namespace Wonkerz {
@@ -62,8 +63,15 @@ public class PlayerCarProcAnimator : MonoBehaviour
 
     void FixedUpdate()
     {
-        carAcceleration = (lastCarVelocity - car.velocity) / Time.fixedDeltaTime;
-        lastCarVelocity = car.velocity;
+        var currentVel = car.velocity;
+        if (car.isKinematic) {
+            if (car.TryGetComponent<SchRigidbodyBehaviour>(out SchRigidbodyBehaviour schBody)) {
+                currentVel = schBody.velocity;
+            }
+        }
+
+        carAcceleration = (lastCarVelocity - currentVel) / Time.fixedDeltaTime;
+        lastCarVelocity = currentVel;
     }
 }
 }

@@ -443,16 +443,6 @@ namespace Wonkerz
             return (car.car as WkzCar).speedEffect.particles;
         }
 
-        public float GetSpeedEffectRatio(float currentSpeedInKmH) {
-            var speedEffect = (car.car as WkzCar).speedEffect;
-            if (speedEffect.maxSpeedInKmH == 0.0f) {
-                this.LogError("Speed effect : max speed is 0, this cannot be.");
-                return 0;
-            }
-
-            return Mathf.Lerp(0, 1, (Mathf.Abs(currentSpeedInKmH) - speedEffect.thresholdSpeedInKmH) / speedEffect.maxSpeedInKmH);
-        }
-
         public float GetJumpLatency() {
             return (car.car as WkzCar).wkzDef.jumpDef.latency;
         }
@@ -471,32 +461,15 @@ namespace Wonkerz
                 this.LogWarn("Speed effect: Not implemented for anything not a car.");
                 return;
             }
-
             // Apply camera effect.
             // Will change FoV, distance, etc.
-            var effectRatio = GetSpeedEffectRatio((float)car.car.GetCurrentSpeedInKmH());
+            var effectRatio = car.wkzCar.GetSpeedEffectRatio();
 
             CameraManager CamMgr = Access.managers.cameraMgr;
             if (CamMgr?.active_camera is PlayerCamera)
             {
                 PlayerCamera pc = (PlayerCamera)CamMgr.active_camera;
                 pc.applySpeedEffect(effectRatio);
-            }
-            // Apply particles effect.
-            // Will display speed trails.
-            var particles = GetSpeedParticles();
-            if (particles)
-            {
-                var e = particles.emission;
-                e.enabled = effectRatio != 0.0f;
-                var rb = GetRigidbody();
-                var relativeWindDir = rb.velocity;
-                particles.transform.LookAt(rb.position + relativeWindDir);
-
-                var lifemin = 0.2f;
-                var lifemax = 0.6f;
-                var partmain = particles.main;
-                partmain.startLifetime = Mathf.Lerp(lifemin, lifemax, effectRatio);
             }
         }
 
@@ -522,7 +495,7 @@ namespace Wonkerz
                 this.LogError("car property cannot be null! Please assign an gameobject to car.");
             }
 
-            playerState = PlayerStates.None;
+            playerState  = PlayerStates.None;
             vehicleState = PlayerVehicleStates.None;
 
             if (self_PowerController == null) self_PowerController = GetComponent<PowerController>();

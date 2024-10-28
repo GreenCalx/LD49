@@ -146,12 +146,6 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void InitPlayerDamagers()
     {
-        if (!isLoaded && !isSpawned)
-        {
-            this.LogError("InitPlayerDamegeable : not loaded or spawned.");
-            return;
-        }
-
         // Safely get the current player's rigidbody as a Car.
         // It might be null, for instance if the state is not yet a rigidbody compliant state.
         if (self_PlayerController == null)
@@ -234,12 +228,6 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void InitPlayerDamageable()
     {
-        if (!isLoaded && !isSpawned)
-        {
-            this.LogError("InitPlayerDamegeable : not loaded or spawned.");
-            return;
-        }
-
         self_oDamageable = null;
 
         // Safely get the current player's rigidbody.
@@ -325,6 +313,10 @@ public class OnlinePlayerController : NetworkBehaviour
         // TODO: remove anything linked to input poll, rendering, etc...
         self_PlayerController.OnStateChange += OnStateChange;
         self_PlayerController.OnVehicleStateChange += OnVehicleStateChange;
+
+        // Only init damager on srever: it has authority on collisions.
+        InitPlayerDamagers  ();
+        InitPlayerDamageable();
     }
 
     // Update clients about their states.
@@ -335,9 +327,11 @@ public class OnlinePlayerController : NetworkBehaviour
         RpcSetCameraFocus(self_PlayerController.GetTransform());
 
         playerVehicleState = state;
-        //server
-        InitPlayerDamageable();
-        InitPlayerDamagers();
+
+        if (isServer) {
+            InitPlayerDamagers();
+            InitPlayerDamageable();
+        }
     }
 
     void OnStateChange(PlayerController.PlayerStates state)
@@ -526,10 +520,6 @@ public class OnlinePlayerController : NetworkBehaviour
             }
         }
 
-        // self_PlayerController might already have been set to car?
-        InitPlayerDamageable();
-        InitPlayerDamagers();
-
         OnPlayerStateChanged(playerState, playerState);
         OnPlayerVehicleStateChanged(playerVehicleState, playerVehicleState);
     }
@@ -638,10 +628,6 @@ public class OnlinePlayerController : NetworkBehaviour
         this.Log("OnPlayerVehicleStateChanged : " + newState.ToString());
 
         if (!isServer) self_PlayerController.TransitionTo(newState);
-
-        // init damager/damageable
-        InitPlayerDamageable();
-        InitPlayerDamagers();
     }
 
     [TargetRpc]
@@ -654,13 +640,7 @@ public class OnlinePlayerController : NetworkBehaviour
     void Load()
     {
         CmdFreezePlayer(true);
-
-        // might have been updated to a new state.
-        InitPlayerDamageable();
-        InitPlayerDamagers();
-
         //Access.managers.cameraMgr?.changeCamera(GameCamera.CAM_TYPE.ORBIT, false);
-
         CmdModifyLoadedState(true);
     }
 

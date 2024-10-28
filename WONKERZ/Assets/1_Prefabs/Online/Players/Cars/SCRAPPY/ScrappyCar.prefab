@@ -512,6 +512,8 @@ MonoBehaviour:
     maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: 0, z: 0}
   isOffset: 1
@@ -631,7 +633,7 @@ GameObject:
   - component: {fileID: 5660231253880132677}
   - component: {fileID: 1388775176859241265}
   - component: {fileID: 3014548861292681335}
-  - component: {fileID: 3805064401989444509}
+  - component: {fileID: 8344384684121241214}
   m_Layer: 3
   m_Name: Chassis
   m_TagString: Untagged
@@ -747,6 +749,8 @@ MonoBehaviour:
     maxVolume: 1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: -2, z: 0}
   isOffset: 1
@@ -767,7 +771,7 @@ MonoBehaviour:
   syncInterval: 0
   owner: {fileID: 0}
   OnTakeDamageCallbacks: []
---- !u!114 &3805064401989444509
+--- !u!114 &8344384684121241214
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -776,31 +780,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 5660231253880132683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb803efbe62c34d7baece46c9ffebad9, type: 3}
+  m_Script: {fileID: 11500000, guid: 560f655979a55f84992a59a44009b7b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  target: {fileID: 5660231253880132676}
-  syncPosition: 1
-  syncRotation: 1
-  syncScale: 0
-  onlySyncOnChange: 1
-  compressRotation: 1
-  interpolatePosition: 1
-  interpolateRotation: 1
-  interpolateScale: 1
-  coordinateSpace: 0
-  sendIntervalMultiplier: 1
-  timelineOffset: 0
-  showGizmos: 0
-  showOverlay: 0
-  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
-  onlySyncOnChangeCorrectionMultiplier: 2
-  rotationSensitivity: 0.01
-  positionPrecision: 0.01
-  scalePrecision: 0.01
+  body: {fileID: 5660231253880132678}
+  schBody: {fileID: 1388775176859241265}
+  tf: {fileID: 5660231253880132676}
+  positionCorrectionThreshold: 0
+  rotationCorrectionThreshold: 0
 --- !u!1 &5660231253884275809
 GameObject:
   m_ObjectHideFlags: 0
@@ -1145,6 +1135,8 @@ MonoBehaviour:
     maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: 0, z: 0}
   isOffset: 1
@@ -1410,6 +1402,8 @@ MonoBehaviour:
     maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: 0, z: 0}
   isOffset: 1
@@ -1876,6 +1870,8 @@ MonoBehaviour:
     maxVolume: 0.1
   mixer: {fileID: 24100000, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
   group: {fileID: -4804291863583568918, guid: f7bbb3f9453f38f4e978c0a74c92145e, type: 2}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: 0, z: 0}
   isOffset: 1
@@ -2456,6 +2452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalRenderer: {fileID: 7271349192144565763}
+  AnimationTimeToOne: 0
   jumpColor: {r: 0.9719, g: 1, b: 0, a: 1}
   latencyColor: {r: 1, g: 0, b: 0, a: 1}
   maxColor: {r: 0, g: 1, b: 0.028522491, a: 1}
@@ -4030,6 +4027,25 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 2905789948242898896, guid: ba64133a7002def4b949681a94c156bc, type: 3}
   m_PrefabInstance: {fileID: 5660231255587476282}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7412466325201747183 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2905789948242898901, guid: ba64133a7002def4b949681a94c156bc, type: 3}
+  m_PrefabInstance: {fileID: 5660231255587476282}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5093753804064835827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7412466325201747183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 867cd6ff6c1ae1d409fa70c07873a2d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effect: {fileID: 7412466325201747178}
+  car: {fileID: 5660231255550409263}
 --- !u!1001 &6050132275400964643
 PrefabInstance:
   m_ObjectHideFlags: 0

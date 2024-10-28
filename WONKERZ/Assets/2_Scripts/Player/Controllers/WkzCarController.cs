@@ -25,7 +25,7 @@ namespace Wonkerz
         }
 
 
-        WkzCar wkzCar;
+        public WkzCar wkzCar {get; private set;}
 
         int gearUpDown = (int)PlayerInputs.InputCode.ForwardBackward;
         int jump = (int)PlayerInputs.InputCode.Jump;
