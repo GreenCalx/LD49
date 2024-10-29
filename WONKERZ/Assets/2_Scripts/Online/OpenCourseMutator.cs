@@ -89,6 +89,7 @@ namespace Wonkerz{
             foreach(TrackLight l in trackLights)
             {
                 l.ToggleLight(iState);
+                l.ToggleVolume(iState);
             }
         }
 

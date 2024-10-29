@@ -164,8 +164,10 @@ public class OnlineDamager : NetworkBehaviour
         if (!did_damage)
         { return false;}
 
-        OnDoDamageVoidCallbacks.ForEach(e => e.Invoke());
-        OnDoDamageCallbacks.ForEach(e => e.Invoke(snapshot.damage));
+        if (OnDoDamageVoidCallbacks!=null)
+            OnDoDamageVoidCallbacks.ForEach(e => e.Invoke());
+        if (OnDoDamageCallbacks!=null)
+            OnDoDamageCallbacks.ForEach(e => e.Invoke(snapshot.damage));
         elapsedTimeSinceLastDamage = 0f;
         return true;
     }
