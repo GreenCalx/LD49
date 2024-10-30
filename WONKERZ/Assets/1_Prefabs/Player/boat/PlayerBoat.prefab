@@ -1,5 +1,88 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &197385086378876186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7977422404744758945}
+  - component: {fileID: 4048611785339808344}
+  - component: {fileID: 6333511365945791386}
+  m_Layer: 19
+  m_Name: renderer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7977422404744758945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197385086378876186}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalScale: {x: 10.52, y: 5.22, z: 10.52}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6800990291451486005}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!33 &4048611785339808344
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197385086378876186}
+  m_Mesh: {fileID: 4300000, guid: 0015d5d487e6b4c51b6be43a47511ed9, type: 3}
+--- !u!23 &6333511365945791386
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 197385086378876186}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: f4c9ae1c4e1e18044a1e763bdb08fe30, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &412633360631800985
 GameObject:
   m_ObjectHideFlags: 0
@@ -99,6 +182,8 @@ MonoBehaviour:
     maxVolume: 0
   mixer: {fileID: 0}
   group: {fileID: 0}
+  velocity: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
   gravityScale: 1
   localCOM: {x: 0, y: -2, z: 0}
   isOffset: 1
@@ -471,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floaterSize: 0
+  floaterSize: 1
   c: {fileID: 5609755149326186314}
   rb: {fileID: 3235822417200691161}
   density: 400
@@ -807,6 +892,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   decalRenderer: {fileID: 2195293744223523211}
+  AnimationTimeToOne: 0
   jumpColor: {r: 0.9719, g: 1, b: 0, a: 1}
   latencyColor: {r: 1, g: 0, b: 0, a: 1}
   maxColor: {r: 0, g: 1, b: 0.028522491, a: 1}
@@ -1116,7 +1202,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -1.46, z: -2.25}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 7977422404744758945}
   m_Father: {fileID: 1854447562122648276}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1250,6 +1337,7 @@ MonoBehaviour:
   turn: 0
   shiftGearUp: 0
   shiftGearDown: 0
+  inputMode: 0
 --- !u!114 &7622235054036043000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1262,6 +1350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b3638e376e9794c85d011fddff34c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onlineMode: 0
   rb: {fileID: 3235822417200691161}
   motor:
     rid: 258629426438209536
@@ -1292,14 +1381,18 @@ MonoBehaviour:
   weightControlSpeed: 1
   centrifugalForceMul: 1
   minCentrifugalVelocity: 3
-  floaters: []
+  floaters:
+  - {fileID: 6800990292254535605}
+  - {fileID: 4063825865189560169}
+  - {fileID: 6646960978604554107}
+  - {fileID: 3913027989172818469}
   references:
     version: 2
     RefIds:
     - rid: 258629426438209536
       type: {class: SchEngine, ns: Schnibble, asm: SchPhysics}
       data:
-        def:
+        mutDef:
           normalizedTorqueCurve:
             serializedVersion: 2
             m_Curve:
@@ -1326,14 +1419,14 @@ MonoBehaviour:
             m_RotationOrder: 4
           maxTorque:
             value: 1000
-          angularDamping: 0.2
+          angularDamping: 0
           engineBrakeTorque:
             value: 0
-          engineInertia: 0.1
+          engineInertia: 0
           idleRPM:
             value: 0
           maxRPM:
-            value: 2000
+            value: 10000
 --- !u!1 &6800990292099529375
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,7 +1779,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floaterSize: 0
+  floaterSize: 1
   c: {fileID: 6800990292254535604}
   rb: {fileID: 3235822417200691161}
   density: 400
@@ -2195,7 +2288,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floaterSize: 0
+  floaterSize: 1
   c: {fileID: 2232787155147836717}
   rb: {fileID: 3235822417200691161}
   density: 400
@@ -2258,7 +2351,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfd148ae3ae37040ab3bbe8af078e4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  floaterSize: 0
+  floaterSize: 1
   c: {fileID: 5639868284098064456}
   rb: {fileID: 3235822417200691161}
   density: 400

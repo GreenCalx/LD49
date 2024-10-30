@@ -9,7 +9,8 @@ namespace Wonkerz{
     {
         [Header("Debug Controls")]
         public bool forceNightTime = false;
-        public bool forceDayTime = false;
+        public bool forceDayTime   = false;
+        public bool forceHighTide  = false;
 
         [Header("Material Collections")]
         public MaterialCollection dayTimeCollection;
@@ -29,7 +30,7 @@ namespace Wonkerz{
         public Transform h_seaTransform;
         private Vector3 seaTransformBasePos;
         private Coroutine tideChangeCo;
-        
+
         void Start()
         {
             seaTransformBasePos = h_seaTransform.localPosition;
@@ -53,14 +54,20 @@ namespace Wonkerz{
                 NightTime();
                 forceNightTime = false;
             }
-        }
 
+            if (forceHighTide)
+            {
+                RiseSeaLevel(true, 10f, 80f);
+
+                forceHighTide = false;
+            }
+        }
 
         public void DayTime()
         {
             ToggleTrackLights(false);
             MatMgr.collection = dayTimeCollection;
-            
+
             Sun.gameObject.SetActive(true);
             Moon.gameObject.SetActive(false);
 
@@ -135,4 +142,3 @@ namespace Wonkerz{
     }//!class
 
 }
-

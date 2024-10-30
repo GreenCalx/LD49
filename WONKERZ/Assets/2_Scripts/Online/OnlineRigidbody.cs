@@ -68,7 +68,11 @@ public class OnlineRigidbody : NetworkBehaviour {
 
     public override void OnSerialize(NetworkWriter writer, bool initialState)
     {
-        tf.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
+        // Mirror:
+        // could be called without having been awaken...
+        Vector3 position = Vector3.zero;
+        Quaternion rotation = Quaternion.identity;
+        if (tf) tf.GetPositionAndRotation(out position, out rotation);
 
         writer.WriteFloat(Time.deltaTime);
         writer.WriteVector3(position);
