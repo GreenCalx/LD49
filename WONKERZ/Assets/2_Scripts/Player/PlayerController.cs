@@ -642,7 +642,7 @@ namespace Wonkerz
 
                 case PlayerVehicleStates.Boat:
                     {
-                        (boat.boat as WkzBoat).SetFloatersSize(GetJumpCompressionRatio());
+                        (boat.boat as WkzBoat).SetFloatersSize(1.0f - GetJumpCompressionRatio());
                         break;
                     }
             }
@@ -1155,6 +1155,29 @@ namespace Wonkerz
                                     }
                                     else
                                     {
+                                        var jumpValue = inputs.GetButtonState(jump);
+                                        if (jumpValue.up)
+                                        {
+                                            if (!jumpLock)
+                                            {
+                                                jumpLock = true;
+                                                jumpTimeCurrent = 0.0f;
+                                                jumpLatencyCurrent = GetJumpLatency();
+                                                jumpDecal.SetAnimationTime(0.0f);
+
+
+                                                (boat.boat as WkzBoat).SetFloatersSize(1.0f);
+                                            }
+                                        }
+                                        else if (jumpValue.down)
+                                        {
+                                            if (!IsInJumpLatency())
+                                            {
+                                                jumpTimeCurrent = GetJumpTime();
+                                                jumpLock = false;
+                                            }
+                                        }
+
                                         weightInput.Add(inputs.GetAxisState(weightX).valueSmooth, inputs.GetAxisState(weightY).valueSmooth);
                                         boat.ProcessInputs(currentMgr, inputs);
                                     }

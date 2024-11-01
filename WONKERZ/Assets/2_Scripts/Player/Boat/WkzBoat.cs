@@ -43,9 +43,9 @@ namespace Wonkerz
             // TODO: make this more robust,
             // for now just check if one wheel touch some water.
             foreach (var f in floaters) {
-                if (f.hasContacts) return true;
+                if (f.hasContacts) return false;
             }
-            return false;
+            return true;
         }
 
         override protected void FixedUpdate()

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8215968377043512466}
   - component: {fileID: 367400099}
   - component: {fileID: 918681542}
+  - component: {fileID: 3068639038837364521}
   m_Layer: 6
   m_Name: HubCamera
   m_TagString: Untagged
@@ -134,7 +135,7 @@ MonoBehaviour:
   volumeTrigger: {fileID: 384985052665167889}
   volumeLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 262160
   stopNaNPropagation: 1
   finalBlitToCameraTarget: 1
   antialiasingMode: 1
@@ -197,6 +198,19 @@ MonoBehaviour:
   outlines: {fileID: 8400000, guid: 5cb644cc780707747a866ce2413d91a7, type: 2}
   mainLight: {fileID: 0}
   init_done: 0
+--- !u!135 &3068639038837364521
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 384985052665167888}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &855985210238979090
 GameObject:
   m_ObjectHideFlags: 0
