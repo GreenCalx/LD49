@@ -17,8 +17,9 @@ public enum ONLINE_COLLECTIBLES {
     TURN=5,
     TORQUEFORCE=6,
     WEIGHT=7,
-    KLANCE_POWER = 8,
-    PLAUNCHER = 9
+    BUOYANCY=8,
+    KLANCE_POWER = 9,
+    PLAUNCHER = 10
 }
 
 public class OnlineCollectible : NetworkBehaviour

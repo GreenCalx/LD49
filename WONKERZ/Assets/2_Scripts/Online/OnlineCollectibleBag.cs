@@ -61,6 +61,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public int torqueForces;
     [SyncVar]
     public int weights;
+    [SyncVar]
+    public int buoyancies;
     
 
     // Start is called before the first frame update
@@ -76,7 +78,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         turns = 0;
         torqueForces = 0;
         weights = 0;
-        
+        buoyancies = 0;
 
         StartCoroutine(Init());
     }
@@ -192,6 +194,11 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 weights = Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 stats_collected = true;
                 break;
+            case ONLINE_COLLECTIBLES.BUOYANCY:
+                buoyancies += iCollectible.value;
+                buoyancies = Mathf.Clamp(buoyancies, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                stats_collected = true;
+                break;
             case ONLINE_COLLECTIBLES.KLANCE_POWER:
                 CollectPower(iCollectible);
                 break;
@@ -251,6 +258,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         updateTurn(wCar);
         updateTorqueForce(wCar);
         updateWeight();
+        updateBuoyancy(wCar);
     }
 
     [TargetRpc]
@@ -264,6 +272,12 @@ public class OnlineCollectibleBag : NetworkBehaviour
     //   Modifiying SO feels weird
     // Ensure that its not saved, makes SetDirty() calls dangerous?
     // Probably needs a new layer that sets up /update car accordingly in OnlinePLayeR?
+
+    private void updateBuoyancy(WkzCar iWCar)
+    {
+        float curve_x = RemapStatToCurve(accels);
+        
+    }
 
     private void updateAccel(WkzCar iWCar)
     {
