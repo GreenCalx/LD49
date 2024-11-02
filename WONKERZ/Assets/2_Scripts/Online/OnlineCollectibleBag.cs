@@ -34,6 +34,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public float torqueForceInitValue_Z;
     [SyncVar]
     public float weightInitValue;
+    [SyncVar]
+    public float buoyancyInitValue;
 
 
     [Header("Stats definition curves\n    {X=0} is MIN stat range \n    {X=0.5, Y=1} is Initial Value for 0 Stats \n    {X=1} is MAX stat range")]
@@ -45,6 +47,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public AnimationCurve turnCurve;
     public AnimationCurve torqueForceCurve;
     public AnimationCurve weightCurve;
+    public AnimationCurve buoyancyCurve;
 
     [Header("Internal storage")]
     [SyncVar]
@@ -137,6 +140,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
             return;
         }
 
+        // init car
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
         accelInitValue = (float)wCar.motor.mutDef.maxTorque;
@@ -153,6 +157,18 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
         torqueForceInitValue_X = wCar.wkzMutDef.weightControlMaxX;
         torqueForceInitValue_Z = wCar.wkzMutDef.weightControlMaxZ;
+
+        // init boat
+        WkzBoat boat = owner.self_PlayerController.boat.boat as WkzBoat;
+        if (boat!=null)
+        {
+            if ((boat.floaters!=null)&&(boat.floaters.Count > 0))
+                buoyancyInitValue = boat.floaters[0].density;
+            else
+                this.LogError("InitStatRefValues : No floaters to init from boat.");
+
+        }
+        
     }
 
     [Server]
@@ -275,8 +291,16 @@ public class OnlineCollectibleBag : NetworkBehaviour
 
     private void updateBuoyancy(WkzCar iWCar)
     {
-        float curve_x = RemapStatToCurve(accels);
-        
+        float curve_x = RemapStatToCurve(buoyancies);
+        float new_buoyancy = (buoyancyCurve.Evaluate(curve_x) * buoyancyInitValue);
+        WkzBoat boat = owner.self_PlayerController.boat.boat as WkzBoat;
+        if (boat!=null)
+        {
+            foreach (SchBuoyancy b in boat.floaters)
+            {
+                b.density = new_buoyancy;
+            }
+        }
     }
 
     private void updateAccel(WkzCar iWCar)
