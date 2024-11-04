@@ -36,7 +36,12 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public float weightInitValue;
     [SyncVar]
     public float buoyancyInitValue;
-
+    [SyncVar]
+    public float attackInitValue;
+    [SyncVar]
+    public float defenseInitValue;
+    [SyncVar]
+    public float glideInitValue;
 
     [Header("Stats definition curves\n    {X=0} is MIN stat range \n    {X=0.5, Y=1} is Initial Value for 0 Stats \n    {X=1} is MAX stat range")]
     //[ToolTip("X : From Stats Min Range [X=0] to Stats Max Range [X=1] \n Y : From 0 [Y=0] to 2x Base value [Y=1]")]
@@ -48,6 +53,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public AnimationCurve torqueForceCurve;
     public AnimationCurve weightCurve;
     public AnimationCurve buoyancyCurve;
+    public AnimationCurve attackCurve;
+    public AnimationCurve defenseCurve;
+    public AnimationCurve glideCurve;
 
     [Header("Internal storage")]
     [SyncVar]
@@ -66,6 +74,12 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public int weights;
     [SyncVar]
     public int buoyancies;
+    [SyncVar]
+    public int attacks;
+    [SyncVar]
+    public int defenses;
+    [SyncVar]
+    public int glides;
     
 
     // Start is called before the first frame update
@@ -82,6 +96,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
         torqueForces = 0;
         weights = 0;
         buoyancies = 0;
+        attacks = 0;
+        defenses = 0;
+        glides = 0;
 
         StartCoroutine(Init());
     }
@@ -140,6 +157,10 @@ public class OnlineCollectibleBag : NetworkBehaviour
             return;
         }
 
+        // init player
+        attackInitValue = owner.initAtkMul;
+        defenseInitValue = owner.initDefMul;
+
         // init car
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
 
@@ -168,13 +189,21 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 this.LogError("InitStatRefValues : No floaters to init from boat.");
 
         }
+
+        // init glider
+        SchGlider glider = owner.self_PlayerController.plane.plane as SchGlider;
+        if (glider!=null)
+        {
+            glideInitValue = glider.rhoSV;
+        }
         
     }
 
     [Server]
     public void AsServerCollect(OnlineCollectible iCollectible)
     {
-        bool stats_collected = false;
+        bool car_update_req = false;
+        bool player_update_req = false;
         switch (iCollectible.collectibleType)
         {
             case ONLINE_COLLECTIBLES.NUTS:
@@ -183,37 +212,52 @@ public class OnlineCollectibleBag : NetworkBehaviour
             case ONLINE_COLLECTIBLES.ACCEL:
                 accels += iCollectible.value;
                 accels = Mathf.Clamp(accels, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.MAX_SPEED:
                 maxSpeeds += iCollectible.value;
                 maxSpeeds = Mathf.Clamp(maxSpeeds, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.SPRINGS:
                 springs += iCollectible.value;
                 springs = Mathf.Clamp(springs, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.TURN:
                 turns += iCollectible.value;
                 turns = Mathf.Clamp(turns, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.TORQUEFORCE:
                 torqueForces += iCollectible.value;
                 torqueForces = Mathf.Clamp(torqueForces, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.WEIGHT:
                 weights += iCollectible.value;
                 weights = Mathf.Clamp(weights, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.BUOYANCY:
                 buoyancies += iCollectible.value;
                 buoyancies = Mathf.Clamp(buoyancies, STATS_MIN_RANGE, STATS_MAX_RANGE);
-                stats_collected = true;
+                car_update_req = true;
+                break;
+            case ONLINE_COLLECTIBLES.ATTACK:
+                attacks += iCollectible.value;
+                attacks = Mathf.Clamp(attacks, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                player_update_req = true;
+                break;
+            case ONLINE_COLLECTIBLES.DEFENSE:
+                defenses += iCollectible.value;
+                defenses = Mathf.Clamp(defenses, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                player_update_req = true;
+                break;
+            case ONLINE_COLLECTIBLES.GLIDE:
+                glides += iCollectible.value;
+                glides = Mathf.Clamp(glides, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                car_update_req = true;
                 break;
             case ONLINE_COLLECTIBLES.KLANCE_POWER:
                 CollectPower(iCollectible);
@@ -225,7 +269,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 break;
         }
 
-        if (!stats_collected)
+        if (!car_update_req)
             return;
 
         if (isServer && isClient)
@@ -262,8 +306,19 @@ public class OnlineCollectibleBag : NetworkBehaviour
         powerC.EquipCollectiblePower(iCollectiblePower);
     }
 
+    /// PLAYERS STATS
+    public void UpdatePlayerStats()
+    {
+        float curve_x = RemapStatToCurve(attacks);
+        float new_atkmul = (attackCurve.Evaluate(curve_x) * attackInitValue);
+        owner.atkMul = new_atkmul;
 
-    /// STATS
+        curve_x = RemapStatToCurve(defenses);
+        float new_defmul = (defenseCurve.Evaluate(curve_x) * defenseInitValue);
+        owner.defMul = new_defmul;
+    }
+
+    /// VEHICLE STATS
     public void UpdateCar()
     {
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
@@ -275,6 +330,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         updateTorqueForce(wCar);
         updateWeight();
         updateBuoyancy(wCar);
+        updateGlide(wCar);
     }
 
     [TargetRpc]
@@ -288,6 +344,17 @@ public class OnlineCollectibleBag : NetworkBehaviour
     //   Modifiying SO feels weird
     // Ensure that its not saved, makes SetDirty() calls dangerous?
     // Probably needs a new layer that sets up /update car accordingly in OnlinePLayeR?
+
+    private void updateGlide(WkzCar iWCar)
+    {
+        float curve_x = RemapStatToCurve(glides);
+        float new_glide = (glideCurve.Evaluate(curve_x) * glideInitValue);
+        SchGlider glider = owner.self_PlayerController.plane.plane as SchGlider;
+        if (glider!=null)
+        {
+            glider.rhoSV = new_glide;
+        }
+    }
 
     private void updateBuoyancy(WkzCar iWCar)
     {

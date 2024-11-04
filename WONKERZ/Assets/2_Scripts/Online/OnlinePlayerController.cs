@@ -14,7 +14,10 @@ public class OnlinePlayerController : NetworkBehaviour
     [Header("OnlinePlayerController")]
     string _onlinePlayerName;
     public string onlinePlayerName { get => _onlinePlayerName; set { _onlinePlayerName = value; onAnyChange?.Invoke(); } }
-
+    [SyncVar]
+    public float atkMul;
+    [SyncVar]
+    public float defMul;
     public OnlineCollectibleBag bag;
 
     [Header("Mand Refs")]
@@ -27,6 +30,8 @@ public class OnlinePlayerController : NetworkBehaviour
 
     [Header("Online Tweaks")]
     public float minSpeedToDoDamage = 30f;
+    public readonly float initAtkMul = 1f;
+    public readonly float initDefMul = 1f;
 
     [Header("Internals")]
     // Client has "authority" on this, but server has authority on the object.
@@ -136,6 +141,7 @@ public class OnlinePlayerController : NetworkBehaviour
         {
             damage = (int)Mathf.Abs((float)cc.GetCurrentSpeedInKmH());
             damage += (int)Mathf.Floor((self_PlayerController.GetRigidbody().mass * 0.01f));
+            damage = (int)Mathf.Ceil(damage*atkMul);
         }
 
         foreach (OnlineDamager d in self_oDamagers)
@@ -146,6 +152,9 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void InitPlayerDamagers()
     {
+        atkMul = initAtkMul;
+        defMul = initDefMul;
+        
         // Safely get the current player's rigidbody as a Car.
         // It might be null, for instance if the state is not yet a rigidbody compliant state.
         if (self_PlayerController == null)
@@ -658,6 +667,7 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void TakeDamage(OnlineDamageSnapshot iDamageSnap)
     {
+        float damage = iDamageSnap.damage * 1/defMul ;
         self_PlayerController.takeDamage(
             iDamageSnap.damage,
             iDamageSnap.worldOrigin,

@@ -9,17 +9,20 @@ using Mirror;
 using Schnibble;
 
 public enum ONLINE_COLLECTIBLES {
-    NONE=0,
-    NUTS=1,
-    ACCEL=2,
-    MAX_SPEED=3,
-    SPRINGS=4,
-    TURN=5,
-    TORQUEFORCE=6,
-    WEIGHT=7,
-    BUOYANCY=8,
-    KLANCE_POWER = 9,
-    PLAUNCHER = 10
+    NONE            =0x00,
+    NUTS            =0x01,
+    ACCEL           =0x02,
+    MAX_SPEED       =0x03,
+    SPRINGS         =0x04,
+    TURN            =0x05,
+    TORQUEFORCE     =0x06,
+    WEIGHT          =0x07,
+    BUOYANCY        =0x08,
+    GLIDE           =0x09,
+    ATTACK          =0x0A,
+    DEFENSE         =0x0B,
+    KLANCE_POWER    =0x10,
+    PLAUNCHER       =0x11
 }
 
 public class OnlineCollectible : NetworkBehaviour

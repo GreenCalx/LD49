@@ -72,5 +72,10 @@ namespace Wonkerz {
                 UnityEngine.Physics.IgnoreCollision(iTarget, c);
             }
         }
+
+        public static int ApproxDamage(float iDamage)
+        {
+            return (int)Mathf.Ceil(iDamage);
+        }
     }
 }

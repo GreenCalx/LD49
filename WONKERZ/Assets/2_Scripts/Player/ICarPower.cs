@@ -118,6 +118,8 @@ namespace Wonkerz
         }
     }
 
+    // TODO : known bug : knight lance default damage doesnt update inbetween activation if 
+    //      player picks up atk upgrade.
     [System.Serializable]
     public class KnightLanceCarPower : ICarPower
     {
@@ -190,7 +192,7 @@ namespace Wonkerz
                 {
                     NetworkServer.Spawn(KnightLanceObject_Inst);
                     selfDamager = KnightLanceObject_Inst.GetComponentInChildren<OnlineDamager>();
-                    selfDamager.damage = baseDamage;
+                    selfDamager.damage = Utils.ApproxDamage(baseDamage * owner.atkMul);
 
                 }
                 KnightLanceObject_Inst.SetActive(true);
@@ -205,7 +207,7 @@ namespace Wonkerz
             {
                 UnityEvent cbAfterThrust = new UnityEvent();
                 cbAfterThrust.AddListener(OnWeaponFinish);
-                selfDamager.damage = (int)Mathf.Ceil(baseDamage * damageMulOnThrust);
+                selfDamager.damage = Utils.ApproxDamage(baseDamage * damageMulOnThrust * owner.atkMul);
                 selfDamager.filteredOutDamageables.Add(owner.self_oDamageable);
                 selfOnlineWeapon.Thrust(thrustTime, thrustRotSpeed, thrustZOffset, cbAfterThrust);
                 thrusting = true;
@@ -220,13 +222,14 @@ namespace Wonkerz
 
         public void OnWeaponFinish()
         {
-            selfDamager.damage = baseDamage;
+            selfDamager.damage = Utils.ApproxDamage(baseDamage * owner.atkMul);
             thrusting = false;
         }
 
 
         public void onRefresh()
         {
+
             if (isRecovering)
             {
                 elapsed_recovery_cooldown += Time.deltaTime;
@@ -373,7 +376,7 @@ namespace Wonkerz
             if (!!as_damager)
             {
                 as_damager.filteredOutDamageables.Add(owner.self_oDamageable);
-                as_damager.damage = baseDamage;
+                as_damager.damage = Utils.ApproxDamage(baseDamage * owner.atkMul);
             }
 
             elapsed_cooldown = 0f;
