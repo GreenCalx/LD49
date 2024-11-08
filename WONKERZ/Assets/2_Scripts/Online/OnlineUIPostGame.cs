@@ -115,7 +115,7 @@ public class OnlineUIPostGame : UIControllableElement
     {
         while (OPC == null)
         {
-            OPC = Access.Player()?.GetComponent<OnlinePlayerController>();
+            OPC = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer;
             yield return null;
         }
     }
@@ -131,8 +131,13 @@ public class OnlineUIPostGame : UIControllableElement
     {
         if (Entry.GetButtonState(startInputIdx).down)
         {
-            OPC.CmdModifyReadyState(true);
+            //OPC.CmdModifyReadyState(true);
             NetworkClient.Disconnect();
+            Access.managers.sceneMgr.loadScene(Constants.SN_TITLE, new SceneLoader.LoadParams
+            {
+                useTransitionOut = true,
+                useTransitionIn = true,
+            });
         }
     }
 }

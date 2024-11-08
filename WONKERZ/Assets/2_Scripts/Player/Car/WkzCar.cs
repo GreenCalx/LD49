@@ -3,8 +3,16 @@ using UnityEngine;
 
 namespace Wonkerz
 {
+    public enum CAR_TYPE {
+        NONE=0,
+        SCRAPPY=1,
+        PRODIGY=2,
+        FROGGY=3,
+        BEETLE=4
+    };
     public class WkzCar : SchCar
     {
+        public CAR_TYPE carType;
         public WkzCarSO wkzDef;
         public WkzCarSO wkzMutDef;
 

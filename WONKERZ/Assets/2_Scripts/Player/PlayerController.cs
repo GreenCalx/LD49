@@ -893,19 +893,11 @@ namespace Wonkerz
 
         public void Kill(Vector3 iSteer = default(Vector3))
         {
-            GameObject dummy_player = Instantiate(onDeathClone, transform.position, transform.rotation);
-            //Destroy(dummy_player.GetComponent<CarController>());
+            //GameObject dummy_player = Instantiate(onDeathClone, transform.position, transform.rotation);
 
             // add dummy's suspension/ wheels to DC objects
-            DeathController dc = dummy_player.GetComponent<DeathController>();
-            // dc.objects.Clear();
-            // foreach (Transform child in dummy_player.transform)
-            // {
-            //     Rigidbody rb = child.GetComponent<Rigidbody>();
-            //     if (!!rb)
-            //     dc.objects.Add(rb);
-            // }
-            dc.Activate(iSteer);
+            // DeathController dc = dummy_player.GetComponent<DeathController>();
+            // dc.Activate(iSteer);
             Access.managers.cameraMgr.launchDeathCam();
         }
 

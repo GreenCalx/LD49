@@ -10,24 +10,12 @@ public class OnlineDeathZone : MonoBehaviour
 
     void OnTriggerEnter(Collider iCol)
     {
-        if (!!NetworkRoomManagerExt.singleton.onlineGameManager.trialManager)
-        {
-            if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.trialLaunched)
-            {
-                killIfPlayer(iCol);
-            }
-        }
+        killIfPlayer(iCol);
     }
 
     void OnTriggerStay(Collider iCol)
     {
-        if (!!NetworkRoomManagerExt.singleton.onlineGameManager.trialManager)
-        {
-            if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.trialLaunched)
-            {
-                killIfPlayer(iCol);
-            }
-        }
+        killIfPlayer(iCol);
     }
 
     private void killIfPlayer(Collider iCol)
@@ -37,18 +25,26 @@ public class OnlineDeathZone : MonoBehaviour
 
         OnlinePlayerController as_OPC = iCol.gameObject.GetComponentInParent<OnlinePlayerController>();
 
-
         if (!as_OPC.isLocalPlayer)
         { return;}
 
-        // Set Player as DNF
+        if (!as_OPC.IsAlive)
+        { return; }
+
+        // Set Player as DNF if in trial
         if (!!NetworkRoomManagerExt.singleton.onlineGameManager.trialManager)
-            NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerIsDNF(as_OPC);
+        {
+            if (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.trialLaunched)
+                NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.NotifyPlayerIsDNF(as_OPC);
+        } else  // Open course
+        {
+            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerDeath(as_OPC);
+        }
 
         // explode player
         as_OPC.self_PlayerController.Kill();
         //NetworkServer.Destroy(as_OPC);
-        as_OPC.gameObject.SetActive(false);
+        //as_OPC.gameObject.SetActive(false);
 
     }
 

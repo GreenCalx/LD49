@@ -100,16 +100,19 @@ public class DeathController : MonoBehaviour
 
     public void Activate(Vector3 iSteer = default(Vector3))
     {
-        eventOnDeath = new UnityEvent();
-        eventOnDeath.AddListener(explodeBodies);
+
         killingBlowDirection = iSteer;
-        if (cloneFromPlayer)
+        if (cloneFromPlayer && Access.managers.gameSettings.isOnline)
+        {}    //StartCoroutine(PlayerCloneFactory.GetInstance().SpawnOnlineClone(transform, eventOnDeath));
+        else if (cloneFromPlayer)
+        {
+            eventOnDeath = new UnityEvent();
+            eventOnDeath.AddListener(explodeBodies);
             StartCoroutine(PlayerCloneFactory.GetInstance().SpawnPhysxClone(transform, eventOnDeath));
+            Time.timeScale = 0.5f;
+        }            
 
-
-        //GetComponent<Rigidbody>().AddExplosionForce(force, transform.position, radius, upmodif, ForceMode.Acceleration);
-
-        Time.timeScale = 0.5f;
+        //
         isStarted = true;
         scalingTimerCurrent = 0f;
 

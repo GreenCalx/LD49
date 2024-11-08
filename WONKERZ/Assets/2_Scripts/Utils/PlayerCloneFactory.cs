@@ -3,24 +3,27 @@ using System.Collections;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Mirror;
 using Schnibble;
 
 namespace Wonkerz {
 
     public sealed class PlayerCloneFactory
     {
-
-        public IEnumerator SpawnPhysxClone(Transform iParent = null, UnityEvent iCallback = null)
+        public IEnumerator SpawnOnlineClone(Transform iParent = null, UnityEvent iCallback = null)
         {
-            GameObject clone = GetPhysxClone();
-            clone.transform.parent = iParent;
-            yield return null; // wait 1 frame for component destruction
+            GameObject clone = GetOnlineClone();
+            while (clone==null)
+            {
+                clone = GetOnlineClone();
+                yield return null;
+            }
+            //clone.transform.parent = iParent;
+            //yield return null; // wait 1 frame for component destruction
             clone.SetActive(true);
             if (iCallback!=null)
             iCallback.Invoke();
         }
-
 
         public readonly System.Type[] FILTER_0 = 
             {   
@@ -50,6 +53,78 @@ namespace Wonkerz {
 
         // ---
 
+        private GameObject GetOnlineClone()
+        {
+            if (NetworkRoomManagerExt.singleton.onlineGameManager==null)
+                return null;
+            if (NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer==null)
+                return null;
+
+            GameObject root_clone = new GameObject();
+            root_clone.name = "DeathClone";
+            //root_clone.transform.position = NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer.
+            root_clone.SetActive(false);
+            RecursiveDeepClone(root_clone.transform, NetworkRoomManagerExt.singleton.onlineGameManager.localPlayer.transform);
+            //ExplodeChildBodies ecb = root_clone.AddComponent<ExplodeChildBodies>();
+            root_clone.SetActive(true);
+            //ecb.triggerExplosion();
+            return root_clone;
+        }
+
+        private void RecursiveDeepClone(Transform iCloneRoot, Transform iDeepCloneTarget)
+        {
+            foreach(Transform child in iDeepCloneTarget)
+            {
+                // skip debug models
+                if (child.gameObject.tag == Constants.TAG_DBG)
+                    continue;
+
+                GameObject carPartClone = new GameObject();
+                carPartClone.name = child.gameObject.name;
+                TryDecorateOnlineDeathClone(ref carPartClone, child, iCloneRoot);
+
+                if (child.childCount > 0)
+                    RecursiveDeepClone(carPartClone.transform, child);
+            }
+        }
+
+        private void TryDecorateOnlineDeathClone(ref GameObject iToDecorate, Transform iChildToCopy, Transform iRootTransform)
+        {
+            iToDecorate.transform.parent        = iRootTransform;
+            iToDecorate.transform.localPosition = iChildToCopy.localPosition;
+            iToDecorate.transform.localRotation = iChildToCopy.localRotation;
+            
+            MeshRenderer mr = iChildToCopy.GetComponent<MeshRenderer>();
+            MeshFilter   mf = iChildToCopy.GetComponent<MeshFilter>();
+
+            // skip a part with no render
+            if ( (mf==null) || (mr==null) || !mr.enabled)
+                return;
+
+            MeshFilter cloned_mf = iToDecorate.AddComponent(typeof(MeshFilter)) as MeshFilter;
+            cloned_mf.sharedMesh = mf.sharedMesh;
+
+            MeshRenderer cloned_mr = iToDecorate.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
+            cloned_mr.sharedMaterials = mr.sharedMaterials;
+
+            Rigidbody rb = iToDecorate.gameObject.AddComponent<Rigidbody>();
+            MeshCollider mc = iToDecorate.gameObject.AddComponent<MeshCollider>();
+            mc.convex    = true;
+
+            iToDecorate.gameObject.layer = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
+        }
+
+        // -----------------------------------------
+        // SOLO PLAYER LEGACY
+        public IEnumerator SpawnPhysxClone(Transform iParent = null, UnityEvent iCallback = null)
+        {
+            GameObject clone = GetPhysxClone();
+            clone.transform.parent = iParent;
+            yield return null; // wait 1 frame for component destruction
+            clone.SetActive(true);
+            if (iCallback!=null)
+            iCallback.Invoke();
+        }
         private GameObject GetPhysxClone()
         {
             // Player Ref
@@ -99,7 +174,7 @@ namespace Wonkerz {
                 mc.convex    = true;
 
                 // Deco2 : Change Collision Layer
-                iToDecorate.gameObject.layer = LayerMask.NameToLayer("No Player Collision");
+                iToDecorate.gameObject.layer = LayerMask.NameToLayer(Constants.LYR_NOPLAYERCOL);
             }
 
             iToDecorate.gameObject.SetActive(true);

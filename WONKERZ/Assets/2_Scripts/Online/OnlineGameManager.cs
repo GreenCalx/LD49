@@ -270,24 +270,27 @@ public class OnlineGameManager : NetworkBehaviour
 
         yield return StartCoroutine(GameLoop());
 
-        SyncState(state, States.PreTrial);
-        yield return WaitForAllClientsToSwitchState(state);
-
-        yield return StartCoroutine(WaitTrialSessions());
-
-        RpcAllPlayersLockAndLoaded();
-
-        SyncState(state, States.Countdown);
-        yield return WaitForAllClientsToSwitchState(state);
-
-        yield return StartCoroutine(Countdown());
-
-        if (!Wonkerz.GameSettings.testMenuData.byPassTrial)
-        {
-            SyncState(state, States.Trial);
+        if ( !OneOrLessPlayerAlive() )
+        {   // TRIAL
+            SyncState(state, States.PreTrial);
             yield return WaitForAllClientsToSwitchState(state);
 
-            yield return StartCoroutine(TrialLoop());
+            yield return StartCoroutine(WaitTrialSessions());
+
+            RpcAllPlayersLockAndLoaded();
+
+            SyncState(state, States.Countdown);
+            yield return WaitForAllClientsToSwitchState(state);
+
+            yield return StartCoroutine(Countdown());
+
+            if (!Wonkerz.GameSettings.testMenuData.byPassTrial)
+            {
+                SyncState(state, States.Trial);
+                yield return WaitForAllClientsToSwitchState(state);
+
+                yield return StartCoroutine(TrialLoop());
+            }
         }
 
         SyncState(state, States.PostGame);
@@ -463,8 +466,9 @@ public class OnlineGameManager : NetworkBehaviour
         AskPlayersToReadyUp();
         postGameTime = settings.postGameDuration;
 
-        // Wait until either postGameTime is elapsed, or all players want to quit.
-        while (!AreAllPlayersReady() || postGameTime > 0.0f)
+        // Force disconnection after postGameTime
+        // If a players press starts he disconnects on his own
+        while (postGameTime > 0.0f)
         {
             postGameTime -= Time.deltaTime;
             yield return null;
@@ -517,23 +521,20 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         // Post Game
+        if (OneOrLessPlayerAlive())
+        {
+            yield break; // Post Game
+        }
         FreezeAllPlayers(true);
-
         RpcShowItsTrialTime(true);
         RpcShowUITrackTime(false);
-
-
-
         yield return new WaitForSeconds(2f);
-
 
         FreezeAllPlayers(false);
         UnequipAllPowers();
         RpcShowItsTrialTime(false);
-
         gameLaunched = false;
         yield return LoadTrialScene();
-
     }
 
     [Server]
@@ -629,12 +630,40 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [Server]
+    public bool OneOrLessPlayerAlive() {
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        
+        int count = 0;
+        foreach (var opc in uniquePlayers) count += Convert.ToInt32(opc.IsAlive);
+        return count <= 1;
+    }
+
+    [Server]
     public void UnequipAllPowers()
     {
         var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
         foreach (var opc in uniquePlayers)
         {
             opc.self_PlayerController.self_PowerController.UnequipPower();
+        }
+    }
+
+    [ServerCallback]
+    public void NotifyPlayerDeath(OnlinePlayerController iOPC)
+    {
+        if (!NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.ContainsValue(iOPC))
+            return;
+        
+        iOPC.Kill();
+        Vector3 deathClonePos = iOPC.self_PlayerController.GetTransform().position;
+        RpcSpawnDeathPlayerClone(deathClonePos, (iOPC.self_PlayerController.car.car as WkzCar).carType);
+
+        if (OneOrLessPlayerAlive())
+        {
+            gameTime = 0f; // end course
+        } else {
+            // TODO : update map bounds
+            // TODO : Set dead as observer
         }
     }
 
@@ -765,6 +794,15 @@ public class OnlineGameManager : NetworkBehaviour
         UIPlayer.ItsTrialTimeHandle.Show();
         else
         UIPlayer.ItsTrialTimeHandle.Hide();
+    }
+
+    [ClientRpc]
+    public void RpcSpawnDeathPlayerClone(Vector3 iSpawnPos, CAR_TYPE iCarType)
+    {
+        GameObject deathClonePrefab = Access.managers.carBanks.GetDeathClonePrefab(iCarType);
+        GameObject deathClone = Instantiate(deathClonePrefab);
+        deathClone.transform.parent = null;
+        deathClone.transform.position = iSpawnPos;
     }
 
     #endregion

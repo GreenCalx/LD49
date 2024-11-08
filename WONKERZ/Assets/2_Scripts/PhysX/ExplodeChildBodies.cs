@@ -15,6 +15,7 @@ namespace Wonkerz
         public Vector3 directionSteer;
         public bool AddForce = true;
         public bool AddTorque = true;
+        public bool TriggerOnStart = false;
 
         public ForceMode FMToApplyOnForce = ForceMode.Impulse;
         public ForceMode FMToApplyOnTorque = ForceMode.Impulse;
@@ -25,7 +26,9 @@ namespace Wonkerz
         // Start is called before the first frame update
         void Start()
         {
-            childBodies = GetComponentsInChildren<Rigidbody>(true);
+            childBodies = GetComponentsInChildren<Rigidbody>();
+            if (TriggerOnStart)
+                triggerExplosion();
         }
 
         void Update()
@@ -91,9 +94,25 @@ namespace Wonkerz
                         break;
                     case ExplosionMode.RADIAL:
                         fDir = rb.transform.position - transform.position;
+                        if (fDir==Vector3.zero)
+                        {
+                            fDir = new Vector3(
+                                Random.Range(-1f, 1f),
+                                0f,
+                                Random.Range(-1f, 1f)
+                            );
+                        }
                         break;
                     case ExplosionMode.STEERED_RADIAL:
                         fDir = rb.transform.position - transform.position;
+                        if (fDir==Vector3.zero)
+                        {
+                            fDir = new Vector3(
+                                Random.Range(-1f, 1f),
+                                0f,
+                                Random.Range(-1f, 1f)
+                            );
+                        }
                         fDir += directionSteer;
                         break;
                     default:

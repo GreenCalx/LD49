@@ -18,6 +18,8 @@ public class OnlinePlayerController : NetworkBehaviour
     public float atkMul;
     [SyncVar]
     public float defMul;
+    [SyncVar]
+    public bool IsAlive = true;
     public OnlineCollectibleBag bag;
 
     [Header("Mand Refs")]
@@ -154,7 +156,7 @@ public class OnlinePlayerController : NetworkBehaviour
     {
         atkMul = initAtkMul;
         defMul = initDefMul;
-        
+
         // Safely get the current player's rigidbody as a Car.
         // It might be null, for instance if the state is not yet a rigidbody compliant state.
         if (self_PlayerController == null)
@@ -326,6 +328,8 @@ public class OnlinePlayerController : NetworkBehaviour
         // Only init damager on srever: it has authority on collisions.
         InitPlayerDamagers  ();
         InitPlayerDamageable();
+
+        IsAlive = true;
     }
 
     // Update clients about their states.
@@ -627,14 +631,14 @@ public class OnlinePlayerController : NetworkBehaviour
 
     void OnPlayerStateChanged(PlayerController.PlayerStates oldState, PlayerController.PlayerStates newState)
     {
-        this.Log("OnPlayerStateChanged : " + newState.ToString());
+        this.Log("Online OnPlayerStateChanged : " + newState.ToString());
 
         if (!isServer) self_PlayerController.TransitionFromTo(oldState, newState);
     }
 
     void OnPlayerVehicleStateChanged(PlayerController.PlayerVehicleStates oldState, PlayerController.PlayerVehicleStates newState)
     {
-        this.Log("OnPlayerVehicleStateChanged : " + newState.ToString());
+        this.Log("Online OnPlayerVehicleStateChanged : " + newState.ToString());
 
         if (!isServer) self_PlayerController.TransitionTo(newState);
     }
@@ -674,5 +678,11 @@ public class OnlinePlayerController : NetworkBehaviour
             iDamageSnap.ownerVelocity,
             iDamageSnap.repulsionForce
         );
+    }
+
+    public void Kill()
+    {
+        self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.None);
+        IsAlive = false;
     }
 }

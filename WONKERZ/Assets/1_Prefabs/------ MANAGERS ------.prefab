@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 610670227064521680}
   - component: {fileID: 610670227064521673}
   - component: {fileID: 8826070242101762484}
+  - component: {fileID: 5650505917481673464}
   m_Layer: 0
   m_Name: ------ MANAGERS ------
   m_TagString: Untagged
@@ -362,6 +363,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   limitFPS: 0
   limitValue: 30
+--- !u!114 &5650505917481673464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2461822761771495987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e89abf9d4c202e4cbd67fee4c85d5b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  carInfos:
+  - carType: 0
+    carPrefab: {fileID: 0}
+    OnDeathPrefab: {fileID: 0}
+    swappableCarPrefab: {fileID: 0}
+  - carType: 1
+    carPrefab: {fileID: 5660231255550409260, guid: 6a189c8cff836fd43aeb5ce5e2158455, type: 3}
+    OnDeathPrefab: {fileID: 2705171154291085488, guid: 76aa21f2f8ee368468ad8d58f4a43d5d, type: 3}
+    swappableCarPrefab: {fileID: 2705171154291085488, guid: 98ef13f89aaaf164e8112c284591f707, type: 3}
+  - carType: 2
+    carPrefab: {fileID: 6846147996257085823, guid: 2c9f57f7fa73f274da373cfb937b3767, type: 3}
+    OnDeathPrefab: {fileID: 0}
+    swappableCarPrefab: {fileID: 2705171154291085488, guid: c2c676d2eef6fae4397ef396ecda9200, type: 3}
+  - carType: 3
+    carPrefab: {fileID: 8945888693193377626, guid: cb710722b2ce08f48b00e0eb67e33407, type: 3}
+    OnDeathPrefab: {fileID: 0}
+    swappableCarPrefab: {fileID: 2705171154291085488, guid: 7bdf9073e7adaa348b3429d9d32ba035, type: 3}
+  - carType: 4
+    carPrefab: {fileID: 5660231255550409260, guid: 95aebaf4d092afe4da66cd97470683bd, type: 3}
+    OnDeathPrefab: {fileID: 0}
+    swappableCarPrefab: {fileID: 2705171154291085488, guid: 2179f7c69f50e5a4dbb20f47b3f64ece, type: 3}
+  reset: 0
 --- !u!1001 &8840290465359705424
 PrefabInstance:
   m_ObjectHideFlags: 0

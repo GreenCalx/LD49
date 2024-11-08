@@ -22,6 +22,7 @@ namespace Wonkerz
         public AudioListenerManager    audioListenerMgr;
         public PlayerCosmeticsManager  playerCosmeticsMgr;
         public FPSLimiter              fpsLimiter;
+        public WkzCarBanks             carBanks;
 
         void LoadPlayerPrefs() {
             string targetFPSStr   = "targetFPS";
@@ -90,6 +91,8 @@ namespace Wonkerz
             if (bountyArray ==null) bountyArray = GetComponent<BountyArray>();
 
             if (fpsLimiter == null) fpsLimiter = GetComponent<FPSLimiter>();
+
+            if (carBanks==null) carBanks = GetComponent<WkzCarBanks>();
 
             this.Log("init done.");
         }

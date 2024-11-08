@@ -77,4 +77,7 @@ public static class Constants
     public const string LYR_STATICENV = "Env/StaticTerrain";
     public const string LYR_DYNAMICENV = "Env/DynamicTerrain";
 
+    // -- Tags --
+    public const string TAG_DBG = "debug";
+
 }

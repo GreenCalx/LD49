@@ -30,6 +30,8 @@ namespace Wonkerz
                         var camGO = new GameObject("defaultCamera");
                         var cam = camGO.AddComponent<Camera>();
                         _defaultCamera = camGO.AddComponent<UICamera>();
+                        _defaultCamera.cam.cullingMask = 0x00;
+                        _defaultCamera.cam.backgroundColor = Color.black;
                         _defaultCamera.cam = cam;
                         _defaultCamera.disable();
 
