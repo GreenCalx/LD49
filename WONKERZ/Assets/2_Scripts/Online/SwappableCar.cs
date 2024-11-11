@@ -24,37 +24,57 @@ public class SwappableCar : NetworkBehaviour
             locPC.self_PowerController.UnequipPower();
         }
 
+        // get needed ref before swap occures
+        Vector3 playerPosAtSwapStart    = locPC.GetTransform().position;
+        Quaternion playerRotAtSwapStart = locPC.GetTransform().rotation;
+
         // Swap car
         car.transform.parent    = locPC.transform;
-        boat.transform.parent   = locPC.transform;
-        plane.transform.parent  = locPC.transform;
-
         locPC.car.transform.parent = transform;
         locPC.car.transform.localPosition = Vector3.zero;
         locPC.car.transform.rotation = Quaternion.identity;
-
-        locPC.boat.transform.parent = transform;
-        locPC.plane.transform.parent = transform;
-
+        
         var oldCar = locPC.car;
-        var oldBoat = locPC.boat;
-        var oldPlane = locPC.plane;
-
         locPC.car = car;
-        locPC.boat = boat;
-        locPC.plane = plane;
+        car = oldCar;
 
-        WkzCar wCar = car.GetComponent<WkzCar>();
+        // swap boat if exists, keep old one otherwise
+        if (boat!=null)
+        {
+            boat.transform.parent   = locPC.transform;
+            locPC.boat.transform.parent = transform;
+            var oldBoat = locPC.boat;
+            locPC.boat = boat;
+
+            boat = oldBoat;
+        }
+
+
+        // swap plane if exists, keep old one otherwise
+        if (plane!=null)
+        {
+            plane.transform.parent  = locPC.transform;
+            locPC.plane.transform.parent = transform;
+            var oldPlane = locPC.plane;
+            locPC.plane = plane;
+
+            plane = oldPlane;
+        }
+
+
+        // Update References after swap
+        // local car/boat/plane are now old ones
+        // new ones are on locPC
+
+        WkzCar wCar = locPC.car.GetComponent<WkzCar>();
         locPC.current.rb = wCar.rb;
 
         CameraManager CM = Access.managers.cameraMgr;
         CM.OnTargetChange(locPC.transform);
 
         // update swappable car with old car from player
-        car = oldCar;
-        boat = oldBoat;
-        plane = oldPlane;
-
+        
+        
         cameraFocusable.OnPlayerUnfocus();
 
         WkzCar old_wCar = oldCar.GetComponent<WkzCar>();
@@ -81,8 +101,12 @@ public class SwappableCar : NetworkBehaviour
         opc.InitPlayerDamagers();
         opc.InitPlayerDamageable();
 
-        // Instantiate a 
+        car.transform.localPosition = Vector3.zero;
+        car.transform.localRotation = Quaternion.identity;
+        transform.position = playerPosAtSwapStart;
+        transform.rotation = playerRotAtSwapStart;
         
+        //Destroy(this);
     }
 
 }

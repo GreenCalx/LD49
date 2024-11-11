@@ -40,6 +40,7 @@ public class OnlineTrackEvent
 
 public class GravityTrackEvent : OnlineTrackEvent
 {
+    [SyncVar]
     private Vector3 initGravity = Vector3.zero;
     public GravityTrackEvent()
     {

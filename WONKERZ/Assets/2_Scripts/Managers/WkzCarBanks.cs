@@ -26,6 +26,16 @@ namespace Wonkerz
             return carInfos.Where(e => e.carType == iCarType).ToList()?[0].OnDeathPrefab;
         }
 
+        public GameObject GetCarClone(CAR_TYPE iCarType)
+        {
+            return carInfos.Where(e => e.carType == iCarType).ToList()?[0].carPrefab;
+        }
+
+        public GameObject GetCarAsSwappable(CAR_TYPE iCarType)
+        {
+            return carInfos.Where(e => e.carType == iCarType).ToList()?[0].swappableCarPrefab;
+        }
+
         #if UNITY_EDITOR
         public bool reset = false;
 
