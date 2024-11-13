@@ -146,6 +146,8 @@ public class OnlineGameManager : NetworkBehaviour
     [SyncVar]
     public float postGameTime = 0f;
     [SyncVar]
+    public bool earlyGameEnd = false;
+    [SyncVar]
     public bool gameLaunched;
     [Header("Manual mand refs")]
     public OnlineTrackEventManager trackEventManager;
@@ -654,13 +656,17 @@ public class OnlineGameManager : NetworkBehaviour
         if (!NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.ContainsValue(iOPC))
             return;
         
+        
         iOPC.Kill();
+
+
         Vector3 deathClonePos = iOPC.self_PlayerController.GetTransform().position;
         RpcSpawnDeathPlayerClone(deathClonePos, (iOPC.self_PlayerController.car.car as WkzCar).carType);
 
         if (OneOrLessPlayerAlive())
         {
             gameTime = 0f; // end course
+            earlyGameEnd = true;
         } else {
             // TODO : update map bounds
             // TODO : Set dead as observer
@@ -705,6 +711,7 @@ public class OnlineGameManager : NetworkBehaviour
     {
         this.Log("RpcPostGame");
 
+        UIPostGame.earlyGameEnd = earlyGameEnd;
         UIPostGame.Show();
         UIWaitForPlayers.Hide();
     }

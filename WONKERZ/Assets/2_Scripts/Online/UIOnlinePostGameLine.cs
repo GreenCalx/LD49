@@ -10,7 +10,23 @@ public class UIOnlinePostGameLine : MonoBehaviour
     public TextMeshProUGUI playerRank;
     public TextMeshProUGUI playerRaceTime;
 
-    public void Refresh(OnlinePlayerController iPlayer)
+    // Happens only if everyone died but one player, can also be draw if everyone died.
+    public void RefreshFromOC(OnlinePlayerController iPlayer)
+    {
+        playerName.text = iPlayer.onlinePlayerName;
+        if (!iPlayer.IsAlive)
+        {
+            playerRank.text = "DNF";
+            playerRaceTime.text = iPlayer.GetTimeOfDeath();
+        }
+        else {
+            playerRank.text = "1";
+            playerRaceTime.text = "--:--";
+        }
+
+    }
+
+    public void RefreshFromTrial(OnlinePlayerController iPlayer)
     {
         playerName.text = iPlayer.onlinePlayerName;
         // HACK: make this better asap.

@@ -60,6 +60,10 @@ public class OnlinePlayerController : NetworkBehaviour
     PlayerController.PlayerVehicleStates playerVehicleState;
     // wheelOmega needs to be updated by the server.
     readonly SyncList<float> omegas = new SyncList<float>();
+    [SyncVar]
+    public float TimeOfDeath = 0f;
+    [SyncVar]
+    public bool DiedInOpenCourse = false; 
 
     public void OnUpdateOmegas(SyncList<float>.Operation op, int itemIndex, float oldItem, float newItem)
     {
@@ -683,6 +687,38 @@ public class OnlinePlayerController : NetworkBehaviour
     public void Kill()
     {
         self_PlayerController.TransitionTo(PlayerController.PlayerVehicleStates.None);
+
+        OnlineGameManager ogm = NetworkRoomManagerExt.singleton.onlineGameManager;
+        TimeOfDeath = ogm.gameTime;
+        DiedInOpenCourse = ogm.state == OnlineGameManager.States.Game;
+
         IsAlive = false;
+    }
+
+    public string GetTimeOfDeath()
+    {
+        int trackTime_val_min = (int)(TimeOfDeath / 60);
+        if (trackTime_val_min<0)
+        {
+            trackTime_val_min = 0;
+        }
+        string trackTime_str_min = trackTime_val_min.ToString();
+        if (trackTime_str_min.Length<=1)
+        {
+            trackTime_str_min = "0"+trackTime_str_min;
+        }
+
+        int trackTime_val_sec = (int)(TimeOfDeath % 60);
+        if (trackTime_val_sec<0)
+        {
+            trackTime_val_min = 0;
+        }
+        string trackTime_str_sec = trackTime_val_sec.ToString();
+        if (trackTime_str_sec.Length<=1)
+        {
+            trackTime_str_sec = "0"+trackTime_str_sec;
+        }
+
+        return trackTime_str_min + ":" + trackTime_str_sec;
     }
 }

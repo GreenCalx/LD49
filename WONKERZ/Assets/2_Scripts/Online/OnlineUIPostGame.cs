@@ -19,10 +19,12 @@ public class OnlineUIPostGame : UIControllableElement
     [Header("Self Refs")]
     public TextMeshProUGUI timeLbl;
     public Transform postGameLines_Handle;
+    public TextMeshProUGUI gameStateLbl;
 
     [Header("Internal")]
     public OnlinePlayerController OPC;
     private List<UIOnlinePostGameLine> lines = new List<UIOnlinePostGameLine>();
+    public bool earlyGameEnd = false;
 
     int startInputIdx = (int)PlayerInputs.InputCode.UIStart;
 
@@ -44,7 +46,7 @@ public class OnlineUIPostGame : UIControllableElement
         updatePostGameTimeLbl();
     }
 
-    private void updatePostGameTimeLbl()
+    public void updatePostGameTimeLbl()
     {
         // We might not have fully loaded but it is fine.
         if (NetworkRoomManagerExt.singleton == null) return;
@@ -76,7 +78,37 @@ public class OnlineUIPostGame : UIControllableElement
         timeLbl.text = trackTime_str_min + ":" + trackTime_str_sec;
     }
 
-    public void updatePlayerRankingsLbl(OnlineGameManager iOGM)
+    public void updatePlayerRankingsOpenCourseEnd()
+    {
+        OnlineGameManager ogm = NetworkRoomManagerExt.singleton.onlineGameManager;
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        OnlinePlayerController winner_opc = null;
+        foreach(OnlinePlayerController opc in uniquePlayers)
+        {
+            GameObject newLine = Instantiate(prefab_UIPostGameLine, postGameLines_Handle);
+            UIOnlinePostGameLine newLine_asUI = newLine.GetComponent<UIOnlinePostGameLine>();
+            newLine_asUI.RefreshFromOC(opc);
+            if (!opc.IsAlive)
+            {
+                // player is dnf
+            }
+            else
+            {
+                // player is winner
+                winner_opc = opc;
+            }
+            newLine_asUI.RefreshFromOC(opc);
+            lines.Add(newLine_asUI);
+        }
+
+        if (winner_opc==null)
+        {
+            // DRAW
+            gameStateLbl.gameObject.SetActive(true);
+        }
+    }
+
+    public void updatePlayerRankingsLbl()
     {
         int lowest_rank = 1;
         var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
@@ -86,7 +118,7 @@ public class OnlineUIPostGame : UIControllableElement
             UIOnlinePostGameLine newLine_asUI = newLine.GetComponent<UIOnlinePostGameLine>();
             if (!!newLine_asUI)
             {
-                newLine_asUI.Refresh(opc);
+                newLine_asUI.RefreshFromTrial(opc);
                 lines.Add(newLine_asUI);
 
                 if (newLine_asUI.rank > lowest_rank)
@@ -125,6 +157,10 @@ public class OnlineUIPostGame : UIControllableElement
         yield return StartCoroutine(WaitForDependencies());
 
         OPC.self_PlayerController.inputMgr.Attach(this as IControllable);
+        if (earlyGameEnd)
+            updatePlayerRankingsOpenCourseEnd();
+        else
+            updatePlayerRankingsLbl();
     }
 
     protected override void ProcessInputs(InputManager currentMgr, GameController Entry)
