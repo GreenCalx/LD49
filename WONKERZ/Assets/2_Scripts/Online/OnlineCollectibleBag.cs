@@ -10,7 +10,12 @@ using Torque = Schnibble.SIUnits.KilogramMeter2PerSecond2;
 
 public class OnlineCollectibleBag : NetworkBehaviour
 {
-    public OnlinePlayerController owner;
+    private OnlinePlayerController pOwner;
+    public OnlinePlayerController owner{
+        set{ pOwner = value; ownerCar = value.self_PlayerController.car.GetCar();}
+        get{ return pOwner; }
+    }
+    public WkzCar ownerCar;
 
     /// STATS DEFINITION
     [Header("Stats definition curves, {X=0.5, Y=1} is Initial Value for 0 Stats")]
@@ -42,10 +47,13 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public float defenseInitValue;
     [SyncVar]
     public float glideInitValue;
+    [SyncVar]
+    public float capacityInitValue;
 
     [Header("Stats definition curves\n    {X=0} is MIN stat range \n    {X=0.5, Y=1} is Initial Value for 0 Stats \n    {X=1} is MAX stat range")]
     //[ToolTip("X : From Stats Min Range [X=0] to Stats Max Range [X=1] \n Y : From 0 [Y=0] to 2x Base value [Y=1]")]
     
+
     public AnimationCurve accelCurve;
     public AnimationCurve maxSpeedCurve;
     public AnimationCurve springCurve;
@@ -56,6 +64,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public AnimationCurve attackCurve;
     public AnimationCurve defenseCurve;
     public AnimationCurve glideCurve;
+    public AnimationCurve capacityCurve;
 
     [Header("Internal storage")]
     [SyncVar]
@@ -80,6 +89,8 @@ public class OnlineCollectibleBag : NetworkBehaviour
     public int defenses;
     [SyncVar]
     public int glides;
+    [SyncVar]
+    public int capacity;
     
 
     // Start is called before the first frame update
@@ -99,6 +110,7 @@ public class OnlineCollectibleBag : NetworkBehaviour
         attacks = 0;
         defenses = 0;
         glides = 0;
+        capacity = 0;
 
         StartCoroutine(Init());
     }
@@ -157,12 +169,15 @@ public class OnlineCollectibleBag : NetworkBehaviour
             return;
         }
 
-        // init player
-        attackInitValue = owner.initAtkMul;
-        defenseInitValue = owner.initDefMul;
 
         // init car
         WkzCar wCar = owner.self_PlayerController.car.GetCar();
+
+        // init player
+        WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+        attackInitValue = as_wkzso.atkMul;
+        defenseInitValue = as_wkzso.defMul;
+        capacityInitValue = as_wkzso.nutCapacity;
 
         accelInitValue = (float)wCar.motor.mutDef.maxTorque;
 
@@ -208,6 +223,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
         {
             case ONLINE_COLLECTIBLES.NUTS:
                 nuts += iCollectible.value;
+                WkzCar wCar = owner.self_PlayerController.car.GetCar();
+                WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+                nuts = Mathf.Clamp(nuts, 0, as_wkzso.nutCapacity);
                 return;
             case ONLINE_COLLECTIBLES.ACCEL:
                 accels += iCollectible.value;
@@ -259,6 +277,11 @@ public class OnlineCollectibleBag : NetworkBehaviour
                 glides = Mathf.Clamp(glides, STATS_MIN_RANGE, STATS_MAX_RANGE);
                 car_update_req = true;
                 break;
+            case ONLINE_COLLECTIBLES.CAPACITY:
+                capacity += iCollectible.value;
+                capacity = Mathf.Clamp(capacity, STATS_MIN_RANGE, STATS_MAX_RANGE);
+                UpdateCapacity();
+                break;
             case ONLINE_COLLECTIBLES.KLANCE_POWER:
                 CollectPower(iCollectible);
                 break;
@@ -306,16 +329,35 @@ public class OnlineCollectibleBag : NetworkBehaviour
         powerC.EquipCollectiblePower(iCollectiblePower);
     }
 
+    public void UpdateCapacity()
+    {
+        WkzCar wCar = owner.self_PlayerController.car.GetCar();
+        float curve_x = RemapStatToCurve(capacity);
+        int new_capacity = (int) Mathf.Ceil (capacityCurve.Evaluate(curve_x) * capacityInitValue);
+
+        WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+        as_wkzso.nutCapacity = new_capacity;
+
+        if (nuts > new_capacity)
+        {
+            // lose nuts
+            nuts = new_capacity;
+        }
+    }
+
     /// PLAYERS STATS
     public void UpdatePlayerStats()
     {
+        WkzCar wCar = owner.self_PlayerController.car.GetCar();
+        WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+
         float curve_x = RemapStatToCurve(attacks);
         float new_atkmul = (attackCurve.Evaluate(curve_x) * attackInitValue);
-        owner.atkMul = new_atkmul;
+        as_wkzso.atkMul = new_atkmul;
 
         curve_x = RemapStatToCurve(defenses);
         float new_defmul = (defenseCurve.Evaluate(curve_x) * defenseInitValue);
-        owner.defMul = new_defmul;
+        as_wkzso.defMul = new_defmul;
     }
 
     /// VEHICLE STATS

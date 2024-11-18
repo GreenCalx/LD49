@@ -16,6 +16,10 @@ namespace Wonkerz
         public float weightControlSpeed = 1.0f;
         public float centrifugalForceMul = 1.0f;
         public float minCentrifugalVelocity = 3.0f;
+        [Header("Game Stats")]
+        public int nutCapacity = 10;
+        public float atkMul  = 1f;
+        public float defMul = 1f;
 
         public void CopyTo(ref WkzCarSO iCopyTarget)
         {
@@ -34,6 +38,9 @@ namespace Wonkerz
             iCopyTarget.weightControlSpeed = this.weightControlSpeed;
             iCopyTarget.centrifugalForceMul = this.centrifugalForceMul;
             iCopyTarget.minCentrifugalVelocity = this.minCentrifugalVelocity;
+            iCopyTarget.nutCapacity = this.nutCapacity;
+            iCopyTarget.atkMul = this.atkMul;
+            iCopyTarget.defMul = this.defMul;
         }
     }
 }

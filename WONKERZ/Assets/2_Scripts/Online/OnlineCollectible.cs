@@ -21,6 +21,7 @@ public enum ONLINE_COLLECTIBLES {
     GLIDE           =0x09,
     ATTACK          =0x0A,
     DEFENSE         =0x0B,
+    CAPACITY        =0x0C,
     KLANCE_POWER    =0x10,
     PLAUNCHER       =0x11
 }

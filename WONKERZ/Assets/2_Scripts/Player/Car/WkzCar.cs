@@ -13,6 +13,7 @@ namespace Wonkerz
     public class WkzCar : SchCar
     {
         public CAR_TYPE carType;
+        public int nutCapacity;
         public WkzCarSO wkzDef;
         public WkzCarSO wkzMutDef;
 

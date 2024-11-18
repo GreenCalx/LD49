@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,7 +20,11 @@ public class UIPlayerOnline : UIElement
     public Transform UINutImg;
     public TMPro.TextMeshProUGUI    speedText;
     public Image                    speedBar;
+    public Image                    throttleBar;
+    public Image                    lifeBar;
     public TextMeshProUGUI          lifePool;
+    public TextMeshProUGUI          driveGearLbl;
+    public TextMeshProUGUI          reverseGearLbl;
     //public TextMeshProUGUI          equippedPower;
     [Header("Powers")]
     public Transform equippedPowerHandle;
@@ -54,14 +59,10 @@ public class UIPlayerOnline : UIElement
 
     protected override void Start()
     {
-        updateLastCPTriggered("x");
-        cpImageFilled.fillAmount = 0f;
-
-        OverDriveUIHandle.gameObject.SetActive(false);
+        if (OverDriveUIHandle!=null)
+            OverDriveUIHandle.gameObject.SetActive(false);
         nutAnimMutex = false;
 
-        // updateSpeedCounter();
-        // updateLifePool();
         StartCoroutine(Schnibble.Utils.CoroutineChain(
             WaitForGameManager(),
             WaitForLocalPlayer()));
@@ -93,7 +94,9 @@ public class UIPlayerOnline : UIElement
         player = iOPC.self_PlayerController;
 
         updateSpeedCounter();
-        updateLifePool();
+        updateThrottleCounter();
+        updateLifePool(true);
+        updateGearShift();
     }
 
     protected override void Update()
@@ -102,8 +105,10 @@ public class UIPlayerOnline : UIElement
         { return;}
 
         updateSpeedCounter();
-        updateLifePool();
+        updateThrottleCounter();
+        updateLifePool(false);
         updateTrackTime();
+        updateGearShift();
     }
 
     private void updateTrackTime()
@@ -164,27 +169,45 @@ public class UIPlayerOnline : UIElement
         speedText.SetText(((int)speed).ToString());
 
         //update overdrive
-        OverDriveUIHandle.gameObject.SetActive( (speed > maxSpeed) );
+        if (OverDriveUIHandle!=null)
+            OverDriveUIHandle.gameObject.SetActive( (speed > maxSpeed) );
     }
 
-    public void updateLifePool()
+    public void updateThrottleCounter()
+    {
+        if (player==null) return;
+
+        float maxTorque = (float) player.car.car.motor.mutDef.maxTorque;
+        float currTorque = (float) player.car.car.motor.GetOutput( player.car.car.GetThrottle() );
+
+        throttleBar.fillAmount = currTorque / maxTorque;
+    }
+
+    public void updateLifePool(bool iForce)
     {
         int n_nuts = onlinePlayer.bag.nuts;
 
-        lifePool.text = (n_nuts > 0) ? n_nuts.ToString() : "0";
-
-        if (n_nuts > currNutsInBank)
+        if ((n_nuts!=currNutsInBank) || iForce)
         {
-            // Rotate ui nut CW
-            rotateNutCo = StartCoroutine(RotateUINut(nutTurnAnimDuration, true));
+            lifePool.text = n_nuts.ToString();
 
-        } else if ( n_nuts < currNutsInBank)
-        {
-            // Rotate ui nut ccw
-            rotateNutCo = StartCoroutine(RotateUINut(nutTurnAnimDuration, false));
+            rotateNutCo = StartCoroutine(RotateUINut(nutTurnAnimDuration, n_nuts > currNutsInBank));
+
+            WkzCar wCar = onlinePlayer.self_PlayerController.car.car as WkzCar;
+            WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+            lifeBar.fillAmount = ((float) n_nuts) /  ((float)as_wkzso.nutCapacity);
+
+            currNutsInBank = n_nuts;
         }
+    }
 
-        currNutsInBank = n_nuts;
+    public void updateGearShift()
+    {
+        SchCar asSchCar = onlinePlayer.self_PlayerController.car.car;
+        bool isInDriveMode = !asSchCar.gearBox.invertInput;
+        
+        driveGearLbl.gameObject.SetActive(isInDriveMode); 
+        reverseGearLbl.gameObject.SetActive(!isInDriveMode);
     }
 
     public void updateAvailablePanels(int iVal)
@@ -194,11 +217,6 @@ public class UIPlayerOnline : UIElement
         string str = (val < 999) ? val.ToString() : "inf";
 
         nAvailablePanels.text = str;
-    }
-
-    public void updateLastCPTriggered(string iTxt)
-    {
-        idOfLastCPTriggered.text = iTxt;
     }
 
     public void updateCPFillImage(float iVal)
