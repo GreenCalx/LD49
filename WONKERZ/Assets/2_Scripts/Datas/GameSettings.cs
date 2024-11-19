@@ -11,6 +11,7 @@ namespace  Wonkerz
     {
         public bool   isLocal           = false;
         public bool   isOnline          = false;
+        public bool   isSolo            = false;
         public string OnlinePlayerAlias = "Player";
 
         [System.Serializable]

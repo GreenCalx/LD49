@@ -373,6 +373,7 @@ public class OnlinePlayerController : NetworkBehaviour
         if (!_loadedScenes.Contains(sceneName)) {
             _loadedScenes.Add(sceneName);
         }
+        RpcLoad();
     }
 
     // TODO: very bad to use string,

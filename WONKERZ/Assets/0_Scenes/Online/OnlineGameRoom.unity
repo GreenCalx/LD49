@@ -734,16 +734,18 @@ MonoBehaviour:
   openCourseUnLoaded: 0
   prefab_onlineTrialRoulette: {fileID: 7056363291119687024, guid: d8c624c72a22b2849a702fb1c7699f7d, type: 3}
   settings:
+    isSolo: 0
     countdownDuration: 3
-    gameDuration: 600
+    gameDuration: 3
     postGameDuration: 30
     trackEventTimeStep: 60
     trialPool:
-    - DesertRace
+    - BlockArenaTrial
     selectedTrial: 
   waitForPlayersToBeReady: 0
   gameTime: 0
   postGameTime: 0
+  earlyGameEnd: 0
   gameLaunched: 0
   trackEventManager: {fileID: 1288786154}
   startLine: {fileID: 0}
@@ -1816,6 +1818,30 @@ PrefabInstance:
     - target: {fileID: 5857830193815794043, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
       propertyPath: m_Name
       value: UIOnlinePostGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857830193893600409, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5857830193931426396, guid: 2ba9c7f1f0d900e42a16a22280cb17c6, type: 3}
       propertyPath: m_AnchorMax.y

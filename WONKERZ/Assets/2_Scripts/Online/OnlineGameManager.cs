@@ -97,6 +97,7 @@ public class OnlineGameManager : NetworkBehaviour
     [System.Serializable]
     public class GameSettings
     {
+        public bool   isSolo            = false;
         public uint countdownDuration = 3; // in seconds
         public uint gameDuration = 180; // in Seconds
         public uint postGameDuration = 30;
@@ -402,6 +403,9 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator StartGame()
     {
         countdownElapsed = settings.countdownDuration;
+        
+        var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
+        settings.isSolo = (uniquePlayers.Count==1);
 
         UIPlayer.Show();
 
@@ -445,6 +449,8 @@ public class OnlineGameManager : NetworkBehaviour
     IEnumerator TrialLoop()
     {
         this.Log("Start trial loop.");
+        FreezeAllPlayers(false);
+        //gameLaunched = true;
 
         trialManager.trialLaunched = true;
         trialManager.trialIsOver = false;
@@ -455,6 +461,8 @@ public class OnlineGameManager : NetworkBehaviour
         }
 
         trialManager.trialLaunched = false;
+        //gameLaunched = false;
+        
         // player ranks availables
         this.Log("End trial loop.");
     }
@@ -535,7 +543,7 @@ public class OnlineGameManager : NetworkBehaviour
         FreezeAllPlayers(false);
         UnequipAllPowers();
         RpcShowItsTrialTime(false);
-        gameLaunched = false;
+        //gameLaunched = false;
         yield return LoadTrialScene();
     }
 
@@ -633,6 +641,9 @@ public class OnlineGameManager : NetworkBehaviour
 
     [Server]
     public bool OneOrLessPlayerAlive() {
+        if (settings.isSolo)
+            return false;
+
         var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;
         
         int count = 0;

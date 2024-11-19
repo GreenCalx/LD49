@@ -215,6 +215,14 @@ public class OnlineCollectibleBag : NetworkBehaviour
     }
 
     [Server]
+    public void MaxOutNuts()
+    {
+        WkzCar wCar = owner.self_PlayerController.car.GetCar();
+        WkzCarSO as_wkzso = wCar.mutDef as WkzCarSO;
+        nuts = as_wkzso.nutCapacity;
+    }
+
+    [Server]
     public void AsServerCollect(OnlineCollectible iCollectible)
     {
         bool car_update_req = false;
@@ -343,6 +351,9 @@ public class OnlineCollectibleBag : NetworkBehaviour
             // lose nuts
             nuts = new_capacity;
         }
+
+        // force ui update
+        Access.GetOnlineUI<UIPlayerOnline>()?.updateLifePool(true);
     }
 
     /// PLAYERS STATS

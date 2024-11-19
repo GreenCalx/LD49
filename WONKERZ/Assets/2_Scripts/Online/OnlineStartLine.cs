@@ -76,6 +76,11 @@ public class OnlineStartLine : NetworkBehaviour, IControllable
 
         var OGM = OnlineGameManager.singleton;
 
+        // clear callbacks referencing previous scenes (e.g in trials)
+        OGM.onCountdownStart = null;
+        OGM.onCountdownValue = null;
+        OGM.onCountdownEnd = null;
+
         OGM.onCountdownStart += StartCountdownCB;
         OGM.onCountdownValue += CountdownValueCB;
         OGM.onCountdownEnd   += EndCountdownCB;
