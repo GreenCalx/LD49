@@ -223,6 +223,28 @@ public class OnlineCollectibleBag : NetworkBehaviour
     }
 
     [Server]
+    public void LoseNutsFromDamage(int iDamageToNuts)
+    {
+        int nuts_to_spawn = 0;
+        if (iDamageToNuts > nuts)
+        {
+            nuts_to_spawn = nuts;
+            nuts = 0 ;
+        }
+        else {
+            nuts_to_spawn = iDamageToNuts;
+            nuts -= iDamageToNuts;
+        }
+        
+        // TODO : Spawn nuts again when damaged
+        //for (int i = 0; i < nuts_to_spawn; i++)
+        //{
+        //    GameObject nutFromDamage = Instantiate(cm.nutCollectibleRef);
+        //    nutFromDamage.GetComponent<CollectibleNut>().setSpawnedFromDamage(transform.position);
+        //}
+    }
+
+    [Server]
     public void AsServerCollect(OnlineCollectible iCollectible)
     {
         bool car_update_req = false;

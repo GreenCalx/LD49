@@ -42,6 +42,15 @@ namespace Wonkerz {
             return false;
         }
 
+        public static bool isOnlinePlayer(GameObject iGO)
+        {
+            if (iGO.GetComponent<OnlinePlayerController>()!=null)
+                return true;
+            else if (iGO.GetComponentInParent<OnlinePlayerController>()!=null)
+                return true;
+            return false;
+        }
+
         public static bool colliderIsPlayer(Collider iCollider)
         {
             if (!!iCollider.transform.parent)

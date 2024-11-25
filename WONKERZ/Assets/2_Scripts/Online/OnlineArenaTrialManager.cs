@@ -20,9 +20,14 @@ public class OnlineArenaTrialManager : OnlineTrialManager
         if (!trialIsOver && trialLaunched)
         {
             trialTime += Time.deltaTime;
-            if (alivePlayers.Count<=1)
+            if (alivePlayers.Count==1)
             {
                 //end trial
+                NotifyPlayerHasFinished(alivePlayers[0]);
+            } else if (alivePlayers.Count==0)
+            {
+                // end trial in draw
+                // TODO ?
             }
         }
     }

@@ -11,7 +11,7 @@ public class OnlineDamageable : NetworkBehaviour
     public GameObject owner;
 
     [Header("Tweaks")]
-    public List<UnityEvent<OnlineDamageSnapshot>> OnTakeDamageCallbacks;
+    UnityEvent<OnlineDamageSnapshot> OnTakeDamageCallbacks;
     private readonly float delayBetweenDamages = 0.2f;
     private float elapsedTimeSinceLastDamage = 0f;
     
@@ -26,6 +26,13 @@ public class OnlineDamageable : NetworkBehaviour
             elapsedTimeSinceLastDamage += Time.fixedDeltaTime;
     }
 
+    public void AddOnDamageEvent(UnityAction<OnlineDamageSnapshot> iCallback)
+    {
+        if (OnTakeDamageCallbacks==null)
+            OnTakeDamageCallbacks = new UnityEvent<OnlineDamageSnapshot>();
+        OnTakeDamageCallbacks.AddListener(iCallback);
+    }
+
     public bool TryTakeDamage(OnlineDamageSnapshot iDamageSnap)
     {
         if (elapsedTimeSinceLastDamage < delayBetweenDamages)
@@ -34,7 +41,7 @@ public class OnlineDamageable : NetworkBehaviour
         if (iDamageSnap.owner == owner)
             return false; // self damage
 
-        OnTakeDamageCallbacks.ForEach(e => e.Invoke(iDamageSnap));
+        OnTakeDamageCallbacks.Invoke(iDamageSnap);
 
         elapsedTimeSinceLastDamage = 0f;
         return true;        

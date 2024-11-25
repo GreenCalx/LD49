@@ -207,6 +207,7 @@ namespace Wonkerz
             {
                 UnityEvent cbAfterThrust = new UnityEvent();
                 cbAfterThrust.AddListener(OnWeaponFinish);
+                selfDamager.owner = owner.gameObject;
                 selfDamager.damage = Utils.ApproxDamage(baseDamage * damageMulOnThrust * owner.atkMul);
                 selfDamager.filteredOutDamageables.Add(owner.self_oDamageable);
                 selfOnlineWeapon.Thrust(thrustTime, thrustRotSpeed, thrustZOffset, cbAfterThrust);
@@ -375,6 +376,7 @@ namespace Wonkerz
             OnlineDamager as_damager = projectile.GetComponent<OnlineDamager>();
             if (!!as_damager)
             {
+                as_damager.owner = owner.gameObject;
                 as_damager.filteredOutDamageables.Add(owner.self_oDamageable);
                 as_damager.damage = Utils.ApproxDamage(baseDamage * owner.atkMul);
             }

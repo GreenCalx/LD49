@@ -1022,8 +1022,8 @@ namespace Wonkerz
             if (elapsedTimeSinceLastDamage <= invulnerabilityTimeAfterDamage)
                 return;
 
-            audioSource.clip = damageSound;
-            audioSource.Play();
+            //audioSource.clip = damageSound;
+            //audioSource.Play();
 
             // lose nuts
             CollectiblesManager cm = Access.managers.collectiblesMgr;

@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Wonkerz;
 
 
@@ -288,6 +289,9 @@ public class OnlinePlayerController : NetworkBehaviour
         // Finally set to the right references.
         self_oDamageable = bodyDmgble;
         self_oDamageable.owner = gameObject;
+
+
+        self_oDamageable.AddOnDamageEvent( TakeDamage );
 
         this.Log("InitPlayerDamageable : success.");
     }
@@ -676,13 +680,25 @@ public class OnlinePlayerController : NetworkBehaviour
 
     public void TakeDamage(OnlineDamageSnapshot iDamageSnap)
     {
-        float damage = iDamageSnap.damage * 1/defMul ;
-        self_PlayerController.takeDamage(
-            iDamageSnap.damage,
-            iDamageSnap.worldOrigin,
-            iDamageSnap.ownerVelocity,
-            iDamageSnap.repulsionForce
-        );
+        if (!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
+            return;
+
+        float damage = iDamageSnap.damage * 1f/defMul ;
+        
+        int lost_nuts = (int)damage;
+        lost_nuts /= 10;
+
+        if (bag.nuts > 0)
+            bag.LoseNutsFromDamage(lost_nuts);
+        else
+            NetworkRoomManagerExt.singleton.onlineGameManager.NotifyPlayerDeath(this);
+
+        // self_PlayerController.takeDamage(
+        //     iDamageSnap.damage,
+        //     iDamageSnap.worldOrigin,
+        //     iDamageSnap.ownerVelocity,
+        //     iDamageSnap.repulsionForce
+        // );
     }
 
     public void Kill()

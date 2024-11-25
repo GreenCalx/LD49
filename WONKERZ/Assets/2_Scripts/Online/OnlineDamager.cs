@@ -130,15 +130,15 @@ public class OnlineDamager : NetworkBehaviour
             oDamageable = iDamageTarget.GetComponentInParent<OnlineDamageable>();
             if (oDamageable==null)
                 return false; 
-            if (filteredOutDamageables.Contains(oDamageable))
-                return false;
         }
+        if (filteredOutDamageables.Contains(oDamageable))
+            return false;
 
         OnlineDamageSnapshot snapshot = MakeSnapshot();
         bool did_damage = false;
         if (DoDamageToPlayers)
         {
-            if (Wonkerz.Utils.isPlayer(oDamageable.owner))
+            if (Wonkerz.Utils.isOnlinePlayer(oDamageable.owner))
             {
                 did_damage = oDamageable.TryTakeDamage(snapshot);
             }
