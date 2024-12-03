@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class OnlineArenaTrialManager : OnlineTrialManager
 {
@@ -20,6 +21,10 @@ public class OnlineArenaTrialManager : OnlineTrialManager
         if (!trialIsOver && trialLaunched)
         {
             trialTime += Time.deltaTime;
+
+            // refresh living players
+            alivePlayers = alivePlayers.Where(p => p.IsAlive).ToList();
+
             if (alivePlayers.Count==1)
             {
                 //end trial
@@ -32,14 +37,7 @@ public class OnlineArenaTrialManager : OnlineTrialManager
         }
     }
 
-    public void OnPlayerKill(OnlinePlayerController iOPC)
-    {
-        if (alivePlayers.Contains(iOPC))
-        {
-            alivePlayers.Remove(iOPC);
-            NotifyPlayerIsDNF(iOPC);
-        }
-    }
+    
 
     IEnumerator Init()
     {

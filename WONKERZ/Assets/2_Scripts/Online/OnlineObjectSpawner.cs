@@ -26,6 +26,9 @@ public class OnlineObjectSpawner : NetworkBehaviour
     private float zmin;
     private float zmax;
 
+    [Header("Optionals")]
+    public OnlineSpawnerIndicator indicator;
+
     // internals
     [Header("Internals")]
     public bool isCoordinated = false;

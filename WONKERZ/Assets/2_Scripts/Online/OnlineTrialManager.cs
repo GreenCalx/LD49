@@ -98,11 +98,11 @@ public class OnlineTrialManager : NetworkBehaviour
     [ServerCallback]
     public void NotifyPlayerHasFinished(OnlinePlayerController iOPC)
     {
-        if (dicPlayerTrialFinishPositions.ContainsKey(iOPC))
-            return;
-
-        dicPlayerTrialFinishPositions.Add(iOPC, dicPlayerTrialFinishPositions.Count+1);
-        dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
+        if (!dicPlayerTrialFinishPositions.ContainsKey(iOPC))
+        {
+            dicPlayerTrialFinishPositions.Add(iOPC, dicPlayerTrialFinishPositions.Count + 1);
+            dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
+        }
 
         trialIsOver = AllPlayersFinished();
     }
@@ -110,11 +110,11 @@ public class OnlineTrialManager : NetworkBehaviour
     [ServerCallback]
     public void NotifyPlayerIsDNF(OnlinePlayerController iOPC)
     {
-        if (dicPlayerTrialFinishPositions.ContainsKey(iOPC))
-            return;
-
-        dicPlayerTrialFinishPositions.Add(iOPC, -1);
-        dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
+        if (!dicPlayerTrialFinishPositions.ContainsKey(iOPC))
+        {
+            dicPlayerTrialFinishPositions.Add(iOPC, -1);
+            dicPlayerTrialToRaceTimes.Add(iOPC, trialTime);
+        }
 
         trialIsOver = AllPlayersFinished();
     }

@@ -667,21 +667,27 @@ public class OnlineGameManager : NetworkBehaviour
         if (!NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.ContainsValue(iOPC))
             return;
         
-        
         iOPC.Kill();
-
 
         Vector3 deathClonePos = iOPC.self_PlayerController.GetTransform().position;
         RpcSpawnDeathPlayerClone(deathClonePos, (iOPC.self_PlayerController.car.car as WkzCar).carType);
 
-        if (OneOrLessPlayerAlive())
+        // game can end in open course if only one player is alive.
+        if (state == States.Game)
         {
-            gameTime = 0f; // end course
-            earlyGameEnd = true;
-        } else {
-            // TODO : update map bounds
-            // TODO : Set dead as observer
+            if (OneOrLessPlayerAlive())
+            {
+                gameTime = 0f; // end course
+                earlyGameEnd = true;
+            } else {
+                // TODO : update map bounds
+                // TODO : Set dead as observer
+            }
+        } else if (state == States.Trial)
+        {
+            trialManager.NotifyPlayerIsDNF(iOPC);
         }
+
     }
 
     #endregion
