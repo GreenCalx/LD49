@@ -597,6 +597,12 @@ public class OnlineGameManager : NetworkBehaviour
     }
 
     [Server]
+    public bool IsInOpenCourse() { return state == States.Game; }
+    [Server]
+    public bool IsInTrial() { return state == States.Trial; }
+
+
+    [Server]
     public void AskPlayersToReadyUp()
     {
         var uniquePlayers = NetworkRoomManagerExt.singleton.roomplayersToGameplayersDict.Values;

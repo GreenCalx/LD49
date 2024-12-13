@@ -48,6 +48,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  spawnOnStart: 1
   centerSpawnedItem: 1
   ObjectsToSpawn:
   - {fileID: 8919147018749392445, guid: cdb6a69d9787ce64a8310c07802131cb, type: 3}
@@ -58,26 +59,26 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 2
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: Infinity
+      outSlope: Infinity
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: -0
-      outSlope: 4.174533
-      tangentMode: 5
-      weightedMode: 0
-      inWeight: 0.044127278
-      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  spawnProbabilityTimeScale: 10
+  spawnProbabilityTimeScale: 1
   boundaries: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
   indicator: {fileID: 0}
   isCoordinated: 1

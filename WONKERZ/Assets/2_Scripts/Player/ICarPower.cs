@@ -193,7 +193,7 @@ namespace Wonkerz
                     NetworkServer.Spawn(KnightLanceObject_Inst);
                     selfDamager = KnightLanceObject_Inst.GetComponentInChildren<OnlineDamager>();
                     selfDamager.damage = Utils.ApproxDamage(baseDamage * owner.atkMul);
-
+                    selfDamager.owner = owner.gameObject;
                 }
                 KnightLanceObject_Inst.SetActive(true);
             }

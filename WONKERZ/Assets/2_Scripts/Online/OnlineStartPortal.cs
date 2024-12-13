@@ -46,12 +46,24 @@ public class OnlineStartPortal : NetworkBehaviour
             yield return null;
         }
 
-        while(!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
-        { 
-            attachedPlayer.Relocate(transform.position, transform.rotation);
-            yield return null; 
+        if (NetworkRoomManagerExt.singleton.onlineGameManager.IsInOpenCourse())
+        {
+            while(!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
+            { 
+                attachedPlayer.Relocate(transform.position, transform.rotation);
+                yield return null; 
+            }
         }
-
-        Destroy(gameObject);
+        else if (NetworkRoomManagerExt.singleton.onlineGameManager.IsInTrial())
+        { 
+            while (NetworkRoomManagerExt.singleton.onlineGameManager.trialManager == null)  { yield return null;}
+            while(!NetworkRoomManagerExt.singleton.onlineGameManager.trialManager.trialLaunched)
+            { 
+                attachedPlayer.Relocate(transform.position, transform.rotation);
+                yield return null; 
+            }            
+        }
+         
+        NetworkServer.Destroy(gameObject);
     }
 }

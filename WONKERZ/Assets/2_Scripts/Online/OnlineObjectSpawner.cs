@@ -8,9 +8,19 @@ using Mirror;
 /**
 *   TODO : Object Pooling
 */
+
+// Used to pre spawn an item to avoid multiple spawn
+// while object is instantiated on server
+// Exemple : mono spawners that always spawns
+public class SpawnedItemWrapper
+{
+    public GameObject spawnedItem;
+}
+
 public class OnlineObjectSpawner : NetworkBehaviour
 {
     // Tweaks
+    public bool spawnOnStart;
     public bool centerSpawnedItem = false;
     public List<GameObject> ObjectsToSpawn;
     public int MAX_SPAWN = 15;
@@ -66,6 +76,12 @@ public class OnlineObjectSpawner : NetworkBehaviour
 
         zmin = transform.position.z + boundaries.bounds.min.z * transform.lossyScale.z;
         zmax = transform.position.z + boundaries.bounds.max.z * transform.lossyScale.z;
+
+        if (spawnOnStart)
+        {
+            SpawnObject();
+            elapsedTimeSinceLastSpawn = 0f;
+        }
     }
 
     // Update is called once per frame
@@ -77,7 +93,10 @@ public class OnlineObjectSpawner : NetworkBehaviour
         if (!NetworkRoomManagerExt.singleton.onlineGameManager.gameLaunched)
             return;
 
-        elapsedTimeSinceLastSpawn += Time.deltaTime;
+        if (!IsFull())
+            elapsedTimeSinceLastSpawn += Time.deltaTime;
+        else
+            elapsedTimeSinceLastSpawn = 0f;
 
         if (isCoordinated)
             return;
@@ -127,7 +146,7 @@ public class OnlineObjectSpawner : NetworkBehaviour
         if (ObjectsToSpawn.Count<=0)
         { return; }
 
-        spawnedObjects = spawnedObjects.Where(e => e != null).ToList();
+        
         if (IsFull())
         { return; }
 
@@ -159,6 +178,7 @@ public class OnlineObjectSpawner : NetworkBehaviour
     [Server]
     public bool IsFull()
     {
+        spawnedObjects = spawnedObjects.Where(e => e != null).ToList();
         return spawnedObjects.Count >= MAX_SPAWN ;
     }
 }

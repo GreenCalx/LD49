@@ -367,6 +367,27 @@ public class OnlinePlayerController : NetworkBehaviour
         isReady = state;
     }
 
+    [Server]
+    public void ServerLoadedScene(string sceneName)
+    {
+        this.Log("Server Player has finished loading scene:" + sceneName);
+
+        if (!_loadedScenes.Contains(sceneName)) {
+            _loadedScenes.Add(sceneName);
+        }
+        Load();
+    }
+
+    [Server]
+    public void ServerUnloadedScene(string sceneName)
+    {
+        this.Log("Server Player has finished unloading scene:" + sceneName);
+
+        if (_loadedScenes.Contains(sceneName)) {
+            _loadedScenes.Remove(sceneName);
+        }
+    }
+
     // TODO: very bad to use string,
     // but for now should not be a problem, might have some hiccups at scene
     // loading which should be fine.
@@ -550,17 +571,32 @@ public class OnlinePlayerController : NetworkBehaviour
         RemoveCallbacks();
 
         var manager = NetworkRoomManagerExt.singleton;
-        manager.OnSceneLoadedCB   += CmdClientLoadedScene;
-        manager.OnSceneUnloadedCB += CmdClientUnloadedScene;
+        if (isClient && isLocalPlayer)
+        {
+            manager.OnSceneLoadedCB   += CmdClientLoadedScene;
+            manager.OnSceneUnloadedCB += CmdClientUnloadedScene;
+        }
+        else if (isServer && isLocalPlayer) {
+            manager.OnSceneLoadedCB   += ServerLoadedScene;
+            manager.OnSceneUnloadedCB += ServerUnloadedScene;
+        }
 
         OnlineGameManager.singleton.onStateValue += OnGameManagerStateValue;
     }
 
     void RemoveCallbacks() {
         var manager = NetworkRoomManagerExt.singleton;
-        manager.OnSceneLoadedCB   -= CmdClientLoadedScene;
-        manager.OnSceneUnloadedCB -= CmdClientUnloadedScene;
 
+        if (isClient && isLocalPlayer)
+        {
+            manager.OnSceneLoadedCB   -= CmdClientLoadedScene;
+            manager.OnSceneUnloadedCB -= CmdClientUnloadedScene;
+        }
+        else if (isServer && isLocalPlayer) {
+            manager.OnSceneLoadedCB   -= ServerLoadedScene;
+            manager.OnSceneUnloadedCB -= ServerUnloadedScene;
+        }
+        
         OnlineGameManager.singleton.onStateValue -= OnGameManagerStateValue;
     }
 
